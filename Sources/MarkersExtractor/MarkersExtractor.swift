@@ -18,6 +18,7 @@ public final class MarkersExtractor {
 
     func run() throws {
         let imageQuality = Double(s.imageQuality) / 100
+        let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
 
@@ -37,8 +38,11 @@ public final class MarkersExtractor {
         let labelProperties = MarkerLabelProperties(
             fontName: s.imageLabelFont,
             fontMaxSize: s.imageLabelFontMaxSize,
-            fontColor: NSColor(hexString: s.imageLabelFontColor),
-            fontStrokeColor: NSColor(hexString: s.imageLabelFontStrokeColor),
+            fontColor: NSColor(hexString: s.imageLabelFontColor, alpha: imageLabelFontAlpha),
+            fontStrokeColor: NSColor(
+                hexString: s.imageLabelFontStrokeColor,
+                alpha: imageLabelFontAlpha
+            ),
             fontStrokeWidth: s.imageLabelFontStrokeWidth,
             alignHorizontal: s.imageLabelAlignHorizontal,
             alignVertical: s.imageLabelAlignVertical

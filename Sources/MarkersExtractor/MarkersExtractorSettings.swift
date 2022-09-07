@@ -11,6 +11,7 @@ public struct MarkersExtractorSettings {
         public static let idNamingMode = MarkerIDMode.projectTimecode
         public static let imageLabelFont = "Menlo-Regular"
         public static let imageLabelFontMaxSize = 30
+        public static let imageLabelFontOpacity = 100
         public static let imageLabelFontColor = "#FFF"
         public static let imageLabelFontStrokeColor = "#000"
         public static let imageLabelAlignHorizontal = MarkerLabelProperties.AlignHorizontal.left
@@ -30,6 +31,7 @@ public struct MarkersExtractorSettings {
     let imageLabelCopyright: String?
     let imageLabelFont: String
     let imageLabelFontMaxSize: Int
+    let imageLabelFontOpacity: Int
     let imageLabelFontColor: String
     let imageLabelFontStrokeColor: String
     let imageLabelFontStrokeWidth: Int?
@@ -64,6 +66,7 @@ public struct MarkersExtractorSettings {
         imageLabelCopyright: String?,
         imageLabelFont: String,
         imageLabelFontMaxSize: Int,
+        imageLabelFontOpacity: Int,
         imageLabelFontColor: String,
         imageLabelFontStrokeColor: String,
         imageLabelFontStrokeWidth: Int?,
@@ -85,6 +88,7 @@ public struct MarkersExtractorSettings {
         self.imageLabelCopyright = imageLabelCopyright
         self.imageLabelFont = imageLabelFont
         self.imageLabelFontMaxSize = imageLabelFontMaxSize
+        self.imageLabelFontOpacity = imageLabelFontOpacity
         self.imageLabelFontColor = imageLabelFontColor
         self.imageLabelFontStrokeColor = imageLabelFontStrokeColor
         self.imageLabelFontStrokeWidth = imageLabelFontStrokeWidth
@@ -125,6 +129,12 @@ public struct MarkersExtractorSettings {
         {
             throw MarkersExtractorError.validationError(
                 "--label-stroke-width must be a positive integer or 0"
+            )
+        }
+
+        guard (0...100).contains(imageLabelFontOpacity) else {
+            throw MarkersExtractorError.validationError(
+                "--label-font-opacity must be within 0...100 range"
             )
         }
 

@@ -90,14 +90,20 @@ struct MarkersExtractorCLI: ParsableCommand {
     var imageLabelFontMaxSize: Int = MarkersExtractorSettings.Defaults.imageLabelFontMaxSize
 
     @Option(
+        name: [.customLong("label-opacity")],
+        help: ArgumentHelp("Label opacity percent", valueName: "0-100")
+    )
+    var imageLabelFontOpacity: Int = MarkersExtractorSettings.Defaults.imageLabelFontOpacity
+
+    @Option(
         name: [.customLong("label-font-color")],
-        help: ArgumentHelp("Label font color", valueName: "#AARRGGBB / #RRGGBB / #RGB")
+        help: ArgumentHelp("Label font color", valueName: "#RRGGBB / #RGB")
     )
     var imageLabelFontColor: String = MarkersExtractorSettings.Defaults.imageLabelFontColor
 
     @Option(
         name: [.customLong("label-stroke-color")],
-        help: ArgumentHelp("Label stroke color", valueName: "#AARRGGBB / #RRGGBB / #RGB")
+        help: ArgumentHelp("Label stroke color", valueName: "#RRGGBB / #RGB")
     )
     var imageLabelFontStrokeColor: String = MarkersExtractorSettings.Defaults
         .imageLabelFontStrokeColor
@@ -185,6 +191,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelCopyright: imageLabelCopyright,
                 imageLabelFont: imageLabelFont,
                 imageLabelFontMaxSize: imageLabelFontMaxSize,
+                imageLabelFontOpacity: imageLabelFontOpacity,
                 imageLabelFontColor: imageLabelFontColor,
                 imageLabelFontStrokeColor: imageLabelFontStrokeColor,
                 imageLabelFontStrokeWidth: imageLabelFontStrokeWidth,
