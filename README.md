@@ -8,7 +8,7 @@ Original idea belongs to [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/
 
 ### Pre-compiled binary
 
-Download the latest version of CLI universal binary here.
+Download the latest version of CLI universal binary [here](https://github.com/vzhd1701/MarkersExtractor/releases/latest/download/markers-extractor-cli.zip).
 
 ### From source
 
