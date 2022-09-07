@@ -53,9 +53,10 @@ OPTIONS:
                           Copyright label, will be added after all other labels.
   --label-font <name>     Font for image labels (default: Menlo-Regular)
   --label-font-size <pt>  Maximum font size for image labels, font size is automatically reduced to fit all labels. (default: 30)
-  --label-font-color <#AARRGGBB / #RRGGBB / #RGB>
+  --label-opacity <0-100> Label opacity percent (default: 100)
+  --label-font-color <#RRGGBB / #RGB>
                           Label font color (default: #FFF)
-  --label-stroke-color <#AARRGGBB / #RRGGBB / #RGB>
+  --label-stroke-color <#RRGGBB / #RGB>
                           Label stroke color (default: #000)
   --label-stroke-width <w>
                           Label stroke width, 0 to disable. (default: auto)
