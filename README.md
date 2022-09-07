@@ -99,3 +99,16 @@ let package = Package(
   ]
 )
 ```
+
+Check out [MarkersExtractorCLI.swift](https://github.com/vzhd1701/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
+
+## Development
+
+This projects uses [pre-commit](https://pre-commit.com/) for automatic source files formatting. [swift-format](https://github.com/apple/swift-format) (swift-5.6.1-RELEASE) is used to format `*.swift` files. Make sure both are present in PATH before making commits.
+
+```shell
+git clone https://github.com/yourname/MarkersExtractor
+cd MarkersExtractor
+pre-commit install
+git checkout -b fix
+```
