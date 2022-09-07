@@ -20,9 +20,20 @@ func markersToCSV(
 ) throws {
     let logger = Logger(label: "markersToCSV")
 
-    let isVideoPresent = isVideoPresent(in: videoPath)
+    var videoPath: URL = videoPath
+    let videoPlaceholder: TemporaryMediaFile
 
-    let markersDicts = markers.map { markerToDict($0, isVideoPresent ? imageFormat : nil) }
+    let isVideoPresent = isVideoPresent(in: videoPath)
+    let isSingleFrame = !isVideoPresent && imageLabelFields.isEmpty && imageLabelCopyright == nil
+
+    if !isVideoPresent {
+        logger.info("Media file has no video track, using video placeholder for markers")
+
+        videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholder)
+        videoPath = videoPlaceholder.url!
+    }
+
+    let markersDicts = markers.map { markerToDict($0, imageFormat, isSingleFrame) }
 
     logger.info("Exporting marker icons")
 
@@ -32,41 +43,43 @@ func markersToCSV(
         throw MarkersExtractorError.runtimeError("Failed to write marker icons")
     }
 
-    if isVideoPresent {
-        logger.info("Generating \(imageFormat.rawValue.uppercased()) images for markers")
+    logger.info("Generating \(imageFormat.rawValue.uppercased()) images for markers")
 
-        let imageLabelText = makeImageLabelText(
-            markersDicts: markersDicts,
-            imageLabelFields: imageLabelFields,
-            imageLabelCopyright: imageLabelCopyright
+    let imageLabelText = makeImageLabelText(
+        markersDicts: markersDicts,
+        imageLabelFields: imageLabelFields,
+        imageLabelCopyright: imageLabelCopyright
+    )
+
+    let timeCodes = makeTimecodes(
+        markers: markers,
+        markersDicts: markersDicts,
+        isVideoPresent: isVideoPresent,
+        isSingleFrame: isSingleFrame
+    )
+
+    if imageFormat == .gif {
+        try timecodesToGIF(
+            timeCodes: timeCodes,
+            video: videoPath,
+            destPath: destPath,
+            gifFrameRate: gifFPS,
+            gifSpan: gifSpan,
+            gifDimensions: imageDimensions,
+            imageLabelText: imageLabelText,
+            imageLabelProperties: imageLabelProperties
         )
-        let timeCodes = makeTimecodes(markers: markers, markersDicts: markersDicts)
-
-        if imageFormat == .gif {
-            try timecodesToGIF(
-                timeCodes: timeCodes,
-                video: videoPath,
-                destPath: destPath,
-                gifFrameRate: gifFPS,
-                gifSpan: gifSpan,
-                gifDimensions: imageDimensions,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: imageLabelProperties
-            )
-        } else {
-            try timecodesToPIC(
-                timeCodes: timeCodes,
-                video: videoPath,
-                destPath: destPath,
-                imageFormat: imageFormat,
-                imageJPGQuality: imageQuality,
-                imageDimensions: imageDimensions,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: imageLabelProperties
-            )
-        }
     } else {
-        logger.info("No video track present in \(videoPath.path), skipping images processing")
+        try timecodesToPIC(
+            timeCodes: timeCodes,
+            video: videoPath,
+            destPath: destPath,
+            imageFormat: imageFormat,
+            imageJPGQuality: imageQuality,
+            imageDimensions: imageDimensions,
+            imageLabelText: imageLabelText,
+            imageLabelProperties: imageLabelProperties
+        )
     }
 
     let rows = dictsToRows(markersDicts)
@@ -76,7 +89,8 @@ func markersToCSV(
 
 private func markerToDict(
     _ marker: Marker,
-    _ imageFormat: MarkerImageFormat?
+    _ imageFormat: MarkerImageFormat,
+    _ isSingleFrame: Bool
 ) -> OrderedDictionary<MarkerHeader, String> {
     [
         .id: marker.id,
@@ -93,7 +107,8 @@ private func markerToDict(
         .projectName: marker.parentProjectName,
         .libraryName: marker.parentLibraryName,
         .iconImage: marker.icon.fileName,
-        .imageName: imageFormat == nil ? "" : "\(marker.idPathSafe).\(imageFormat!)",
+        .imageName: isSingleFrame
+            ? "marker-placeholder.\(imageFormat)" : "\(marker.idPathSafe).\(imageFormat)",
     ]
 }
 
@@ -133,12 +148,25 @@ private func makeLabels(
 
 private func makeTimecodes(
     markers: [Marker],
-    markersDicts: [OrderedDictionary<MarkerHeader, String>]
+    markersDicts: [OrderedDictionary<MarkerHeader, String>],
+    isVideoPresent: Bool,
+    isSingleFrame: Bool
 ) -> OrderedDictionary<String, CMTime> {
     let markerNames = markersDicts.map { $0[.imageName]! }
-    return OrderedDictionary(
-        uniqueKeysWithValues: zip(markerNames, markers).map { ($0, $1.position) }
-    )
+
+    // if no video - grabbing first frame from video placeholder
+    let markerTimecodes = markers.map {
+        isVideoPresent ? $0.position : CMTime(seconds: 0, preferredTimescale: 1)
+    }
+
+    var markerPairs = zip(markerNames, markerTimecodes).map { ($0, $1) }
+
+    // if no video and no labels - only one frame needed for all markers
+    if isSingleFrame {
+        markerPairs = [markerPairs[0]]
+    }
+
+    return OrderedDictionary(uniqueKeysWithValues: markerPairs)
 }
 
 private func dictsToRows(
