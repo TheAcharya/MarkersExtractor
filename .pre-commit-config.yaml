@@ -21,6 +21,7 @@ repos:
     -   id: mdformat
         additional_dependencies:
         - mdformat-gfm
+        exclude: CHANGELOG.md
 
 -   repo: local
     hooks:
