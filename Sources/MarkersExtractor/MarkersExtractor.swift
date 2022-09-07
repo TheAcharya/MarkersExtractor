@@ -91,6 +91,10 @@ public final class MarkersExtractor {
             throw MarkersExtractorError.runtimeError("No markers found in '\(s.xmlPath.path)'")
         }
 
+        if !isAllKeyedIn(in: markers) {
+            throw MarkersExtractorError.runtimeError("Every marker must have non-empty ID")
+        }
+
         let duplicates = findDuplicates(in: markers)
 
         if !duplicates.isEmpty {
@@ -105,6 +109,10 @@ public final class MarkersExtractor {
             Dictionary(grouping: markers, by: \.id).filter { $1.count > 1 }
                 .flatMap { $0.1 }.map { $0.id }
         ).sorted()
+    }
+
+    private func isAllKeyedIn(in markers: [Marker]) -> Bool {
+        !markers.map { $0.id }.contains("")
     }
 
     private func makeDestPath(for projectName: String) throws -> URL {
