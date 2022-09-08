@@ -1,4 +1,11 @@
 
+### [0.1.1](https://github.com/vzhd1701/MarkersExtractor/compare/0.1.0...0.1.1) (2022-09-08)
+
+
+### Bug Fixes
+
+* create done.txt file instead of .done ([ad378e5](https://github.com/vzhd1701/MarkersExtractor/commit/ad378e52b836de0dbb2534128e890ab71d724002))
+
 ## 0.1.0 (2022-09-07)
 
 

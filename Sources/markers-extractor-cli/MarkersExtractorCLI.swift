@@ -6,7 +6,7 @@ import MarkersExtractor
 struct MarkersExtractorCLI: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Tool to extract markers from FCPXML(D).",
-        version: "0.1.0"
+        version: "0.1.1"
     )
 
     @Option(
