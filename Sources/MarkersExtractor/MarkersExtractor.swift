@@ -48,10 +48,12 @@ public final class MarkersExtractor {
             alignVertical: s.imageLabelAlignVertical
         )
 
+        let csvName = "\(projectName).csv"
+
         do {
             try markersToCSV(
                 markers: markers,
-                csvPath: destPath.appendingPathComponent("\(projectName).csv"),
+                csvPath: destPath.appendingPathComponent(csvName),
                 videoPath: videoPath,
                 destPath: destPath,
                 gifFPS: s.gifFPS,
@@ -70,8 +72,8 @@ public final class MarkersExtractor {
         }
 
         if s.createDoneFile {
-            logger.info("Creating '.done' file at \(destPath.path)")
-            try touchDoneFile(at: destPath)
+            logger.info("Creating 'done.txt' file at \(destPath.path)")
+            try saveDoneFile(at: destPath, text: csvName)
         }
 
         logger.info("Done!")
@@ -135,11 +137,11 @@ public final class MarkersExtractor {
         return destPath
     }
 
-    private func touchDoneFile(at destPath: URL) throws {
-        let doneFile = destPath.appendingPathComponent(".done")
+    private func saveDoneFile(at destPath: URL, text: String) throws {
+        let doneFile = destPath.appendingPathComponent("done.txt")
 
         do {
-            try "".write(to: doneFile, atomically: true, encoding: .utf8)
+            try text.write(to: doneFile, atomically: true, encoding: .utf8)
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Failed to create done file '\(doneFile.path)': \(error.localizedDescription)"

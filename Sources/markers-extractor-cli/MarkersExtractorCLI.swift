@@ -136,7 +136,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractorSettings
         .Defaults.imageLabelAlignVertical
 
-    @Flag(help: "Create '.done' file in output directory on successful export.")
+    @Flag(help: "Create 'done.txt' file in output directory on successful export.")
     var createDoneFile = false
 
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))

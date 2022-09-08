@@ -64,7 +64,7 @@ OPTIONS:
                           Horizontal alignment of image label. (default: left)
   --label-align-vertical <top,center,bottom>
                           Vertical alignment of image label. (default: top)
-  --create-done-file      Create '.done' file in output directory on successful export.
+  --create-done-file      Create 'done.txt' file in output directory on successful export.
   --log <log>             Log file path.
   --log-level <trace,debug,info,notice,warning,error,critical>
                           Log level. (default: info)
