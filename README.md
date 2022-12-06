@@ -8,7 +8,7 @@ Original idea belongs to [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/
 
 ### Pre-compiled binary
 
-Download the latest version of CLI universal binary [here](https://github.com/vzhd1701/MarkersExtractor/releases/latest/download/markers-extractor-cli.zip).
+Download the latest version of CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/archive/refs/tags/0.1.1.zip).
 
 ### From source
 
@@ -101,7 +101,7 @@ let package = Package(
 )
 ```
 
-Check out [MarkersExtractorCLI.swift](https://github.com/vzhd1701/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
+Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
 
 ## Development
 
