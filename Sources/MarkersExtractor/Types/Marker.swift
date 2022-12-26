@@ -56,3 +56,9 @@ struct Marker {
         }
     }
 }
+
+extension Marker: Comparable {
+    static func < (lhs: Marker, rhs: Marker) -> Bool {
+        lhs.position < rhs.position
+    }
+}

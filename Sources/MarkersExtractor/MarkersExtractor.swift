@@ -85,8 +85,8 @@ public final class MarkersExtractor {
         logger.info("Done!")
     }
 
-    private func extractMarkers() throws -> [Marker] {
-        let markers: [Marker]
+    private func extractMarkers(sort: Bool = true) throws -> [Marker] {
+        var markers: [Marker]
 
         do {
             markers = try FCPXMLMarkerExtractor.extractMarkers(
@@ -107,6 +107,10 @@ public final class MarkersExtractor {
         let duplicates = findDuplicateIDs(in: markers)
         if !duplicates.isEmpty {
             throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
+        }
+        
+        if sort {
+            markers.sort()
         }
 
         return markers
