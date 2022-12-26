@@ -55,7 +55,8 @@ final class ImageExtractorGIF {
     }
 
     static func convert(_ conversion: Conversion) throws {
-        try self.init(conversion).generateGif()
+        let conv = self.init(conversion)
+        try conv.generateGif()
     }
 
     private func generateGif() throws {

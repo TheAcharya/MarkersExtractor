@@ -54,7 +54,8 @@ final class ImageExtractor {
     }
 
     static func convert(_ conversion: Conversion) throws {
-        try self.init(conversion).generateImages()
+        let conv = self.init(conversion)
+        try conv.generateImages()
     }
 
     private func generateImages() throws {
