@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/dehesa/CodableCSV.git", from: "0.6.7"),
         .package(url: "https://github.com/vzhd1701/pipeline.git", exact: "0.1.1"),
+        .package(url: "https://github.com/orchetect/TimecodeKit.git", exact: "1.6.1"),
     ],
     targets: [
         .target(
@@ -30,6 +31,7 @@ let package = Package(
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "CodableCSV", package: "CodableCSV"),
                 .product(name: "Pipeline", package: "Pipeline"),
+                .product(name: "TimecodeKit", package: "TimecodeKit")
             ]),
         .executableTarget(
             name: "markers-extractor-cli",

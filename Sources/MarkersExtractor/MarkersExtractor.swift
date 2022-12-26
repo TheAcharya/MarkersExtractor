@@ -3,6 +3,7 @@ import AppKit
 import Foundation
 import Logging
 import OrderedCollections
+import TimecodeKit
 
 public final class MarkersExtractor {
     private let logger = Logger(label: "\(MarkersExtractor.self)")
@@ -25,6 +26,11 @@ public final class MarkersExtractor {
         logger.info("Extracting markers from '\(s.fcpxmlPath.path)'")
 
         let markers = try extractMarkers()
+        
+        guard !markers.isEmpty else {
+            logger.info("No markers found.")
+            return
+        }
 
         let projectName = markers[0].parentProjectName
 
@@ -93,32 +99,29 @@ public final class MarkersExtractor {
             )
         }
 
-        if markers.isEmpty {
-            throw MarkersExtractorError.runtimeError("No markers found in '\(s.xmlPath.path)'")
+        if !isAllUniqueIDs(in: markers) {
+            throw MarkersExtractorError.runtimeError("Every marker must have non-empty ID.")
         }
 
-        if !isAllKeyedIn(in: markers) {
-            throw MarkersExtractorError.runtimeError("Every marker must have non-empty ID")
-        }
-
-        let duplicates = findDuplicates(in: markers)
-
+        // TODO: duplicate markers shouldn't be an error condition, we should append filename uniquing string to the ID instead
+        let duplicates = findDuplicateIDs(in: markers)
         if !duplicates.isEmpty {
-            throw MarkersExtractorError.runtimeError("Duplicate marker names found: \(duplicates)")
+            throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
         }
 
         return markers
     }
 
-    private func findDuplicates(in markers: [Marker]) -> [String] {
-        Set(
-            Dictionary(grouping: markers, by: \.id).filter { $1.count > 1 }
-                .flatMap { $0.1 }.map { $0.id }
-        ).sorted()
+    private func findDuplicateIDs(in markers: [Marker]) -> [String] {
+        Dictionary(grouping: markers, by: \.id)
+            .filter { $1.count > 1 }
+            .compactMap { $0.1.first }
+            .map { $0.id }
+            .sorted()
     }
 
-    private func isAllKeyedIn(in markers: [Marker]) -> Bool {
-        !markers.map { $0.id }.contains("")
+    private func isAllUniqueIDs(in markers: [Marker]) -> Bool {
+        markers.map { $0.id }.allSatisfy { !$0.isEmpty }
     }
 
     private func makeDestPath(for projectName: String) throws -> URL {
@@ -127,6 +130,7 @@ public final class MarkersExtractor {
         )
 
         do {
+            // TODO: this should throw an error if the folder already exists; this folder should be created new every time
             try FileManager.default.mkdirWithParent(destPath.path)
         } catch {
             throw MarkersExtractorError.runtimeError(
@@ -175,7 +179,7 @@ public final class MarkersExtractor {
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
         try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
             .filter {
-                $0.lastPathComponent.contains(name) && exts.contains($0.fileExtension)
+                $0.lastPathComponent.starts(with: name) && exts.contains($0.fileExtension)
             }
     }
 

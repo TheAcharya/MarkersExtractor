@@ -56,12 +56,12 @@ final class ImageExtractorGIF {
 
     static func convert(_ conversion: Conversion) throws {
         let conv = self.init(conversion)
-        try conv.generateGif()
+        try conv.generateGIF()
     }
 
-    private func generateGif() throws {
+    private func generateGIF() throws {
         let generator = imageGenerator()
-        let times = try rangeToTimes()
+        let times = try rangeToCMTimes()
 
         let startTime = times.first?.seconds ?? 0
         let delayTime = 1.0 / Float(conversion.frameRate)
@@ -86,21 +86,22 @@ final class ImageExtractorGIF {
                 return
             }
 
-            let frameResult = self.processFrame(
-                for: imageResult,
-                at: startTime,
-                destination: gifDestination,
-                frameProperties: frameProperties as CFDictionary
-            )
-
-            switch frameResult {
-            case .success(let finished):
-                if finished {
+            do {
+                let isFinished = try self.processFrame(
+                    for: imageResult,
+                    at: startTime,
+                    destination: gifDestination,
+                    frameProperties: frameProperties as CFDictionary
+                )
+                if isFinished {
                     result = .success(())
                     group.leave()
                 }
-            case .failure(let error):
+            } catch let error as ImageExtractorGIF.Error {
                 result = .failure(error)
+                group.leave()
+            } catch {
+                result = .failure(.generateFrameFailed(error))
                 group.leave()
             }
         }
@@ -159,11 +160,12 @@ final class ImageExtractorGIF {
         return generator
     }
 
-    private func rangeToTimes() throws -> [CMTime] {
+    private func rangeToCMTimes() throws -> [CMTime] {
         let (firstVideoTrack, assetFrameRate, videoTrackRange) = try assetVideoParams()
 
+        // TODO: This is hacky and might be refactorable using TimecodeKit
         // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
-        var fps = Double(conversion.frameRate).clamped(to: 0.1...50)
+        var fps = Double(conversion.frameRate).clamped(to: 0.1...120)
         fps = min(fps, assetFrameRate)
 
         // TODO: Instead of calculating what part of the video to get, we could just trim the actual `AVAssetTrack`.
@@ -199,13 +201,15 @@ final class ImageExtractorGIF {
     }
 
     private func assetVideoParams() throws -> (
-        firstVideoTrack: AVAssetTrack, frameRate: Double, videoTrackRange: ClosedRange<Double>
+        firstVideoTrack: AVAssetTrack,
+        nominalFrameRate: Double,
+        videoTrackRange: ClosedRange<Double>
     ) {
         let asset = conversion.asset
 
         guard
             asset.isReadable,
-            let frameRate = asset.frameRate,
+            let nominalFrameRate = asset.frameRate,
             let firstVideoTrack = asset.firstVideoTrack,
 
             // We use the duration of the first video track since the total duration of the asset can actually be longer than the video track. If we use the total duration and the video is shorter, we'll get errors in `generateCGImagesAsynchronously` (#119).
@@ -217,20 +221,22 @@ final class ImageExtractorGIF {
             throw Error.unreadableFile
         }
 
-        return (firstVideoTrack, frameRate, videoTrackRange)
+        return (firstVideoTrack, nominalFrameRate, videoTrackRange)
     }
 
+    /// - Returns: `true` if finished.
+    /// - Throws: `ImageExtractorGIF.Error`
     private func processFrame(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval,
         destination: CGImageDestination,
         frameProperties: CFDictionary
-    ) -> Result<Bool, Error> {
+    ) throws -> Bool {
         switch result {
         case .success(let result):
             // This happens if the last frame in the video failed to be generated.
             if result.isFinishedIgnoreImage {
-                return .success(true)
+                return true
             }
 
             if result.completedCount == 1 {
@@ -241,7 +247,7 @@ final class ImageExtractorGIF {
             // https://github.com/sindresorhus/Gifski/pull/262
             // Skip incorrect out-of-range frames.
             if result.actualTime.seconds < startTime {
-                return .success(false)
+                return false
             }
 
             let image = conversion.imageFilter?(result.image) ?? result.image
@@ -251,9 +257,9 @@ final class ImageExtractorGIF {
 
             CGImageDestinationAddImage(destination, image, frameProperties)
 
-            return .success(result.isFinished)
+            return result.isFinished
         case .failure(let error):
-            return .failure(.generateFrameFailed(error))
+            throw Error.generateFrameFailed(error)
         }
     }
 }

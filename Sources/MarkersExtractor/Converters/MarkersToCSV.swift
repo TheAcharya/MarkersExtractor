@@ -3,6 +3,7 @@ import CodableCSV
 import Foundation
 import Logging
 import OrderedCollections
+import TimecodeKit
 
 func markersToCSV(
     markers: [Marker],
@@ -51,7 +52,7 @@ func markersToCSV(
         imageLabelCopyright: imageLabelCopyright
     )
 
-    let timeCodes = makeTimecodes(
+    let timecodes = makeTimecodes(
         markers: markers,
         markersDicts: markersDicts,
         isVideoPresent: isVideoPresent,
@@ -60,7 +61,7 @@ func markersToCSV(
 
     if imageFormat == .gif {
         try timecodesToGIF(
-            timeCodes: timeCodes,
+            timecodes: timecodes,
             video: videoPath,
             destPath: destPath,
             gifFrameRate: gifFPS,
@@ -71,7 +72,7 @@ func markersToCSV(
         )
     } else {
         try timecodesToPIC(
-            timeCodes: timeCodes,
+            timecodes: timecodes,
             video: videoPath,
             destPath: destPath,
             imageFormat: imageFormat,
@@ -151,12 +152,12 @@ private func makeTimecodes(
     markersDicts: [OrderedDictionary<MarkerHeader, String>],
     isVideoPresent: Bool,
     isSingleFrame: Bool
-) -> OrderedDictionary<String, CMTime> {
+) -> OrderedDictionary<String, Timecode> {
     let markerNames = markersDicts.map { $0[.imageName]! }
 
     // if no video - grabbing first frame from video placeholder
     let markerTimecodes = markers.map {
-        isVideoPresent ? $0.position : CMTime(seconds: 0, preferredTimescale: 1)
+        isVideoPresent ? $0.position : .init(at: $0.frameRate)
     }
 
     var markerPairs = zip(markerNames, markerTimecodes).map { ($0, $1) }

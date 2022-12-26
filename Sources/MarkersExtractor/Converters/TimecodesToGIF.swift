@@ -1,9 +1,10 @@
 import AVFoundation
 import Foundation
 import OrderedCollections
+import TimecodeKit
 
 func timecodesToGIF(
-    timeCodes: OrderedDictionary<String, CMTime>,
+    timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
     gifFrameRate: Int,
@@ -23,10 +24,10 @@ func timecodesToGIF(
         )
     }
 
-    for (imageName, timeCode) in timeCodes {
+    for (imageName, timecode) in timecodes {
         let gifPath = destPath.appendingPathComponent(imageName)
 
-        let timePoint = timeCode.seconds
+        let timePoint = timecode.realTimeValue
         let gifSpan = Double(gifSpan) / 2
         let timeRange = (timePoint - gifSpan)...(timePoint + gifSpan)
 

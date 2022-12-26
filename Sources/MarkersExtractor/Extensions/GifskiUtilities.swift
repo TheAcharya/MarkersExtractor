@@ -41,6 +41,7 @@ extension AVAssetImageGenerator {
         var completedCount = 0
         var decodeFailureFrameCount = 0
 
+        // TODO: When minimum OS requirements can bump to macOS 13, this can be refactored to use `images(for:)` which is recommended as per Apple docs.
         generateCGImagesAsynchronously(forTimes: times) {
             requestedTime,
             image,

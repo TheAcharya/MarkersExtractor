@@ -1,9 +1,10 @@
 import AVFoundation
 import Foundation
 import OrderedCollections
+import TimecodeKit
 
 func timecodesToPIC(
-    timeCodes: OrderedDictionary<String, CMTime>,
+    timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
     imageFormat: MarkerImageFormat,
@@ -27,7 +28,7 @@ func timecodesToPIC(
         asset: asset,
         sourceURL: videoPath,
         destURL: destPath,
-        timeCodes: timeCodes,
+        timecodes: timecodes,
         frameFormat: imageFormat,
         frameJPGQuality: imageJPGQuality,
         dimensions: imageDimensions,
