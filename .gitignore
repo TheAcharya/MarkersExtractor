@@ -1,11 +1,19 @@
+# macOS
 .DS_Store
+
+## Build generated
 /.build
-/Packages
-/*.xcodeproj
-xcuserdata/
 DerivedData/
+
+# Swift Package Manager
+/Packages
+Package.resolved
 .swiftpm/config/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# Xcode
+xcuserdata/
+
+# Misc
 .netrc
 .idea/
-Package.resolved
