@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import CoreImage
 import Logging
 import OrderedCollections
 
