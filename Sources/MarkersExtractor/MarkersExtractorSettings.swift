@@ -20,7 +20,10 @@ public struct MarkersExtractorSettings {
     }
     
     public enum Validation {
+        public static let imageSizePercent = 1 ... 100
+        public static let imageQuality = 0 ... 100
         public static let gifFPS = 0.1 ... 60.0
+        public static let imageLabelFontOpacity = 0 ... 100
     }
 
     let imageFormat: MarkerImageFormat
@@ -134,9 +137,9 @@ public struct MarkersExtractorSettings {
             )
         }
 
-        guard (0...100).contains(imageLabelFontOpacity) else {
+        guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
             throw MarkersExtractorError.validationError(
-                "--label-font-opacity must be within 0...100 range"
+                "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range"
             )
         }
 
@@ -148,20 +151,20 @@ public struct MarkersExtractorSettings {
             throw MarkersExtractorError.validationError("--image-width must be a positive integer")
         }
 
-        if let imageSizePercent = imageSizePercent, !(1...100).contains(imageSizePercent) {
+        if let imageSizePercent = imageSizePercent, !Validation.imageSizePercent.contains(imageSizePercent) {
             throw MarkersExtractorError.validationError(
-                "--image-size-percent must be within 1...100 range"
+                "--image-size-percent must be within \(Validation.imageSizePercent) range"
             )
         }
 
-        guard (0...100).contains(imageQuality) else {
+        guard Validation.imageQuality.contains(imageQuality) else {
             throw MarkersExtractorError.validationError(
-                "--image-quality must be within 0...100 range"
+                "--image-quality must be within \(Validation.imageQuality) range"
             )
         }
 
         guard Validation.gifFPS.contains(gifFPS) else {
-            throw MarkersExtractorError.validationError("--gif-fps must be within 1...60 range")
+            throw MarkersExtractorError.validationError("--gif-fps must be within \(Validation.gifFPS) range")
         }
     }
 }

@@ -21,7 +21,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Image quality percent for JPG.",
-            valueName: "0-100"
+            valueName: "\(MarkersExtractorSettings.Validation.imageQuality)"
         )
     )
     var imageQuality: Int = MarkersExtractorSettings.Defaults.imageQuality
@@ -34,13 +34,16 @@ struct MarkersExtractorCLI: ParsableCommand {
 
     @Option(
         help: ArgumentHelp(
-            "Limit image size to % keeping aspect ratio. (default for GIF: 50)",
-            valueName: "%"
+            "Limit image size to % keeping aspect ratio. (default for GIF: \(MarkersExtractorSettings.Defaults.imageSizePercentGIF))",
+            valueName: "\(MarkersExtractorSettings.Validation.imageSizePercent)"
         )
     )
     var imageSizePercent: Int?
-
-    @Option(help: ArgumentHelp("GIF frame rate.", valueName: "\(MarkersExtractorSettings.Validation.gifFPS.lowerBound)-\(MarkersExtractorSettings.Validation.gifFPS.upperBound)"))
+    
+    @Option(help: ArgumentHelp(
+        "GIF frame rate.",
+        valueName: "\(MarkersExtractorSettings.Validation.gifFPS)")
+    )
     var gifFPS: Double = MarkersExtractorSettings.Defaults.gifFPS
 
     @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
@@ -92,7 +95,10 @@ struct MarkersExtractorCLI: ParsableCommand {
 
     @Option(
         name: [.customLong("label-opacity")],
-        help: ArgumentHelp("Label opacity percent", valueName: "0-100")
+        help: ArgumentHelp(
+            "Label opacity percent",
+            valueName: "\(MarkersExtractorSettings.Validation.imageLabelFontOpacity)"
+        )
     )
     var imageLabelFontOpacity: Int = MarkersExtractorSettings.Defaults.imageLabelFontOpacity
 
