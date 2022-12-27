@@ -4,8 +4,6 @@ import OrderedCollections
 extension CSVExportModel {
     /// A marker with its contents prepared for CSV output.
     public struct PreparedMarker: MarkersExportPreparedMarker {
-        public typealias Field = CSVExportModel.Field
-        
         public let id: String
         public let name: String
         public let type: String

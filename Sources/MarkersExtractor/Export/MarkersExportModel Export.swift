@@ -30,7 +30,7 @@ extension MarkersExportModel {
             videoPath = videoPlaceholder.url!
         }
         
-        // Prepare markers
+        // prepare markers
         
         let preparedMarkers = prepareMarkers(
             markers: markers,
@@ -40,6 +40,8 @@ extension MarkersExportModel {
             isSingleFrame: isSingleFrame
         )
         
+        // icons
+        
         logger.info("Exporting marker icons.")
         
         do {
@@ -47,6 +49,8 @@ extension MarkersExportModel {
         } catch {
             throw MarkersExtractorError.runtimeError("Failed to write marker icons.")
         }
+        
+        // thumbnail images
         
         logger.info("Generating \(imageSettings.format.rawValue.uppercased()) images for markers")
         
@@ -89,8 +93,12 @@ extension MarkersExportModel {
             )
         }
         
-        try encodeManifest(preparedMarkers, payload: payload)
+        // metadata manifest file
+        
+        try writeManifest(preparedMarkers, payload: payload)
     }
+    
+    // MARK: Helpers
     
     private static func makeImageLabelText(
         preparedMarkers: [PreparedMarker],

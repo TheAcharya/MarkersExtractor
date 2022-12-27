@@ -30,7 +30,8 @@ public protocol MarkersExportModel
         isSingleFrame: Bool
     ) -> [PreparedMarker]
     
-    static func encodeManifest(
+    /// Encode and write metadata manifest file to disk. (Such as csv file)
+    static func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload
     ) throws

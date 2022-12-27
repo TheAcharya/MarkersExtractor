@@ -41,15 +41,16 @@ extension CSVExportModel {
         }
     }
     
-    public static func encodeManifest(
+    public static func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload
     ) throws {
         let rows = dictsToRows(preparedMarkers)
-        
         let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
         try csvData.write(to: payload.csvPath)
     }
+    
+    // MARK: Helpers
     
     private static func dictsToRows(
         _ preparedMarkers: [PreparedMarker]

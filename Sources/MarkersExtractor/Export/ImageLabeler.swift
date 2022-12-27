@@ -168,19 +168,19 @@ class ImageLabeler {
             context: context
         )
 
-        //        let frameRef = CTFramesetterCreateFrame(
-        //            frameSetter,
-        //            CFRange(location: 0, length: 0),
-        //            framePath,
-        //            nil
-        //        )
+        // let frameRef = CTFramesetterCreateFrame(
+        //     frameSetter,
+        //     CFRange(location: 0, length: 0),
+        //     framePath,
+        //     nil
+        // )
         //
-        //        context.saveGState()
-        //        context.textMatrix = CGAffineTransform.identity
+        // context.saveGState()
+        // context.textMatrix = CGAffineTransform.identity
         //
-        //        CTFrameDraw(frameRef, context)
+        // CTFrameDraw(frameRef, context)
         //
-        //        context.restoreGState()
+        // context.restoreGState()
     }
 
     private func drawTextTwoPass(
