@@ -57,17 +57,6 @@ extension Marker {
     var positionTimecodeString: String {
         position.stringValue
     }
-
-    var icon: MarkerIcon {
-        switch type {
-        case .standard:
-            return .standard
-        case .todo(let completed):
-            return completed ? .completed : .todo
-        case .chapter:
-            return .chapter
-        }
-    }
 }
 
 extension Marker: Comparable {
