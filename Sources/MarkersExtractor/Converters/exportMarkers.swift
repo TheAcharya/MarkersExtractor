@@ -36,7 +36,9 @@ func exportMarkers(
         videoPath = videoPlaceholder.url!
     }
 
-    let markersDicts = markers.map { markerToDict($0, imageFormat, isSingleFrame) }
+    let markersDicts = markers.map {
+        $0.dictionaryRepresentation(imageFormat, isSingleFrame: isSingleFrame)
+    }
 
     logger.info("Exporting marker icons")
 
@@ -91,31 +93,6 @@ func exportMarkers(
     try csvData.write(to: csvPath)
 }
 
-private func markerToDict(
-    _ marker: Marker,
-    _ imageFormat: MarkerImageFormat,
-    _ isSingleFrame: Bool
-) -> OrderedDictionary<MarkerHeader, String> {
-    [
-        .id: marker.id,
-        .name: marker.name,
-        .type: marker.type.rawValue,
-        .checked: String(marker.checked),
-        .status: marker.status.rawValue,
-        .notes: marker.notes,
-        .position: marker.timecode,
-        .clipName: marker.parentClipName,
-        .clipDuration: marker.parentClipDurationTimecode,
-        .role: marker.role,
-        .eventName: marker.parentEventName,
-        .projectName: marker.parentProjectName,
-        .libraryName: marker.parentLibraryName,
-        .iconImage: marker.icon.fileName,
-        .imageName: isSingleFrame
-            ? "marker-placeholder.\(imageFormat)" : "\(marker.idPathSafe).\(imageFormat)",
-    ]
-}
-
 private func makeImageLabelText(
     markersDicts: [OrderedDictionary<MarkerHeader, String>],
     imageLabelFields: [MarkerHeader],
@@ -150,20 +127,21 @@ private func makeLabels(
     }
 }
 
+/// Returns an ordered dictionary keyed by marker image filename with a value of timecode position.
 private func makeTimecodes(
     markers: [Marker],
     markersDicts: [OrderedDictionary<MarkerHeader, String>],
     isVideoPresent: Bool,
     isSingleFrame: Bool
 ) -> OrderedDictionary<String, Timecode> {
-    let markerNames = markersDicts.map { $0[.imageName]! }
+    let imageFileNames = markersDicts.map { $0[.imageName]! }
 
     // if no video - grabbing first frame from video placeholder
     let markerTimecodes = markers.map {
         isVideoPresent ? $0.position : .init(at: $0.frameRate)
     }
 
-    var markerPairs = zip(markerNames, markerTimecodes).map { ($0, $1) }
+    var markerPairs = zip(imageFileNames, markerTimecodes).map { ($0, $1) }
 
     // if no video and no labels - only one frame needed for all markers
     if isSingleFrame {
