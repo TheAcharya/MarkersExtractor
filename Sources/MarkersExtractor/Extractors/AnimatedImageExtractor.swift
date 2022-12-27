@@ -3,7 +3,7 @@ import ImageIO
 import Foundation
 import Logging
 
-final class ImageExtractorGIF {
+final class AnimatedImageExtractor {
     enum Error: LocalizedError {
         case invalidSettings
         case unreadableFile
@@ -44,9 +44,10 @@ final class ImageExtractorGIF {
         var dimensions: CGSize?
         var fps: Double
         let imageFilter: ((CGImage) -> CGImage)?
+        let imageFormat: MarkerImageFormat.Animated
     }
 
-    private let logger = Logger(label: "\(ImageExtractorGIF.self)")
+    private let logger = Logger(label: "\(AnimatedImageExtractor.self)")
 
     private var conversion: Conversion
 
@@ -57,7 +58,12 @@ final class ImageExtractorGIF {
     static func convert(_ conversion: Conversion) throws {
         let conv = self.init(conversion)
         conv.validate()
-        try conv.generateGIF()
+        
+        // only gif is supported for now, but more formats could be added in future
+        switch conv.conversion.imageFormat {
+        case .gif:
+            try conv.generateGIF()
+        }
     }
 
     private func validate() {
@@ -103,7 +109,7 @@ final class ImageExtractorGIF {
                     result = .success(())
                     group.leave()
                 }
-            } catch let error as ImageExtractorGIF.Error {
+            } catch let error as AnimatedImageExtractor.Error {
                 result = .failure(error)
                 group.leave()
             } catch {
@@ -230,7 +236,7 @@ final class ImageExtractorGIF {
     }
 
     /// - Returns: `true` if finished.
-    /// - Throws: `ImageExtractorGIF.Error`
+    /// - Throws: `AnimatedImageExtractor.Error`
     private func processFrame(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval,

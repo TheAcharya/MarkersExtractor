@@ -63,7 +63,19 @@ func exportMarkers(
         isSingleFrame: isSingleFrame
     )
 
-    if imageFormat == .gif {
+    switch imageFormat {
+    case .still(let stillImageFormat):
+        try writeStillImages(
+            timecodes: timecodes,
+            video: videoPath,
+            destPath: destPath,
+            imageFormat: stillImageFormat,
+            imageJPGQuality: imageQuality,
+            imageDimensions: imageDimensions,
+            imageLabelText: imageLabelText,
+            imageLabelProperties: imageLabelProperties
+        )
+    case .animated(let animatedImageFormat):
         try writeAnimatedImages(
             timecodes: timecodes,
             video: videoPath,
@@ -71,17 +83,7 @@ func exportMarkers(
             gifFPS: gifFPS,
             gifSpan: gifSpan,
             gifDimensions: imageDimensions,
-            imageLabelText: imageLabelText,
-            imageLabelProperties: imageLabelProperties
-        )
-    } else {
-        try writeStillImages(
-            timecodes: timecodes,
-            video: videoPath,
-            destPath: destPath,
-            imageFormat: imageFormat,
-            imageJPGQuality: imageQuality,
-            imageDimensions: imageDimensions,
+            imageFormat: animatedImageFormat,
             imageLabelText: imageLabelText,
             imageLabelProperties: imageLabelProperties
         )

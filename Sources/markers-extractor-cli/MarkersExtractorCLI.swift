@@ -180,7 +180,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             throw ValidationError("Cannot write log file at '\(log.path)'")
         }
 
-        if imageFormat == .gif && imageSizePercent == nil {
+        if imageFormat == .animated(.gif), imageSizePercent == nil {
             imageSizePercent = MarkersExtractorSettings.Defaults.imageSizePercentGIF
         }
     }

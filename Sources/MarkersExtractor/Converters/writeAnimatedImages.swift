@@ -12,6 +12,7 @@ func writeAnimatedImages(
     gifFPS: Double,
     gifSpan: TimeInterval,
     gifDimensions: CGSize?,
+    imageFormat: MarkerImageFormat.Animated,
     imageLabelText: [String],
     imageLabelProperties: MarkerLabelProperties
 ) throws {
@@ -33,17 +34,18 @@ func writeAnimatedImages(
 
         imageLabeler?.nextText()
 
-        let conversion = ImageExtractorGIF.Conversion(
+        let conversion = AnimatedImageExtractor.Conversion(
             sourceURL: videoPath,
             destURL: gifPath,
             timeRange: timeRange,
             dimensions: gifDimensions,
             fps: gifFPS,
-            imageFilter: imageLabeler?.labelImage
+            imageFilter: imageLabeler?.labelImage,
+            imageFormat: imageFormat
         )
 
         do {
-            try ImageExtractorGIF.convert(conversion)
+            try AnimatedImageExtractor.convert(conversion)
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Error while generating gif '\(gifPath.lastPathComponent)':"

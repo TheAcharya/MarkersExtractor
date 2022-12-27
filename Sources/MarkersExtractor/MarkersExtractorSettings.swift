@@ -3,7 +3,7 @@ import Foundation
 
 public struct MarkersExtractorSettings {
     public enum Defaults {
-        public static let imageFormat: MarkerImageFormat = .png
+        public static let imageFormat: MarkerImageFormat = .still(.png)
         public static let imageQuality = 100
         public static let imageSizePercentGIF = 50
         public static let gifFPS: Double = 10.0

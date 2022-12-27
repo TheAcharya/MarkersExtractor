@@ -7,7 +7,7 @@ func writeStillImages(
     timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
-    imageFormat: MarkerImageFormat,
+    imageFormat: MarkerImageFormat.Still,
     imageJPGQuality: Double,
     imageDimensions: CGSize?,
     imageLabelText: [String],

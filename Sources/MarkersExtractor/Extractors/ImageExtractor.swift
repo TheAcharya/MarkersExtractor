@@ -39,7 +39,7 @@ final class ImageExtractor {
         let sourceURL: URL
         let destURL: URL
         let timecodes: OrderedDictionary<String, Timecode>
-        let frameFormat: MarkerImageFormat
+        let frameFormat: MarkerImageFormat.Still
         let frameJPGQuality: Double?
         let dimensions: CGSize?
         let imageFilter: ((CGImage) -> CGImage)?
@@ -158,8 +158,6 @@ final class ImageExtractor {
                         colorSpace: ciimage.colorSpace!,
                         options: options
                     )
-                default:
-                    return .failure(.unsupportedType)
                 }
             } catch {
                 return .failure(.addFrameFailed(error))
