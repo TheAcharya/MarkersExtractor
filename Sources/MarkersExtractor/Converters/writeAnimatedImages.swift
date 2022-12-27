@@ -3,18 +3,18 @@ import Foundation
 import OrderedCollections
 import TimecodeKit
 
-func timecodesToGIF(
+/// Generate animated images on disk.
+/// For the time being, the only format supported is Animated GIF.
+func writeAnimatedImages(
     timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
     gifFrameRate: Int,
-    gifSpan: Int,
+    gifSpan: TimeInterval,
     gifDimensions: CGSize?,
     imageLabelText: [String],
     imageLabelProperties: MarkerLabelProperties
 ) throws {
-    let asset = AVAsset(url: videoPath)
-
     var imageLabeler: ImageLabeler? = nil
 
     if !imageLabelText.isEmpty {
@@ -28,13 +28,12 @@ func timecodesToGIF(
         let gifPath = destPath.appendingPathComponent(imageName)
 
         let timePoint = timecode.realTimeValue
-        let gifSpan = Double(gifSpan) / 2
+        let gifSpan = gifSpan / 2
         let timeRange = (timePoint - gifSpan)...(timePoint + gifSpan)
 
         imageLabeler?.nextText()
 
         let conversion = ImageExtractorGIF.Conversion(
-            asset: asset,
             sourceURL: videoPath,
             destURL: gifPath,
             timeRange: timeRange,

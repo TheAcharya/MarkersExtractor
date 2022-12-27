@@ -11,7 +11,7 @@ func markersToCSV(
     videoPath: URL,
     destPath: URL,
     gifFPS: Int,
-    gifSpan: Int,
+    gifSpan: TimeInterval,
     imageFormat: MarkerImageFormat,
     imageQuality: Double,
     imageDimensions: CGSize?,
@@ -60,7 +60,7 @@ func markersToCSV(
     )
 
     if imageFormat == .gif {
-        try timecodesToGIF(
+        try writeAnimatedImages(
             timecodes: timecodes,
             video: videoPath,
             destPath: destPath,
@@ -71,7 +71,7 @@ func markersToCSV(
             imageLabelProperties: imageLabelProperties
         )
     } else {
-        try timecodesToPIC(
+        try writeStillImages(
             timecodes: timecodes,
             video: videoPath,
             destPath: destPath,

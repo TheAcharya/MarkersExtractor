@@ -7,7 +7,7 @@ public struct MarkersExtractorSettings {
         public static let imageQuality = 100
         public static let imageSizePercentGIF = 50
         public static let gifFPS = 10
-        public static let gifSpan = 2
+        public static let gifSpan: TimeInterval = 2
         public static let idNamingMode: MarkerIDMode = .projectTimecode
         public static let imageLabelFont = "Menlo-Regular"
         public static let imageLabelFontMaxSize = 30
@@ -25,7 +25,7 @@ public struct MarkersExtractorSettings {
     let imageHeight: Int?
     let imageSizePercent: Int?
     let gifFPS: Int
-    let gifSpan: Int
+    let gifSpan: TimeInterval
     let idNamingMode: MarkerIDMode
     let imageLabels: [MarkerHeader]
     let imageLabelCopyright: String?
@@ -58,7 +58,7 @@ public struct MarkersExtractorSettings {
         imageHeight: Int?,
         imageSizePercent: Int?,
         gifFPS: Int,
-        gifSpan: Int,
+        gifSpan: TimeInterval,
         idNamingMode: MarkerIDMode,
         imageLabels: [MarkerHeader],
         imageLabelCopyright: String?,

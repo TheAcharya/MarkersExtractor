@@ -44,7 +44,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     var gifFPS: Int = MarkersExtractorSettings.Defaults.gifFPS
 
     @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
-    var gifSpan: Int = MarkersExtractorSettings.Defaults.gifSpan
+    var gifSpan: TimeInterval = MarkersExtractorSettings.Defaults.gifSpan
 
     @Option(
         help: ArgumentHelp(

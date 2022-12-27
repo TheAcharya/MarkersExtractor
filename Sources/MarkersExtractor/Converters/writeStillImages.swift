@@ -3,7 +3,7 @@ import Foundation
 import OrderedCollections
 import TimecodeKit
 
-func timecodesToPIC(
+func writeStillImages(
     timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
@@ -13,8 +13,6 @@ func timecodesToPIC(
     imageLabelText: [String],
     imageLabelProperties: MarkerLabelProperties
 ) throws {
-    let asset = AVAsset(url: videoPath)
-
     var imageLabeler: ImageLabeler? = nil
 
     if !imageLabelText.isEmpty {
@@ -25,7 +23,6 @@ func timecodesToPIC(
     }
 
     let conversion = ImageExtractor.Conversion(
-        asset: asset,
         sourceURL: videoPath,
         destURL: destPath,
         timecodes: timecodes,

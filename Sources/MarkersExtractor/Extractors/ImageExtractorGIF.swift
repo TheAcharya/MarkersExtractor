@@ -38,7 +38,6 @@ final class ImageExtractorGIF {
     }
 
     struct Conversion {
-        let asset: AVAsset
         let sourceURL: URL
         let destURL: URL
         var timeRange: ClosedRange<Double>?
@@ -73,7 +72,7 @@ final class ImageExtractorGIF {
             ]
         ]
 
-        let gifDestination = try initGif(framesCount: times.count)
+        let gifDestination = try initGIF(framesCount: times.count)
 
         var result: Result<Void, Error> = .failure(.invalidSettings)
 
@@ -121,7 +120,7 @@ final class ImageExtractorGIF {
         }
     }
 
-    private func initGif(framesCount: Int) throws -> CGImageDestination {
+    private func initGIF(framesCount: Int) throws -> CGImageDestination {
         let fileProperties =
             [
                 kCGImagePropertyGIFDictionary as String: [
@@ -147,7 +146,8 @@ final class ImageExtractorGIF {
     }
 
     private func imageGenerator() -> AVAssetImageGenerator {
-        let generator = AVAssetImageGenerator(asset: conversion.asset)
+        let asset = AVAsset(url: conversion.sourceURL)
+        let generator = AVAssetImageGenerator(asset: asset)
 
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
@@ -206,7 +206,7 @@ final class ImageExtractorGIF {
         nominalFrameRate: Double,
         videoTrackRange: ClosedRange<Double>
     ) {
-        let asset = conversion.asset
+        let asset = AVAsset(url: conversion.sourceURL)
 
         guard
             asset.isReadable,

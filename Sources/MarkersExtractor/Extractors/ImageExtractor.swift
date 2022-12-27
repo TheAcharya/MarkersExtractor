@@ -36,7 +36,6 @@ final class ImageExtractor {
     }
 
     struct Conversion {
-        let asset: AVAsset
         let sourceURL: URL
         let destURL: URL
         let timecodes: OrderedDictionary<String, Timecode>
@@ -107,7 +106,8 @@ final class ImageExtractor {
     }
 
     private func imageGenerator() throws -> AVAssetImageGenerator {
-        let generator = AVAssetImageGenerator(asset: conversion.asset)
+        let asset = AVAsset(url: conversion.sourceURL)
+        let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
