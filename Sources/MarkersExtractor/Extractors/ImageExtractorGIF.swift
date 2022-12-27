@@ -68,7 +68,7 @@ final class ImageExtractorGIF {
 
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
-                kCGImagePropertyGIFDelayTime as String: delayTime
+                kCGImagePropertyGIFUnclampedDelayTime as String: delayTime
             ]
         ]
 
