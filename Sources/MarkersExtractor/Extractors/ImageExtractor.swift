@@ -35,7 +35,7 @@ final class ImageExtractor {
         }
     }
 
-    struct Conversion {
+    struct ConversionSettings {
         let sourceURL: URL
         let destURL: URL
         let timecodes: OrderedDictionary<String, Timecode>
@@ -47,13 +47,13 @@ final class ImageExtractor {
 
     private let logger = Logger(label: "\(ImageExtractor.self)")
 
-    private let conversion: Conversion
+    private let conversion: ConversionSettings
 
-    init(_ conversion: Conversion) {
+    init(_ conversion: ConversionSettings) {
         self.conversion = conversion
     }
 
-    static func convert(_ conversion: Conversion) throws {
+    static func convert(_ conversion: ConversionSettings) throws {
         let conv = self.init(conversion)
         try conv.generateImages()
     }

@@ -34,7 +34,7 @@ func writeAnimatedImages(
 
         imageLabeler?.nextText()
 
-        let conversion = AnimatedImageExtractor.Conversion(
+        let conversion = AnimatedImageExtractor.ConversionSettings(
             sourceURL: videoPath,
             destURL: gifPath,
             timeRange: timeRange,

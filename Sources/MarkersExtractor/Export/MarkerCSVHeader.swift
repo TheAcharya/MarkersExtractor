@@ -1,4 +1,5 @@
-public enum MarkerCSVHeader: String, CaseIterable {
+/// Markers CSV header column names.
+public enum MarkersCSVHeader: String, CaseIterable {
     case id = "Marker ID"
     case name = "Marker Name"
     case type = "Type"

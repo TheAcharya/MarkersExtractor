@@ -22,7 +22,7 @@ func writeStillImages(
         )
     }
 
-    let conversion = ImageExtractor.Conversion(
+    let conversion = ImageExtractor.ConversionSettings(
         sourceURL: videoPath,
         destURL: destPath,
         timecodes: timecodes,

@@ -7,13 +7,13 @@ import TimecodeKit
 
 public final class MarkersExtractor {
     private let logger = Logger(label: "\(MarkersExtractor.self)")
-    private let s: MarkersExtractorSettings
+    private let s: Settings
 
-    init(_ settings: MarkersExtractorSettings) {
+    init(_ settings: Settings) {
         s = settings
     }
 
-    public static func extract(_ settings: MarkersExtractorSettings) throws {
+    public static func extract(_ settings: Settings) throws {
         try self.init(settings).run()
     }
 

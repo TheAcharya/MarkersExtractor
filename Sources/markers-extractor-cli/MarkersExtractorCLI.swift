@@ -9,46 +9,46 @@ struct MarkersExtractorCLI: ParsableCommand {
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
         version: "0.1.1"
     )
-
+    
     @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var imageFormat: MarkerImageFormat = MarkersExtractorSettings.Defaults.imageFormat
-
+    var imageFormat: MarkerImageFormat = MarkersExtractor.Settings.Defaults.imageFormat
+    
     @Option(
         help: ArgumentHelp(
             "Image quality percent for JPG.",
-            valueName: "\(MarkersExtractorSettings.Validation.imageQuality)"
+            valueName: "\(MarkersExtractor.Settings.Validation.imageQuality)"
         )
     )
-    var imageQuality: Int = MarkersExtractorSettings.Defaults.imageQuality
-
+    var imageQuality: Int = MarkersExtractor.Settings.Defaults.imageQuality
+    
     @Option(help: ArgumentHelp("Limit image width keeping aspect ratio.", valueName: "w"))
     var imageWidth: Int?
-
+    
     @Option(help: ArgumentHelp("Limit image height keeping aspect ratio.", valueName: "h"))
     var imageHeight: Int?
-
+    
     @Option(
         help: ArgumentHelp(
-            "Limit image size to % keeping aspect ratio. (default for GIF: \(MarkersExtractorSettings.Defaults.imageSizePercentGIF))",
-            valueName: "\(MarkersExtractorSettings.Validation.imageSizePercent)"
+            "Limit image size to % keeping aspect ratio. (default for GIF: \(MarkersExtractor.Settings.Defaults.imageSizePercentGIF))",
+            valueName: "\(MarkersExtractor.Settings.Validation.imageSizePercent)"
         )
     )
     var imageSizePercent: Int?
     
     @Option(help: ArgumentHelp(
         "GIF frame rate.",
-        valueName: "\(MarkersExtractorSettings.Validation.gifFPS)")
+        valueName: "\(MarkersExtractor.Settings.Validation.gifFPS)")
     )
-    var gifFPS: Double = MarkersExtractorSettings.Defaults.gifFPS
-
+    var gifFPS: Double = MarkersExtractor.Settings.Defaults.gifFPS
+    
     @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
-    var gifSpan: TimeInterval = MarkersExtractorSettings.Defaults.gifSpan
-
+    var gifSpan: TimeInterval = MarkersExtractor.Settings.Defaults.gifSpan
+    
     @Option(
         help: ArgumentHelp(
             "Marker naming mode.",
@@ -56,18 +56,18 @@ struct MarkersExtractorCLI: ParsableCommand {
                 .map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var idNamingMode: MarkerIDMode = MarkersExtractorSettings.Defaults.idNamingMode
-
+    var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
+    
     @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to put on a thumb image, can be used multiple times form multiple labels."
-                + " Use --help-labels to get full list of available labels.",
+            + " Use --help-labels to get full list of available labels.",
             valueName: "label"
         )
     )
-    var imageLabels: [MarkerCSVHeader] = []
-
+    var imageLabels: [MarkersCSVHeader] = []
+    
     @Option(
         name: [.customLong("label-copyright")],
         help: ArgumentHelp(
@@ -76,51 +76,51 @@ struct MarkersExtractorCLI: ParsableCommand {
         )
     )
     var imageLabelCopyright: String?
-
+    
     @Option(
         name: [.customLong("label-font")],
         help: ArgumentHelp("Font for image labels", valueName: "name")
     )
-    var imageLabelFont: String = MarkersExtractorSettings.Defaults.imageLabelFont
-
+    var imageLabelFont: String = MarkersExtractor.Settings.Defaults.imageLabelFont
+    
     @Option(
         name: [.customLong("label-font-size")],
         help: ArgumentHelp(
             "Maximum font size for image labels, "
-                + "font size is automatically reduced to fit all labels.",
+            + "font size is automatically reduced to fit all labels.",
             valueName: "pt"
         )
     )
-    var imageLabelFontMaxSize: Int = MarkersExtractorSettings.Defaults.imageLabelFontMaxSize
-
+    var imageLabelFontMaxSize: Int = MarkersExtractor.Settings.Defaults.imageLabelFontMaxSize
+    
     @Option(
         name: [.customLong("label-opacity")],
         help: ArgumentHelp(
             "Label opacity percent",
-            valueName: "\(MarkersExtractorSettings.Validation.imageLabelFontOpacity)"
+            valueName: "\(MarkersExtractor.Settings.Validation.imageLabelFontOpacity)"
         )
     )
-    var imageLabelFontOpacity: Int = MarkersExtractorSettings.Defaults.imageLabelFontOpacity
-
+    var imageLabelFontOpacity: Int = MarkersExtractor.Settings.Defaults.imageLabelFontOpacity
+    
     @Option(
         name: [.customLong("label-font-color")],
         help: ArgumentHelp("Label font color", valueName: "#RRGGBB / #RGB")
     )
-    var imageLabelFontColor: String = MarkersExtractorSettings.Defaults.imageLabelFontColor
-
+    var imageLabelFontColor: String = MarkersExtractor.Settings.Defaults.imageLabelFontColor
+    
     @Option(
         name: [.customLong("label-stroke-color")],
         help: ArgumentHelp("Label stroke color", valueName: "#RRGGBB / #RGB")
     )
-    var imageLabelFontStrokeColor: String = MarkersExtractorSettings.Defaults
+    var imageLabelFontStrokeColor: String = MarkersExtractor.Settings.Defaults
         .imageLabelFontStrokeColor
-
+    
     @Option(
         name: [.customLong("label-stroke-width")],
         help: ArgumentHelp("Label stroke width, 0 to disable. (default: auto)", valueName: "w")
     )
     var imageLabelFontStrokeWidth: Int?
-
+    
     @Option(
         name: [.customLong("label-align-horizontal")],
         help: ArgumentHelp(
@@ -129,9 +129,9 @@ struct MarkersExtractorCLI: ParsableCommand {
                 .map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = MarkersExtractorSettings
+    var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = MarkersExtractor.Settings
         .Defaults.imageLabelAlignHorizontal
-
+    
     @Option(
         name: [.customLong("label-align-vertical")],
         help: ArgumentHelp(
@@ -140,15 +140,15 @@ struct MarkersExtractorCLI: ParsableCommand {
                 .map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractorSettings
+    var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
         .Defaults.imageLabelAlignVertical
-
+    
     @Flag(help: "Create 'done.txt' file in output directory on successful export.")
     var createDoneFile = false
-
+    
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
     var log: URL?
-
+    
     @Option(
         help: ArgumentHelp(
             "Log level.",
@@ -156,10 +156,10 @@ struct MarkersExtractorCLI: ParsableCommand {
         )
     )
     var logLevel: Logger.Level = .info
-
+    
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
-
+    
     // this flag is not actually used within the ParsableCommand but it's
     // included here so that the help block can display it.
     // the presence of this flag is handled manually in main() before parsing any
@@ -168,30 +168,30 @@ struct MarkersExtractorCLI: ParsableCommand {
     // the same behavior it itself uses to handle --version for example.
     @Flag(help: "List all possible labels to use with --label.")
     var helpLabels = false
-
+    
     @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
     var fcpxmlPath: URL
-
+    
     @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
     var outputDir: URL
-
+    
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
             throw ValidationError("Cannot write log file at '\(log.path)'")
         }
-
+        
         if imageFormat == .animated(.gif), imageSizePercent == nil {
-            imageSizePercent = MarkersExtractorSettings.Defaults.imageSizePercentGIF
+            imageSizePercent = MarkersExtractor.Settings.Defaults.imageSizePercentGIF
         }
     }
-
+    
     mutating func run() throws {
         initLogging(logLevel: logQuiet ? nil : logLevel, logFile: log)
-
-        let settings: MarkersExtractorSettings
-
+        
+        let settings: MarkersExtractor.Settings
+        
         do {
-            settings = try MarkersExtractorSettings(
+            settings = try MarkersExtractor.Settings(
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,
@@ -217,10 +217,14 @@ struct MarkersExtractorCLI: ParsableCommand {
         } catch MarkersExtractorError.validationError(let error) {
             throw ValidationError(error)
         }
-
+        
         try MarkersExtractor.extract(settings)
     }
+}
 
+// MARK: Helpers
+
+extension MarkersExtractorCLI {
     private func initLogging(logLevel: Logger.Level?, logFile: URL?) {
         LoggingSystem.bootstrap { label in
             guard let logLevel = logLevel else {
@@ -252,7 +256,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     static func printHelpLabels() {
         print("List of available label headers:")
-        for header in MarkerCSVHeader.allCases {
+        for header in MarkersCSVHeader.allCases {
             print("    '\(header.rawValue)'")
         }
     }

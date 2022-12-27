@@ -37,7 +37,7 @@ final class AnimatedImageExtractor {
         }
     }
 
-    struct Conversion {
+    struct ConversionSettings {
         let sourceURL: URL
         let destURL: URL
         var timeRange: ClosedRange<Double>?
@@ -49,13 +49,13 @@ final class AnimatedImageExtractor {
 
     private let logger = Logger(label: "\(AnimatedImageExtractor.self)")
 
-    private var conversion: Conversion
+    private var conversion: ConversionSettings
 
-    init(_ conversion: Conversion) {
+    init(_ conversion: ConversionSettings) {
         self.conversion = conversion
     }
 
-    static func convert(_ conversion: Conversion) throws {
+    static func convert(_ conversion: ConversionSettings) throws {
         let conv = self.init(conversion)
         conv.validate()
         
@@ -68,7 +68,7 @@ final class AnimatedImageExtractor {
 
     private func validate() {
         // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
-        conversion.fps = conversion.fps.clamped(to: MarkersExtractorSettings.Validation.gifFPS)
+        conversion.fps = conversion.fps.clamped(to: MarkersExtractor.Settings.Validation.gifFPS)
     }
     
     private func generateGIF() throws {
@@ -269,6 +269,7 @@ final class AnimatedImageExtractor {
             CGImageDestinationAddImage(destination, image, frameProperties)
 
             return result.isFinished
+            
         case .failure(let error):
             throw Error.generateFrameFailed(error)
         }

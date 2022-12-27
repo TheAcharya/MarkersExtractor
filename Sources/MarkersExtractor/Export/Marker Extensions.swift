@@ -38,7 +38,7 @@ struct CSVMarker {
             : "\(marker.idPathSafe).\(imageFormat)"
     }
     
-    func dictionaryRepresentation() -> OrderedDictionary<MarkerCSVHeader, String> {
+    func dictionaryRepresentation() -> OrderedDictionary<MarkersCSVHeader, String> {
         [
             .id: id,
             .name: name,

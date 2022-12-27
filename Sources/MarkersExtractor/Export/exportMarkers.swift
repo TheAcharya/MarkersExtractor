@@ -17,7 +17,7 @@ func exportMarkers(
     imageFormat: MarkerImageFormat,
     imageQuality: Double,
     imageDimensions: CGSize?,
-    imageLabelFields: [MarkerCSVHeader],
+    imageLabelFields: [MarkersCSVHeader],
     imageLabelCopyright: String?,
     imageLabelProperties: MarkerLabelProperties
 ) throws {
@@ -97,7 +97,7 @@ func exportMarkers(
 
 private func makeImageLabelText(
     preparedMarkers: [CSVMarker],
-    imageLabelFields: [MarkerCSVHeader],
+    imageLabelFields: [MarkersCSVHeader],
     imageLabelCopyright: String?
 ) -> [String] {
     var imageLabelText: [String] = []
@@ -120,7 +120,7 @@ private func makeImageLabelText(
 }
 
 private func makeLabels(
-    headers: [MarkerCSVHeader],
+    headers: [MarkersCSVHeader],
     preparedMarkers: [CSVMarker]
 ) -> [String] {
     preparedMarkers
