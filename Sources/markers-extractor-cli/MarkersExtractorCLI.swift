@@ -12,7 +12,7 @@ struct MarkersExtractorCLI: ParsableCommand {
 
     @Option(
         help: ArgumentHelp(
-            "Marker thumb image format.",
+            "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
     )
