@@ -19,8 +19,12 @@ struct CSVMarker {
     let iconImage: String
     let imageFileName: String
     
-    init(_ marker: Marker, imageFormat: MarkerImageFormat, isSingleFrame: Bool) {
-        id = marker.id
+    init(_ marker: Marker,
+         idMode: MarkerIDMode,
+         imageFormat: MarkerImageFormat,
+         isSingleFrame: Bool
+    ) {
+        id = marker.id(idMode)
         name = marker.name
         type = marker.type.name
         checked = String(marker.isChecked)
@@ -36,7 +40,7 @@ struct CSVMarker {
         iconImage = marker.icon.fileName
         imageFileName = isSingleFrame
             ? "marker-placeholder.\(imageFormat)"
-            : "\(marker.idPathSafe).\(imageFormat)"
+        : "\(marker.id(pathSafe: idMode)).\(imageFormat)"
     }
     
     func dictionaryRepresentation() -> OrderedDictionary<MarkersCSVHeader, String> {

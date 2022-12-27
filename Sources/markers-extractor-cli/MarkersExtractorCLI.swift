@@ -51,7 +51,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     @Option(
         help: ArgumentHelp(
-            "Marker naming mode.",
+            "Marker naming mode. This affects Marker IDs and image filenames.",
             valueName: MarkerIDMode.allCases
                 .map { $0.rawValue }.joined(separator: ",")
         )

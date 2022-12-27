@@ -59,6 +59,7 @@ public final class MarkersExtractor {
         do {
             try exportMarkers(
                 markers: markers,
+                idMode: s.idNamingMode,
                 csvPath: destPath.appendingPathComponent(csvName),
                 videoPath: videoPath,
                 destPath: destPath,
@@ -117,15 +118,17 @@ public final class MarkersExtractor {
     }
 
     private func findDuplicateIDs(in markers: [Marker]) -> [String] {
-        Dictionary(grouping: markers, by: \.id)
+        Dictionary(grouping: markers, by: { $0.id(s.idNamingMode) })
             .filter { $1.count > 1 }
             .compactMap { $0.1.first }
-            .map { $0.id }
+            .map { $0.id(s.idNamingMode) }
             .sorted()
     }
 
     private func isAllUniqueIDs(in markers: [Marker]) -> Bool {
-        markers.map { $0.id }.allSatisfy { !$0.isEmpty }
+        markers
+            .map { $0.id(s.idNamingMode) }
+            .allSatisfy { !$0.isEmpty }
     }
 
     private func makeDestPath(for projectName: String) throws -> URL {

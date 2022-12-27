@@ -9,6 +9,7 @@ import TimecodeKit
 /// Writes csv file, images, and any other resources necessary.
 func exportMarkers(
     markers: [Marker],
+    idMode: MarkerIDMode,
     csvPath: URL,
     videoPath: URL,
     destPath: URL,
@@ -37,7 +38,12 @@ func exportMarkers(
     }
 
     let preparedMarkers = markers.map {
-        CSVMarker($0, imageFormat: imageFormat, isSingleFrame: isSingleFrame)
+        CSVMarker(
+            $0,
+            idMode: idMode,
+            imageFormat: imageFormat,
+            isSingleFrame: isSingleFrame
+        )
     }
 
     logger.info("Exporting marker icons")

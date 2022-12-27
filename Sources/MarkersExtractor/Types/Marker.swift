@@ -25,9 +25,6 @@ struct Marker: Equatable, Hashable {
     var role: String
     var position: Timecode
     
-    // CSV-related
-    var idMode: MarkerIDMode
-    
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
@@ -36,7 +33,7 @@ struct Marker: Equatable, Hashable {
 // MARK: Computed
 
 extension Marker {
-    var id: String {
+    func id(_ idMode: MarkerIDMode) -> String {
         switch idMode {
         case .projectTimecode:
             return "\(parentInfo.projectName)_\(positionTimecodeString)"
@@ -47,8 +44,8 @@ extension Marker {
         }
     }
     
-    var idPathSafe: String {
-        id
+    func id(pathSafe idMode: MarkerIDMode) -> String {
+        id(idMode)
             .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
             .replacingOccurrences(of: ":", with: "_")
     }

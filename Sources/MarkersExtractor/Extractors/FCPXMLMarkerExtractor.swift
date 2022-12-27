@@ -69,7 +69,6 @@ class FCPXMLMarkerExtractor {
             notes: markerXML.fcpxNote ?? "",
             role: roles,
             position: position,
-            idMode: idNamingMode,
             parentInfo: Marker.ParentInfo(
                 clipName: getClipName(parentClip),
                 clipDuration: parentDuration,
