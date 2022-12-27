@@ -35,7 +35,7 @@ extension MarkersExtractor {
         let gifFPS: Double
         let gifSpan: TimeInterval
         let idNamingMode: MarkerIDMode
-        let imageLabels: [MarkersCSVHeader]
+        let imageLabels: [CSVExportModel.Field]
         let imageLabelCopyright: String?
         let imageLabelFont: String
         let imageLabelFontMaxSize: Int
@@ -68,7 +68,7 @@ extension MarkersExtractor {
             gifFPS: Double,
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
-            imageLabels: [MarkersCSVHeader],
+            imageLabels: [CSVExportModel.Field],
             imageLabelCopyright: String?,
             imageLabelFont: String,
             imageLabelFontMaxSize: Int,

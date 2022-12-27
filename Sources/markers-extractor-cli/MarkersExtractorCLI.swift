@@ -66,7 +66,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             valueName: "label"
         )
     )
-    var imageLabels: [MarkersCSVHeader] = []
+    var imageLabels: [CSVExportModel.Field] = []
     
     @Option(
         name: [.customLong("label-copyright")],
@@ -256,7 +256,7 @@ extension MarkersExtractorCLI {
     
     static func printHelpLabels() {
         print("List of available label headers:")
-        for header in MarkersCSVHeader.allCases {
+        for header in CSVExportModel.Field.allCases {
             print("    '\(header.rawValue)'")
         }
     }

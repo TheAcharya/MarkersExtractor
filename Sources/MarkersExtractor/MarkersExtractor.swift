@@ -57,20 +57,22 @@ public final class MarkersExtractor {
         let csvName = "\(projectName).csv"
 
         do {
-            try exportMarkers(
+            try CSVExportModel.export(
                 markers: markers,
                 idMode: s.idNamingMode,
                 csvPath: destPath.appendingPathComponent(csvName),
                 videoPath: videoPath,
-                destPath: destPath,
-                gifFPS: s.gifFPS,
-                gifSpan: s.gifSpan,
-                imageFormat: s.imageFormat,
-                imageQuality: imageQuality,
-                imageDimensions: calcVideoDimensions(for: videoPath),
-                imageLabelFields: imageLabels,
-                imageLabelCopyright: s.imageLabelCopyright,
-                imageLabelProperties: labelProperties
+                outputPath: destPath,
+                imageSettings: .init(
+                    gifFPS: s.gifFPS,
+                    gifSpan: s.gifSpan,
+                    format: s.imageFormat,
+                    quality: imageQuality,
+                    dimensions: calcVideoDimensions(for: videoPath),
+                    labelFields: imageLabels,
+                    labelCopyright: s.imageLabelCopyright,
+                    labelProperties: labelProperties
+                )
             )
         } catch {
             throw MarkersExtractorError.runtimeError(

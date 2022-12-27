@@ -1,7 +1,7 @@
 import ArgumentParser
 import MarkersExtractor
 
-extension MarkersCSVHeader: ExpressibleByArgument {}
+extension CSVExportModel.Field: ExpressibleByArgument {}
 extension MarkerIDMode: ExpressibleByArgument {}
 extension MarkerImageFormat: ExpressibleByArgument {}
 extension MarkerLabelProperties.AlignHorizontal: ExpressibleByArgument {}
