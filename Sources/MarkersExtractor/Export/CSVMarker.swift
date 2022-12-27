@@ -1,6 +1,7 @@
 import Foundation
 import OrderedCollections
 
+/// A marker with its contents prepared for CSV output.
 struct CSVMarker {
     let id: String
     let name: String
@@ -21,8 +22,8 @@ struct CSVMarker {
     init(_ marker: Marker, imageFormat: MarkerImageFormat, isSingleFrame: Bool) {
         id = marker.id
         name = marker.name
-        type = marker.type.rawValue
-        checked = String(marker.checked)
+        type = marker.type.name
+        checked = String(marker.isChecked)
         status = marker.status.rawValue
         notes = marker.notes
         position = marker.positionTimecodeString
@@ -58,3 +59,34 @@ struct CSVMarker {
         ]
     }
 }
+
+extension CSVMarker {
+    enum Status: String, CaseIterable {
+        case notStarted = "Not Started"
+        case inProgress = "In Progress"
+        case done = "Done"
+    }
+}
+
+extension Marker {
+    fileprivate var isChecked: Bool {
+        switch type {
+        case .todo(let completed):
+            return completed
+        default:
+            return false
+        }
+    }
+    
+    fileprivate var status: CSVMarker.Status {
+        switch type {
+        case .standard:
+            return .notStarted
+        case .todo(let completed):
+            return completed ? .done : .inProgress
+        case .chapter:
+            return .notStarted
+        }
+    }
+}
+

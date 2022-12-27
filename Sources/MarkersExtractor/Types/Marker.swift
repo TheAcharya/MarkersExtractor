@@ -1,6 +1,10 @@
 import CoreMedia
 import TimecodeKit
 
+/// Raw FCP Marker data extracted from FCPXML.
+///
+/// - Note: This struct should mainly be an agnostic data repository and not assume anything about
+/// its ultimate intended destination(s).
 struct Marker: Equatable, Hashable {
     struct ParentInfo: Equatable, Hashable {
         var clipName: String
@@ -14,21 +18,26 @@ struct Marker: Equatable, Hashable {
         }
     }
     
+    // raw metadata-related
     var type: MarkerType
     var name: String
     var notes: String
     var role: String
-    var status: MarkerStatus
-    var checked: Bool
     var position: Timecode
-    var nameMode: MarkerIDMode
+    
+    // CSV-related
+    var idMode: MarkerIDMode
     
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
-    
+}
+
+// MARK: Computed
+
+extension Marker {
     var id: String {
-        switch nameMode {
+        switch idMode {
         case .projectTimecode:
             return "\(parentInfo.projectName)_\(positionTimecodeString)"
         case .name:
@@ -56,8 +65,8 @@ struct Marker: Equatable, Hashable {
         switch type {
         case .standard:
             return .standard
-        case .todo:
-            return checked ? .completed : .todo
+        case .todo(let completed):
+            return completed ? .completed : .todo
         case .chapter:
             return .chapter
         }
