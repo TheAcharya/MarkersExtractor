@@ -16,15 +16,17 @@ extension CSVExportModel {
     ) throws {
         try export(
             markers: markers,
+            idMode: idMode,
             videoPath: videoPath,
             outputPath: outputPath,
-            payload: Payload(idMode: idMode, csvPath: csvPath),
+            payload: Payload(csvPath: csvPath),
             imageSettings: imageSettings
         )
     }
     
     public static func prepareMarkers(
         markers: [Marker],
+        idMode: MarkerIDMode,
         payload: Payload,
         imageSettings: MarkersExportImageSettings<Field>,
         isSingleFrame: Bool
@@ -32,7 +34,7 @@ extension CSVExportModel {
         markers.map {
             PreparedMarker(
                 $0,
-                idMode: payload.idMode,
+                idMode: idMode,
                 imageFormat: imageSettings.format,
                 isSingleFrame: isSingleFrame
             )

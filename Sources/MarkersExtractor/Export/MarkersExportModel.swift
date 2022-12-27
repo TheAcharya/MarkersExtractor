@@ -14,6 +14,7 @@ public protocol MarkersExportModel
     /// Writes metadata files, images, and any other resources necessary.
     static func export(
         markers: [Marker],
+        idMode: MarkerIDMode,
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
@@ -23,6 +24,7 @@ public protocol MarkersExportModel
     /// Converts raw FCP markers to the native format needed for export.
     static func prepareMarkers(
         markers: [Marker],
+        idMode: MarkerIDMode,
         payload: Payload,
         imageSettings: MarkersExportImageSettings<Field>,
         isSingleFrame: Bool

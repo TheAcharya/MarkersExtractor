@@ -7,6 +7,7 @@ import TimecodeKit
 extension MarkersExportModel {
     public static func export(
         markers: [Marker],
+        idMode: MarkerIDMode,
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
@@ -33,6 +34,7 @@ extension MarkersExportModel {
         
         let preparedMarkers = prepareMarkers(
             markers: markers,
+            idMode: idMode,
             payload: payload,
             imageSettings: imageSettings,
             isSingleFrame: isSingleFrame
