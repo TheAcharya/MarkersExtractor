@@ -2,6 +2,7 @@ import CoreMedia
 import Foundation
 import Logging
 import Pipeline
+import TimecodeKit
 
 class FCPXMLMarkerExtractor {
     private let logger = Logger(label: "\(FCPXMLMarkerExtractor.self)")
@@ -59,10 +60,11 @@ class FCPXMLMarkerExtractor {
         let isChecked = (type == .todo && markerXML.getElementAttribute("completed") == "1")
         let status = getStatus(type, isChecked)
 
-        let position = calcMarkerPosition(markerXML)
         let fps = getParentFPS(markerXML)
+        let parentDuration = (try? parentClip.fcpxDuration?.toTimecode(at: fps)) ?? .init(at: fps)
+        let position = calcMarkerPosition(markerXML, parentFPS: fps, parentDuration: parentDuration)
         let roles = getClipRoles(parentClip).joined(separator: ", ")
-
+        
         return Marker(
             type: type,
             name: markerXML.fcpxValue ?? "",
@@ -71,9 +73,8 @@ class FCPXMLMarkerExtractor {
             status: status,
             checked: isChecked,
             position: position,
-            fps: fps,
             parentClipName: getClipName(parentClip),
-            parentClipDuration: parentClip.fcpxDuration!,
+            parentClipDuration: parentDuration,
             parentEventName: parentEvent.fcpxName ?? "",
             parentProjectName: parentProject.fcpxName ?? "",
             parentLibraryName: getLibraryName(parentLibrary) ?? "",
@@ -81,38 +82,54 @@ class FCPXMLMarkerExtractor {
         )
     }
 
-    private func calcMarkerPosition(_ marker: XMLElement) -> CMTime {
+    private func calcMarkerPosition(_ marker: XMLElement,
+                                    parentFPS: TimecodeFrameRate,
+                                    parentDuration: Timecode) -> Timecode {
         let parentClip = marker.parentElement!
-
-        let localInPoint: CMTime
-
-        if parentClip.fcpxStartValue.seconds > 0 {
-            localInPoint = marker.fcpxLocalInPoint - parentClip.fcpxStartValue
-        } else {
-            localInPoint = marker.fcpxLocalInPoint
-        }
+        
+        let localInPoint: CMTime = parentClip.fcpxStartValue.seconds > 0
+            ? marker.fcpxLocalInPoint - parentClip.fcpxStartValue
+            : marker.fcpxLocalInPoint
 
         let markerPosition = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
+        let timecode = (try? markerPosition.toTimecode(at: parentFPS)) ?? .init(at: parentFPS)
 
-        if localInPoint.seconds > parentClip.fcpxDuration!.seconds {
-            let fps = getParentFPS(marker)
-            let timecode = markerPosition.timeAsTimecode(usingFrameDuration: fps, dropFrame: false)
-                .timecodeString
-            logger.warning("Marker at \(timecode) is out of bounds of it's parent clip")
+        if localInPoint.seconds > parentDuration.realTimeValue {
+            logger.warning("Marker at \(timecode) is out of bounds of its parent clip.")
         }
 
-        return CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
+        return timecode
     }
 
-    private func getParentFPS(_ marker: XMLElement) -> CMTime {
-        let defaultFPS = CMTime(value: 1001, timescale: 24000)
+    private func getParentFPS(_ marker: XMLElement) -> TimecodeFrameRate {
+        let defaultFPS: TimecodeFrameRate = ._24
 
-        guard let fps = findParentByType(marker, .sequence)?.formatValues()?.frameDuration else {
-            logger.warning("Couldn't parse format FPS, using 24fps to calculate marker timecode")
+        guard let parent = findParentByType(marker, .sequence) else {
+            logger.warning("Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode.")
             return defaultFPS
         }
-
-        return fps
+        
+        let isFPSDrop: Bool = {
+            switch parent.fcpxTCFormat {
+            case .dropFrame:
+                return true
+            case .nonDropFrame:
+                return false
+            case nil:
+                logger.warning("Couldn't detect whether FPS is drop (DF) or non-drop (NDF); using NDF to form marker timecode.")
+                return false
+            }
+        }()
+        
+        guard let frameDuration = parent.formatValues()?.frameDuration,
+              let videoRate = VideoFrameRate(frameDuration: frameDuration),
+              let timecodeRate = videoRate.timecodeFrameRate(drop: isFPSDrop)
+        else {
+            logger.warning("Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode.")
+            return defaultFPS
+        }
+        
+        return timecodeRate
     }
 
     private func findParentByType(

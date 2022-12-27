@@ -1,4 +1,5 @@
 import CoreMedia
+import TimecodeKit
 
 struct Marker {
     var type: MarkerType
@@ -7,15 +8,14 @@ struct Marker {
     var role: String
     var status: MarkerStatus
     var checked: Bool
-    var position: CMTime
-    var fps: CMTime
+    var position: Timecode
     var parentClipName: String
-    var parentClipDuration: CMTime
+    var parentClipDuration: Timecode
     var parentEventName: String
     var parentProjectName: String
     var parentLibraryName: String
     var nameMode: MarkerIDMode
-
+    
     var id: String {
         switch nameMode {
         case .projectTimecode:
@@ -26,17 +26,23 @@ struct Marker {
             return notes
         }
     }
-
+    
     var idPathSafe: String {
-        id.replacingOccurrences(of: ":", with: "_")
+        id
+            .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
+            .replacingOccurrences(of: ":", with: "_")
     }
-
+    
+    var frameRate: TimecodeFrameRate {
+        position.frameRate
+    }
+    
     var timecode: String {
-        position.timeAsTimecode(usingFrameDuration: fps, dropFrame: false).timecodeString
+        position.stringValue
     }
 
     var parentClipDurationTimecode: String {
-        parentClipDuration.timeAsTimecode(usingFrameDuration: fps, dropFrame: false).timecodeString
+        parentClipDuration.stringValue
     }
 
     var icon: MarkerIcon {
@@ -48,5 +54,11 @@ struct Marker {
         case .chapter:
             return .chapter
         }
+    }
+}
+
+extension Marker: Comparable {
+    static func < (lhs: Marker, rhs: Marker) -> Bool {
+        lhs.position < rhs.position
     }
 }

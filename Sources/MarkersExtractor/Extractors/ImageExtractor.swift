@@ -3,6 +3,7 @@ import Foundation
 import CoreImage
 import Logging
 import OrderedCollections
+import TimecodeKit
 
 final class ImageExtractor {
     enum Error: LocalizedError {
@@ -38,7 +39,7 @@ final class ImageExtractor {
         let asset: AVAsset
         let sourceURL: URL
         let destURL: URL
-        let timeCodes: OrderedDictionary<String, CMTime>
+        let timecodes: OrderedDictionary<String, Timecode>
         let frameFormat: MarkerImageFormat
         let frameJPGQuality: Double?
         let dimensions: CGSize?
@@ -54,13 +55,14 @@ final class ImageExtractor {
     }
 
     static func convert(_ conversion: Conversion) throws {
-        try self.init(conversion).generateImages()
+        let conv = self.init(conversion)
+        try conv.generateImages()
     }
 
     private func generateImages() throws {
         let generator = try imageGenerator()
-        let times = Array(conversion.timeCodes.values)
-        var frameNamesIterator = conversion.timeCodes.keys.makeIterator()
+        let times = conversion.timecodes.values.map { $0.cmTime }
+        var frameNamesIterator = conversion.timecodes.keys.makeIterator()
 
         var result: Result<Void, Error> = .failure(.invalidSettings)
 

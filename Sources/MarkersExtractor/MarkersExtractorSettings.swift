@@ -3,12 +3,12 @@ import Foundation
 
 public struct MarkersExtractorSettings {
     public enum Defaults {
-        public static let imageFormat = MarkerImageFormat.png
+        public static let imageFormat: MarkerImageFormat = .png
         public static let imageQuality = 100
         public static let imageSizePercentGIF = 50
         public static let gifFPS = 10
         public static let gifSpan = 2
-        public static let idNamingMode = MarkerIDMode.projectTimecode
+        public static let idNamingMode: MarkerIDMode = .projectTimecode
         public static let imageLabelFont = "Menlo-Regular"
         public static let imageLabelFontMaxSize = 30
         public static let imageLabelFontOpacity = 100
