@@ -6,6 +6,7 @@ import MarkersExtractor
 struct MarkersExtractorCLI: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Tool to extract markers from FCPXML(D).",
+        discussion: "https://github.com/TheAcharya/MarkersExtractor",
         version: "0.1.1"
     )
 
@@ -153,6 +154,12 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
 
+    // this flag is not actually used within the ParsableCommand but it's
+    // included here so that the help block can display it.
+    // the presence of this flag is handled manually in main() before parsing any
+    // other arguments since there is no graceful way to do it canonically
+    // with ArgumentParser - ironically since we're just trying to implement
+    // the same behavior it itself uses to handle --version for example.
     @Flag(help: "List all possible labels to use with --label.")
     var helpLabels = false
 
@@ -234,6 +241,13 @@ struct MarkersExtractorCLI: ParsableCommand {
             }
 
             return MultiplexLogHandler(logHandlers)
+        }
+    }
+    
+    static func printHelpLabels() {
+        print("List of available label headers:")
+        for header in MarkerHeader.allCases {
+            print("    '\(header.rawValue)'")
         }
     }
 }

@@ -1,4 +1,5 @@
 import AVFoundation
+import ImageIO
 import Foundation
 import Logging
 

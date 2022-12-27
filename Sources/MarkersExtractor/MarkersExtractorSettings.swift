@@ -14,8 +14,8 @@ public struct MarkersExtractorSettings {
         public static let imageLabelFontOpacity = 100
         public static let imageLabelFontColor = "#FFF"
         public static let imageLabelFontStrokeColor = "#000"
-        public static let imageLabelAlignHorizontal = MarkerLabelProperties.AlignHorizontal.left
-        public static let imageLabelAlignVertical = MarkerLabelProperties.AlignVertical.top
+        public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
+        public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
         public static let createDoneFile = false
     }
 
@@ -42,11 +42,9 @@ public struct MarkersExtractorSettings {
     let outputDir: URL
 
     var xmlPath: URL {
-        if fcpxmlPath.fileExtension == "fcpxmld" {
-            return fcpxmlPath.appendingPathComponent("Info.fcpxml")
-        }
-
-        return fcpxmlPath
+        fcpxmlPath.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
+            ? fcpxmlPath.appendingPathComponent("Info.fcpxml")
+            : fcpxmlPath
     }
 
     var mediaSearchPath: URL {

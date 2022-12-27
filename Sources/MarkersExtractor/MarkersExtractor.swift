@@ -158,17 +158,18 @@ public final class MarkersExtractor {
     }
 
     private func findMedia(name: String, path: URL) throws -> URL {
-        var files: [URL] = []
         let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
-
-        do {
-            files = try matchFiles(at: path, name: name, exts: mediaFormats)
-        } catch {
-            throw MarkersExtractorError.runtimeError(
-                "Error finding media for '\(name)': \(error.localizedDescription)"
-            )
-        }
-
+        
+        let files: [URL] = try {
+            do {
+                return try matchFiles(at: path, name: name, exts: mediaFormats)
+            } catch {
+                throw MarkersExtractorError.runtimeError(
+                    "Error finding media for '\(name)': \(error.localizedDescription)"
+                )
+            }
+        }()
+        
         if files.isEmpty {
             throw MarkersExtractorError.runtimeError("No media found for '\(name)'")
         }
