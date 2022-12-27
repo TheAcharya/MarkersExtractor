@@ -12,6 +12,14 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     @Option(
         help: ArgumentHelp(
+            "Metadata export format.",
+            valueName: MarkersExportFormat.allCases.map { $0.rawValue }.joined(separator: ",")
+        )
+    )
+    var exportFormat: MarkersExportFormat = .csv
+    
+    @Option(
+        help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
@@ -192,6 +200,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         
         do {
             settings = try MarkersExtractor.Settings(
+                exportFormat: exportFormat,
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,

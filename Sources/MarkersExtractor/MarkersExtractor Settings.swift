@@ -4,6 +4,7 @@ import Foundation
 extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
+            public static let exportFormat: MarkersExportFormat = .csv
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
             public static let imageSizePercentGIF = 50
@@ -27,6 +28,7 @@ extension MarkersExtractor {
             public static let imageLabelFontOpacity = 0 ... 100
         }
         
+        let exportFormat: MarkersExportFormat
         let imageFormat: MarkerImageFormat
         let imageQuality: Int
         let imageWidth: Int?
@@ -60,6 +62,7 @@ extension MarkersExtractor {
         }
         
         public init(
+            exportFormat: MarkersExportFormat,
             imageFormat: MarkerImageFormat,
             imageQuality: Int,
             imageWidth: Int?,
@@ -82,6 +85,7 @@ extension MarkersExtractor {
             fcpxmlPath: URL,
             outputDir: URL
         ) throws {
+            self.exportFormat = exportFormat
             self.imageFormat = imageFormat
             self.imageQuality = imageQuality
             self.imageWidth = imageWidth

@@ -5,7 +5,7 @@ import TimecodeKit
 ///
 /// - Note: This struct should mainly be an agnostic data repository and not assume anything about
 /// its ultimate intended destination(s).
-struct Marker: Equatable, Hashable {
+public struct Marker: Equatable, Hashable {
     struct ParentInfo: Equatable, Hashable {
         var clipName: String
         var clipDuration: Timecode
@@ -60,7 +60,7 @@ extension Marker {
 }
 
 extension Marker: Comparable {
-    static func < (lhs: Marker, rhs: Marker) -> Bool {
+    public static func < (lhs: Marker, rhs: Marker) -> Bool {
         lhs.position < rhs.position
     }
 }

@@ -5,7 +5,7 @@ import OrderedCollections
 import TimecodeKit
 
 extension MarkersExportModel {
-    static func export(
+    public static func export(
         markers: [Marker],
         videoPath: URL,
         outputPath: URL,

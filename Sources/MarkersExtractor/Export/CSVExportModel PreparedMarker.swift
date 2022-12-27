@@ -3,26 +3,26 @@ import OrderedCollections
 
 extension CSVExportModel {
     /// A marker with its contents prepared for CSV output.
-    struct PreparedMarker: MarkersExportPreparedMarker {
-        typealias Field = CSVExportModel.Field
+    public struct PreparedMarker: MarkersExportPreparedMarker {
+        public typealias Field = CSVExportModel.Field
         
-        let id: String
-        let name: String
-        let type: String
-        let checked: String
-        let status: String
-        let notes: String
-        let position: String
-        let clipName: String
-        let clipDuration: String
-        let role: String
-        let eventName: String
-        let projectName: String
-        let libraryName: String
-        let iconImage: String
-        let imageFileName: String
+        public let id: String
+        public let name: String
+        public let type: String
+        public let checked: String
+        public let status: String
+        public let notes: String
+        public let position: String
+        public let clipName: String
+        public let clipDuration: String
+        public let role: String
+        public let eventName: String
+        public let projectName: String
+        public let libraryName: String
+        public let iconImage: String
+        public let imageFileName: String
         
-        init(_ marker: Marker,
+        public init(_ marker: Marker,
              idMode: MarkerIDMode,
              imageFormat: MarkerImageFormat,
              isSingleFrame: Bool
@@ -46,7 +46,7 @@ extension CSVExportModel {
                 : "\(marker.id(pathSafe: idMode)).\(imageFormat)"
         }
         
-        func dictionaryRepresentation() -> OrderedDictionary<Field, String> {
+        public func dictionaryRepresentation() -> OrderedDictionary<Field, String> {
             [
                 .id: id,
                 .name: name,

@@ -6,12 +6,12 @@ where Field: Hashable,
       Field: RawRepresentable,
       Field.RawValue == String
 {
-    let gifFPS: Double
-    let gifSpan: TimeInterval
-    let format: MarkerImageFormat
-    let quality: Double
-    let dimensions: CGSize?
-    let labelFields: [Field]
-    let labelCopyright: String?
-    let labelProperties: MarkerLabelProperties
+    public let gifFPS: Double
+    public let gifSpan: TimeInterval
+    public let format: MarkerImageFormat
+    public let quality: Double
+    public let dimensions: CGSize?
+    public let labelFields: [Field]
+    public let labelCopyright: String?
+    public let labelProperties: MarkerLabelProperties
 }

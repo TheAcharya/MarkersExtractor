@@ -6,12 +6,7 @@ import OrderedCollections
 import TimecodeKit
 
 extension CSVExportModel {
-    struct Payload: MarkersExportModelPayload {
-        let idMode: MarkerIDMode
-        let csvPath: URL
-    }
-    
-    static func export(
+    public static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         csvPath: URL,
@@ -28,7 +23,7 @@ extension CSVExportModel {
         )
     }
     
-    static func prepareMarkers(
+    public static func prepareMarkers(
         markers: [Marker],
         payload: Payload,
         imageSettings: MarkersExportImageSettings<Field>,
@@ -44,7 +39,7 @@ extension CSVExportModel {
         }
     }
     
-    static func encodeManifest(
+    public static func encodeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload
     ) throws {

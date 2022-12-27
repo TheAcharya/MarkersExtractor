@@ -1,6 +1,6 @@
 import Foundation
 
-protocol MarkersExportModel
+public protocol MarkersExportModel
     where Field: Hashable,
     Field: RawRepresentable,
     Field.RawValue == String,
