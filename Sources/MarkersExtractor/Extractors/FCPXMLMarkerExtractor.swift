@@ -22,7 +22,7 @@ class FCPXMLMarkerExtractor {
     public func extractMarkers() -> [Marker] {
         var fcpxmlMarkers: [Marker] = []
 
-        // Shouldn't there be only one project?
+        // TODO: Shouldn't there be only one project?
         for project in fcpxmlDoc.fcpxAllProjects {
             fcpxmlMarkers += extractProjectMarkers(project).compactMap(convertMarker)
         }
@@ -73,12 +73,14 @@ class FCPXMLMarkerExtractor {
             status: status,
             checked: isChecked,
             position: position,
-            parentClipName: getClipName(parentClip),
-            parentClipDuration: parentDuration,
-            parentEventName: parentEvent.fcpxName ?? "",
-            parentProjectName: parentProject.fcpxName ?? "",
-            parentLibraryName: getLibraryName(parentLibrary) ?? "",
-            nameMode: idNamingMode
+            nameMode: idNamingMode,
+            parentInfo: Marker.ParentInfo(
+                clipName: getClipName(parentClip),
+                clipDuration: parentDuration,
+                eventName: parentEvent.fcpxName ?? "",
+                projectName: parentProject.fcpxName ?? "",
+                libraryName: getLibraryName(parentLibrary) ?? ""
+            )
         )
     }
 

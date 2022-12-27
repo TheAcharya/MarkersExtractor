@@ -26,12 +26,12 @@ struct CSVMarker {
         status = marker.status.rawValue
         notes = marker.notes
         position = marker.positionTimecodeString
-        clipName = marker.parentClipName
-        clipDuration = marker.parentClipDurationTimecodeString
+        clipName = marker.parentInfo.clipName
+        clipDuration = marker.parentInfo.clipDurationTimecodeString
         role = marker.role
-        eventName = marker.parentEventName
-        projectName = marker.parentProjectName
-        libraryName = marker.parentLibraryName
+        eventName = marker.parentInfo.eventName
+        projectName = marker.parentInfo.projectName
+        libraryName = marker.parentInfo.libraryName
         iconImage = marker.icon.fileName
         imageFileName = isSingleFrame
             ? "marker-placeholder.\(imageFormat)"

@@ -1,7 +1,19 @@
 import CoreMedia
 import TimecodeKit
 
-struct Marker {
+struct Marker: Equatable, Hashable {
+    struct ParentInfo: Equatable, Hashable {
+        var clipName: String
+        var clipDuration: Timecode
+        var eventName: String
+        var projectName: String
+        var libraryName: String
+        
+        var clipDurationTimecodeString: String {
+            clipDuration.stringValue
+        }
+    }
+    
     var type: MarkerType
     var name: String
     var notes: String
@@ -9,17 +21,16 @@ struct Marker {
     var status: MarkerStatus
     var checked: Bool
     var position: Timecode
-    var parentClipName: String
-    var parentClipDuration: Timecode
-    var parentEventName: String
-    var parentProjectName: String
-    var parentLibraryName: String
     var nameMode: MarkerIDMode
+    
+    // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
+    /// Cached parent information.
+    var parentInfo: ParentInfo
     
     var id: String {
         switch nameMode {
         case .projectTimecode:
-            return "\(parentProjectName)_\(positionTimecodeString)"
+            return "\(parentInfo.projectName)_\(positionTimecodeString)"
         case .name:
             return name
         case .notes:
@@ -39,10 +50,6 @@ struct Marker {
     
     var positionTimecodeString: String {
         position.stringValue
-    }
-
-    var parentClipDurationTimecodeString: String {
-        parentClipDuration.stringValue
     }
 
     var icon: MarkerIcon {

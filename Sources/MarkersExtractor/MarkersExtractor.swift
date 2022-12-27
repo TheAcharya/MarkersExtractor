@@ -32,7 +32,7 @@ public final class MarkersExtractor {
             return
         }
 
-        let projectName = markers[0].parentProjectName
+        let projectName = markers[0].parentInfo.projectName
 
         let destPath = try makeDestPath(for: projectName)
 
