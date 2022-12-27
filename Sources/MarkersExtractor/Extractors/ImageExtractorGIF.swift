@@ -188,8 +188,10 @@ final class ImageExtractorGIF {
             )
         }
 
-        // Ensure we include the last frame. For example, the above might have calculated `[..., 6.25, 6.3]`, but the duration is `6.3647`, so we might miss the last frame if it appears for a short time.
-        //        frameForTimes.append(CMTime(seconds: duration, preferredTimescale: timescale))
+        // Ensure we include the last frame.
+        // For example, the above might have calculated `[..., 6.25, 6.3]`, but the duration is `6.3647`,
+        // so we might miss the last frame if it appears for a short time.
+        // frameForTimes.append(CMTime(seconds: duration, preferredTimescale: timescale))
 
         logger.trace("Frame count: \(frameCount)")
         logger.trace("fps: \(fps)")
@@ -212,8 +214,11 @@ final class ImageExtractorGIF {
             let nominalFrameRate = asset.frameRate,
             let firstVideoTrack = asset.firstVideoTrack,
 
-            // We use the duration of the first video track since the total duration of the asset can actually be longer than the video track. If we use the total duration and the video is shorter, we'll get errors in `generateCGImagesAsynchronously` (#119).
-            // We already extract the video into a new asset in `VideoValidator` if the first video track is shorter than the asset duration, so the handling here is not strictly necessary but kept just to be safe.
+            // We use the duration of the first video track since the total duration of the asset
+            // can actually be longer than the video track. If we use the total duration and the
+            // video is shorter, we'll get errors in `generateCGImagesAsynchronously` (#119).
+            // We already extract the video into a new asset in `VideoValidator` if the first video
+            // track is shorter than the asset duration, so the handling here is not strictly necessary but kept just to be safe.
             let videoTrackRange = firstVideoTrack.timeRange.range
         else {
             // This can happen if the user selects a file, and then the file becomes

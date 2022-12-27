@@ -5,7 +5,9 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-func markersToCSV(
+/// Exports markers to disk.
+/// Writes csv file, images, and any other resources necessary.
+func exportMarkers(
     markers: [Marker],
     csvPath: URL,
     videoPath: URL,
@@ -85,7 +87,8 @@ func markersToCSV(
 
     let rows = dictsToRows(markersDicts)
 
-    try CSVWriter.encode(rows: rows, into: csvPath, append: false)
+    let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
+    try csvData.write(to: csvPath)
 }
 
 private func markerToDict(

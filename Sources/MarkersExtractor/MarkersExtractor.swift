@@ -57,7 +57,7 @@ public final class MarkersExtractor {
         let csvName = "\(projectName).csv"
 
         do {
-            try markersToCSV(
+            try exportMarkers(
                 markers: markers,
                 csvPath: destPath.appendingPathComponent(csvName),
                 videoPath: videoPath,
