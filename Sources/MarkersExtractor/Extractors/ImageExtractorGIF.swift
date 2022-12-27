@@ -25,8 +25,8 @@ final class ImageExtractorGIF {
             case .gifFinalizationFailed:
                 return "Failed to finalize the GIF file"
             case .notEnoughFrames(let frameCount):
-                return
-                    "An animated GIF requires a minimum of 2 frames. Your video contains \(frameCount) frame\(frameCount == 1 ? "" : "s")."
+                let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
+                return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
             case .generateFrameFailed(let error):
                 return "Failed to generate frame: \(error.localizedDescription)"
             case .addFrameFailed(let error):
@@ -42,13 +42,13 @@ final class ImageExtractorGIF {
         let destURL: URL
         var timeRange: ClosedRange<Double>?
         var dimensions: CGSize?
-        var frameRate: Int
+        var fps: Double
         let imageFilter: ((CGImage) -> CGImage)?
     }
 
     private let logger = Logger(label: "\(ImageExtractorGIF.self)")
 
-    private let conversion: Conversion
+    private var conversion: Conversion
 
     init(_ conversion: Conversion) {
         self.conversion = conversion
@@ -56,15 +56,21 @@ final class ImageExtractorGIF {
 
     static func convert(_ conversion: Conversion) throws {
         let conv = self.init(conversion)
+        conv.validate()
         try conv.generateGIF()
     }
 
+    private func validate() {
+        // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
+        conversion.fps = conversion.fps.clamped(to: MarkersExtractorSettings.Validation.gifFPS)
+    }
+    
     private func generateGIF() throws {
         let generator = imageGenerator()
         let times = try rangeToCMTimes()
 
         let startTime = times.first?.seconds ?? 0
-        let delayTime = 1.0 / Float(conversion.frameRate)
+        let delayTime: Float = 1.0 / Float(conversion.fps)
 
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
@@ -121,22 +127,19 @@ final class ImageExtractorGIF {
     }
 
     private func initGIF(framesCount: Int) throws -> CGImageDestination {
-        let fileProperties =
-            [
-                kCGImagePropertyGIFDictionary as String: [
-                    kCGImagePropertyGIFLoopCount as String: NSNumber(value: 0)
-                ],
-                kCGImagePropertyGIFHasGlobalColorMap as String: NSValue(nonretainedObject: true),
-            ] as [String: Any]
+        let fileProperties = [
+            kCGImagePropertyGIFDictionary as String: [
+                kCGImagePropertyGIFLoopCount as String: NSNumber(value: 0)
+            ],
+            kCGImagePropertyGIFHasGlobalColorMap as String: NSValue(nonretainedObject: true),
+        ] as [String: Any]
 
-        guard
-            let destination = CGImageDestinationCreateWithURL(
-                conversion.destURL as CFURL,
-                kUTTypeGIF,
-                framesCount,
-                nil
-            )
-        else {
+        guard let destination = CGImageDestinationCreateWithURL(
+            conversion.destURL as CFURL,
+            kUTTypeGIF,
+            framesCount,
+            nil
+        ) else {
             throw Error.gifInitializationFailed
         }
 
@@ -163,11 +166,7 @@ final class ImageExtractorGIF {
 
     private func rangeToCMTimes() throws -> [CMTime] {
         let (firstVideoTrack, assetFrameRate, videoTrackRange) = try assetVideoParams()
-
-        // TODO: This is hacky and might be refactorable using TimecodeKit
-        // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
-        var fps = Double(conversion.frameRate).clamped(to: 0.1...120)
-        fps = min(fps, assetFrameRate)
+        let fps = min(conversion.fps, assetFrameRate)
 
         // TODO: Instead of calculating what part of the video to get, we could just trim the actual `AVAssetTrack`.
         let videoRange = conversion.timeRange?.clamped(to: videoTrackRange) ?? videoTrackRange

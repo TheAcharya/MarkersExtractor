@@ -6,7 +6,7 @@ public struct MarkersExtractorSettings {
         public static let imageFormat: MarkerImageFormat = .png
         public static let imageQuality = 100
         public static let imageSizePercentGIF = 50
-        public static let gifFPS = 10
+        public static let gifFPS: Double = 10.0
         public static let gifSpan: TimeInterval = 2
         public static let idNamingMode: MarkerIDMode = .projectTimecode
         public static let imageLabelFont = "Menlo-Regular"
@@ -18,13 +18,17 @@ public struct MarkersExtractorSettings {
         public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
         public static let createDoneFile = false
     }
+    
+    public enum Validation {
+        public static let gifFPS = 0.1 ... 60.0
+    }
 
     let imageFormat: MarkerImageFormat
     let imageQuality: Int
     let imageWidth: Int?
     let imageHeight: Int?
     let imageSizePercent: Int?
-    let gifFPS: Int
+    let gifFPS: Double
     let gifSpan: TimeInterval
     let idNamingMode: MarkerIDMode
     let imageLabels: [MarkerHeader]
@@ -57,7 +61,7 @@ public struct MarkersExtractorSettings {
         imageWidth: Int?,
         imageHeight: Int?,
         imageSizePercent: Int?,
-        gifFPS: Int,
+        gifFPS: Double,
         gifSpan: TimeInterval,
         idNamingMode: MarkerIDMode,
         imageLabels: [MarkerHeader],
@@ -156,8 +160,8 @@ public struct MarkersExtractorSettings {
             )
         }
 
-        guard (1...50).contains(gifFPS) else {
-            throw MarkersExtractorError.validationError("--gif-fps must be within 1...50 range")
+        guard Validation.gifFPS.contains(gifFPS) else {
+            throw MarkersExtractorError.validationError("--gif-fps must be within 1...60 range")
         }
     }
 }

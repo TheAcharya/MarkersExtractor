@@ -9,7 +9,7 @@ func writeAnimatedImages(
     timecodes: OrderedDictionary<String, Timecode>,
     video videoPath: URL,
     destPath: URL,
-    gifFrameRate: Int,
+    gifFPS: Double,
     gifSpan: TimeInterval,
     gifDimensions: CGSize?,
     imageLabelText: [String],
@@ -38,7 +38,7 @@ func writeAnimatedImages(
             destURL: gifPath,
             timeRange: timeRange,
             dimensions: gifDimensions,
-            frameRate: gifFrameRate,
+            fps: gifFPS,
             imageFilter: imageLabeler?.labelImage
         )
 

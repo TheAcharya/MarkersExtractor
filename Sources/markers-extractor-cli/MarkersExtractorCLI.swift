@@ -40,8 +40,8 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var imageSizePercent: Int?
 
-    @Option(help: ArgumentHelp("GIF frame rate.", valueName: "1-50"))
-    var gifFPS: Int = MarkersExtractorSettings.Defaults.gifFPS
+    @Option(help: ArgumentHelp("GIF frame rate.", valueName: "\(MarkersExtractorSettings.Validation.gifFPS.lowerBound)-\(MarkersExtractorSettings.Validation.gifFPS.upperBound)"))
+    var gifFPS: Double = MarkersExtractorSettings.Defaults.gifFPS
 
     @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
     var gifSpan: TimeInterval = MarkersExtractorSettings.Defaults.gifSpan
