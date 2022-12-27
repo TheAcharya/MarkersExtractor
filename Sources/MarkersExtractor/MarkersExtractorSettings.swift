@@ -34,7 +34,7 @@ public struct MarkersExtractorSettings {
     let gifFPS: Double
     let gifSpan: TimeInterval
     let idNamingMode: MarkerIDMode
-    let imageLabels: [MarkerHeader]
+    let imageLabels: [MarkerCSVHeader]
     let imageLabelCopyright: String?
     let imageLabelFont: String
     let imageLabelFontMaxSize: Int
@@ -67,7 +67,7 @@ public struct MarkersExtractorSettings {
         gifFPS: Double,
         gifSpan: TimeInterval,
         idNamingMode: MarkerIDMode,
-        imageLabels: [MarkerHeader],
+        imageLabels: [MarkerCSVHeader],
         imageLabelCopyright: String?,
         imageLabelFont: String,
         imageLabelFontMaxSize: Int,

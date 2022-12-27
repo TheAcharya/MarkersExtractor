@@ -19,7 +19,7 @@ struct Marker {
     var id: String {
         switch nameMode {
         case .projectTimecode:
-            return "\(parentProjectName)_\(timecode)"
+            return "\(parentProjectName)_\(positionTimecodeString)"
         case .name:
             return name
         case .notes:
@@ -37,11 +37,11 @@ struct Marker {
         position.frameRate
     }
     
-    var timecode: String {
+    var positionTimecodeString: String {
         position.stringValue
     }
 
-    var parentClipDurationTimecode: String {
+    var parentClipDurationTimecodeString: String {
         parentClipDuration.stringValue
     }
 

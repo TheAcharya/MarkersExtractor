@@ -1,4 +1,4 @@
-public enum MarkerHeader: String, CaseIterable {
+public enum MarkerCSVHeader: String, CaseIterable {
     case id = "Marker ID"
     case name = "Marker Name"
     case type = "Type"
@@ -13,5 +13,5 @@ public enum MarkerHeader: String, CaseIterable {
     case projectName = "Project Name"
     case libraryName = "Library Name"
     case iconImage = "Icon Image"
-    case imageName = "Image Filename"
+    case imageFileName = "Image Filename"
 }

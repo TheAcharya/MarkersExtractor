@@ -17,7 +17,7 @@ func exportMarkers(
     imageFormat: MarkerImageFormat,
     imageQuality: Double,
     imageDimensions: CGSize?,
-    imageLabelFields: [MarkerHeader],
+    imageLabelFields: [MarkerCSVHeader],
     imageLabelCopyright: String?,
     imageLabelProperties: MarkerLabelProperties
 ) throws {
@@ -36,8 +36,8 @@ func exportMarkers(
         videoPath = videoPlaceholder.url!
     }
 
-    let markersDicts = markers.map {
-        $0.dictionaryRepresentation(imageFormat, isSingleFrame: isSingleFrame)
+    let preparedMarkers = markers.map {
+        CSVMarker($0, imageFormat: imageFormat, isSingleFrame: isSingleFrame)
     }
 
     logger.info("Exporting marker icons")
@@ -51,14 +51,14 @@ func exportMarkers(
     logger.info("Generating \(imageFormat.rawValue.uppercased()) images for markers")
 
     let imageLabelText = makeImageLabelText(
-        markersDicts: markersDicts,
+        preparedMarkers: preparedMarkers,
         imageLabelFields: imageLabelFields,
         imageLabelCopyright: imageLabelCopyright
     )
 
     let timecodes = makeTimecodes(
         markers: markers,
-        markersDicts: markersDicts,
+        preparedMarkers: preparedMarkers,
         isVideoPresent: isVideoPresent,
         isSingleFrame: isSingleFrame
     )
@@ -87,28 +87,28 @@ func exportMarkers(
         )
     }
 
-    let rows = dictsToRows(markersDicts)
+    let rows = dictsToRows(preparedMarkers)
 
     let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
     try csvData.write(to: csvPath)
 }
 
 private func makeImageLabelText(
-    markersDicts: [OrderedDictionary<MarkerHeader, String>],
-    imageLabelFields: [MarkerHeader],
+    preparedMarkers: [CSVMarker],
+    imageLabelFields: [MarkerCSVHeader],
     imageLabelCopyright: String?
 ) -> [String] {
     var imageLabelText: [String] = []
 
     if !imageLabelFields.isEmpty {
         imageLabelText.append(
-            contentsOf: makeLabels(headers: imageLabelFields, markerDicts: markersDicts)
+            contentsOf: makeLabels(headers: imageLabelFields, preparedMarkers: preparedMarkers)
         )
     }
 
     if let copyrightText = imageLabelCopyright {
         if imageLabelText.isEmpty {
-            imageLabelText = markersDicts.map { _ in copyrightText }
+            imageLabelText = preparedMarkers.map { _ in copyrightText }
         } else {
             imageLabelText = imageLabelText.map { "\($0)\n\(copyrightText)" }
         }
@@ -118,23 +118,26 @@ private func makeImageLabelText(
 }
 
 private func makeLabels(
-    headers: [MarkerHeader],
-    markerDicts: [OrderedDictionary<MarkerHeader, String>]
+    headers: [MarkerCSVHeader],
+    preparedMarkers: [CSVMarker]
 ) -> [String] {
-    markerDicts.map {
-        dictionary in
-        headers.map { "\($0.rawValue): \(dictionary[$0]!)" }.joined(separator: "\n")
-    }
+    preparedMarkers
+        .map { $0.dictionaryRepresentation() }
+        .map { csvMarkerDict in
+            headers
+                .map { "\($0.rawValue): \(csvMarkerDict[$0] ?? "")" }
+                .joined(separator: "\n")
+        }
 }
 
 /// Returns an ordered dictionary keyed by marker image filename with a value of timecode position.
 private func makeTimecodes(
     markers: [Marker],
-    markersDicts: [OrderedDictionary<MarkerHeader, String>],
+    preparedMarkers: [CSVMarker],
     isVideoPresent: Bool,
     isSingleFrame: Bool
 ) -> OrderedDictionary<String, Timecode> {
-    let imageFileNames = markersDicts.map { $0[.imageName]! }
+    let imageFileNames = preparedMarkers.map { $0.imageFileName }
 
     // if no video - grabbing first frame from video placeholder
     let markerTimecodes = markers.map {
@@ -152,8 +155,11 @@ private func makeTimecodes(
 }
 
 private func dictsToRows(
-    _ dicts: [OrderedDictionary<MarkerHeader, String>]
+    _ preparedMarkers: [CSVMarker]
 ) -> [[String]] {
+    let dicts = preparedMarkers.map { $0.dictionaryRepresentation() }
+    guard !dicts.isEmpty else { return [] }
+    
     var result = [Array(dicts[0].keys.map { $0.rawValue })]
 
     for row in dicts {
