@@ -24,6 +24,11 @@ extension FCPXMLFile: CustomStringConvertible {
 
 extension FCPXMLFile {
     func data() throws -> Data {
+        // check for cache data first, or data without a URL
+        if let data = try? inputFile.data() {
+            return data
+        }
+            
         guard let xmlPath = xmlPath else {
             throw MarkersExtractorError.runtimeError("Could not read file data.")
         }
