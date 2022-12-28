@@ -68,25 +68,21 @@ extension File {
         self.url = url
     }
     
-    public init(_ data: Data) {
-        self.cache = .data(data)
+    public init(fileContents: Data) {
+        self.cache = .data(fileContents)
         self.url = nil
     }
     
-    public init(_ string: String) {
-        self.cache = .string(string)
+    public init(fileContents: String) {
+        self.cache = .string(fileContents)
         self.url = nil
     }
     
-    public static func url(_ url: URL) -> Self {
-        File(cache: nil, url: url)
+    public static func fileContents(_ contents: Data) -> Self {
+        File(cache: .data(contents), url: nil)
     }
     
-    public static func data(_ data: Data) -> Self {
-        File(cache: .data(data), url: nil)
-    }
-    
-    public static func string(_ string: String) -> Self {
-        File(cache: .string(string), url: nil)
+    public static func fileContents(_ contents: String) -> Self {
+        File(cache: .string(contents), url: nil)
     }
 }

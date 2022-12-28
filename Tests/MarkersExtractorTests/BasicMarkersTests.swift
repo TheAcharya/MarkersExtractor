@@ -6,7 +6,7 @@ final class BasicMarkersTests: XCTestCase {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
     func testBasicMarkers_extractMarkers() throws {
         let settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.data(fcpxmlBasicMarkersData)),
+            fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
             outputDir: FileManager.default.temporaryDirectory
         )
         let extractor = MarkersExtractor(settings)
