@@ -40,7 +40,7 @@ public final class MarkersExtractor {
 
         let destPath = try makeDestPath(for: projectName)
 
-        let videoPath = try findMedia(name: projectName, path: s.mediaSearchPath)
+        let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
 
         logger.info("Found project media file \(videoPath.path.quoted).")
         logger.info("Generating CSV with \(imageFormatEXT) images into \(destPath.path.quoted).")
@@ -167,34 +167,38 @@ public final class MarkersExtractor {
         }
     }
 
-    private func findMedia(name: String, path: URL) throws -> URL {
+    private func findMedia(name: String, paths: [URL]) throws -> URL {
         let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
         
-        let files: [URL] = try {
+        let files: [URL] = try paths.reduce(into: []) { base, path in
             do {
-                return try matchFiles(at: path, name: name, exts: mediaFormats)
+                let matches = try matchFiles(at: path, name: name, exts: mediaFormats)
+                base.append(contentsOf: matches)
             } catch {
                 throw MarkersExtractorError.runtimeError(
                     "Error finding media for \(name.quoted): \(error.localizedDescription)"
                 )
             }
-        }()
+        }
         
         if files.isEmpty {
             throw MarkersExtractorError.runtimeError("No media found for \(name.quoted).")
         }
 
+        let selection = files[0]
+        
         if files.count > 1 {
-            logger.warning("Found more than one media candidate for \(name.quoted).")
+            logger.info("Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)")
         }
 
-        return files[0]
+        return selection
     }
 
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
         try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
             .filter {
-                $0.lastPathComponent.starts(with: name) && exts.contains($0.fileExtension)
+                $0.lastPathComponent.starts(with: name)
+                    && exts.contains($0.fileExtension)
             }
     }
 

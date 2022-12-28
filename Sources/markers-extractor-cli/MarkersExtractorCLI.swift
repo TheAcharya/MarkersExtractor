@@ -186,6 +186,15 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
     var outputDir: URL
     
+    @Option(
+        name: [.customLong("media-search-path")],
+        help: ArgumentHelp(
+            "Media search path. This argument can be supplied more than once to use multiple paths. (default: same folder as fcpxml(d))"
+        ),
+        transform: URL.init(fileURLWithPath:)
+    )
+    var mediaSearchPaths: [URL] = []
+    
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
             throw ValidationError("Cannot write log file at \(log.path.quoted)")
@@ -202,6 +211,11 @@ struct MarkersExtractorCLI: ParsableCommand {
         let settings: MarkersExtractor.Settings
         
         do {
+            let fcpxml = FCPXMLFile(.url(fcpxmlPath))
+            let mediaSearchPaths = mediaSearchPaths.isEmpty
+                ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
+                : mediaSearchPaths
+            
             settings = try MarkersExtractor.Settings(
                 exportFormat: exportFormat,
                 imageFormat: imageFormat,
@@ -225,7 +239,8 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
                 doneFilename: doneFilename,
-                fcpxml: .init(.url(fcpxmlPath)),
+                fcpxml: fcpxml,
+                mediaSearchPaths: mediaSearchPaths,
                 outputDir: outputDir
             )
         } catch MarkersExtractorError.validationError(let error) {

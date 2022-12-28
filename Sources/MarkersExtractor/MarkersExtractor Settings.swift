@@ -26,6 +26,9 @@ extension MarkersExtractor {
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
+                [fcpxml.defaultMediaSearchPath].compactMap { $0 }
+            }
             public static let doneFilename = "done.txt"
         }
         
@@ -58,17 +61,13 @@ extension MarkersExtractor {
         let imageLabelHideNames: Bool
         let createDoneFile: Bool
         let fcpxml: FCPXMLFile
+        var mediaSearchPaths: [URL]
         let outputDir: URL
         let doneFilename: String
         
         @available(*, deprecated, message: "This should be removed and refactored.")
         var xmlPath: URL? {
             fcpxml.xmlPath
-        }
-        
-        @available(*, deprecated, message: "This should be removed and refactored.")
-        var mediaSearchPath: URL? {
-            fcpxml.defaultMediaSearchPath
         }
         
         /// Initialize with defaults for defaultable parameters.
@@ -99,6 +98,7 @@ extension MarkersExtractor {
             self.createDoneFile = Defaults.createDoneFile
             self.doneFilename = Defaults.doneFilename
             self.fcpxml = fcpxml
+            self.mediaSearchPaths = Defaults.mediaSearchPaths(from: fcpxml)
             self.outputDir = outputDir
             
             try validate()
@@ -128,6 +128,7 @@ extension MarkersExtractor {
             createDoneFile: Bool,
             doneFilename: String,
             fcpxml: FCPXMLFile,
+            mediaSearchPaths: [URL],
             outputDir: URL
         ) throws {
             self.exportFormat = exportFormat
@@ -153,6 +154,7 @@ extension MarkersExtractor {
             self.createDoneFile = createDoneFile
             self.doneFilename = doneFilename
             self.fcpxml = fcpxml
+            self.mediaSearchPaths = mediaSearchPaths
             self.outputDir = outputDir
             
             try validate()

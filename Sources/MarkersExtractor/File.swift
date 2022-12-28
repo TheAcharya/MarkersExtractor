@@ -63,6 +63,21 @@ extension File {
 // MARK: - Static Constructors
 
 extension File {
+    public init(_ url: URL) {
+        self.cache = nil
+        self.url = url
+    }
+    
+    public init(_ data: Data) {
+        self.cache = .data(data)
+        self.url = nil
+    }
+    
+    public init(_ string: String) {
+        self.cache = .string(string)
+        self.url = nil
+    }
+    
     public static func url(_ url: URL) -> Self {
         File(cache: nil, url: url)
     }
