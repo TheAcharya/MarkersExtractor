@@ -23,7 +23,7 @@ public final class MarkersExtractor {
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
 
-        logger.info("Extracting markers from \(s.fcpxmlPath.path.quoted).")
+        logger.info("Extracting markers from \(s.fcpxml).")
 
         let markers = try extractMarkers()
         
@@ -93,17 +93,17 @@ public final class MarkersExtractor {
         logger.info("Done!")
     }
 
-    private func extractMarkers(sort: Bool = true) throws -> [Marker] {
+    internal func extractMarkers(sort: Bool = true) throws -> [Marker] {
         var markers: [Marker]
 
         do {
             markers = try FCPXMLMarkerExtractor.extractMarkers(
-                from: s.xmlPath,
+                from: s.fcpxml,
                 idNamingMode: s.idNamingMode
             )
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to parse \(s.xmlPath.path.quoted): \(error.localizedDescription)"
+                "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
             )
         }
 
@@ -124,7 +124,7 @@ public final class MarkersExtractor {
         return markers
     }
 
-    private func findDuplicateIDs(in markers: [Marker]) -> [String] {
+    internal func findDuplicateIDs(in markers: [Marker]) -> [String] {
         Dictionary(grouping: markers, by: { $0.id(s.idNamingMode) })
             .filter { $1.count > 1 }
             .compactMap { $0.1.first }
@@ -132,7 +132,7 @@ public final class MarkersExtractor {
             .sorted()
     }
 
-    private func isAllUniqueIDs(in markers: [Marker]) -> Bool {
+    internal func isAllUniqueIDs(in markers: [Marker]) -> Bool {
         markers
             .map { $0.id(s.idNamingMode) }
             .allSatisfy { !$0.isEmpty }

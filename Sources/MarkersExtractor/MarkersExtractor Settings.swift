@@ -51,18 +51,18 @@ extension MarkersExtractor {
         let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
         let imageLabelHideNames: Bool
         let createDoneFile: Bool
-        let fcpxmlPath: URL
+        let fcpxml: FCPXMLFile
         let outputDir: URL
         let doneFilename: String
         
-        var xmlPath: URL {
-            fcpxmlPath.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
-            ? fcpxmlPath.appendingPathComponent("Info.fcpxml")
-            : fcpxmlPath
+        @available(*, deprecated, message: "This should be removed and refactored.")
+        var xmlPath: URL? {
+            fcpxml.xmlPath
         }
         
-        var mediaSearchPath: URL {
-            fcpxmlPath.deletingLastPathComponent()
+        @available(*, deprecated, message: "This should be removed and refactored.")
+        var mediaSearchPath: URL? {
+            fcpxml.defaultMediaSearchPath
         }
         
         public init(
@@ -88,7 +88,7 @@ extension MarkersExtractor {
             imageLabelHideNames: Bool,
             createDoneFile: Bool,
             doneFilename: String,
-            fcpxmlPath: URL,
+            fcpxml: FCPXMLFile,
             outputDir: URL
         ) throws {
             self.exportFormat = exportFormat
@@ -113,29 +113,31 @@ extension MarkersExtractor {
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
             self.doneFilename = doneFilename
-            self.fcpxmlPath = fcpxmlPath
+            self.fcpxml = fcpxml
             self.outputDir = outputDir
             
             try validate()
         }
         
         private func validate() throws {
-            guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
-                throw MarkersExtractorError.validationError(
-                    "Unsupported input format \(fcpxmlPath.path.quoted)."
-                )
-            }
-            
-            if fcpxmlPath.fileExtension == "fcpxmld" {
-                guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
+            if let fcpxmlPath = fcpxml.url {
+                guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                     throw MarkersExtractorError.validationError(
-                        "Path does not exist at \(fcpxmlPath.path.quoted)."
+                        "Unsupported input format \(fcpxmlPath.path.quoted)."
                     )
                 }
-            }
-            
-            guard FileManager.default.fileExists(atPath: xmlPath.path) else {
-                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted).")
+                
+                if fcpxmlPath.fileExtension == "fcpxmld" {
+                    guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
+                        throw MarkersExtractorError.validationError(
+                            "Path does not exist at \(fcpxmlPath.path.quoted)."
+                        )
+                    }
+                }
+                
+                guard fcpxmlPath.exists else {
+                    throw MarkersExtractorError.validationError("File does not exist at \(fcpxmlPath.path.quoted).")
+                }
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {

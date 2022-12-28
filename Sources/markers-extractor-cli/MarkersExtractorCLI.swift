@@ -225,7 +225,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
                 doneFilename: doneFilename,
-                fcpxmlPath: fcpxmlPath,
+                fcpxml: .init(.url(fcpxmlPath)),
                 outputDir: outputDir
             )
         } catch MarkersExtractorError.validationError(let error) {
