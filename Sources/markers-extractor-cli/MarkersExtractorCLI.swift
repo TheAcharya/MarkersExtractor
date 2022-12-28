@@ -16,7 +16,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var exportFormat: ExportProfileFormat = .csv2Notion
+    var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
     
     @Option(
         help: ArgumentHelp(
