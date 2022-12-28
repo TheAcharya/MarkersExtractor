@@ -155,8 +155,16 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
     
-    @Flag(help: "Create 'done.txt' file in output directory on successful export.")
-    var createDoneFile = false
+    @Flag(help: "Create a file in output directory on successful export. The filename can be customized using --done-filename.")
+    var createDoneFile = MarkersExtractor.Settings.Defaults.createDoneFile
+    
+    @Option(
+        help: ArgumentHelp(
+            "Done file filename. Has no effect unless --create-done-file flag is also supplied.",
+            valueName: "filename.txt"
+        )
+    )
+    var doneFilename: String = MarkersExtractor.Settings.Defaults.doneFilename
     
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
     var log: URL?
@@ -216,6 +224,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelAlignVertical: imageLabelAlignVertical,
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
+                doneFilename: doneFilename,
                 fcpxmlPath: fcpxmlPath,
                 outputDir: outputDir
             )

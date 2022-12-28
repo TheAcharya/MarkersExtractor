@@ -20,6 +20,7 @@ extension MarkersExtractor {
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static let doneFilename = "done.txt"
         }
         
         public enum Validation {
@@ -52,6 +53,7 @@ extension MarkersExtractor {
         let createDoneFile: Bool
         let fcpxmlPath: URL
         let outputDir: URL
+        let doneFilename: String
         
         var xmlPath: URL {
             fcpxmlPath.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
@@ -85,6 +87,7 @@ extension MarkersExtractor {
             imageLabelAlignVertical: MarkerLabelProperties.AlignVertical,
             imageLabelHideNames: Bool,
             createDoneFile: Bool,
+            doneFilename: String,
             fcpxmlPath: URL,
             outputDir: URL
         ) throws {
@@ -109,6 +112,7 @@ extension MarkersExtractor {
             self.imageLabelAlignVertical = imageLabelAlignVertical
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
+            self.doneFilename = doneFilename
             self.fcpxmlPath = fcpxmlPath
             self.outputDir = outputDir
             

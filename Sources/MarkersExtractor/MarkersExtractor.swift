@@ -86,8 +86,8 @@ public final class MarkersExtractor {
         }
 
         if s.createDoneFile {
-            logger.info("Creating 'done.txt' file at \(destPath.path)")
-            try saveDoneFile(at: destPath, text: csvName)
+            logger.info("Creating \(s.doneFilename.quoted) done file at \(destPath.path.quoted)")
+            try saveDoneFile(at: destPath, fileName: s.doneFilename, content: csvName)
         }
 
         logger.info("Done!")
@@ -155,11 +155,11 @@ public final class MarkersExtractor {
         return destPath
     }
 
-    private func saveDoneFile(at destPath: URL, text: String) throws {
-        let doneFile = destPath.appendingPathComponent("done.txt")
+    private func saveDoneFile(at destPath: URL, fileName: String, content: String) throws {
+        let doneFile = destPath.appendingPathComponent(fileName)
 
         do {
-            try text.write(to: doneFile, atomically: true, encoding: .utf8)
+            try content.write(to: doneFile, atomically: true, encoding: .utf8)
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
