@@ -7,13 +7,13 @@ import TimecodeKit
 
 public final class MarkersExtractor {
     private let logger = Logger(label: "\(MarkersExtractor.self)")
-    private let s: MarkersExtractorSettings
+    private let s: Settings
 
-    init(_ settings: MarkersExtractorSettings) {
+    init(_ settings: Settings) {
         s = settings
     }
 
-    public static func extract(_ settings: MarkersExtractorSettings) throws {
+    public static func extract(_ settings: Settings) throws {
         try self.init(settings).run()
     }
 
@@ -32,7 +32,11 @@ public final class MarkersExtractor {
             return
         }
 
-        let projectName = markers[0].parentProjectName
+        if !Resource.validateAll() {
+            logger.warning("Could not validate internal resource files. Export may not work correctly.")
+        }
+        
+        let projectName = markers[0].parentInfo.projectName
 
         let destPath = try makeDestPath(for: projectName)
 
@@ -57,19 +61,22 @@ public final class MarkersExtractor {
         let csvName = "\(projectName).csv"
 
         do {
-            try markersToCSV(
+            try CSVExportModel.export(
                 markers: markers,
+                idMode: s.idNamingMode,
                 csvPath: destPath.appendingPathComponent(csvName),
                 videoPath: videoPath,
-                destPath: destPath,
-                gifFPS: s.gifFPS,
-                gifSpan: s.gifSpan,
-                imageFormat: s.imageFormat,
-                imageQuality: imageQuality,
-                imageDimensions: calcVideoDimensions(for: videoPath),
-                imageLabelFields: imageLabels,
-                imageLabelCopyright: s.imageLabelCopyright,
-                imageLabelProperties: labelProperties
+                outputPath: destPath,
+                imageSettings: .init(
+                    gifFPS: s.gifFPS,
+                    gifSpan: s.gifSpan,
+                    format: s.imageFormat,
+                    quality: imageQuality,
+                    dimensions: calcVideoDimensions(for: videoPath),
+                    labelFields: imageLabels,
+                    labelCopyright: s.imageLabelCopyright,
+                    labelProperties: labelProperties
+                )
             )
         } catch {
             throw MarkersExtractorError.runtimeError(
@@ -117,15 +124,17 @@ public final class MarkersExtractor {
     }
 
     private func findDuplicateIDs(in markers: [Marker]) -> [String] {
-        Dictionary(grouping: markers, by: \.id)
+        Dictionary(grouping: markers, by: { $0.id(s.idNamingMode) })
             .filter { $1.count > 1 }
             .compactMap { $0.1.first }
-            .map { $0.id }
+            .map { $0.id(s.idNamingMode) }
             .sorted()
     }
 
     private func isAllUniqueIDs(in markers: [Marker]) -> Bool {
-        markers.map { $0.id }.allSatisfy { !$0.isEmpty }
+        markers
+            .map { $0.id(s.idNamingMode) }
+            .allSatisfy { !$0.isEmpty }
     }
 
     private func makeDestPath(for projectName: String) throws -> URL {
@@ -158,17 +167,18 @@ public final class MarkersExtractor {
     }
 
     private func findMedia(name: String, path: URL) throws -> URL {
-        var files: [URL] = []
         let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
-
-        do {
-            files = try matchFiles(at: path, name: name, exts: mediaFormats)
-        } catch {
-            throw MarkersExtractorError.runtimeError(
-                "Error finding media for '\(name)': \(error.localizedDescription)"
-            )
-        }
-
+        
+        let files: [URL] = try {
+            do {
+                return try matchFiles(at: path, name: name, exts: mediaFormats)
+            } catch {
+                throw MarkersExtractorError.runtimeError(
+                    "Error finding media for '\(name)': \(error.localizedDescription)"
+                )
+            }
+        }()
+        
         if files.isEmpty {
             throw MarkersExtractorError.runtimeError("No media found for '\(name)'")
         }

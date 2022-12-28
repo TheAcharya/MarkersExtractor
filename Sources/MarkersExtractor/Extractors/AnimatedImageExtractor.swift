@@ -1,8 +1,9 @@
 import AVFoundation
+import ImageIO
 import Foundation
 import Logging
 
-final class ImageExtractorGIF {
+final class AnimatedImageExtractor {
     enum Error: LocalizedError {
         case invalidSettings
         case unreadableFile
@@ -24,8 +25,8 @@ final class ImageExtractorGIF {
             case .gifFinalizationFailed:
                 return "Failed to finalize the GIF file"
             case .notEnoughFrames(let frameCount):
-                return
-                    "An animated GIF requires a minimum of 2 frames. Your video contains \(frameCount) frame\(frameCount == 1 ? "" : "s")."
+                let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
+                return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
             case .generateFrameFailed(let error):
                 return "Failed to generate frame: \(error.localizedDescription)"
             case .addFrameFailed(let error):
@@ -36,43 +37,54 @@ final class ImageExtractorGIF {
         }
     }
 
-    struct Conversion {
-        let asset: AVAsset
+    struct ConversionSettings {
         let sourceURL: URL
         let destURL: URL
         var timeRange: ClosedRange<Double>?
         var dimensions: CGSize?
-        var frameRate: Int
+        var fps: Double
         let imageFilter: ((CGImage) -> CGImage)?
+        let imageFormat: MarkerImageFormat.Animated
     }
 
-    private let logger = Logger(label: "\(ImageExtractorGIF.self)")
+    private let logger = Logger(label: "\(AnimatedImageExtractor.self)")
 
-    private let conversion: Conversion
+    private var conversion: ConversionSettings
 
-    init(_ conversion: Conversion) {
+    init(_ conversion: ConversionSettings) {
         self.conversion = conversion
     }
 
-    static func convert(_ conversion: Conversion) throws {
+    static func convert(_ conversion: ConversionSettings) throws {
         let conv = self.init(conversion)
-        try conv.generateGIF()
+        conv.validate()
+        
+        // only gif is supported for now, but more formats could be added in future
+        switch conv.conversion.imageFormat {
+        case .gif:
+            try conv.generateGIF()
+        }
     }
 
+    private func validate() {
+        // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
+        conversion.fps = conversion.fps.clamped(to: MarkersExtractor.Settings.Validation.gifFPS)
+    }
+    
     private func generateGIF() throws {
         let generator = imageGenerator()
         let times = try rangeToCMTimes()
 
         let startTime = times.first?.seconds ?? 0
-        let delayTime = 1.0 / Float(conversion.frameRate)
+        let delayTime: Float = 1.0 / Float(conversion.fps)
 
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
-                kCGImagePropertyGIFDelayTime as String: delayTime
+                kCGImagePropertyGIFUnclampedDelayTime as String: delayTime
             ]
         ]
 
-        let gifDestination = try initGif(framesCount: times.count)
+        let gifDestination = try initGIF(framesCount: times.count)
 
         var result: Result<Void, Error> = .failure(.invalidSettings)
 
@@ -97,7 +109,7 @@ final class ImageExtractorGIF {
                     result = .success(())
                     group.leave()
                 }
-            } catch let error as ImageExtractorGIF.Error {
+            } catch let error as AnimatedImageExtractor.Error {
                 result = .failure(error)
                 group.leave()
             } catch {
@@ -120,23 +132,20 @@ final class ImageExtractorGIF {
         }
     }
 
-    private func initGif(framesCount: Int) throws -> CGImageDestination {
-        let fileProperties =
-            [
-                kCGImagePropertyGIFDictionary as String: [
-                    kCGImagePropertyGIFLoopCount as String: NSNumber(value: 0)
-                ],
-                kCGImagePropertyGIFHasGlobalColorMap as String: NSValue(nonretainedObject: true),
-            ] as [String: Any]
+    private func initGIF(framesCount: Int) throws -> CGImageDestination {
+        let fileProperties = [
+            kCGImagePropertyGIFDictionary as String: [
+                kCGImagePropertyGIFLoopCount as String: NSNumber(value: 0)
+            ],
+            kCGImagePropertyGIFHasGlobalColorMap as String: NSValue(nonretainedObject: true),
+        ] as [String: Any]
 
-        guard
-            let destination = CGImageDestinationCreateWithURL(
-                conversion.destURL as CFURL,
-                kUTTypeGIF,
-                framesCount,
-                nil
-            )
-        else {
+        guard let destination = CGImageDestinationCreateWithURL(
+            conversion.destURL as CFURL,
+            kUTTypeGIF,
+            framesCount,
+            nil
+        ) else {
             throw Error.gifInitializationFailed
         }
 
@@ -146,7 +155,8 @@ final class ImageExtractorGIF {
     }
 
     private func imageGenerator() -> AVAssetImageGenerator {
-        let generator = AVAssetImageGenerator(asset: conversion.asset)
+        let asset = AVAsset(url: conversion.sourceURL)
+        let generator = AVAssetImageGenerator(asset: asset)
 
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
@@ -162,11 +172,7 @@ final class ImageExtractorGIF {
 
     private func rangeToCMTimes() throws -> [CMTime] {
         let (firstVideoTrack, assetFrameRate, videoTrackRange) = try assetVideoParams()
-
-        // TODO: This is hacky and might be refactorable using TimecodeKit
-        // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower FPS, and we should allow that.
-        var fps = Double(conversion.frameRate).clamped(to: 0.1...120)
-        fps = min(fps, assetFrameRate)
+        let fps = min(conversion.fps, assetFrameRate)
 
         // TODO: Instead of calculating what part of the video to get, we could just trim the actual `AVAssetTrack`.
         let videoRange = conversion.timeRange?.clamped(to: videoTrackRange) ?? videoTrackRange
@@ -188,8 +194,10 @@ final class ImageExtractorGIF {
             )
         }
 
-        // Ensure we include the last frame. For example, the above might have calculated `[..., 6.25, 6.3]`, but the duration is `6.3647`, so we might miss the last frame if it appears for a short time.
-        //        frameForTimes.append(CMTime(seconds: duration, preferredTimescale: timescale))
+        // Ensure we include the last frame.
+        // For example, the above might have calculated `[..., 6.25, 6.3]`, but the duration is `6.3647`,
+        // so we might miss the last frame if it appears for a short time.
+        // frameForTimes.append(CMTime(seconds: duration, preferredTimescale: timescale))
 
         logger.trace("Frame count: \(frameCount)")
         logger.trace("fps: \(fps)")
@@ -205,15 +213,18 @@ final class ImageExtractorGIF {
         nominalFrameRate: Double,
         videoTrackRange: ClosedRange<Double>
     ) {
-        let asset = conversion.asset
+        let asset = AVAsset(url: conversion.sourceURL)
 
         guard
             asset.isReadable,
             let nominalFrameRate = asset.frameRate,
             let firstVideoTrack = asset.firstVideoTrack,
 
-            // We use the duration of the first video track since the total duration of the asset can actually be longer than the video track. If we use the total duration and the video is shorter, we'll get errors in `generateCGImagesAsynchronously` (#119).
-            // We already extract the video into a new asset in `VideoValidator` if the first video track is shorter than the asset duration, so the handling here is not strictly necessary but kept just to be safe.
+            // We use the duration of the first video track since the total duration of the asset
+            // can actually be longer than the video track. If we use the total duration and the
+            // video is shorter, we'll get errors in `generateCGImagesAsynchronously` (#119).
+            // We already extract the video into a new asset in `VideoValidator` if the first video
+            // track is shorter than the asset duration, so the handling here is not strictly necessary but kept just to be safe.
             let videoTrackRange = firstVideoTrack.timeRange.range
         else {
             // This can happen if the user selects a file, and then the file becomes
@@ -225,7 +236,7 @@ final class ImageExtractorGIF {
     }
 
     /// - Returns: `true` if finished.
-    /// - Throws: `ImageExtractorGIF.Error`
+    /// - Throws: `AnimatedImageExtractor.Error`
     private func processFrame(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval,
@@ -258,6 +269,7 @@ final class ImageExtractorGIF {
             CGImageDestinationAddImage(destination, image, frameProperties)
 
             return result.isFinished
+            
         case .failure(let error):
             throw Error.generateFrameFailed(error)
         }

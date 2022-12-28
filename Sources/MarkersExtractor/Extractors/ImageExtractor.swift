@@ -35,12 +35,11 @@ final class ImageExtractor {
         }
     }
 
-    struct Conversion {
-        let asset: AVAsset
+    struct ConversionSettings {
         let sourceURL: URL
         let destURL: URL
         let timecodes: OrderedDictionary<String, Timecode>
-        let frameFormat: MarkerImageFormat
+        let frameFormat: MarkerImageFormat.Still
         let frameJPGQuality: Double?
         let dimensions: CGSize?
         let imageFilter: ((CGImage) -> CGImage)?
@@ -48,13 +47,13 @@ final class ImageExtractor {
 
     private let logger = Logger(label: "\(ImageExtractor.self)")
 
-    private let conversion: Conversion
+    private let conversion: ConversionSettings
 
-    init(_ conversion: Conversion) {
+    init(_ conversion: ConversionSettings) {
         self.conversion = conversion
     }
 
-    static func convert(_ conversion: Conversion) throws {
+    static func convert(_ conversion: ConversionSettings) throws {
         let conv = self.init(conversion)
         try conv.generateImages()
     }
@@ -107,7 +106,8 @@ final class ImageExtractor {
     }
 
     private func imageGenerator() throws -> AVAssetImageGenerator {
-        let generator = AVAssetImageGenerator(asset: conversion.asset)
+        let asset = AVAsset(url: conversion.sourceURL)
+        let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
@@ -158,8 +158,6 @@ final class ImageExtractor {
                         colorSpace: ciimage.colorSpace!,
                         options: options
                     )
-                default:
-                    return .failure(.unsupportedType)
                 }
             } catch {
                 return .failure(.addFrameFailed(error))

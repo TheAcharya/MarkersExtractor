@@ -22,7 +22,7 @@ class FCPXMLMarkerExtractor {
     public func extractMarkers() -> [Marker] {
         var fcpxmlMarkers: [Marker] = []
 
-        // Shouldn't there be only one project?
+        // TODO: Shouldn't there be only one project?
         for project in fcpxmlDoc.fcpxAllProjects {
             fcpxmlMarkers += extractProjectMarkers(project).compactMap(convertMarker)
         }
@@ -57,8 +57,6 @@ class FCPXMLMarkerExtractor {
         let parentLibrary = parentEvent.parentElement!
 
         let type = getMarkerType(markerXML)
-        let isChecked = (type == .todo && markerXML.getElementAttribute("completed") == "1")
-        let status = getStatus(type, isChecked)
 
         let fps = getParentFPS(markerXML)
         let parentDuration = (try? parentClip.fcpxDuration?.toTimecode(at: fps)) ?? .init(at: fps)
@@ -70,15 +68,14 @@ class FCPXMLMarkerExtractor {
             name: markerXML.fcpxValue ?? "",
             notes: markerXML.fcpxNote ?? "",
             role: roles,
-            status: status,
-            checked: isChecked,
             position: position,
-            parentClipName: getClipName(parentClip),
-            parentClipDuration: parentDuration,
-            parentEventName: parentEvent.fcpxName ?? "",
-            parentProjectName: parentProject.fcpxName ?? "",
-            parentLibraryName: getLibraryName(parentLibrary) ?? "",
-            nameMode: idNamingMode
+            parentInfo: Marker.ParentInfo(
+                clipName: getClipName(parentClip),
+                clipDuration: parentDuration,
+                eventName: parentEvent.fcpxName ?? "",
+                projectName: parentProject.fcpxName ?? "",
+                libraryName: getLibraryName(parentLibrary) ?? ""
+            )
         )
     }
 
@@ -168,8 +165,9 @@ class FCPXMLMarkerExtractor {
             return .chapter
         }
 
-        if marker.getElementAttribute("completed") != nil {
-            return .todo
+        // "completed" attribute is only present if marker is a To Do
+        if let completed = marker.getElementAttribute("completed") {
+            return .todo(completed: completed == "1")
         }
 
         return .standard
@@ -195,16 +193,5 @@ class FCPXMLMarkerExtractor {
 
         // Clean out all nil and return sorted array
         return roles.compactMap { $0?.localizedCapitalized }.sorted()
-    }
-
-    private func getStatus(_ markerType: MarkerType, _ isChecked: Bool) -> MarkerStatus {
-        switch markerType {
-        case .standard:
-            return .notStarted
-        case .todo:
-            return isChecked ? .done : .inProgress
-        case .chapter:
-            return .notStarted
-        }
     }
 }
