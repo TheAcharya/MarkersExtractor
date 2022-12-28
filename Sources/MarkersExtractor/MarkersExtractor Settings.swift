@@ -18,6 +18,7 @@ extension MarkersExtractor {
             public static let imageLabelFontStrokeColor = "#000"
             public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
+            public static let imageLabelHideNames = false
             public static let createDoneFile = false
         }
         
@@ -47,6 +48,7 @@ extension MarkersExtractor {
         let imageLabelFontStrokeWidth: Int?
         let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
         let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
+        let imageLabelHideNames: Bool
         let createDoneFile: Bool
         let fcpxmlPath: URL
         let outputDir: URL
@@ -81,6 +83,7 @@ extension MarkersExtractor {
             imageLabelFontStrokeWidth: Int?,
             imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal,
             imageLabelAlignVertical: MarkerLabelProperties.AlignVertical,
+            imageLabelHideNames: Bool,
             createDoneFile: Bool,
             fcpxmlPath: URL,
             outputDir: URL
@@ -104,6 +107,7 @@ extension MarkersExtractor {
             self.imageLabelFontStrokeWidth = imageLabelFontStrokeWidth
             self.imageLabelAlignHorizontal = imageLabelAlignHorizontal
             self.imageLabelAlignVertical = imageLabelAlignVertical
+            self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
             self.fcpxmlPath = fcpxmlPath
             self.outputDir = outputDir

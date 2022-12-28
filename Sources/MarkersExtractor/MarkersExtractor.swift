@@ -75,7 +75,8 @@ public final class MarkersExtractor {
                     dimensions: calcVideoDimensions(for: videoPath),
                     labelFields: imageLabels,
                     labelCopyright: s.imageLabelCopyright,
-                    labelProperties: labelProperties
+                    labelProperties: labelProperties,
+                    imageLabelHideNames: s.imageLabelHideNames
                 )
             )
         } catch {

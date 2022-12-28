@@ -150,6 +150,12 @@ struct MarkersExtractorCLI: ParsableCommand {
     var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
         .Defaults.imageLabelAlignVertical
     
+    @Flag(
+        name: [.customLong("label-hide-names")],
+        help: ArgumentHelp("Hide names of image labels.")
+    )
+    var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
+    
     @Flag(help: "Create 'done.txt' file in output directory on successful export.")
     var createDoneFile = false
     
@@ -209,6 +215,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelFontStrokeWidth: imageLabelFontStrokeWidth,
                 imageLabelAlignHorizontal: imageLabelAlignHorizontal,
                 imageLabelAlignVertical: imageLabelAlignVertical,
+                imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
                 fcpxmlPath: fcpxmlPath,
                 outputDir: outputDir
