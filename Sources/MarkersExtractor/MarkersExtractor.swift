@@ -157,11 +157,10 @@ extension MarkersExtractor {
         )
         
         do {
-            // TODO: this should throw an error if the folder already exists; this folder should be created new every time
-            try FileManager.default.mkdirWithParent(outputPath.path)
+            try FileManager.default.mkdirWithParent(outputPath.path, reuseExisting: false)
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to create destination dir \(outputPath.path.quoted): \(error.localizedDescription)"
+                "Failed to create output dir \(outputPath.path.quoted): \(error.localizedDescription)"
             )
         }
         

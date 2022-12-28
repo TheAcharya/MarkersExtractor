@@ -169,7 +169,7 @@ extension MarkersExtractor {
                 }
                 
                 if fcpxmlPath.fileExtension == "fcpxmld" {
-                    guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
+                    guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
                         throw MarkersExtractorError.validationError(
                             "Path does not exist at \(fcpxmlPath.path.quoted)."
                         )
