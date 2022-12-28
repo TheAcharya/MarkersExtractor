@@ -7,15 +7,21 @@ extension MarkersExtractor {
             public static let exportFormat: MarkersExportFormat = .csv
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
+            public static let imageWidth: Int? = nil
+            public static let imageHeight: Int? = nil
+            public static let imageSizePercent: Int? = 100
             public static let imageSizePercentGIF = 50
             public static let gifFPS: Double = 10.0
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
+            public static let imageLabels: [CSVExportModel.Field] = []
+            public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
             public static let imageLabelFontMaxSize = 30
             public static let imageLabelFontOpacity = 100
             public static let imageLabelFontColor = "#FFF"
             public static let imageLabelFontStrokeColor = "#000"
+            public static let imageLabelFontStrokeWidth: Int? = nil
             public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
@@ -63,6 +69,39 @@ extension MarkersExtractor {
         @available(*, deprecated, message: "This should be removed and refactored.")
         var mediaSearchPath: URL? {
             fcpxml.defaultMediaSearchPath
+        }
+        
+        /// Initialize with defaults for defaultable parameters.
+        public init(
+            fcpxml: FCPXMLFile,
+            outputDir: URL
+        ) throws {
+            self.exportFormat = Defaults.exportFormat
+            self.imageFormat = Defaults.imageFormat
+            self.imageQuality = Defaults.imageQuality
+            self.imageWidth = Defaults.imageWidth
+            self.imageHeight = Defaults.imageHeight
+            self.imageSizePercent = Defaults.imageSizePercent
+            self.gifFPS = Defaults.gifFPS
+            self.gifSpan = Defaults.gifSpan
+            self.idNamingMode = Defaults.idNamingMode
+            self.imageLabels = Defaults.imageLabels
+            self.imageLabelCopyright = Defaults.imageLabelCopyright
+            self.imageLabelFont = Defaults.imageLabelFont
+            self.imageLabelFontMaxSize = Defaults.imageLabelFontMaxSize
+            self.imageLabelFontOpacity = Defaults.imageLabelFontOpacity
+            self.imageLabelFontColor = Defaults.imageLabelFontColor
+            self.imageLabelFontStrokeColor = Defaults.imageLabelFontStrokeColor
+            self.imageLabelFontStrokeWidth = Defaults.imageLabelFontStrokeWidth
+            self.imageLabelAlignHorizontal = Defaults.imageLabelAlignHorizontal
+            self.imageLabelAlignVertical = Defaults.imageLabelAlignVertical
+            self.imageLabelHideNames = Defaults.imageLabelHideNames
+            self.createDoneFile = Defaults.createDoneFile
+            self.doneFilename = Defaults.doneFilename
+            self.fcpxml = fcpxml
+            self.outputDir = outputDir
+            
+            try validate()
         }
         
         public init(
