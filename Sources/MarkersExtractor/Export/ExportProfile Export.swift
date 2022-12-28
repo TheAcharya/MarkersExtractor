@@ -77,7 +77,7 @@ extension ExportProfile {
             try writeStillImages(
                 timecodes: timecodes,
                 video: videoPath,
-                destPath: outputPath,
+                outputPath: outputPath,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: imageSettings.quality,
                 imageDimensions: imageSettings.dimensions,
@@ -88,7 +88,7 @@ extension ExportProfile {
             try writeAnimatedImages(
                 timecodes: timecodes,
                 video: videoPath,
-                destPath: outputPath,
+                outputPath: outputPath,
                 gifFPS: imageSettings.gifFPS,
                 gifSpan: imageSettings.gifSpan,
                 gifDimensions: imageSettings.dimensions,

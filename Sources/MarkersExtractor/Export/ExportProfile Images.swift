@@ -9,7 +9,7 @@ extension ExportProfile {
     static func writeAnimatedImages(
         timecodes: OrderedDictionary<String, Timecode>,
         video videoPath: URL,
-        destPath: URL,
+        outputPath: URL,
         gifFPS: Double,
         gifSpan: TimeInterval,
         gifDimensions: CGSize?,
@@ -27,7 +27,7 @@ extension ExportProfile {
         }
         
         for (imageName, timecode) in timecodes {
-            let gifPath = destPath.appendingPathComponent(imageName)
+            let gifPath = outputPath.appendingPathComponent(imageName)
             
             let timePoint = timecode.realTimeValue
             let gifSpan = gifSpan / 2
@@ -37,7 +37,7 @@ extension ExportProfile {
             
             let conversion = AnimatedImageExtractor.ConversionSettings(
                 sourceURL: videoPath,
-                destURL: gifPath,
+                outputURL: gifPath,
                 timeRange: timeRange,
                 dimensions: gifDimensions,
                 fps: gifFPS,
@@ -59,7 +59,7 @@ extension ExportProfile {
     static func writeStillImages(
         timecodes: OrderedDictionary<String, Timecode>,
         video videoPath: URL,
-        destPath: URL,
+        outputPath: URL,
         imageFormat: MarkerImageFormat.Still,
         imageJPGQuality: Double,
         imageDimensions: CGSize?,
@@ -77,7 +77,7 @@ extension ExportProfile {
         
         let conversion = ImageExtractor.ConversionSettings(
             sourceURL: videoPath,
-            destURL: destPath,
+            outputURL: outputPath,
             timecodes: timecodes,
             frameFormat: imageFormat,
             frameJPGQuality: imageJPGQuality,
