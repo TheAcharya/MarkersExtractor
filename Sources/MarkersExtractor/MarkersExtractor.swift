@@ -32,6 +32,10 @@ public final class MarkersExtractor {
             return
         }
 
+        if !Resource.validate() {
+            logger.warning("Could not validate internal resource files. Export may not work correctly.")
+        }
+        
         let projectName = markers[0].parentInfo.projectName
 
         let destPath = try makeDestPath(for: projectName)
