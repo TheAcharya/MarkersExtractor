@@ -1,4 +1,4 @@
-extension CSVExportModel {
+extension CSVExportProfile {
     /// Markers CSV fields (header column names).
     public enum Field: String, CaseIterable {
         case id
@@ -19,7 +19,7 @@ extension CSVExportModel {
     }
 }
 
-extension CSVExportModel.Field: MarkersExportField {
+extension CSVExportProfile.Field: ExportField {
     public var name: String {
         switch self {
         case .id: return "Marker ID"

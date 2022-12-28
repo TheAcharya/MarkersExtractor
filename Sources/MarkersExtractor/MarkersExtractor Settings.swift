@@ -4,7 +4,7 @@ import Foundation
 extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
-            public static let exportFormat: MarkersExportFormat = .csv
+            public static let exportFormat: ExportProfileFormat = .csv2Notion
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
             public static let imageWidth: Int? = nil
@@ -14,7 +14,7 @@ extension MarkersExtractor {
             public static let gifFPS: Double = 10.0
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
-            public static let imageLabels: [CSVExportModel.Field] = []
+            public static let imageLabels: [CSVExportProfile.Field] = []
             public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
             public static let imageLabelFontMaxSize = 30
@@ -39,7 +39,7 @@ extension MarkersExtractor {
             public static let imageLabelFontOpacity = 0 ... 100
         }
         
-        let exportFormat: MarkersExportFormat
+        let exportFormat: ExportProfileFormat
         let imageFormat: MarkerImageFormat
         let imageQuality: Int
         let imageWidth: Int?
@@ -48,7 +48,7 @@ extension MarkersExtractor {
         let gifFPS: Double
         let gifSpan: TimeInterval
         let idNamingMode: MarkerIDMode
-        let imageLabels: [CSVExportModel.Field]
+        let imageLabels: [CSVExportProfile.Field]
         let imageLabelCopyright: String?
         let imageLabelFont: String
         let imageLabelFontMaxSize: Int
@@ -105,7 +105,7 @@ extension MarkersExtractor {
         }
         
         public init(
-            exportFormat: MarkersExportFormat,
+            exportFormat: ExportProfileFormat,
             imageFormat: MarkerImageFormat,
             imageQuality: Int,
             imageWidth: Int?,
@@ -114,7 +114,7 @@ extension MarkersExtractor {
             gifFPS: Double,
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
-            imageLabels: [CSVExportModel.Field],
+            imageLabels: [CSVExportProfile.Field],
             imageLabelCopyright: String?,
             imageLabelFont: String,
             imageLabelFontMaxSize: Int,

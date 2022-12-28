@@ -3,7 +3,7 @@ import Foundation
 import OrderedCollections
 import TimecodeKit
 
-extension MarkersExportModel {
+extension ExportProfile {
     /// Generate animated images on disk.
     /// For the time being, the only format supported is Animated GIF.
     static func writeAnimatedImages(

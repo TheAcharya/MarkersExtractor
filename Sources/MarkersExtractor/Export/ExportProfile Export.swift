@@ -4,14 +4,14 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-extension MarkersExportModel {
+extension ExportProfile {
     public static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
-        imageSettings: MarkersExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>
     ) throws {
         let logger = Logger(label: "markersExport")
         

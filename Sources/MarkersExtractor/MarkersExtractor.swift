@@ -62,7 +62,7 @@ public final class MarkersExtractor {
         let csvPath = destPath.appendingPathComponent(csvName)
         
         do {
-            try CSVExportModel.export(
+            try CSVExportProfile.export(
                 markers: markers,
                 idMode: s.idNamingMode,
                 csvPath: csvPath,

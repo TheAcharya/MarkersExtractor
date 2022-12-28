@@ -1,9 +1,9 @@
 import Foundation
 import OrderedCollections
 
-extension CSVExportModel {
+extension CSVExportProfile {
     /// A marker with its contents prepared for CSV output.
-    public struct PreparedMarker: MarkersExportPreparedMarker {
+    public struct PreparedMarker: ExportMarker {
         public let id: String
         public let name: String
         public let type: String
@@ -66,7 +66,7 @@ extension CSVExportModel {
     }
 }
 
-extension CSVExportModel.PreparedMarker {
+extension CSVExportProfile.PreparedMarker {
     enum Status: String, CaseIterable {
         case notStarted = "Not Started"
         case inProgress = "In Progress"
@@ -84,7 +84,7 @@ extension Marker {
         }
     }
     
-    fileprivate var status: CSVExportModel.PreparedMarker.Status {
+    fileprivate var status: CSVExportProfile.PreparedMarker.Status {
         switch type {
         case .standard:
             return .notStarted

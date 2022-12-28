@@ -13,10 +13,10 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Metadata export format.",
-            valueName: MarkersExportFormat.allCases.map { $0.rawValue }.joined(separator: ",")
+            valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var exportFormat: MarkersExportFormat = .csv
+    var exportFormat: ExportProfileFormat = .csv2Notion
     
     @Option(
         help: ArgumentHelp(
@@ -70,10 +70,10 @@ struct MarkersExtractorCLI: ParsableCommand {
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(CSVExportModel.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
+            valueName: "\(CSVExportProfile.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
         )
     )
-    var imageLabels: [CSVExportModel.Field] = []
+    var imageLabels: [CSVExportProfile.Field] = []
     
     @Option(
         name: [.customLong("label-copyright")],
@@ -285,7 +285,7 @@ extension MarkersExtractorCLI {
     
     static func printHelpLabels() {
         print("List of available label headers:")
-        for header in CSVExportModel.Field.allCases {
+        for header in CSVExportProfile.Field.allCases {
             print("    \(header.rawValue)")
         }
     }
