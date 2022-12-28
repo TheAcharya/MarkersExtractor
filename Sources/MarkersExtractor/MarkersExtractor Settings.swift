@@ -118,24 +118,24 @@ extension MarkersExtractor {
         private func validate() throws {
             guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                 throw MarkersExtractorError.validationError(
-                    "Unsupported input format '\(fcpxmlPath.path)'"
+                    "Unsupported input format \(fcpxmlPath.path.quoted)"
                 )
             }
             
             if fcpxmlPath.fileExtension == "fcpxmld" {
                 guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
                     throw MarkersExtractorError.validationError(
-                        "Path does not exist at '\(fcpxmlPath.path)'"
+                        "Path does not exist at \(fcpxmlPath.path.quoted)"
                     )
                 }
             }
             
             guard FileManager.default.fileExists(atPath: xmlPath.path) else {
-                throw MarkersExtractorError.validationError("File does not exist at '\(xmlPath.path)'")
+                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted)")
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError.validationError("Cannot use font '\(imageLabelFont)'")
+                throw MarkersExtractorError.validationError("Cannot use font \(imageLabelFont.quoted)")
             }
             
             if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,

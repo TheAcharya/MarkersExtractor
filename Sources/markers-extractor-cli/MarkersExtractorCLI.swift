@@ -180,7 +180,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
-            throw ValidationError("Cannot write log file at '\(log.path)'")
+            throw ValidationError("Cannot write log file at \(log.path.quoted)")
         }
         
         if imageFormat == .animated(.gif), imageSizePercent == nil {
@@ -245,7 +245,7 @@ extension MarkersExtractorCLI {
                     logHandlers.append(try FileLogHandler.init(label: label, localFile: logFile))
                 } catch {
                     print(
-                        "Cannot write to log file '\(logFile.lastPathComponent)':"
+                        "Cannot write to log file \(logFile.lastPathComponent.quoted):"
                             + " \(error.localizedDescription)"
                     )
                 }
@@ -262,7 +262,7 @@ extension MarkersExtractorCLI {
     static func printHelpLabels() {
         print("List of available label headers:")
         for header in CSVExportModel.Field.allCases {
-            print("    '\(header.rawValue)'")
+            print("    \(header.rawValue)")
         }
     }
 }

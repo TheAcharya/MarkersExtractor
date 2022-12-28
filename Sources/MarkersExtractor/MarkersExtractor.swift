@@ -23,7 +23,7 @@ public final class MarkersExtractor {
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
 
-        logger.info("Extracting markers from '\(s.fcpxmlPath.path)'")
+        logger.info("Extracting markers from \(s.fcpxmlPath.path.quoted)")
 
         let markers = try extractMarkers()
         
@@ -42,8 +42,8 @@ public final class MarkersExtractor {
 
         let videoPath = try findMedia(name: projectName, path: s.mediaSearchPath)
 
-        logger.info("Found project media file '\(videoPath.path)'")
-        logger.info("Generating CSV with \(imageFormatEXT) images into '\(destPath.path)'")
+        logger.info("Found project media file \(videoPath.path.quoted)")
+        logger.info("Generating CSV with \(imageFormatEXT) images into \(destPath.path.quoted)")
 
         let labelProperties = MarkerLabelProperties(
             fontName: s.imageLabelFont,
@@ -103,7 +103,7 @@ public final class MarkersExtractor {
             )
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to parse '\(s.xmlPath.path)': \(error.localizedDescription)"
+                "Failed to parse \(s.xmlPath.path.quoted): \(error.localizedDescription)"
             )
         }
 
@@ -148,7 +148,7 @@ public final class MarkersExtractor {
             try FileManager.default.mkdirWithParent(destPath.path)
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to create destination dir '\(destPath.path)': \(error.localizedDescription)"
+                "Failed to create destination dir \(destPath.path.quoted): \(error.localizedDescription)"
             )
         }
 
@@ -162,7 +162,7 @@ public final class MarkersExtractor {
             try text.write(to: doneFile, atomically: true, encoding: .utf8)
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to create done file '\(doneFile.path)': \(error.localizedDescription)"
+                "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
             )
         }
     }
@@ -175,17 +175,17 @@ public final class MarkersExtractor {
                 return try matchFiles(at: path, name: name, exts: mediaFormats)
             } catch {
                 throw MarkersExtractorError.runtimeError(
-                    "Error finding media for '\(name)': \(error.localizedDescription)"
+                    "Error finding media for \(name.quoted): \(error.localizedDescription)"
                 )
             }
         }()
         
         if files.isEmpty {
-            throw MarkersExtractorError.runtimeError("No media found for '\(name)'")
+            throw MarkersExtractorError.runtimeError("No media found for \(name.quoted)")
         }
 
         if files.count > 1 {
-            logger.warning("Found more than one media candidate for '\(name)'")
+            logger.warning("Found more than one media candidate for \(name.quoted)")
         }
 
         return files[0]
