@@ -163,3 +163,25 @@ extension FourCharCode {
             .trimmingCharacters(in: .whitespaces)
     }
 }
+
+extension URL {
+    /// Form a URL to a resource file contained within this Swift package.
+    init?(
+        moduleResource: String,
+        withExtension: String,
+        subFolder: String? = nil
+    ) {
+        guard let url = Bundle.module.url(
+            forResource: moduleResource,
+            withExtension: withExtension,
+            subdirectory: subFolder
+        ) else { return nil }
+        self = url
+    }
+    
+    var exists: Bool { FileManager.default.fileExists(atPath: path) }
+    
+    var isReadable: Bool { boolResourceValue(forKey: .isReadableKey) }
+    
+    var isWritable: Bool { boolResourceValue(forKey: .isWritableKey) }
+}

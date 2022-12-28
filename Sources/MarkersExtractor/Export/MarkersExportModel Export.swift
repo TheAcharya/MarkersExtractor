@@ -26,8 +26,10 @@ extension MarkersExportModel {
         if !isVideoPresent {
             logger.info("Media file has no video track, using video placeholder for markers.")
             
-            videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholder)
-            videoPath = videoPlaceholder.url!
+            if let markerVideoPlaceholderData = Resource.marker_video_placeholder_mov.data {
+                videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
+                videoPath = videoPlaceholder.url!
+            }
         }
         
         // prepare markers
@@ -165,8 +167,10 @@ extension MarkersExportModel {
         let icons = Set(markers.map { $0.icon })
         
         for icon in icons {
-            let iconURL = distDir.appendingPathComponent(icon.fileName)
-            try icon.bin.write(to: iconURL)
+            let targetURL = distDir.appendingPathComponent(icon.fileName)
+            if let iconURL = icon.url {
+                try FileManager.default.copyItem(at: iconURL, to: targetURL)
+            }
         }
     }
     
