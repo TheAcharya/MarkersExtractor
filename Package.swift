@@ -38,6 +38,10 @@ let package = Package(
                 .copy("Resources")
             ]
         ),
+        .testTarget(
+            name: "MarkersExtractorTests",
+            dependencies: ["MarkersExtractor"]
+        ),
         .executableTarget(
             name: "markers-extractor-cli",
             dependencies: [
