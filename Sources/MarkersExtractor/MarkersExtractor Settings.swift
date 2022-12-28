@@ -39,31 +39,31 @@ extension MarkersExtractor {
             public static let imageLabelFontOpacity = 0 ... 100
         }
         
-        let exportFormat: ExportProfileFormat
-        let imageFormat: MarkerImageFormat
-        let imageQuality: Int
-        let imageWidth: Int?
-        let imageHeight: Int?
-        let imageSizePercent: Int?
-        let gifFPS: Double
-        let gifSpan: TimeInterval
-        let idNamingMode: MarkerIDMode
-        let imageLabels: [CSVExportProfile.Field]
-        let imageLabelCopyright: String?
-        let imageLabelFont: String
-        let imageLabelFontMaxSize: Int
-        let imageLabelFontOpacity: Int
-        let imageLabelFontColor: String
-        let imageLabelFontStrokeColor: String
-        let imageLabelFontStrokeWidth: Int?
-        let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
-        let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
-        let imageLabelHideNames: Bool
-        let createDoneFile: Bool
-        let fcpxml: FCPXMLFile
-        var mediaSearchPaths: [URL]
-        let outputDir: URL
-        let doneFilename: String
+        public var exportFormat: ExportProfileFormat
+        public var imageFormat: MarkerImageFormat
+        public var imageQuality: Int
+        public var imageWidth: Int?
+        public var imageHeight: Int?
+        public var imageSizePercent: Int?
+        public var gifFPS: Double
+        public var gifSpan: TimeInterval
+        public var idNamingMode: MarkerIDMode
+        public var imageLabels: [CSVExportProfile.Field]
+        public var imageLabelCopyright: String?
+        public var imageLabelFont: String
+        public var imageLabelFontMaxSize: Int
+        public var imageLabelFontOpacity: Int
+        public var imageLabelFontColor: String
+        public var imageLabelFontStrokeColor: String
+        public var imageLabelFontStrokeWidth: Int?
+        public var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
+        public var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
+        public var imageLabelHideNames: Bool
+        public var createDoneFile: Bool
+        public var fcpxml: FCPXMLFile
+        public var mediaSearchPaths: [URL]
+        public var outputDir: URL
+        public var doneFilename: String
         
         @available(*, deprecated, message: "This should be removed and refactored.")
         var xmlPath: URL? {

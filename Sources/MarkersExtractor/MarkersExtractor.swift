@@ -116,7 +116,7 @@ extension MarkersExtractor {
             )
         }
         
-        if !isAllUniqueIDs(in: markers) {
+        if !isAllUniqueIDNonEmpty(in: markers) {
             throw MarkersExtractorError.runtimeError("Every marker must have non-empty ID.")
         }
         
@@ -141,7 +141,7 @@ extension MarkersExtractor {
             .sorted()
     }
     
-    internal func isAllUniqueIDs(in markers: [Marker]) -> Bool {
+    internal func isAllUniqueIDNonEmpty(in markers: [Marker]) -> Bool {
         markers
             .map { $0.id(s.idNamingMode) }
             .allSatisfy { !$0.isEmpty }
