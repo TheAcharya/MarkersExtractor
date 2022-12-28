@@ -3,7 +3,8 @@ import XCTest
 import TimecodeKit
 
 final class MarkersExtractorTests: XCTestCase {
-    func testBasicMarkers() throws {
+    /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
+    func testBasicMarkers_extractMarkers() throws {
         let settings = try MarkersExtractor.Settings(
             fcpxml: .init(.data(fcpxmlBasicMarkersData)),
             outputDir: FileManager.default.temporaryDirectory
