@@ -69,9 +69,8 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
-            "Label to put on a thumb image, can be used multiple times form multiple labels."
-            + " Use --help-labels to get full list of available labels.",
-            valueName: "label"
+            "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
+            valueName: "\(CSVExportModel.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
         )
     )
     var imageLabels: [CSVExportModel.Field] = []

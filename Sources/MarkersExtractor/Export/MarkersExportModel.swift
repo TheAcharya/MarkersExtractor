@@ -1,13 +1,10 @@
 import Foundation
 
 public protocol MarkersExportModel
-    where Field: Hashable,
-    Field: RawRepresentable,
-    Field.RawValue == String,
-    PreparedMarker.Field == Field
+    where PreparedMarker.Field == Field
 {
-    associatedtype Field
-    associatedtype Payload: MarkersExportModelPayload
+    associatedtype Field: MarkersExportField
+    associatedtype Payload: MarkersExportPayload
     associatedtype PreparedMarker: MarkersExportPreparedMarker
     
     /// Exports markers to disk.

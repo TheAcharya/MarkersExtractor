@@ -1,12 +1,8 @@
 import Foundation
 import OrderedCollections
 
-public protocol MarkersExportPreparedMarker
-    where Field: Hashable,
-    Field: RawRepresentable,
-    Field.RawValue == String
-{
-    associatedtype Field
+public protocol MarkersExportPreparedMarker {
+    associatedtype Field: MarkersExportField
     
     var imageFileName: String { get }
     

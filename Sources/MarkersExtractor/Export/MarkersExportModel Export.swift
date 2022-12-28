@@ -136,7 +136,7 @@ extension MarkersExportModel {
             .map { $0.dictionaryRepresentation() }
             .map { markerDict in
                 headers
-                    .map { "\($0.rawValue): \(markerDict[$0] ?? "")" }
+                    .map { "\($0.name): \(markerDict[$0] ?? "")" }
                     .joined(separator: "\n")
             }
     }
