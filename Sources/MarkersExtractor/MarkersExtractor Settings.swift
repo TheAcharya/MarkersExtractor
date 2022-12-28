@@ -18,7 +18,9 @@ extension MarkersExtractor {
             public static let imageLabelFontStrokeColor = "#000"
             public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
+            public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static let doneFilename = "done.txt"
         }
         
         public enum Validation {
@@ -47,9 +49,11 @@ extension MarkersExtractor {
         let imageLabelFontStrokeWidth: Int?
         let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
         let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
+        let imageLabelHideNames: Bool
         let createDoneFile: Bool
         let fcpxmlPath: URL
         let outputDir: URL
+        let doneFilename: String
         
         var xmlPath: URL {
             fcpxmlPath.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
@@ -81,7 +85,9 @@ extension MarkersExtractor {
             imageLabelFontStrokeWidth: Int?,
             imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal,
             imageLabelAlignVertical: MarkerLabelProperties.AlignVertical,
+            imageLabelHideNames: Bool,
             createDoneFile: Bool,
+            doneFilename: String,
             fcpxmlPath: URL,
             outputDir: URL
         ) throws {
@@ -104,7 +110,9 @@ extension MarkersExtractor {
             self.imageLabelFontStrokeWidth = imageLabelFontStrokeWidth
             self.imageLabelAlignHorizontal = imageLabelAlignHorizontal
             self.imageLabelAlignVertical = imageLabelAlignVertical
+            self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
+            self.doneFilename = doneFilename
             self.fcpxmlPath = fcpxmlPath
             self.outputDir = outputDir
             
@@ -114,24 +122,24 @@ extension MarkersExtractor {
         private func validate() throws {
             guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                 throw MarkersExtractorError.validationError(
-                    "Unsupported input format '\(fcpxmlPath.path)'"
+                    "Unsupported input format \(fcpxmlPath.path.quoted)"
                 )
             }
             
             if fcpxmlPath.fileExtension == "fcpxmld" {
                 guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
                     throw MarkersExtractorError.validationError(
-                        "Path does not exist at '\(fcpxmlPath.path)'"
+                        "Path does not exist at \(fcpxmlPath.path.quoted)"
                     )
                 }
             }
             
             guard FileManager.default.fileExists(atPath: xmlPath.path) else {
-                throw MarkersExtractorError.validationError("File does not exist at '\(xmlPath.path)'")
+                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted)")
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError.validationError("Cannot use font '\(imageLabelFont)'")
+                throw MarkersExtractorError.validationError("Cannot use font \(imageLabelFont.quoted)")
             }
             
             if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,

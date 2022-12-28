@@ -77,6 +77,14 @@ extension Sequence {
     }
 }
 
+extension String {
+    /// Wraps a string with double-quotes (`"`)
+    @_disfavoredOverload
+    public var quoted: Self {
+        "\"\(self)\""
+    }
+}
+
 // MARK: - FileManager
 
 extension FileManager {

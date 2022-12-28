@@ -29,6 +29,8 @@ extension MarkersExportModel {
             if let markerVideoPlaceholderData = Resource.marker_video_placeholder_mov.data {
                 videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
                 videoPath = videoPlaceholder.url!
+            } else {
+                logger.warning("Could not locate or read video placeholder file.")
             }
         }
         
@@ -59,7 +61,8 @@ extension MarkersExportModel {
         let imageLabelText = makeImageLabelText(
             preparedMarkers: preparedMarkers,
             imageLabelFields: imageSettings.labelFields,
-            imageLabelCopyright: imageSettings.labelCopyright
+            imageLabelCopyright: imageSettings.labelCopyright,
+            includeHeaders: !imageSettings.imageLabelHideNames
         )
         
         let timecodes = makeTimecodes(
@@ -105,13 +108,18 @@ extension MarkersExportModel {
     private static func makeImageLabelText(
         preparedMarkers: [PreparedMarker],
         imageLabelFields: [Field],
-        imageLabelCopyright: String?
+        imageLabelCopyright: String?,
+        includeHeaders: Bool
     ) -> [String] {
         var imageLabelText: [String] = []
         
         if !imageLabelFields.isEmpty {
             imageLabelText.append(
-                contentsOf: makeLabels(headers: imageLabelFields, preparedMarkers: preparedMarkers)
+                contentsOf: makeLabels(
+                    headers: imageLabelFields,
+                    includeHeaders: includeHeaders,
+                    preparedMarkers: preparedMarkers
+                )
             )
         }
         
@@ -128,13 +136,17 @@ extension MarkersExportModel {
     
     private static func makeLabels(
         headers: [Field],
+        includeHeaders: Bool,
         preparedMarkers: [PreparedMarker]
     ) -> [String] {
         preparedMarkers
             .map { $0.dictionaryRepresentation() }
             .map { markerDict in
                 headers
-                    .map { "\($0.rawValue): \(markerDict[$0] ?? "")" }
+                    .map {
+                        (includeHeaders ? "\($0.name): " : "")
+                        + "\(markerDict[$0] ?? "")"
+                    }
                     .joined(separator: "\n")
             }
     }

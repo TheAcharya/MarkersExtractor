@@ -89,7 +89,15 @@ class FCPXMLMarkerExtractor {
             : marker.fcpxLocalInPoint
 
         let markerPosition = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
-        let timecode = (try? markerPosition.toTimecode(at: parentFPS)) ?? .init(at: parentFPS)
+        let timecode: Timecode = {
+            guard let tc = try? markerPosition.toTimecode(at: parentFPS) else {
+                let markerName = marker.fcpxValue ?? ""
+                let clipName = getClipName(parentClip)
+                logger.warning("Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted).")
+                return .init(at: parentFPS)
+            }
+            return tc
+        }()
 
         if localInPoint.seconds > parentDuration.realTimeValue {
             logger.warning("Marker at \(timecode) is out of bounds of its parent clip.")

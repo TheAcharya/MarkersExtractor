@@ -1,11 +1,7 @@
 import AVFoundation
 import Foundation
 
-public struct MarkersExportImageSettings<Field>
-where Field: Hashable,
-      Field: RawRepresentable,
-      Field.RawValue == String
-{
+public struct MarkersExportImageSettings<Field> {
     public let gifFPS: Double
     public let gifSpan: TimeInterval
     public let format: MarkerImageFormat
@@ -14,4 +10,5 @@ where Field: Hashable,
     public let labelFields: [Field]
     public let labelCopyright: String?
     public let labelProperties: MarkerLabelProperties
+    public let imageLabelHideNames: Bool
 }

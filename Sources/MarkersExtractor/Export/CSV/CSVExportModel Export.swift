@@ -58,7 +58,7 @@ extension CSVExportModel {
         let dicts = preparedMarkers.map { $0.dictionaryRepresentation() }
         guard !dicts.isEmpty else { return [] }
         
-        var result = [Array(dicts[0].keys.map { $0.rawValue })]
+        var result = [Array(dicts[0].keys.map { $0.name })]
         
         for row in dicts {
             result += [Array(row.values)]

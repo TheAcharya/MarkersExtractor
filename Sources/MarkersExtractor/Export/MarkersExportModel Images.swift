@@ -49,7 +49,7 @@ extension MarkersExportModel {
                 try AnimatedImageExtractor.convert(conversion)
             } catch {
                 throw MarkersExtractorError.runtimeError(
-                    "Error while generating gif '\(gifPath.lastPathComponent)':"
+                    "Error while generating gif \(gifPath.lastPathComponent.quoted):"
                     + " \(error.localizedDescription)"
                 )
             }

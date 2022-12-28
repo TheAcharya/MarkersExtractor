@@ -1,7 +1,7 @@
 import Foundation
 
 extension CSVExportModel {
-    public struct Payload: MarkersExportModelPayload {
+    public struct Payload: MarkersExportPayload {
         let csvPath: URL
     }
 }

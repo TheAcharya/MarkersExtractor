@@ -69,9 +69,8 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
-            "Label to put on a thumb image, can be used multiple times form multiple labels."
-            + " Use --help-labels to get full list of available labels.",
-            valueName: "label"
+            "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
+            valueName: "\(CSVExportModel.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
         )
     )
     var imageLabels: [CSVExportModel.Field] = []
@@ -79,7 +78,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-copyright")],
         help: ArgumentHelp(
-            "Copyright label, will be added after all other labels.",
+            "Copyright label. Will be appended after other labels.",
             valueName: "text"
         )
     )
@@ -87,15 +86,14 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     @Option(
         name: [.customLong("label-font")],
-        help: ArgumentHelp("Font for image labels", valueName: "name")
+        help: ArgumentHelp("Font for image labels.", valueName: "name")
     )
     var imageLabelFont: String = MarkersExtractor.Settings.Defaults.imageLabelFont
     
     @Option(
         name: [.customLong("label-font-size")],
         help: ArgumentHelp(
-            "Maximum font size for image labels, "
-            + "font size is automatically reduced to fit all labels.",
+            "Maximum font size for image labels, font size is automatically reduced to fit all labels.",
             valueName: "pt"
         )
     )
@@ -132,7 +130,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-align-horizontal")],
         help: ArgumentHelp(
-            "Horizontal alignment of image label.",
+            "Horizontal alignment of image labels.",
             valueName: MarkerLabelProperties.AlignHorizontal.allCases
                 .map { $0.rawValue }.joined(separator: ",")
         )
@@ -143,7 +141,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-align-vertical")],
         help: ArgumentHelp(
-            "Vertical alignment of image label.",
+            "Vertical alignment of image labels.",
             valueName: MarkerLabelProperties.AlignVertical.allCases
                 .map { $0.rawValue }.joined(separator: ",")
         )
@@ -151,8 +149,22 @@ struct MarkersExtractorCLI: ParsableCommand {
     var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
         .Defaults.imageLabelAlignVertical
     
-    @Flag(help: "Create 'done.txt' file in output directory on successful export.")
-    var createDoneFile = false
+    @Flag(
+        name: [.customLong("label-hide-names")],
+        help: ArgumentHelp("Hide names of image labels.")
+    )
+    var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
+    
+    @Flag(help: "Create a file in output directory on successful export. The filename can be customized using --done-filename.")
+    var createDoneFile = MarkersExtractor.Settings.Defaults.createDoneFile
+    
+    @Option(
+        help: ArgumentHelp(
+            "Done file filename. Has no effect unless --create-done-file flag is also supplied.",
+            valueName: "filename.txt"
+        )
+    )
+    var doneFilename: String = MarkersExtractor.Settings.Defaults.doneFilename
     
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
     var log: URL?
@@ -168,15 +180,6 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
-    // this flag is not actually used within the ParsableCommand but it's
-    // included here so that the help block can display it.
-    // the presence of this flag is handled manually in main() before parsing any
-    // other arguments since there is no graceful way to do it canonically
-    // with ArgumentParser - ironically since we're just trying to implement
-    // the same behavior it itself uses to handle --version for example.
-    @Flag(help: "List all possible labels to use with --label.")
-    var helpLabels = false
-    
     @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
     var fcpxmlPath: URL
     
@@ -185,7 +188,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
-            throw ValidationError("Cannot write log file at '\(log.path)'")
+            throw ValidationError("Cannot write log file at \(log.path.quoted)")
         }
         
         if imageFormat == .animated(.gif), imageSizePercent == nil {
@@ -219,7 +222,9 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelFontStrokeWidth: imageLabelFontStrokeWidth,
                 imageLabelAlignHorizontal: imageLabelAlignHorizontal,
                 imageLabelAlignVertical: imageLabelAlignVertical,
+                imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
+                doneFilename: doneFilename,
                 fcpxmlPath: fcpxmlPath,
                 outputDir: outputDir
             )
@@ -249,7 +254,7 @@ extension MarkersExtractorCLI {
                     logHandlers.append(try FileLogHandler.init(label: label, localFile: logFile))
                 } catch {
                     print(
-                        "Cannot write to log file '\(logFile.lastPathComponent)':"
+                        "Cannot write to log file \(logFile.lastPathComponent.quoted):"
                             + " \(error.localizedDescription)"
                     )
                 }
@@ -266,7 +271,7 @@ extension MarkersExtractorCLI {
     static func printHelpLabels() {
         print("List of available label headers:")
         for header in CSVExportModel.Field.allCases {
-            print("    '\(header.rawValue)'")
+            print("    \(header.rawValue)")
         }
     }
 }
