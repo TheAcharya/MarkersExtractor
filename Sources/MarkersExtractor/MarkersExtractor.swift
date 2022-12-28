@@ -59,12 +59,13 @@ public final class MarkersExtractor {
         )
 
         let csvName = "\(projectName).csv"
-
+        let csvPath = destPath.appendingPathComponent(csvName)
+        
         do {
             try CSVExportModel.export(
                 markers: markers,
                 idMode: s.idNamingMode,
-                csvPath: destPath.appendingPathComponent(csvName),
+                csvPath: csvPath,
                 videoPath: videoPath,
                 outputPath: destPath,
                 imageSettings: .init(
@@ -87,7 +88,7 @@ public final class MarkersExtractor {
 
         if s.createDoneFile {
             logger.info("Creating \(s.doneFilename.quoted) done file at \(destPath.path.quoted).")
-            try saveDoneFile(at: destPath, fileName: s.doneFilename, content: csvName)
+            try saveDoneFile(at: destPath, fileName: s.doneFilename, content: csvPath.path)
         }
 
         logger.info("Done!")
