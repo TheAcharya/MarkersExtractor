@@ -39,7 +39,7 @@ final class AnimatedImageExtractor {
 
     struct ConversionSettings {
         let sourceURL: URL
-        let destURL: URL
+        let outputURL: URL
         var timeRange: ClosedRange<Double>?
         var dimensions: CGSize?
         var fps: Double
@@ -141,7 +141,7 @@ final class AnimatedImageExtractor {
         ] as [String: Any]
 
         guard let destination = CGImageDestinationCreateWithURL(
-            conversion.destURL as CFURL,
+            conversion.outputURL as CFURL,
             kUTTypeGIF,
             framesCount,
             nil

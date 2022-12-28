@@ -37,7 +37,7 @@ final class ImageExtractor {
 
     struct ConversionSettings {
         let sourceURL: URL
-        let destURL: URL
+        let outputURL: URL
         let timecodes: OrderedDictionary<String, Timecode>
         let frameFormat: MarkerImageFormat.Still
         let frameJPGQuality: Double?
@@ -131,7 +131,7 @@ final class ImageExtractor {
             let cicontext = CIContext()
             let ciimage = CIImage(cgImage: image)
 
-            let url = conversion.destURL.appendingPathComponent(frameName)
+            let url = conversion.outputURL.appendingPathComponent(frameName)
 
             var options = [:] as [CIImageRepresentationOption: Any]
 
