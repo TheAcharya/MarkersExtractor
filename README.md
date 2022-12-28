@@ -2,7 +2,9 @@
 
 A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files / FCPXMLD bundles.
 
-Original idea belongs to [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/).
+Original idea by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/).
+Initial work by [@vzhd1701](https://github.com/vzhd1701)
+Maintained by [@orchetect](https://github.com/orchetect)
 
 ## Installation
 
