@@ -1,7 +1,8 @@
 import XCTest
 @testable import MarkersExtractor
+import TimecodeKit
 
-final class MarkersExtractorTests {
+final class MarkersExtractorTests: XCTestCase {
     func testBasicMarkers() throws {
         let settings = try MarkersExtractor.Settings(
             fcpxml: .init(.data(fcpxmlBasicMarkersData)),
@@ -9,10 +10,53 @@ final class MarkersExtractorTests {
         )
         let extractor = MarkersExtractor(settings)
         
+        // verify marker contents
+        
         let markers = try extractor.extractMarkers()
         
-        #warning("> finish this")
-        dump(markers)
+        XCTAssertEqual(markers.count, 4)
+        
+        let fr: TimecodeFrameRate = ._29_97
+        
+        let parentInfo = Marker.ParentInfo(
+            clipName: "Basic Title",
+            clipDuration: try TCC(h: 00, m: 01, s: 03, f: 29).toTimecode(at: fr),
+            eventName: "Test Event",
+            projectName: "Test Project",
+            libraryName: "MyLibrary.fcpbundle"
+        )
+        
+        let marker0 = markers[0]
+        XCTAssertEqual(marker0.type, .standard)
+        XCTAssertEqual(marker0.name, "Standard Marker")
+        XCTAssertEqual(marker0.notes, "some notes here")
+        XCTAssertEqual(marker0.role, "Titles")
+        XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 29, f: 14).toTimecode(at: fr))
+        XCTAssertEqual(marker0.parentInfo, parentInfo)
+        
+        let marker1 = markers[1]
+        XCTAssertEqual(marker1.type, .todo(completed: false))
+        XCTAssertEqual(marker1.name, "To Do Marker, Incomplete")
+        XCTAssertEqual(marker1.notes, "more notes here")
+        XCTAssertEqual(marker1.role, "Titles")
+        XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
+        XCTAssertEqual(marker1.parentInfo, parentInfo)
+        
+        let marker2 = markers[2]
+        XCTAssertEqual(marker2.type, .todo(completed: true))
+        XCTAssertEqual(marker2.name, "To Do Marker, Completed")
+        XCTAssertEqual(marker2.notes, "notes yay")
+        XCTAssertEqual(marker2.role, "Titles")
+        XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 29, f: 16).toTimecode(at: fr))
+        XCTAssertEqual(marker2.parentInfo, parentInfo)
+        
+        let marker3 = markers[3]
+        XCTAssertEqual(marker3.type, .chapter)
+        XCTAssertEqual(marker3.name, "Chapter Marker")
+        XCTAssertEqual(marker3.notes, "")
+        XCTAssertEqual(marker3.role, "Titles")
+        XCTAssertEqual(marker3.position, try TCC(h: 00, m: 00, s: 29, f: 17).toTimecode(at: fr))
+        XCTAssertEqual(marker3.parentInfo, parentInfo)
     }
 }
 
