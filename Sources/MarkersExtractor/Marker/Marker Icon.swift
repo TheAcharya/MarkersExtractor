@@ -12,7 +12,7 @@ extension Marker {
         }
     }
 
-    enum Icon {
+    enum Icon: Equatable, Hashable {
         case chapter
         case completed
         case todo
@@ -20,7 +20,7 @@ extension Marker {
 
         var resource: Resource {
             switch self {
-            case .chapter: return .marker_png
+            case .chapter: return .marker_chapter_png
             case .completed: return .marker_completed_png
             case .todo: return .marker_to_do_png
             case .standard: return .marker_png

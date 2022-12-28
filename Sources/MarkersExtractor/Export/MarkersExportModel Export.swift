@@ -175,11 +175,11 @@ extension MarkersExportModel {
         return OrderedDictionary(uniqueKeysWithValues: markerPairs)
     }
     
-    private static func exportIcons(from markers: [Marker], to distDir: URL) throws {
+    private static func exportIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { $0.icon })
         
         for icon in icons {
-            let targetURL = distDir.appendingPathComponent(icon.fileName)
+            let targetURL = outputDir.appendingPathComponent(icon.fileName)
             if let iconURL = icon.url {
                 try FileManager.default.copyItem(at: iconURL, to: targetURL)
             }
