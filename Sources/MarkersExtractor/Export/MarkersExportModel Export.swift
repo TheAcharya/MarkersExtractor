@@ -29,6 +29,8 @@ extension MarkersExportModel {
             if let markerVideoPlaceholderData = Resource.marker_video_placeholder_mov.data {
                 videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
                 videoPath = videoPlaceholder.url!
+            } else {
+                logger.warning("Could not locate or read video placeholder file.")
             }
         }
         
