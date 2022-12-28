@@ -32,7 +32,7 @@ public final class MarkersExtractor {
             return
         }
 
-        if !Resource.validate() {
+        if !Resource.validateAll() {
             logger.warning("Could not validate internal resource files. Export may not work correctly.")
         }
         

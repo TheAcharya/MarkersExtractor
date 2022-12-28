@@ -45,7 +45,7 @@ extension Resource {
     }
     
     /// Check that all module resources are locatable.
-    static func validate() -> Bool {
+    static func validateAll() -> Bool {
         allCases.allSatisfy {
             $0.url?.exists == true
         }
