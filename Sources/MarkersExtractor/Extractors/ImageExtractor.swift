@@ -22,9 +22,9 @@ final class ImageExtractor {
             case .unreadableFile:
                 return "The selected file is no longer readable."
             case .unsupportedType:
-                return "Image type is not supported"
+                return "Image type is not supported."
             case .labelsDepleted:
-                return "Image labels depleted before images"
+                return "Image labels depleted before images."
             case .generateFrameFailed(let error):
                 return "Failed to generate frame: \(error.localizedDescription)"
             case .addFrameFailed(let error):

@@ -122,62 +122,62 @@ extension MarkersExtractor {
         private func validate() throws {
             guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                 throw MarkersExtractorError.validationError(
-                    "Unsupported input format \(fcpxmlPath.path.quoted)"
+                    "Unsupported input format \(fcpxmlPath.path.quoted)."
                 )
             }
             
             if fcpxmlPath.fileExtension == "fcpxmld" {
                 guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
                     throw MarkersExtractorError.validationError(
-                        "Path does not exist at \(fcpxmlPath.path.quoted)"
+                        "Path does not exist at \(fcpxmlPath.path.quoted)."
                     )
                 }
             }
             
             guard FileManager.default.fileExists(atPath: xmlPath.path) else {
-                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted)")
+                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted).")
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError.validationError("Cannot use font \(imageLabelFont.quoted)")
+                throw MarkersExtractorError.validationError("Cannot use font \(imageLabelFont.quoted).")
             }
             
             if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
                imageLabelFontStrokeWidth < 0
             {
                 throw MarkersExtractorError.validationError(
-                    "--label-stroke-width must be a positive integer or 0"
+                    "--label-stroke-width must be a positive integer or 0."
                 )
             }
             
             guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
                 throw MarkersExtractorError.validationError(
-                    "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range"
+                    "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range."
                 )
             }
             
             if let imageHeight = imageHeight, imageHeight <= 0 {
-                throw MarkersExtractorError.validationError("--image-height must be a positive integer")
+                throw MarkersExtractorError.validationError("--image-height must be a positive integer.")
             }
             
             if let imageWidth = imageWidth, imageWidth <= 0 {
-                throw MarkersExtractorError.validationError("--image-width must be a positive integer")
+                throw MarkersExtractorError.validationError("--image-width must be a positive integer.")
             }
             
             if let imageSizePercent = imageSizePercent, !Validation.imageSizePercent.contains(imageSizePercent) {
                 throw MarkersExtractorError.validationError(
-                    "--image-size-percent must be within \(Validation.imageSizePercent) range"
+                    "--image-size-percent must be within \(Validation.imageSizePercent) range."
                 )
             }
             
             guard Validation.imageQuality.contains(imageQuality) else {
                 throw MarkersExtractorError.validationError(
-                    "--image-quality must be within \(Validation.imageQuality) range"
+                    "--image-quality must be within \(Validation.imageQuality) range."
                 )
             }
             
             guard Validation.gifFPS.contains(gifFPS) else {
-                throw MarkersExtractorError.validationError("--gif-fps must be within \(Validation.gifFPS) range")
+                throw MarkersExtractorError.validationError("--gif-fps must be within \(Validation.gifFPS) range.")
             }
         }
     }

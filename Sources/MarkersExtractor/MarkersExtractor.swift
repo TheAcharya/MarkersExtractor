@@ -23,7 +23,7 @@ public final class MarkersExtractor {
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
 
-        logger.info("Extracting markers from \(s.fcpxmlPath.path.quoted)")
+        logger.info("Extracting markers from \(s.fcpxmlPath.path.quoted).")
 
         let markers = try extractMarkers()
         
@@ -42,8 +42,8 @@ public final class MarkersExtractor {
 
         let videoPath = try findMedia(name: projectName, path: s.mediaSearchPath)
 
-        logger.info("Found project media file \(videoPath.path.quoted)")
-        logger.info("Generating CSV with \(imageFormatEXT) images into \(destPath.path.quoted)")
+        logger.info("Found project media file \(videoPath.path.quoted).")
+        logger.info("Generating CSV with \(imageFormatEXT) images into \(destPath.path.quoted).")
 
         let labelProperties = MarkerLabelProperties(
             fontName: s.imageLabelFont,
@@ -86,7 +86,7 @@ public final class MarkersExtractor {
         }
 
         if s.createDoneFile {
-            logger.info("Creating \(s.doneFilename.quoted) done file at \(destPath.path.quoted)")
+            logger.info("Creating \(s.doneFilename.quoted) done file at \(destPath.path.quoted).")
             try saveDoneFile(at: destPath, fileName: s.doneFilename, content: csvName)
         }
 
@@ -181,11 +181,11 @@ public final class MarkersExtractor {
         }()
         
         if files.isEmpty {
-            throw MarkersExtractorError.runtimeError("No media found for \(name.quoted)")
+            throw MarkersExtractorError.runtimeError("No media found for \(name.quoted).")
         }
 
         if files.count > 1 {
-            logger.warning("Found more than one media candidate for \(name.quoted)")
+            logger.warning("Found more than one media candidate for \(name.quoted).")
         }
 
         return files[0]

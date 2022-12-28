@@ -20,12 +20,12 @@ class ImageLabeler {
 
     func labelImage(image: CGImage) -> CGImage {
         guard let textToDraw = curText else {
-            logger.warning("No label to mark image, bypassing original image")
+            logger.warning("No label to mark image. Bypassing original image.")
             return image
         }
 
         guard let context = initImageContext(for: image) else {
-            logger.warning("Failed to initialize new image context, bypassing original image")
+            logger.warning("Failed to initialize new image context. Bypassing original image.")
             return image
         }
 
@@ -40,7 +40,7 @@ class ImageLabeler {
         drawText(text: textToDraw, context: context, textRect: textRect)
 
         guard let newImage = context.makeImage() else {
-            logger.warning("Failed to create labeled image, bypassing original image")
+            logger.warning("Failed to create labeled image. Bypassing original image.")
             return image
         }
 
@@ -55,13 +55,13 @@ class ImageLabeler {
     func nextText() {
         curText = textIter.next()
         if curText == nil {
-            logger.warning("No more labels for marking images")
+            logger.warning("No more labels for marking images.")
         }
     }
 
     private func initImageContext(for image: CGImage) -> CGContext? {
         guard let colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB) else {
-            logger.warning("Failed to initialize color space for image context")
+            logger.warning("Failed to initialize color space for image context.")
             return nil
         }
 

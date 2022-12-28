@@ -21,9 +21,9 @@ final class AnimatedImageExtractor {
             case .unreadableFile:
                 return "The selected file is no longer readable."
             case .gifInitializationFailed:
-                return "Failed to initialize the GIF file"
+                return "Failed to initialize the GIF file."
             case .gifFinalizationFailed:
-                return "Failed to finalize the GIF file"
+                return "Failed to finalize the GIF file."
             case .notEnoughFrames(let frameCount):
                 let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
                 return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
