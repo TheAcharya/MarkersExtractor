@@ -78,7 +78,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-copyright")],
         help: ArgumentHelp(
-            "Copyright label, will be added after all other labels.",
+            "Copyright label. Will be appended after other labels.",
             valueName: "text"
         )
     )
@@ -86,15 +86,14 @@ struct MarkersExtractorCLI: ParsableCommand {
     
     @Option(
         name: [.customLong("label-font")],
-        help: ArgumentHelp("Font for image labels", valueName: "name")
+        help: ArgumentHelp("Font for image labels.", valueName: "name")
     )
     var imageLabelFont: String = MarkersExtractor.Settings.Defaults.imageLabelFont
     
     @Option(
         name: [.customLong("label-font-size")],
         help: ArgumentHelp(
-            "Maximum font size for image labels, "
-            + "font size is automatically reduced to fit all labels.",
+            "Maximum font size for image labels, font size is automatically reduced to fit all labels.",
             valueName: "pt"
         )
     )
@@ -131,7 +130,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-align-horizontal")],
         help: ArgumentHelp(
-            "Horizontal alignment of image label.",
+            "Horizontal alignment of image labels.",
             valueName: MarkerLabelProperties.AlignHorizontal.allCases
                 .map { $0.rawValue }.joined(separator: ",")
         )
@@ -142,7 +141,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         name: [.customLong("label-align-vertical")],
         help: ArgumentHelp(
-            "Vertical alignment of image label.",
+            "Vertical alignment of image labels.",
             valueName: MarkerLabelProperties.AlignVertical.allCases
                 .map { $0.rawValue }.joined(separator: ",")
         )
