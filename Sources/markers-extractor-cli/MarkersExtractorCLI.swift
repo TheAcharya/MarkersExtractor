@@ -167,15 +167,6 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
-    // this flag is not actually used within the ParsableCommand but it's
-    // included here so that the help block can display it.
-    // the presence of this flag is handled manually in main() before parsing any
-    // other arguments since there is no graceful way to do it canonically
-    // with ArgumentParser - ironically since we're just trying to implement
-    // the same behavior it itself uses to handle --version for example.
-    @Flag(help: "List all possible labels to use with --label.")
-    var helpLabels = false
-    
     @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
     var fcpxmlPath: URL
     
