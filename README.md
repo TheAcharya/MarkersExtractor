@@ -136,7 +136,7 @@ pre-commit install
 git checkout -b fix
 ```
 
-## Credits
+# Credits
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
 
@@ -144,10 +144,10 @@ Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701)
 
 Maintained by [Steffan Andrews](https://github.com/orchetect)
 
-## License
+# License
 
 Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/MarkersExtractor/blob/master/LICENSE) for details.
 
-## Reporting Bugs & Contributions
+# Reporting Bugs & Contributions
 
 Contributions are welcome. Feel free to post an [Issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
