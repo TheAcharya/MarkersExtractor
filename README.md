@@ -2,7 +2,13 @@
 
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
 
-A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files / FCPXMLD bundles.
+The Marker metadata extraction engine for Final Cut Pro. (Currenly in development)
+
+# Core Features
+
+- Accurately extract Markers from FCP's FCPXML/FCPXMLD to CSV
+- Ability to batch extract and render stills or animated GIFs based on Marker's timecode
+- Ability to batch burn-in labesl of Marker's metadata onto the stills or animated GIFs
 
 # Table of contents
 
