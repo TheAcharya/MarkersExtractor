@@ -17,19 +17,20 @@ The Marker metadata extraction engine for Final Cut Pro. (Currenly in developmen
   - [From Source](#from-source)
 - [Usage](#Usage)
   - [CLI](#cli)
-- [Library](#library)
-- [Development](#development)
+- [For Development](#for-development)
+  - [Library](#library)
+  - [Development](#development)
 - [Credits](#Credits)
 - [License](#License)
 - [Reporting Bugs & Contributions](#reporting-bugs--contributions)
 
-## Installation
+# Installation
 
-### Pre-compiled Binary (Recommended)
+## Pre-compiled Binary (Recommended)
 
 Download the latest version of CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/archive/refs/tags/0.1.1.zip).
 
-### From Source
+## From Source
 
 ```shell
 VERSION=0.1.0  # replace this with the version you need
@@ -41,9 +42,9 @@ swift build -c release
 
 Once the build has finished, the `markers-extractor-cli` executable will be located at `.build/release/`.
 
-## Usage
+# Usage
 
-### CLI
+## CLI
 
 ```shell
 $ markers-extractor-cli --help
@@ -92,6 +93,8 @@ OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 ```
+
+# For Development
 
 ### Library
 
