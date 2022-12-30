@@ -172,11 +172,17 @@ class FCPXMLMarkerExtractor {
     }
 
     private func getLibraryName(_ library: XMLElement) -> String? {
+        // will be a file URL that is URL encoded
         guard let location = library.getElementAttribute("location") else {
             return nil
         }
-
-        return URL(fileURLWithPath: location).lastPathComponent
+        
+        let libName = URL(fileURLWithPath: location).lastPathComponent
+        
+        // decode URL encoding
+        let libNameDecoded = libName.removingPercentEncoding ?? libName
+        
+        return libNameDecoded
     }
 
     private func getMarkerType(_ marker: XMLElement) -> MarkerType {
