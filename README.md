@@ -44,7 +44,9 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 # Usage
 
-## CLI
+## CLI v0.1.1
+
+<details>
 
 ```shell
 $ markers-extractor-cli --help
@@ -93,6 +95,85 @@ OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 ```
+
+</details>
+
+## CLI v0.2.0-alpha (Development in Progress)
+
+<details>
+
+```shell
+$ markers-extractor-cli --help
+OVERVIEW: Tool to extract markers from FCPXML(D).
+
+https://github.com/TheAcharya/MarkersExtractor
+
+USAGE: markers-extractor-cli [<options>] <fcpxml-path> <output-dir>
+
+ARGUMENTS:
+  <fcpxml-path>           Input FCPXML file / FCPXMLD bundle.
+  <output-dir>            Output directory.
+
+OPTIONS:
+  --export-format <csv2notion>
+                          Metadata export format. (default: csv2notion)
+  --image-format <png,jpg,gif>
+                          Marker thumb image format. 'gif' is animated and
+                          additional options can be specified with --gif-fps
+                          and --gif-span. (default: png)
+  --image-quality <0...100>
+                          Image quality percent for JPG. (default: 100)
+  --image-width <w>       Limit image width keeping aspect ratio.
+  --image-height <h>      Limit image height keeping aspect ratio.
+  --image-size-percent <1...100>
+                          Limit image size to % keeping aspect ratio. (default
+                          for GIF: 50)
+  --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
+  --gif-span <sec>        GIF capture span around marker. (default: 2.0)
+  --id-naming-mode <projectTimecode,name,notes>
+                          Marker naming mode. This affects Marker IDs and image
+                          filenames. (default: projectTimecode)
+  --label <id,name,type,checked,status,notes,position,clipName,clipDuration,videoRoles,audioRoles,eventName,projectName,libraryName,iconImage,imageFileName>
+                          Label to overlay on thumb images. This argument can
+                          be supplied more than once to apply multiple labels.
+  --label-copyright <text>
+                          Copyright label. Will be appended after other labels.
+  --label-font <name>     Font for image labels. (default: Menlo-Regular)
+  --label-font-size <pt>  Maximum font size for image labels, font size is
+                          automatically reduced to fit all labels. (default: 30)
+  --label-opacity <0...100>
+                          Label opacity percent (default: 100)
+  --label-font-color <#RRGGBB / #RGB>
+                          Label font color (default: #FFF)
+  --label-stroke-color <#RRGGBB / #RGB>
+                          Label stroke color (default: #000)
+  --label-stroke-width <w>
+                          Label stroke width, 0 to disable. (default: auto)
+  --label-align-horizontal <left,center,right>
+                          Horizontal alignment of image labels. (default: left)
+  --label-align-vertical <top,center,bottom>
+                          Vertical alignment of image labels. (default: top)
+  --label-hide-names      Hide names of image labels.
+  --create-done-file      Create a file in output directory on successful
+                          export. The filename can be customized using
+                          --done-filename.
+  --done-filename <done.json>
+                          Done file filename. Has no effect unless
+                          --create-done-file flag is also supplied. (default:
+                          done.json)
+  --log <log>             Log file path.
+  --log-level <trace,debug,info,notice,warning,error,critical>
+                          Log level. (default: info)
+  --quiet                 Disable log.
+  --media-search-path <media-search-path>
+                          Media search path. This argument can be supplied more
+                          than once to use multiple paths. (default: same
+                          folder as fcpxml(d))
+  --version               Show the version.
+  -h, --help              Show help information.
+```
+
+</details>
 
 # For Development
 
