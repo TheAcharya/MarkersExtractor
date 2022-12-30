@@ -7,7 +7,7 @@ A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files 
 # Table of contents
 
 - [Installation](#Installation)
-  - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-(recommended))
+  - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
 - [Usage](#Usage)
   - [CLI](#cli)
@@ -15,7 +15,7 @@ A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files 
 - [Development](#development)
 - [Credits](#Credits)
 - [License](#License)
-- [Reporting Bugs & Contributions](#reporting-bugs-&-contributions)
+- [Reporting Bugs & Contributions](#reporting-bugs--contributions)
 
 ## Installation
 
