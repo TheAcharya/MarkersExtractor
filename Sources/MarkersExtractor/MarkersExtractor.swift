@@ -92,7 +92,8 @@ extension MarkersExtractor {
         
         if s.createDoneFile {
             logger.info("Creating \(s.doneFilename.quoted) done file at \(outputPath.path.quoted).")
-            try saveDoneFile(at: outputPath, fileName: s.doneFilename, content: csvPath.path)
+            let doneFileContent = ["csvPath": csvPath.path]
+            try saveDoneFile(at: outputPath, fileName: s.doneFilename, content: doneFileContent)
         }
         
         logger.info("Done!")
@@ -178,11 +179,15 @@ extension MarkersExtractor {
 // MARK: - Done File
 
 extension MarkersExtractor {
-    private func saveDoneFile(at outputPath: URL, fileName: String, content: String) throws {
+    private func saveDoneFile<E: Encodable>(at outputPath: URL, fileName: String, content: E) throws {
         let doneFile = outputPath.appendingPathComponent(fileName)
         
         do {
-            try content.write(to: doneFile, atomically: true, encoding: .utf8)
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted]
+            
+            let data = try encoder.encode(content)
+            try data.write(to: doneFile)
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"

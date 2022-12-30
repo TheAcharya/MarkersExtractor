@@ -29,7 +29,7 @@ extension MarkersExtractor {
             public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
                 [fcpxml.defaultMediaSearchPath].compactMap { $0 }
             }
-            public static let doneFilename = "done.txt"
+            public static let doneFilename = "done.json"
         }
         
         public enum Validation {
