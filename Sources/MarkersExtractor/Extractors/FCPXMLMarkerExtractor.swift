@@ -72,13 +72,13 @@ class FCPXMLMarkerExtractor {
         let fps = getParentFPS(markerXML)
         let parentDuration = (try? parentClip.fcpxDuration?.toTimecode(at: fps)) ?? .init(at: fps)
         let position = calcMarkerPosition(markerXML, parentFPS: fps, parentDuration: parentDuration)
-        let roles = getClipRoles(parentClip).joined(separator: ", ")
+        let roles = getClipRoles(parentClip)
         
         return Marker(
             type: type,
             name: markerXML.fcpxValue ?? "",
             notes: markerXML.fcpxNote ?? "",
-            role: roles,
+            roles: roles,
             position: position,
             parentInfo: Marker.ParentInfo(
                 clipName: getClipName(parentClip),
@@ -200,25 +200,41 @@ class FCPXMLMarkerExtractor {
         return .standard
     }
 
-    private func getClipRoles(_ clip: XMLElement) -> [String] {
+    private func getClipRoles(_ clip: XMLElement) -> [MarkerRole] {
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
-            return [acSourceRole].map { $0.localizedCapitalized }
+            return [acSourceRole].map { .audio($0.localizedCapitalized) }
         }
 
-        var roles: Set<String?> = [
+        // gather
+        
+        let audioRolesPool = [
             clip.getElementAttribute("audioRole"),
+            clip.subElement(named: "video")?.subElement(named: "audio")?.fcpxRole, // TODO: ??
+            clip.subElement(named: "audio")?.fcpxRole
+        ].compactMap { $0?.localizedCapitalized }
+        
+        var videoRolesPool = [
             clip.getElementAttribute("videoRole"),
-            clip.fcpxRole,
-            clip.subElement(named: "video")?.subElement(named: "audio")?.fcpxRole,
             clip.subElement(named: "video")?.fcpxRole,
-            clip.subElement(named: "audio")?.fcpxRole,
-        ]
+            clip.fcpxRole
+        ].compactMap { $0?.localizedCapitalized }
 
-        if clip.name == "title" && roles.compactMap({ $0 }).isEmpty {
-            roles.insert("Titles")
+        if clip.name == "title" && videoRolesPool.compactMap({ $0 }).isEmpty {
+            videoRolesPool.append("Titles")
         }
 
-        // Clean out all nil and return sorted array
-        return roles.compactMap { $0?.localizedCapitalized }.sorted()
+        // pack into enum cases
+        
+        let videoRoles: [MarkerRole] = videoRolesPool
+            .sorted()
+            .map { .video($0) }
+        
+        let audioRoles: [MarkerRole] = audioRolesPool
+            .sorted()
+            .map { .audio($0) }
+        
+        // return
+        
+        return videoRoles + audioRoles
     }
 }

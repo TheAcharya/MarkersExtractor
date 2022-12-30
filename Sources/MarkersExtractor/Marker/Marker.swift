@@ -22,7 +22,7 @@ public struct Marker: Equatable, Hashable {
     var type: MarkerType
     var name: String
     var notes: String
-    var role: String
+    var roles: [MarkerRole] // TODO: is more than one role possible?
     var position: Timecode
     
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.

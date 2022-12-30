@@ -13,7 +13,8 @@ extension CSVExportProfile {
         public let position: String
         public let clipName: String
         public let clipDuration: String
-        public let role: String
+        public let audioRoles: String
+        public let videoRoles: String
         public let eventName: String
         public let projectName: String
         public let libraryName: String
@@ -34,7 +35,8 @@ extension CSVExportProfile {
             position = marker.positionTimecodeString
             clipName = marker.parentInfo.clipName
             clipDuration = marker.parentInfo.clipDurationTimecodeString
-            role = marker.role
+            videoRoles = marker.roles.filter(\.isVideo).map { $0.stringValue }.joined(separator: ", ")
+            audioRoles = marker.roles.filter(\.isAudio).map { $0.stringValue }.joined(separator: ", ")
             eventName = marker.parentInfo.eventName
             projectName = marker.parentInfo.projectName
             libraryName = marker.parentInfo.libraryName
@@ -55,7 +57,8 @@ extension CSVExportProfile {
                 .position: position,
                 .clipName: clipName,
                 .clipDuration: clipDuration,
-                .role: role,
+                .videoRoles: videoRoles,
+                .audioRoles: audioRoles,
                 .eventName: eventName,
                 .projectName: projectName,
                 .libraryName: libraryName,

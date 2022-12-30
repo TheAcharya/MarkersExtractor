@@ -10,7 +10,8 @@ extension CSVExportProfile {
         case position
         case clipName
         case clipDuration
-        case role
+        case videoRoles
+        case audioRoles
         case eventName
         case projectName
         case libraryName
@@ -31,7 +32,8 @@ extension CSVExportProfile.Field: ExportField {
         case .position: return "Marker Position"
         case .clipName: return "Clip Name"
         case .clipDuration: return "Clip Duration"
-        case .role: return "Role & Subrole"
+        case .videoRoles: return "Video Role & Subrole"
+        case .audioRoles: return "Audio Role & Subrole"
         case .eventName: return "Event Name"
         case .projectName: return "Project Name"
         case .libraryName: return "Library Name"
