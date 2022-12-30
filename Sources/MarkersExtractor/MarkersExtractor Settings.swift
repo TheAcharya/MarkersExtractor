@@ -65,11 +65,6 @@ extension MarkersExtractor {
         public var outputDir: URL
         public var doneFilename: String
         
-        @available(*, deprecated, message: "This should be removed and refactored.")
-        var xmlPath: URL? {
-            fcpxml.xmlPath
-        }
-        
         /// Initialize with defaults for defaultable parameters.
         public init(
             fcpxml: FCPXMLFile,

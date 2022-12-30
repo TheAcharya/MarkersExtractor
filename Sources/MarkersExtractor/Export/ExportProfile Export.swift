@@ -56,7 +56,7 @@ extension ExportProfile {
         
         // thumbnail images
         
-        logger.info("Generating \(imageSettings.format.rawValue.uppercased()) images for markers")
+        logger.info("Generating \(imageSettings.format.rawValue.uppercased()) images for markers.")
         
         let imageLabelText = makeImageLabelText(
             preparedMarkers: preparedMarkers,
