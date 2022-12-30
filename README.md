@@ -1,4 +1,4 @@
-# MarkersExtractor
+# MarkersExtractor CLI
 
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
 
@@ -7,8 +7,8 @@ A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files 
 # Table of contents
 
 - [Installation](#Installation)
-  - [Pre-compiled binary](#pre-compiled-binary)
-  - [From source](#from-source)
+  - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-(recommended))
+  - [From Source](#from-source)
 - [Usage](#Usage)
   - [CLI](#cli)
 - [Library](#library)
@@ -19,11 +19,11 @@ A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files 
 
 ## Installation
 
-### Pre-compiled binary
+### Pre-compiled Binary (Recommended)
 
 Download the latest version of CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/archive/refs/tags/0.1.1.zip).
 
-### From source
+### From Source
 
 ```shell
 VERSION=0.1.0  # replace this with the version you need
@@ -141,4 +141,4 @@ Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/Mark
 
 ## Contributions
 
-Contributions are welcome. Feel free to post an Issue to discuss.
+Contributions are welcome. Feel free to post an [Issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
