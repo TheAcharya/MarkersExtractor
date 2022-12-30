@@ -219,7 +219,7 @@ class FCPXMLMarkerExtractor {
             clip.fcpxRole
         ].compactMap { $0?.localizedCapitalized }
 
-        if clip.name == "title" && videoRolesPool.compactMap({ $0 }).isEmpty {
+        if clip.name == "title" && videoRolesPool.isEmpty {
             videoRolesPool.append("Titles")
         }
 
