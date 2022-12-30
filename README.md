@@ -150,4 +150,4 @@ Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/Mark
 
 # Reporting Bugs & Contributions
 
-Contributions are welcome. Feel free to post an [Issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
+For bug reports, feature requests and other suggestions you can create [a new issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
