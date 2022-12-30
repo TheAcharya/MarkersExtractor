@@ -161,7 +161,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Done file filename. Has no effect unless --create-done-file flag is also supplied.",
-            valueName: "filename.txt"
+            valueName: "done.json"
         )
     )
     var doneFilename: String = MarkersExtractor.Settings.Defaults.doneFilename
