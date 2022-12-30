@@ -1,5 +1,7 @@
 # MarkersExtractor
 
+![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
+
 A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files / FCPXMLD bundles.
 
 Original idea by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/).
