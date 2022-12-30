@@ -4,9 +4,18 @@
 
 A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files / FCPXMLD bundles.
 
-Original idea by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/).
-Initial work by [@vzhd1701](https://github.com/vzhd1701)
-Maintained by [@orchetect](https://github.com/orchetect)
+# Table of contents
+
+- [Installation](#Installation)
+  - [Pre-compiled binary](#pre-compiled-binary)
+  - [From source](#from-source)
+- [Usage](#Usage)
+  - [CLI](#cli)
+- [Library](#library)
+- [Development](#development)
+- [Credits](#Credits)
+- [License](#License)
+- [Contributions](#Contributions)
 
 ## Installation
 
@@ -18,7 +27,7 @@ Download the latest version of CLI universal binary [here](https://github.com/Th
 
 ```shell
 VERSION=0.1.0  # replace this with the version you need
-git clone https://github.com/vzhd1701/MarkersExtractor
+git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
 swift build -c release
@@ -90,7 +99,7 @@ let package = Package(
   name: "MyPackage",
   dependencies: [
     .package(
-        url: "https://github.com/vzhd1701/MarkersExtractor.git",
+        url: "https://github.com/TheAcharya/MarkersExtractor.git",
         from: "0.1.0"
     )
   ],
@@ -117,3 +126,19 @@ cd MarkersExtractor
 pre-commit install
 git checkout -b fix
 ```
+
+## Credits
+
+Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
+
+Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701)
+
+Maintained by [Steffan Andrews](https://github.com/orchetect)
+
+## License
+
+Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/MarkersExtractor/blob/master/LICENSE) for details.
+
+## Contributions
+
+Contributions are welcome. Feel free to post an Issue to discuss.
