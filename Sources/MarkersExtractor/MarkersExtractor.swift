@@ -29,10 +29,13 @@ extension MarkersExtractor {
         
         logger.info("Extracting markers from \(s.fcpxml).")
         
-        let markers = try extractMarkers()
+        var markers = try extractMarkers()
+        
+        markers = uniquingMarkerIDs(in: markers)
         
         guard !markers.isEmpty else {
             logger.info("No markers found.")
+            // TODO: should we output done file still?
             return
         }
         
@@ -118,17 +121,36 @@ extension MarkersExtractor {
         }
         
         if !isAllUniqueIDNonEmpty(in: markers) {
-            throw MarkersExtractorError.runtimeError("Every marker must have non-empty ID.")
+            throw MarkersExtractorError.runtimeError("Empty marker ID encountered. Markers must have valid non-empty IDs.")
         }
         
-        // TODO: duplicate markers shouldn't be an error condition, we should append filename uniquing string to the ID instead
         let duplicates = findDuplicateIDs(in: markers)
         if !duplicates.isEmpty {
-            throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
+            // duplicate marker IDs isn't be an error condition, we should append filename uniquing string to the ID instead
+            // throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
+            logger.info("Duplicate marker IDs found which will be uniqued: \(duplicates)")
         }
         
         if sort {
             markers.sort()
+        }
+        
+        return markers
+    }
+    
+    /// Uniques marker IDs. (Works better if the array is sorted by timecode first.)
+    internal func uniquingMarkerIDs(in markers: [Marker]) -> [Marker] {
+        var markers = markers
+        
+        let dupeIndices = Dictionary(grouping: markers.indices, by: { markers[$0].id(s.idNamingMode) })
+            .filter { $1.count > 1 }
+        
+        for (_, indices) in dupeIndices {
+            var counter = 1
+            for index in indices {
+                markers[index].idSuffix = "-\(counter)"
+                counter += 1
+            }
         }
         
         return markers

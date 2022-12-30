@@ -28,20 +28,26 @@ public struct Marker: Equatable, Hashable {
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
+    
+    /// Used only when uniquing marker IDs to avoid duplicate IDs.
+    var idSuffix: String? = nil
 }
 
 // MARK: Computed
 
 extension Marker {
     func id(_ idMode: MarkerIDMode) -> String {
-        switch idMode {
-        case .projectTimecode:
-            return "\(parentInfo.projectName)_\(positionTimecodeString)"
-        case .name:
-            return name
-        case .notes:
-            return notes
-        }
+        let baseID: String = {
+            switch idMode {
+            case .projectTimecode:
+                return "\(parentInfo.projectName)_\(positionTimecodeString)"
+            case .name:
+                return name
+            case .notes:
+                return notes
+            }
+        }()
+        return baseID + (idSuffix ?? "")
     }
     
     func id(pathSafe idMode: MarkerIDMode) -> String {
