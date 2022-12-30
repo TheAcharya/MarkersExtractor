@@ -1,8 +1,8 @@
 import Foundation
 import OrderedCollections
 
-public protocol MarkersExportPreparedMarker {
-    associatedtype Field: MarkersExportField
+public protocol ExportMarker {
+    associatedtype Field: ExportField
     
     var imageFileName: String { get }
     

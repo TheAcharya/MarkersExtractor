@@ -3,13 +3,13 @@ import Foundation
 import OrderedCollections
 import TimecodeKit
 
-extension MarkersExportModel {
+extension ExportProfile {
     /// Generate animated images on disk.
     /// For the time being, the only format supported is Animated GIF.
     static func writeAnimatedImages(
         timecodes: OrderedDictionary<String, Timecode>,
         video videoPath: URL,
-        destPath: URL,
+        outputPath: URL,
         gifFPS: Double,
         gifSpan: TimeInterval,
         gifDimensions: CGSize?,
@@ -27,7 +27,7 @@ extension MarkersExportModel {
         }
         
         for (imageName, timecode) in timecodes {
-            let gifPath = destPath.appendingPathComponent(imageName)
+            let gifPath = outputPath.appendingPathComponent(imageName)
             
             let timePoint = timecode.realTimeValue
             let gifSpan = gifSpan / 2
@@ -37,7 +37,7 @@ extension MarkersExportModel {
             
             let conversion = AnimatedImageExtractor.ConversionSettings(
                 sourceURL: videoPath,
-                destURL: gifPath,
+                outputURL: gifPath,
                 timeRange: timeRange,
                 dimensions: gifDimensions,
                 fps: gifFPS,
@@ -59,7 +59,7 @@ extension MarkersExportModel {
     static func writeStillImages(
         timecodes: OrderedDictionary<String, Timecode>,
         video videoPath: URL,
-        destPath: URL,
+        outputPath: URL,
         imageFormat: MarkerImageFormat.Still,
         imageJPGQuality: Double,
         imageDimensions: CGSize?,
@@ -77,7 +77,7 @@ extension MarkersExportModel {
         
         let conversion = ImageExtractor.ConversionSettings(
             sourceURL: videoPath,
-            destURL: destPath,
+            outputURL: outputPath,
             timecodes: timecodes,
             frameFormat: imageFormat,
             frameJPGQuality: imageJPGQuality,

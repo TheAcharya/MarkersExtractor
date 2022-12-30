@@ -14,7 +14,18 @@ class FCPXMLMarkerExtractor {
         fcpxmlDoc = try XMLDocument(contentsOfFCPXML: fcpxml)
         self.idNamingMode = idNamingMode
     }
+    
+    required init(_ fcpxml: XMLDocument, _ idNamingMode: MarkerIDMode) throws {
+        fcpxmlDoc = fcpxml
+        self.idNamingMode = idNamingMode
+    }
 
+    static func extractMarkers(from fcpxml: FCPXMLFile, idNamingMode: MarkerIDMode) throws -> [Marker] {
+        let data = try fcpxml.data()
+        let xml = try XMLDocument(data: data)
+        return try self.init(xml, idNamingMode).extractMarkers()
+    }
+    
     static func extractMarkers(from fcpxml: URL, idNamingMode: MarkerIDMode) throws -> [Marker] {
         try self.init(fcpxml, idNamingMode).extractMarkers()
     }

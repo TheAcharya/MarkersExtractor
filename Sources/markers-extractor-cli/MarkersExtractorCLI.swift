@@ -13,10 +13,10 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Metadata export format.",
-            valueName: MarkersExportFormat.allCases.map { $0.rawValue }.joined(separator: ",")
+            valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ",")
         )
     )
-    var exportFormat: MarkersExportFormat = .csv
+    var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
     
     @Option(
         help: ArgumentHelp(
@@ -70,10 +70,10 @@ struct MarkersExtractorCLI: ParsableCommand {
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(CSVExportModel.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
+            valueName: "\(CSVExportProfile.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
         )
     )
-    var imageLabels: [CSVExportModel.Field] = []
+    var imageLabels: [CSVExportProfile.Field] = []
     
     @Option(
         name: [.customLong("label-copyright")],
@@ -186,6 +186,15 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
     var outputDir: URL
     
+    @Option(
+        name: [.customLong("media-search-path")],
+        help: ArgumentHelp(
+            "Media search path. This argument can be supplied more than once to use multiple paths. (default: same folder as fcpxml(d))"
+        ),
+        transform: URL.init(fileURLWithPath:)
+    )
+    var mediaSearchPaths: [URL] = []
+    
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
             throw ValidationError("Cannot write log file at \(log.path.quoted)")
@@ -202,6 +211,11 @@ struct MarkersExtractorCLI: ParsableCommand {
         let settings: MarkersExtractor.Settings
         
         do {
+            let fcpxml = FCPXMLFile(.init(fcpxmlPath))
+            let mediaSearchPaths = mediaSearchPaths.isEmpty
+                ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
+                : mediaSearchPaths
+            
             settings = try MarkersExtractor.Settings(
                 exportFormat: exportFormat,
                 imageFormat: imageFormat,
@@ -225,7 +239,8 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
                 doneFilename: doneFilename,
-                fcpxmlPath: fcpxmlPath,
+                fcpxml: fcpxml,
+                mediaSearchPaths: mediaSearchPaths,
                 outputDir: outputDir
             )
         } catch MarkersExtractorError.validationError(let error) {
@@ -270,7 +285,7 @@ extension MarkersExtractorCLI {
     
     static func printHelpLabels() {
         print("List of available label headers:")
-        for header in CSVExportModel.Field.allCases {
+        for header in CSVExportProfile.Field.allCases {
             print("    \(header.rawValue)")
         }
     }

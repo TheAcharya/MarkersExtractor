@@ -1,11 +1,11 @@
 import Foundation
 
-public protocol MarkersExportModel
+public protocol ExportProfile
     where PreparedMarker.Field == Field
 {
-    associatedtype Field: MarkersExportField
-    associatedtype Payload: MarkersExportPayload
-    associatedtype PreparedMarker: MarkersExportPreparedMarker
+    associatedtype Field: ExportField
+    associatedtype Payload: ExportPayload
+    associatedtype PreparedMarker: ExportMarker
     
     /// Exports markers to disk.
     /// Writes metadata files, images, and any other resources necessary.
@@ -15,7 +15,7 @@ public protocol MarkersExportModel
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
-        imageSettings: MarkersExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>
     ) throws
     
     /// Converts raw FCP markers to the native format needed for export.
@@ -23,7 +23,7 @@ public protocol MarkersExportModel
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
-        imageSettings: MarkersExportImageSettings<Field>,
+        imageSettings: ExportImageSettings<Field>,
         isSingleFrame: Bool
     ) -> [PreparedMarker]
     

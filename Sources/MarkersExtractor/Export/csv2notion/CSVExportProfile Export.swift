@@ -5,14 +5,14 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-extension CSVExportModel {
+extension CSVExportProfile {
     public static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         csvPath: URL,
         videoPath: URL,
         outputPath: URL,
-        imageSettings: MarkersExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>
     ) throws {
         try export(
             markers: markers,
@@ -28,7 +28,7 @@ extension CSVExportModel {
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
-        imageSettings: MarkersExportImageSettings<Field>,
+        imageSettings: ExportImageSettings<Field>,
         isSingleFrame: Bool
     ) -> [PreparedMarker] {
         markers.map {

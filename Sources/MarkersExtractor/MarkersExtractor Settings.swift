@@ -4,22 +4,31 @@ import Foundation
 extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
-            public static let exportFormat: MarkersExportFormat = .csv
+            public static let exportFormat: ExportProfileFormat = .csv2Notion
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
+            public static let imageWidth: Int? = nil
+            public static let imageHeight: Int? = nil
+            public static let imageSizePercent: Int? = 100
             public static let imageSizePercentGIF = 50
             public static let gifFPS: Double = 10.0
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
+            public static let imageLabels: [CSVExportProfile.Field] = []
+            public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
             public static let imageLabelFontMaxSize = 30
             public static let imageLabelFontOpacity = 100
             public static let imageLabelFontColor = "#FFF"
             public static let imageLabelFontStrokeColor = "#000"
+            public static let imageLabelFontStrokeWidth: Int? = nil
             public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
+                [fcpxml.defaultMediaSearchPath].compactMap { $0 }
+            }
             public static let doneFilename = "done.txt"
         }
         
@@ -30,43 +39,73 @@ extension MarkersExtractor {
             public static let imageLabelFontOpacity = 0 ... 100
         }
         
-        let exportFormat: MarkersExportFormat
-        let imageFormat: MarkerImageFormat
-        let imageQuality: Int
-        let imageWidth: Int?
-        let imageHeight: Int?
-        let imageSizePercent: Int?
-        let gifFPS: Double
-        let gifSpan: TimeInterval
-        let idNamingMode: MarkerIDMode
-        let imageLabels: [CSVExportModel.Field]
-        let imageLabelCopyright: String?
-        let imageLabelFont: String
-        let imageLabelFontMaxSize: Int
-        let imageLabelFontOpacity: Int
-        let imageLabelFontColor: String
-        let imageLabelFontStrokeColor: String
-        let imageLabelFontStrokeWidth: Int?
-        let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
-        let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
-        let imageLabelHideNames: Bool
-        let createDoneFile: Bool
-        let fcpxmlPath: URL
-        let outputDir: URL
-        let doneFilename: String
+        public var exportFormat: ExportProfileFormat
+        public var imageFormat: MarkerImageFormat
+        public var imageQuality: Int
+        public var imageWidth: Int?
+        public var imageHeight: Int?
+        public var imageSizePercent: Int?
+        public var gifFPS: Double
+        public var gifSpan: TimeInterval
+        public var idNamingMode: MarkerIDMode
+        public var imageLabels: [CSVExportProfile.Field]
+        public var imageLabelCopyright: String?
+        public var imageLabelFont: String
+        public var imageLabelFontMaxSize: Int
+        public var imageLabelFontOpacity: Int
+        public var imageLabelFontColor: String
+        public var imageLabelFontStrokeColor: String
+        public var imageLabelFontStrokeWidth: Int?
+        public var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
+        public var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
+        public var imageLabelHideNames: Bool
+        public var createDoneFile: Bool
+        public var fcpxml: FCPXMLFile
+        public var mediaSearchPaths: [URL]
+        public var outputDir: URL
+        public var doneFilename: String
         
-        var xmlPath: URL {
-            fcpxmlPath.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
-            ? fcpxmlPath.appendingPathComponent("Info.fcpxml")
-            : fcpxmlPath
+        @available(*, deprecated, message: "This should be removed and refactored.")
+        var xmlPath: URL? {
+            fcpxml.xmlPath
         }
         
-        var mediaSearchPath: URL {
-            fcpxmlPath.deletingLastPathComponent()
+        /// Initialize with defaults for defaultable parameters.
+        public init(
+            fcpxml: FCPXMLFile,
+            outputDir: URL
+        ) throws {
+            self.exportFormat = Defaults.exportFormat
+            self.imageFormat = Defaults.imageFormat
+            self.imageQuality = Defaults.imageQuality
+            self.imageWidth = Defaults.imageWidth
+            self.imageHeight = Defaults.imageHeight
+            self.imageSizePercent = Defaults.imageSizePercent
+            self.gifFPS = Defaults.gifFPS
+            self.gifSpan = Defaults.gifSpan
+            self.idNamingMode = Defaults.idNamingMode
+            self.imageLabels = Defaults.imageLabels
+            self.imageLabelCopyright = Defaults.imageLabelCopyright
+            self.imageLabelFont = Defaults.imageLabelFont
+            self.imageLabelFontMaxSize = Defaults.imageLabelFontMaxSize
+            self.imageLabelFontOpacity = Defaults.imageLabelFontOpacity
+            self.imageLabelFontColor = Defaults.imageLabelFontColor
+            self.imageLabelFontStrokeColor = Defaults.imageLabelFontStrokeColor
+            self.imageLabelFontStrokeWidth = Defaults.imageLabelFontStrokeWidth
+            self.imageLabelAlignHorizontal = Defaults.imageLabelAlignHorizontal
+            self.imageLabelAlignVertical = Defaults.imageLabelAlignVertical
+            self.imageLabelHideNames = Defaults.imageLabelHideNames
+            self.createDoneFile = Defaults.createDoneFile
+            self.doneFilename = Defaults.doneFilename
+            self.fcpxml = fcpxml
+            self.mediaSearchPaths = Defaults.mediaSearchPaths(from: fcpxml)
+            self.outputDir = outputDir
+            
+            try validate()
         }
         
         public init(
-            exportFormat: MarkersExportFormat,
+            exportFormat: ExportProfileFormat,
             imageFormat: MarkerImageFormat,
             imageQuality: Int,
             imageWidth: Int?,
@@ -75,7 +114,7 @@ extension MarkersExtractor {
             gifFPS: Double,
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
-            imageLabels: [CSVExportModel.Field],
+            imageLabels: [CSVExportProfile.Field],
             imageLabelCopyright: String?,
             imageLabelFont: String,
             imageLabelFontMaxSize: Int,
@@ -88,7 +127,8 @@ extension MarkersExtractor {
             imageLabelHideNames: Bool,
             createDoneFile: Bool,
             doneFilename: String,
-            fcpxmlPath: URL,
+            fcpxml: FCPXMLFile,
+            mediaSearchPaths: [URL],
             outputDir: URL
         ) throws {
             self.exportFormat = exportFormat
@@ -113,29 +153,32 @@ extension MarkersExtractor {
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
             self.doneFilename = doneFilename
-            self.fcpxmlPath = fcpxmlPath
+            self.fcpxml = fcpxml
+            self.mediaSearchPaths = mediaSearchPaths
             self.outputDir = outputDir
             
             try validate()
         }
         
         private func validate() throws {
-            guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
-                throw MarkersExtractorError.validationError(
-                    "Unsupported input format \(fcpxmlPath.path.quoted)."
-                )
-            }
-            
-            if fcpxmlPath.fileExtension == "fcpxmld" {
-                guard FileManager.default.fileExistsAndIsDirectory(fcpxmlPath.path) else {
+            if let fcpxmlPath = fcpxml.url {
+                guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                     throw MarkersExtractorError.validationError(
-                        "Path does not exist at \(fcpxmlPath.path.quoted)."
+                        "Unsupported input format \(fcpxmlPath.path.quoted)."
                     )
                 }
-            }
-            
-            guard FileManager.default.fileExists(atPath: xmlPath.path) else {
-                throw MarkersExtractorError.validationError("File does not exist at \(xmlPath.path.quoted).")
+                
+                if fcpxmlPath.fileExtension == "fcpxmld" {
+                    guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
+                        throw MarkersExtractorError.validationError(
+                            "Path does not exist at \(fcpxmlPath.path.quoted)."
+                        )
+                    }
+                }
+                
+                guard fcpxmlPath.exists else {
+                    throw MarkersExtractorError.validationError("File does not exist at \(fcpxmlPath.path.quoted).")
+                }
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {

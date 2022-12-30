@@ -4,14 +4,14 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-extension MarkersExportModel {
+extension ExportProfile {
     public static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
-        imageSettings: MarkersExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>
     ) throws {
         let logger = Logger(label: "markersExport")
         
@@ -77,7 +77,7 @@ extension MarkersExportModel {
             try writeStillImages(
                 timecodes: timecodes,
                 video: videoPath,
-                destPath: outputPath,
+                outputPath: outputPath,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: imageSettings.quality,
                 imageDimensions: imageSettings.dimensions,
@@ -88,7 +88,7 @@ extension MarkersExportModel {
             try writeAnimatedImages(
                 timecodes: timecodes,
                 video: videoPath,
-                destPath: outputPath,
+                outputPath: outputPath,
                 gifFPS: imageSettings.gifFPS,
                 gifSpan: imageSettings.gifSpan,
                 gifDimensions: imageSettings.dimensions,

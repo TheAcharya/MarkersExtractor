@@ -3,8 +3,8 @@ import MarkersExtractor
 
 // Export
 
-extension MarkersExportFormat: ExpressibleByArgument {}
-extension CSVExportModel.Field: ExpressibleByArgument {}
+extension ExportProfileFormat: ExpressibleByArgument {}
+extension CSVExportProfile.Field: ExpressibleByArgument {}
 
 // Markers
 

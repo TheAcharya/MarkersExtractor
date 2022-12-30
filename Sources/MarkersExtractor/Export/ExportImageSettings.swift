@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-public struct MarkersExportImageSettings<Field> {
+public struct ExportImageSettings<Field> {
     public let gifFPS: Double
     public let gifSpan: TimeInterval
     public let format: MarkerImageFormat

@@ -88,7 +88,7 @@ extension String {
 // MARK: - FileManager
 
 extension FileManager {
-    func fileExistsAndIsDirectory(_ path: String) -> Bool {
+    func fileIsDirectory(_ path: String) -> Bool {
         var fileIsDirectory: ObjCBool = false
         let fileExists = FileManager.default.fileExists(
             atPath: path,
@@ -97,9 +97,13 @@ extension FileManager {
         return fileExists && fileIsDirectory.boolValue
     }
     
-    func mkdirWithParent(_ path: String) throws {
-        if fileExistsAndIsDirectory(path) {
-            return
+    func mkdirWithParent(_ path: String, reuseExisting: Bool = false) throws {
+        if FileManager.default.fileExists(atPath: path) {
+            if reuseExisting, fileIsDirectory(path) {
+                return
+            } else {
+                throw MarkersExtractorError.runtimeError("Directory with path already exists: \(path)")
+            }
         }
         
         try FileManager.default.createDirectory(
