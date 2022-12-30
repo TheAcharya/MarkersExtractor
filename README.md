@@ -15,7 +15,7 @@ A CLI tool and a library for extracting markers from Final Cut Pro FCPXML files 
 - [Development](#development)
 - [Credits](#Credits)
 - [License](#License)
-- [Contributions](#Contributions)
+- [Reporting Bugs & Contributions](#reporting-bugs-&-contributions)
 
 ## Installation
 
@@ -139,6 +139,6 @@ Maintained by [Steffan Andrews](https://github.com/orchetect)
 
 Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/MarkersExtractor/blob/master/LICENSE) for details.
 
-## Contributions
+## Reporting Bugs & Contributions
 
 Contributions are welcome. Feel free to post an [Issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
