@@ -2,7 +2,7 @@
 
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
 
-The Marker metadata extraction engine for Final Cut Pro. (Currenly in development)
+The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in development)
 
 # Core Features
 
