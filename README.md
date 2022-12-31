@@ -4,13 +4,13 @@
 
 The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in development)
 
-# Core Features
+## Core Features
 
-- Accurately extract Markers from FCP's FCPXML/FCPXMLD to CSV
-- Ability to batch extract and render stills or animated GIFs based on Marker's timecode
-- Ability to batch burn-in labels of Marker's metadata onto the stills or animated GIFs
+- Accurately extract Markers from FCP's FCPXML/FCPXMLD to CSV (additional formats coming in future)
+- Ability to batch extract and render stills or animated GIFs based on each marker's timecode
+- Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
 
-# Table of contents
+## Table of contents
 
 - [Installation](#Installation)
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
@@ -24,13 +24,13 @@ The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in d
 - [License](#License)
 - [Reporting Bugs & Contributions](#reporting-bugs--contributions)
 
-# Installation
+## Installation
 
-## Pre-compiled Binary (Recommended)
+### Pre-compiled Binary (Recommended)
 
 Download the latest version of CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/archive/refs/tags/0.1.1.zip).
 
-## From Source
+### From Source
 
 ```shell
 VERSION=0.1.0  # replace this with the version you need
@@ -42,9 +42,9 @@ swift build -c release
 
 Once the build has finished, the `markers-extractor-cli` executable will be located at `.build/release/`.
 
-# Usage
+## Usage
 
-## CLI v0.1.1
+### CLI v0.1.1
 
 <details>
 
@@ -98,7 +98,7 @@ OPTIONS:
 
 </details>
 
-## CLI v0.2.0-alpha (Development in Progress)
+### CLI v0.2.0-alpha (Development in Progress)
 
 <details>
 
@@ -175,14 +175,12 @@ OPTIONS:
 
 </details>
 
-# For Development
-
 ### Library
 
 To use this package in a SwiftPM project, you need to set it up as a package dependency:
 
 ```swift
-// swift-tools-version:5.6
+// swift-tools-version: 5.6
 import PackageDescription
 
 let package = Package(
@@ -206,29 +204,22 @@ let package = Package(
 
 Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
 
-## Development
-
-[SwiftFormat](https://github.com/nicklockwood/SwiftFormat) is used to format `*.swift` files.
-
-```bash
-cd <path to repo root>
-swiftformat .
-```
-
-Unit tests may be run on the command-line or in Xcode using the MarkersExtractor-Package scheme. GitHub CI is also set up to run the unit tests server-side.
-
-# Credits
+## Credits
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
 
-Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701)
+Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) (0.1.0 ... 0.1.1)
 
-Maintained by [Steffan Andrews](https://github.com/orchetect)
+Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
-# License
+## License
 
 Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/MarkersExtractor/blob/master/LICENSE) for details.
 
-# Reporting Bugs & Contributions
+## Reporting Bugs
 
 For bug reports, feature requests and other suggestions you can create [a new issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
+
+## Contributing
+
+Code contributions are welcome. See [CONTRIBUTING](https://github.com/TheAcharya/MarkersExtractor/blob/master/CONTRIBUTING.md) for details before contributing.
