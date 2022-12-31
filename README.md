@@ -208,14 +208,14 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 ## Development
 
-This projects uses [pre-commit](https://pre-commit.com/) for automatic source files formatting. [swift-format](https://github.com/apple/swift-format) (swift-5.6.1-RELEASE) is used to format `*.swift` files. Make sure both are present in PATH before making commits.
+[SwiftFormat](https://github.com/nicklockwood/SwiftFormat) is used to format `*.swift` files.
 
-```shell
-git clone https://github.com/yourname/MarkersExtractor
-cd MarkersExtractor
-pre-commit install
-git checkout -b fix
+```bash
+cd <path to repo root>
+swiftformat .
 ```
+
+Unit tests may be run on the command-line or in Xcode using the MarkersExtractor-Package scheme. GitHub CI is also set up to run the unit tests server-side.
 
 # Credits
 

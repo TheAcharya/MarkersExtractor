@@ -1,4 +1,5 @@
 // swift-tools-version: 5.6
+// (be sure to update the .swift-version file when this Swift version changes)
 
 import PackageDescription
 
