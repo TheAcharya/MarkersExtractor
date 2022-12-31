@@ -71,7 +71,7 @@ final class BasicMarkersTests: XCTestCase {
     }
     
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
-    func testBasicMarkers_extractMarkers_uniquing_projectTimecode() throws {
+    func testBasicMarkers_extractMarkers_uniquing() throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
             outputDir: FileManager.default.temporaryDirectory
@@ -104,9 +104,7 @@ final class BasicMarkersTests: XCTestCase {
                 XCTAssertEqual(markers[2].id(settings.idNamingMode), "notes yay")
                 XCTAssertEqual(markers[3].id(settings.idNamingMode), "more notes here-2")
             }
-            
         }
-        
     }
 }
 
