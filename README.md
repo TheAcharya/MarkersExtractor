@@ -2,7 +2,7 @@
 
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
 
-The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in development)
+Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ## Core Features
 
@@ -28,7 +28,7 @@ The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in d
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest version of CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/archive/refs/tags/0.1.1.zip).
+Download the latest stable release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.1.1/markers-extractor-cli-0.1.1.zip).
 
 ### From Source
 
