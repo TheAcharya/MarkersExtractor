@@ -15,14 +15,14 @@ The Marker metadata extraction tool and engine for Final Cut Pro. (Currenly in d
 - [Installation](#Installation)
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
-- [Usage](#Usage)
-  - [CLI](#cli)
-- [For Development](#for-development)
-  - [Library](#library)
-  - [Development](#development)
+- [Usage](#usage)
+  - [CLI v0.1.1](#cli-v0.1.1)
+  - [CLI v0.2.0-alpha (Development in Progress)](#cli-v0.2.0-alpha-development-in-progress)
+- [Developer Library](#developer-library)
 - [Credits](#Credits)
 - [License](#License)
-- [Reporting Bugs & Contributions](#reporting-bugs--contributions)
+- [Reporting Bugs](#reporting-bugs)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -175,7 +175,7 @@ OPTIONS:
 
 </details>
 
-### Library
+### Developer Library
 
 To use this package in a SwiftPM project, you need to set it up as a package dependency:
 
