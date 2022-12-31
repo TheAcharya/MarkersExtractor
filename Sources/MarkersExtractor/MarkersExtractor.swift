@@ -114,6 +114,10 @@ extension MarkersExtractor {
 // MARK: - Extract Markers
 
 extension MarkersExtractor {
+    /// Extract markers from `fcpxml` and optionally sort them chronologically by timecode.
+    ///
+    /// Does not perform any ID uniquing.
+    /// To subsequently unique the resulting `[Marker]`, call `uniquingMarkerIDs(in:)`
     internal func extractMarkers(sort: Bool = true) throws -> [Marker] {
         var markers: [Marker]
         

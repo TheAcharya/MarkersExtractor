@@ -10,11 +10,15 @@ import TimecodeKit
 
 final class BasicMarkersTests: XCTestCase {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
+    ///
+    /// Note that two markers share the same marker ID. This test also checks the default behavior of non-unique IDs.
     func testBasicMarkers_extractMarkers() throws {
-        let settings = try MarkersExtractor.Settings(
+        var settings = try MarkersExtractor.Settings(
             fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
             outputDir: FileManager.default.temporaryDirectory
         )
+        settings.idNamingMode = .projectTimecode
+        
         let extractor = MarkersExtractor(settings)
         
         // verify marker contents
@@ -35,7 +39,7 @@ final class BasicMarkersTests: XCTestCase {
         
         let marker0 = markers[0]
         XCTAssertEqual(marker0.type, .standard)
-        XCTAssertEqual(marker0.name, "Standard Marker")
+        XCTAssertEqual(marker0.name, "Marker 1")
         XCTAssertEqual(marker0.notes, "some notes here")
         XCTAssertEqual(marker0.roles, [.video("Titles")])
         XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 29, f: 14).toTimecode(at: fr))
@@ -43,7 +47,7 @@ final class BasicMarkersTests: XCTestCase {
         
         let marker1 = markers[1]
         XCTAssertEqual(marker1.type, .todo(completed: false))
-        XCTAssertEqual(marker1.name, "To Do Marker, Incomplete")
+        XCTAssertEqual(marker1.name, "Marker 1")
         XCTAssertEqual(marker1.notes, "more notes here")
         XCTAssertEqual(marker1.roles, [.video("Titles")])
         XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
@@ -51,19 +55,58 @@ final class BasicMarkersTests: XCTestCase {
         
         let marker2 = markers[2]
         XCTAssertEqual(marker2.type, .todo(completed: true))
-        XCTAssertEqual(marker2.name, "To Do Marker, Completed")
+        XCTAssertEqual(marker2.name, "Marker 2")
         XCTAssertEqual(marker2.notes, "notes yay")
         XCTAssertEqual(marker2.roles, [.video("Titles")])
-        XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 29, f: 16).toTimecode(at: fr))
+        XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
         let marker3 = markers[3]
         XCTAssertEqual(marker3.type, .chapter)
-        XCTAssertEqual(marker3.name, "Chapter Marker")
-        XCTAssertEqual(marker3.notes, "")
+        XCTAssertEqual(marker3.name, "Marker 3")
+        XCTAssertEqual(marker3.notes, "more notes here")
         XCTAssertEqual(marker3.roles, [.video("Titles")])
         XCTAssertEqual(marker3.position, try TCC(h: 00, m: 00, s: 29, f: 17).toTimecode(at: fr))
         XCTAssertEqual(marker3.parentInfo, parentInfo)
+    }
+    
+    /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
+    func testBasicMarkers_extractMarkers_uniquing_projectTimecode() throws {
+        var settings = try MarkersExtractor.Settings(
+            fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
+            outputDir: FileManager.default.temporaryDirectory
+        )
+        
+        try MarkerIDMode.allCases.forEach { idMode in
+            settings.idNamingMode = idMode
+            
+            let extractor = MarkersExtractor(settings)
+            
+            // extract and unique
+            var markers = try extractor.extractMarkers()
+            markers = extractor.uniquingMarkerIDs(in: markers)
+            
+            // verify correct IDs
+            switch idMode {
+            case .projectTimecode:
+                XCTAssertEqual(markers[0].id(settings.idNamingMode), "Test Project_00:00:29:14")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode), "Test Project_00:00:29:15-1")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode), "Test Project_00:00:29:15-2")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode), "Test Project_00:00:29:17")
+            case .name:
+                XCTAssertEqual(markers[0].id(settings.idNamingMode), "Marker 1-1")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode), "Marker 1-2")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode), "Marker 2")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode), "Marker 3")
+            case .notes:
+                XCTAssertEqual(markers[0].id(settings.idNamingMode), "some notes here")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode), "more notes here-1")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode), "notes yay")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode), "more notes here-2")
+            }
+            
+        }
+        
     }
 }
 
@@ -89,10 +132,10 @@ private let fcpxmlBasicMarkers = """
                                 <text-style-def id="ts1">
                                     <text-style font="Helvetica" fontSize="63" fontFace="Regular" fontColor="1 1 1 1" alignment="center"/>
                                 </text-style-def>
-                                <marker start="27248221/7500s" duration="1001/30000s" value="Standard Marker" note="some notes here"/>
-                                <marker start="7266259/2000s" duration="1001/30000s" value="To Do Marker, Incomplete" completed="0" note="more notes here"/>
-                                <marker start="54497443/15000s" duration="1001/30000s" value="To Do Marker, Completed" completed="1" note="notes yay"/>
-                                <chapter-marker start="108995887/30000s" duration="1001/30000s" value="Chapter Marker" posterOffset="11/30s"/>
+                                <marker start="27248221/7500s" duration="1001/30000s" value="Marker 1" note="some notes here"/>
+                                <marker start="7266259/2000s" duration="1001/30000s" value="Marker 1" completed="0" note="more notes here"/>
+                                <marker start="7266259/2000s" duration="1001/30000s" value="Marker 2" completed="1" note="notes yay"/>
+                                <chapter-marker start="108995887/30000s" duration="1001/30000s" value="Marker 3" posterOffset="11/30s" note="more notes here"/>
                             </title>
                         </spine>
                     </sequence>
