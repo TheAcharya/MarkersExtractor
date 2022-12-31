@@ -1,3 +1,9 @@
+//
+//  ImageLabeler.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Cocoa
 import CoreText
 import Foundation
@@ -7,7 +13,7 @@ class ImageLabeler {
     private let logger = Logger(label: "\(ImageLabeler.self)")
 
     private var fontSizeCache: [[String]: CGFloat] = [:]
-    private var curText: String? = nil
+    private var curText: String?
 
     let properties: MarkerLabelProperties
     var textIter: IndexingIterator<[String]>
@@ -102,7 +108,7 @@ class ImageLabeler {
         var stringAttributes: [NSAttributedString.Key: Any] = [
             .strokeColor: properties.fontStrokeColor,
             .foregroundColor: properties.fontColor,
-            .paragraphStyle: paragraphStyle,
+            .paragraphStyle: paragraphStyle
         ]
 
         let fontSize = calcFontSize(
@@ -226,7 +232,7 @@ class ImageLabeler {
         let sizeHash = [
             string,
             String(Int(restraint.height)),
-            String(Int(restraint.width)),
+            String(Int(restraint.width))
         ]
         if let cachedSize = fontSizeCache[sizeHash] {
             return cachedSize
@@ -248,9 +254,10 @@ class ImageLabeler {
                 attributes: attributesTest as [NSAttributedString.Key: Any]
             )
 
-            isOutOfBounds =
-                (attributedString.size().height > restraint.height
-                    || attributedString.size().width > restraint.width)
+            isOutOfBounds = (
+                attributedString.size().height > restraint.height
+                || attributedString.size().width > restraint.width
+            )
         } while fontSize > 10 && isOutOfBounds
 
         fontSizeCache[sizeHash] = fontSize

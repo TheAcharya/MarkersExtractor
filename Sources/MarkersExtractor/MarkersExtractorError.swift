@@ -1,3 +1,9 @@
+//
+//  MarkersExtractorError.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 
 public enum MarkersExtractorError: LocalizedError {
@@ -6,9 +12,9 @@ public enum MarkersExtractorError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .validationError(let error):
+        case let .validationError(error):
             return "Validation error: \(error)"
-        case .runtimeError(let error):
+        case let .runtimeError(error):
             return error
         }
     }

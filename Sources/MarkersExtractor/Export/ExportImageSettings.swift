@@ -1,3 +1,9 @@
+//
+//  ExportImageSettings.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 import Foundation
 

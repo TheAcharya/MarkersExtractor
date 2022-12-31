@@ -1,3 +1,9 @@
+//
+//  CSVExportProfile Field.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 extension CSVExportProfile {
     /// Markers CSV fields (header column names).
     public enum Field: String, CaseIterable {

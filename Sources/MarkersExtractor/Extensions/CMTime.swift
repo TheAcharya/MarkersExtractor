@@ -1,3 +1,9 @@
+//
+//  CMTime.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import CoreMedia
 
 extension CMTimeRange {
@@ -6,9 +12,8 @@ extension CMTimeRange {
     /// Can be `nil` when the range is not available, for example, when an asset has not yet been
     /// fully loaded or if it's a live stream.
     var range: ClosedRange<Double>? {
-        guard
-            start.isNumeric,
-            end.isNumeric
+        guard start.isNumeric,
+              end.isNumeric
         else {
             return nil
         }

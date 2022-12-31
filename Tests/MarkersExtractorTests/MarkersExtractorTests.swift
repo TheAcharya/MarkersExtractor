@@ -1,3 +1,9 @@
+//
+//  MarkersExtractorTests.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import XCTest
 @testable import MarkersExtractor
 import TimecodeKit
@@ -49,7 +55,8 @@ final class MarkersExtractorTests: XCTestCase {
         )
         
         XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker2, marker1, marker2]), [marker2.id(settings.idNamingMode)]
+            extractor.findDuplicateIDs(in: [marker2, marker1, marker2]),
+            [marker2.id(settings.idNamingMode)]
         )
     }
     

@@ -1,3 +1,9 @@
+//
+//  Utilities.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 import AppKit
 import CoreGraphics
@@ -102,7 +108,8 @@ extension FileManager {
             if reuseExisting, fileIsDirectory(path) {
                 return
             } else {
-                throw MarkersExtractorError.runtimeError("Directory with path already exists: \(path)")
+                throw MarkersExtractorError
+                    .runtimeError("Directory with path already exists: \(path)")
             }
         }
         

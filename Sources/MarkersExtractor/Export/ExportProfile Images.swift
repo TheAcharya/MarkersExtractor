@@ -1,3 +1,9 @@
+//
+//  ExportProfile Images.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 import Foundation
 import OrderedCollections
@@ -17,7 +23,7 @@ extension ExportProfile {
         imageLabelText: [String],
         imageLabelProperties: MarkerLabelProperties
     ) throws {
-        var imageLabeler: ImageLabeler? = nil
+        var imageLabeler: ImageLabeler?
         
         if !imageLabelText.isEmpty {
             imageLabeler = ImageLabeler(
@@ -31,7 +37,7 @@ extension ExportProfile {
             
             let timePoint = timecode.realTimeValue
             let gifSpan = gifSpan / 2
-            let timeRange = (timePoint - gifSpan)...(timePoint + gifSpan)
+            let timeRange = (timePoint - gifSpan) ... (timePoint + gifSpan)
             
             imageLabeler?.nextText()
             
@@ -50,7 +56,7 @@ extension ExportProfile {
             } catch {
                 throw MarkersExtractorError.runtimeError(
                     "Error while generating gif \(gifPath.lastPathComponent.quoted):"
-                    + " \(error.localizedDescription)"
+                        + " \(error.localizedDescription)"
                 )
             }
         }
@@ -66,7 +72,7 @@ extension ExportProfile {
         imageLabelText: [String],
         imageLabelProperties: MarkerLabelProperties
     ) throws {
-        var imageLabeler: ImageLabeler? = nil
+        var imageLabeler: ImageLabeler?
         
         if !imageLabelText.isEmpty {
             imageLabeler = ImageLabeler(

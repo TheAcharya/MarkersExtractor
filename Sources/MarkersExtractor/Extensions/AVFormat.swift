@@ -1,3 +1,9 @@
+//
+//  AVFormat.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 
 enum AVFormat: String {

@@ -1,3 +1,9 @@
+//
+//  MarkersExtractor.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 import AppKit
 import Foundation
@@ -40,7 +46,9 @@ extension MarkersExtractor {
         }
         
         if !Resource.validateAll() {
-            logger.warning("Could not validate internal resource files. Export may not work correctly.")
+            logger.warning(
+                "Could not validate internal resource files. Export may not work correctly."
+            )
         }
         
         let projectName = markers[0].parentInfo.projectName
@@ -121,12 +129,15 @@ extension MarkersExtractor {
         }
         
         if !isAllUniqueIDNonEmpty(in: markers) {
-            throw MarkersExtractorError.runtimeError("Empty marker ID encountered. Markers must have valid non-empty IDs.")
+            throw MarkersExtractorError.runtimeError(
+                "Empty marker ID encountered. Markers must have valid non-empty IDs."
+            )
         }
         
         let duplicates = findDuplicateIDs(in: markers)
         if !duplicates.isEmpty {
-            // duplicate marker IDs isn't be an error condition, we should append filename uniquing string to the ID instead
+            // duplicate marker IDs isn't be an error condition, we should append filename uniquing
+            // string to the ID instead.
             // throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
             logger.info("Duplicate marker IDs found which will be uniqued: \(duplicates)")
         }
@@ -142,8 +153,11 @@ extension MarkersExtractor {
     internal func uniquingMarkerIDs(in markers: [Marker]) -> [Marker] {
         var markers = markers
         
-        let dupeIndices = Dictionary(grouping: markers.indices, by: { markers[$0].id(s.idNamingMode) })
-            .filter { $1.count > 1 }
+        let dupeIndices = Dictionary(
+            grouping: markers.indices,
+            by: { markers[$0].id(s.idNamingMode) }
+        )
+        .filter { $1.count > 1 }
         
         for (_, indices) in dupeIndices {
             var counter = 1
@@ -201,7 +215,11 @@ extension MarkersExtractor {
 // MARK: - Done File
 
 extension MarkersExtractor {
-    private func saveDoneFile<E: Encodable>(at outputPath: URL, fileName: String, content: E) throws {
+    private func saveDoneFile<E: Encodable>(
+        at outputPath: URL,
+        fileName: String,
+        content: E
+    ) throws {
         let doneFile = outputPath.appendingPathComponent(fileName)
         
         do {
@@ -242,7 +260,9 @@ extension MarkersExtractor {
         let selection = files[0]
         
         if files.count > 1 {
-            logger.info("Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)")
+            logger.info(
+                "Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)"
+            )
         }
         
         return selection
@@ -252,7 +272,7 @@ extension MarkersExtractor {
         try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
             .filter {
                 $0.lastPathComponent.starts(with: name)
-                && exts.contains($0.fileExtension)
+                    && exts.contains($0.fileExtension)
             }
     }
 }

@@ -1,3 +1,9 @@
+//
+//  FCPXMLMarkerExtractor.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import CoreMedia
 import Foundation
 import Logging
@@ -20,7 +26,10 @@ class FCPXMLMarkerExtractor {
         self.idNamingMode = idNamingMode
     }
 
-    static func extractMarkers(from fcpxml: FCPXMLFile, idNamingMode: MarkerIDMode) throws -> [Marker] {
+    static func extractMarkers(
+        from fcpxml: FCPXMLFile,
+        idNamingMode: MarkerIDMode
+    ) throws -> [Marker] {
         let data = try fcpxml.data()
         let xml = try XMLDocument(data: data)
         return try self.init(xml, idNamingMode).extractMarkers()
@@ -90,9 +99,11 @@ class FCPXMLMarkerExtractor {
         )
     }
 
-    private func calcMarkerPosition(_ marker: XMLElement,
-                                    parentFPS: TimecodeFrameRate,
-                                    parentDuration: Timecode) -> Timecode {
+    private func calcMarkerPosition(
+        _ marker: XMLElement,
+        parentFPS: TimecodeFrameRate,
+        parentDuration: Timecode
+    ) -> Timecode {
         let parentClip = marker.parentElement!
         
         let localInPoint: CMTime = parentClip.fcpxStartValue.seconds > 0
@@ -104,7 +115,10 @@ class FCPXMLMarkerExtractor {
             guard let tc = try? markerPosition.toTimecode(at: parentFPS) else {
                 let markerName = marker.fcpxValue ?? ""
                 let clipName = getClipName(parentClip)
-                logger.warning("Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted).")
+                logger
+                    .warning(
+                        "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
+                    )
                 return .init(at: parentFPS)
             }
             return tc
@@ -121,7 +135,10 @@ class FCPXMLMarkerExtractor {
         let defaultFPS: TimecodeFrameRate = ._24
 
         guard let parent = findParentByType(marker, .sequence) else {
-            logger.warning("Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode.")
+            logger
+                .warning(
+                    "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
+                )
             return defaultFPS
         }
         
@@ -132,7 +149,10 @@ class FCPXMLMarkerExtractor {
             case .nonDropFrame:
                 return false
             case nil:
-                logger.warning("Couldn't detect whether FPS is drop (DF) or non-drop (NDF); using NDF to form marker timecode.")
+                logger
+                    .warning(
+                        "Couldn't detect whether FPS is drop (DF) or non-drop (NDF); using NDF to form marker timecode."
+                    )
                 return false
             }
         }()
@@ -141,7 +161,10 @@ class FCPXMLMarkerExtractor {
               let videoRate = VideoFrameRate(frameDuration: frameDuration),
               let timecodeRate = videoRate.timecodeFrameRate(drop: isFPSDrop)
         else {
-            logger.warning("Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode.")
+            logger
+                .warning(
+                    "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
+                )
             return defaultFPS
         }
         
@@ -219,7 +242,7 @@ class FCPXMLMarkerExtractor {
             clip.fcpxRole
         ].compactMap { $0?.localizedCapitalized }
 
-        if clip.name == "title" && videoRolesPool.isEmpty {
+        if clip.name == "title", videoRolesPool.isEmpty {
             videoRolesPool.append("Titles")
         }
 

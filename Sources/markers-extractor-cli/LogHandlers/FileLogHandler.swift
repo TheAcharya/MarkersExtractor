@@ -1,3 +1,9 @@
+//
+//  FileLogHandler.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 import Logging
 
@@ -37,7 +43,7 @@ public struct FileLogHandler: LogHandler {
     public var logLevel: Logger.Level = .info
     public var metadata = Logger.Metadata() {
         didSet {
-            self.prettyMetadata = self.prettify(self.metadata)
+            prettyMetadata = prettify(metadata)
         }
     }
 
@@ -45,16 +51,16 @@ public struct FileLogHandler: LogHandler {
 
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
-            return self.metadata[metadataKey]
+            metadata[metadataKey]
         }
         set {
-            self.metadata[metadataKey] = newValue
+            metadata[metadataKey] = newValue
         }
     }
 
     public init(label: String, localFile url: URL) throws {
         self.label = label
-        self.stream = try FileHandlerOutputStream(localFile: url)
+        stream = try FileHandlerOutputStream(localFile: url)
     }
 
     public func log(
@@ -68,17 +74,17 @@ public struct FileLogHandler: LogHandler {
     ) {
         let prettyMetadata =
             metadata?.isEmpty ?? true
-            ? self.prettyMetadata
-            : self.prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+                ? prettyMetadata
+                : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
 
-        var stream = self.stream
+        var stream = stream
         stream.write(
-            "\(self.timestamp()) \(level) \(self.label) :\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
+            "\(timestamp()) \(level) \(label) :\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
         )
     }
 
     private func prettify(_ metadata: Logger.Metadata) -> String? {
-        return !metadata.isEmpty ? metadata.map { "\($0)=\($1)" }.joined(separator: " ") : nil
+        !metadata.isEmpty ? metadata.map { "\($0)=\($1)" }.joined(separator: " ") : nil
     }
 
     private func timestamp() -> String {

@@ -1,3 +1,9 @@
+//
+//  ImageExtractor.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 import Foundation
 import CoreImage
@@ -25,11 +31,11 @@ final class ImageExtractor {
                 return "Image type is not supported."
             case .labelsDepleted:
                 return "Image labels depleted before images."
-            case .generateFrameFailed(let error):
+            case let .generateFrameFailed(error):
                 return "Failed to generate frame: \(error.localizedDescription)"
-            case .addFrameFailed(let error):
+            case let .addFrameFailed(error):
                 return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-            case .writeFailed(let error):
+            case let .writeFailed(error):
                 return "Failed to write, with underlying error: \(error.localizedDescription)"
             }
         }
@@ -84,12 +90,12 @@ final class ImageExtractor {
             let frameResult = self.processFrame(for: imageResult, frameName: frameName)
 
             switch frameResult {
-            case .success(let finished):
+            case let .success(finished):
                 if finished {
                     result = .success(())
                     group.leave()
                 }
-            case .failure(let error):
+            case let .failure(error):
                 result = .failure(error)
                 group.leave()
             }
@@ -98,7 +104,7 @@ final class ImageExtractor {
         group.wait()
 
         switch result {
-        case .failure(let error):
+        case let .failure(error):
             throw error
         case .success:
             return
@@ -125,7 +131,7 @@ final class ImageExtractor {
         frameName: String
     ) -> Result<Bool, Error> {
         switch result {
-        case .success(let result):
+        case let .success(result):
             let image = conversion.imageFilter?(result.image) ?? result.image
 
             let cicontext = CIContext()
@@ -164,7 +170,7 @@ final class ImageExtractor {
             }
 
             return .success(result.isFinished)
-        case .failure(let error):
+        case let .failure(error):
             return .failure(.generateFrameFailed(error))
         }
     }

@@ -1,3 +1,9 @@
+//
+//  MarkerRole.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 
 public enum MarkerRole: Hashable, Equatable {
@@ -12,9 +18,9 @@ extension MarkerRole: CustomStringConvertible {
     
     var stringValue: String {
         switch self {
-        case .audio(let string):
+        case let .audio(string):
             return string
-        case .video(let string):
+        case let .video(string):
             return string
         }
     }

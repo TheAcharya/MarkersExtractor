@@ -1,3 +1,9 @@
+//
+//  CSVExportProfile PreparedMarker.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 import OrderedCollections
 
@@ -21,10 +27,11 @@ extension CSVExportProfile {
         public let iconImage: String
         public let imageFileName: String
         
-        public init(_ marker: Marker,
-             idMode: MarkerIDMode,
-             imageFormat: MarkerImageFormat,
-             isSingleFrame: Bool
+        public init(
+            _ marker: Marker,
+            idMode: MarkerIDMode,
+            imageFormat: MarkerImageFormat,
+            isSingleFrame: Bool
         ) {
             id = marker.id(idMode)
             name = marker.name
@@ -35,8 +42,10 @@ extension CSVExportProfile {
             position = marker.positionTimecodeString
             clipName = marker.parentInfo.clipName
             clipDuration = marker.parentInfo.clipDurationTimecodeString
-            videoRoles = marker.roles.filter(\.isVideo).map { $0.stringValue }.joined(separator: ", ")
-            audioRoles = marker.roles.filter(\.isAudio).map { $0.stringValue }.joined(separator: ", ")
+            videoRoles = marker.roles.filter(\.isVideo).map { $0.stringValue }
+                .joined(separator: ", ")
+            audioRoles = marker.roles.filter(\.isAudio).map { $0.stringValue }
+                .joined(separator: ", ")
             eventName = marker.parentInfo.eventName
             projectName = marker.parentInfo.projectName
             libraryName = marker.parentInfo.libraryName
@@ -80,7 +89,7 @@ extension CSVExportProfile.PreparedMarker {
 extension Marker {
     fileprivate var isChecked: Bool {
         switch type {
-        case .todo(let completed):
+        case let .todo(completed):
             return completed
         default:
             return false
@@ -91,7 +100,7 @@ extension Marker {
         switch type {
         case .standard:
             return .notStarted
-        case .todo(let completed):
+        case let .todo(completed):
             return completed ? .done : .inProgress
         case .chapter:
             return .notStarted

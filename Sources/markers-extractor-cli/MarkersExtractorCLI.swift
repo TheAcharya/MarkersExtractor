@@ -1,3 +1,9 @@
+//
+//  MarkersExtractorCLI.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import ArgumentParser
 import Foundation
 import Logging
@@ -48,9 +54,11 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var imageSizePercent: Int?
     
-    @Option(help: ArgumentHelp(
-        "GIF frame rate.",
-        valueName: "\(MarkersExtractor.Settings.Validation.gifFPS)")
+    @Option(
+        help: ArgumentHelp(
+            "GIF frame rate.",
+            valueName: "\(MarkersExtractor.Settings.Validation.gifFPS)"
+        )
     )
     var gifFPS: Double = MarkersExtractor.Settings.Defaults.gifFPS
     
@@ -155,7 +163,9 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
     
-    @Flag(help: "Create a file in output directory on successful export. The filename can be customized using --done-filename.")
+    @Flag(
+        help: "Create a file in output directory on successful export. The filename can be customized using --done-filename."
+    )
     var createDoneFile = MarkersExtractor.Settings.Defaults.createDoneFile
     
     @Option(
@@ -243,7 +253,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 mediaSearchPaths: mediaSearchPaths,
                 outputDir: outputDir
             )
-        } catch MarkersExtractorError.validationError(let error) {
+        } catch let MarkersExtractorError.validationError(error) {
             throw ValidationError(error)
         }
         
@@ -261,12 +271,12 @@ extension MarkersExtractorCLI {
             }
 
             var logHandlers: [LogHandler] = [
-                ConsoleLogHandler.init(label: label)
+                ConsoleLogHandler(label: label)
             ]
 
             if let logFile = logFile {
                 do {
-                    logHandlers.append(try FileLogHandler.init(label: label, localFile: logFile))
+                    logHandlers.append(try FileLogHandler(label: label, localFile: logFile))
                 } catch {
                     print(
                         "Cannot write to log file \(logFile.lastPathComponent.quoted):"
@@ -275,7 +285,7 @@ extension MarkersExtractorCLI {
                 }
             }
 
-            for i in 0..<logHandlers.count {
+            for i in 0 ..< logHandlers.count {
                 logHandlers[i].logLevel = logLevel
             }
 

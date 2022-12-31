@@ -1,3 +1,9 @@
+//
+//  ExportProfile Export.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AVFoundation
 import Foundation
 import Logging
@@ -73,7 +79,7 @@ extension ExportProfile {
         )
         
         switch imageSettings.format {
-        case .still(let stillImageFormat):
+        case let .still(stillImageFormat):
             try writeStillImages(
                 timecodes: timecodes,
                 video: videoPath,
@@ -84,7 +90,7 @@ extension ExportProfile {
                 imageLabelText: imageLabelText,
                 imageLabelProperties: imageSettings.labelProperties
             )
-        case .animated(let animatedImageFormat):
+        case let .animated(animatedImageFormat):
             try writeAnimatedImages(
                 timecodes: timecodes,
                 video: videoPath,
@@ -145,13 +151,14 @@ extension ExportProfile {
                 headers
                     .map {
                         (includeHeaders ? "\($0.name): " : "")
-                        + "\(markerDict[$0] ?? "")"
+                            + "\(markerDict[$0] ?? "")"
                     }
                     .joined(separator: "\n")
             }
     }
     
-    /// Returns an ordered dictionary keyed by marker image filename with a value of timecode position.
+    /// Returns an ordered dictionary keyed by marker image filename with a value of timecode
+    /// position.
     private static func makeTimecodes(
         markers: [Marker],
         preparedMarkers: [PreparedMarker],

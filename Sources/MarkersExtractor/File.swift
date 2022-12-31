@@ -1,3 +1,9 @@
+//
+//  File.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 
 public struct File {
@@ -16,7 +22,7 @@ extension File {
 }
 
 extension File {
-   public var isFetched: Bool {
+    public var isFetched: Bool {
         cache != nil
     }
     
@@ -34,7 +40,9 @@ extension File {
         }
         
         guard let url = url else {
-            throw MarkersExtractorError.runtimeError("File URL is missing while attempting to read file contents.")
+            throw MarkersExtractorError.runtimeError(
+                "File URL is missing while attempting to read file contents."
+            )
         }
         
         let data = try Data(contentsOf: url)
@@ -48,9 +56,9 @@ extension File {
             throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
         }
         switch fetched {
-        case .data(let data):
+        case let .data(data):
             return data
-        case .string(let string):
+        case let .string(string):
             guard let data = string.data(using: .utf8) else {
                 let u = url != nil ? "\(url!)" : "-"
                 throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
@@ -64,18 +72,18 @@ extension File {
 
 extension File {
     public init(_ url: URL) {
-        self.cache = nil
+        cache = nil
         self.url = url
     }
     
     public init(fileContents: Data) {
-        self.cache = .data(fileContents)
-        self.url = nil
+        cache = .data(fileContents)
+        url = nil
     }
     
     public init(fileContents: String) {
-        self.cache = .string(fileContents)
-        self.url = nil
+        cache = .string(fileContents)
+        url = nil
     }
     
     public static func fileContents(_ contents: Data) -> Self {

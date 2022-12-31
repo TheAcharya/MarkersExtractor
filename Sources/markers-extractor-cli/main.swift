@@ -1,3 +1,9 @@
+//
+//  main.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import MarkersExtractor
 
 func main() {

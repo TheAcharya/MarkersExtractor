@@ -1,3 +1,9 @@
+//
+//  MarkerImageFormat.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 public enum MarkerImageFormat: Equatable, Hashable {
     case still(Still)
     case animated(Animated)

@@ -1,16 +1,32 @@
+//
+//  AVAssetImageGenerator.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
+// Code in this file is derived from:
 // https://github.com/sindresorhus/Gifski/blob/main/Gifski/Utilities.swift
-/*
-MIT License
-
-© 2019 Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-© 2019 Kornel Lesiński <kornel@pngquant.org> (gif.ski)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+//
+// MIT License
+//
+// © 2019 Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+// © 2019 Kornel Lesiński <kornel@pngquant.org> (gif.ski)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import AppKit
 import AVFoundation
@@ -26,7 +42,8 @@ extension AVAssetImageGenerator {
         let isFinishedIgnoreImage: Bool
     }
 
-    /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its usage in each
+    /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its
+    /// usage in each
     /// `completionHandler` call as it can change if frames are skipped, for example, blank frames.
     func generateCGImagesAsynchronously(
         forTimePoints timePoints: [CMTime],
@@ -90,7 +107,8 @@ extension AVAssetImageGenerator {
                         break
                     }
 
-                    // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed” error for some frames in screen recordings.
+                    // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed”
+                    // error for some frames in screen recordings.
                     // As a workaround, we ignore these as the GIF seems fine still.
                     if error.code == .decodeFailed {
                         decodeFailureFrameCount += 1

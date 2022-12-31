@@ -1,3 +1,9 @@
+//
+//  MarkersExtractor Settings.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import AppKit
 import Foundation
 
@@ -29,6 +35,7 @@ extension MarkersExtractor {
             public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
                 [fcpxml.defaultMediaSearchPath].compactMap { $0 }
             }
+
             public static let doneFilename = "done.json"
         }
         
@@ -70,30 +77,30 @@ extension MarkersExtractor {
             fcpxml: FCPXMLFile,
             outputDir: URL
         ) throws {
-            self.exportFormat = Defaults.exportFormat
-            self.imageFormat = Defaults.imageFormat
-            self.imageQuality = Defaults.imageQuality
-            self.imageWidth = Defaults.imageWidth
-            self.imageHeight = Defaults.imageHeight
-            self.imageSizePercent = Defaults.imageSizePercent
-            self.gifFPS = Defaults.gifFPS
-            self.gifSpan = Defaults.gifSpan
-            self.idNamingMode = Defaults.idNamingMode
-            self.imageLabels = Defaults.imageLabels
-            self.imageLabelCopyright = Defaults.imageLabelCopyright
-            self.imageLabelFont = Defaults.imageLabelFont
-            self.imageLabelFontMaxSize = Defaults.imageLabelFontMaxSize
-            self.imageLabelFontOpacity = Defaults.imageLabelFontOpacity
-            self.imageLabelFontColor = Defaults.imageLabelFontColor
-            self.imageLabelFontStrokeColor = Defaults.imageLabelFontStrokeColor
-            self.imageLabelFontStrokeWidth = Defaults.imageLabelFontStrokeWidth
-            self.imageLabelAlignHorizontal = Defaults.imageLabelAlignHorizontal
-            self.imageLabelAlignVertical = Defaults.imageLabelAlignVertical
-            self.imageLabelHideNames = Defaults.imageLabelHideNames
-            self.createDoneFile = Defaults.createDoneFile
-            self.doneFilename = Defaults.doneFilename
+            exportFormat = Defaults.exportFormat
+            imageFormat = Defaults.imageFormat
+            imageQuality = Defaults.imageQuality
+            imageWidth = Defaults.imageWidth
+            imageHeight = Defaults.imageHeight
+            imageSizePercent = Defaults.imageSizePercent
+            gifFPS = Defaults.gifFPS
+            gifSpan = Defaults.gifSpan
+            idNamingMode = Defaults.idNamingMode
+            imageLabels = Defaults.imageLabels
+            imageLabelCopyright = Defaults.imageLabelCopyright
+            imageLabelFont = Defaults.imageLabelFont
+            imageLabelFontMaxSize = Defaults.imageLabelFontMaxSize
+            imageLabelFontOpacity = Defaults.imageLabelFontOpacity
+            imageLabelFontColor = Defaults.imageLabelFontColor
+            imageLabelFontStrokeColor = Defaults.imageLabelFontStrokeColor
+            imageLabelFontStrokeWidth = Defaults.imageLabelFontStrokeWidth
+            imageLabelAlignHorizontal = Defaults.imageLabelAlignHorizontal
+            imageLabelAlignVertical = Defaults.imageLabelAlignVertical
+            imageLabelHideNames = Defaults.imageLabelHideNames
+            createDoneFile = Defaults.createDoneFile
+            doneFilename = Defaults.doneFilename
             self.fcpxml = fcpxml
-            self.mediaSearchPaths = Defaults.mediaSearchPaths(from: fcpxml)
+            mediaSearchPaths = Defaults.mediaSearchPaths(from: fcpxml)
             self.outputDir = outputDir
             
             try validate()
@@ -172,12 +179,15 @@ extension MarkersExtractor {
                 }
                 
                 guard fcpxmlPath.exists else {
-                    throw MarkersExtractorError.validationError("File does not exist at \(fcpxmlPath.path.quoted).")
+                    throw MarkersExtractorError.validationError(
+                        "File does not exist at \(fcpxmlPath.path.quoted)."
+                    )
                 }
             }
             
             guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError.validationError("Cannot use font \(imageLabelFont.quoted).")
+                throw MarkersExtractorError
+                    .validationError("Cannot use font \(imageLabelFont.quoted).")
             }
             
             if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
@@ -195,14 +205,20 @@ extension MarkersExtractor {
             }
             
             if let imageHeight = imageHeight, imageHeight <= 0 {
-                throw MarkersExtractorError.validationError("--image-height must be a positive integer.")
+                throw MarkersExtractorError.validationError(
+                    "--image-height must be a positive integer."
+                )
             }
             
             if let imageWidth = imageWidth, imageWidth <= 0 {
-                throw MarkersExtractorError.validationError("--image-width must be a positive integer.")
+                throw MarkersExtractorError.validationError(
+                    "--image-width must be a positive integer."
+                )
             }
             
-            if let imageSizePercent = imageSizePercent, !Validation.imageSizePercent.contains(imageSizePercent) {
+            if let imageSizePercent = imageSizePercent,
+               !Validation.imageSizePercent.contains(imageSizePercent)
+            {
                 throw MarkersExtractorError.validationError(
                     "--image-size-percent must be within \(Validation.imageSizePercent) range."
                 )
@@ -215,7 +231,9 @@ extension MarkersExtractor {
             }
             
             guard Validation.gifFPS.contains(gifFPS) else {
-                throw MarkersExtractorError.validationError("--gif-fps must be within \(Validation.gifFPS) range.")
+                throw MarkersExtractorError.validationError(
+                    "--gif-fps must be within \(Validation.gifFPS) range."
+                )
             }
         }
     }

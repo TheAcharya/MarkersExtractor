@@ -1,3 +1,9 @@
+//
+//  Marker.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import CoreMedia
 import TimecodeKit
 
@@ -30,7 +36,7 @@ public struct Marker: Equatable, Hashable {
     var parentInfo: ParentInfo
     
     /// Used only when uniquing marker IDs to avoid duplicate IDs.
-    var idSuffix: String? = nil
+    var idSuffix: String?
 }
 
 // MARK: Computed

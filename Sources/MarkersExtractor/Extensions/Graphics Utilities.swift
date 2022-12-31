@@ -1,3 +1,9 @@
+//
+//  Graphics Utilities.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 import Foundation
 import AppKit
 import CoreGraphics
@@ -137,7 +143,8 @@ extension CGBitmapInfo {
     ///
     /// Returns `nil` if the pixel format is not supported, for example, non-alpha.
     var pixelFormat: CGImage.PixelFormat? {
-        // While the host byte order is little-endian, by default, `CGImage` is stored in big-endian format on Intel Macs and little-endian on Apple silicon Macs.
+        // While the host byte order is little-endian, by default, `CGImage` is stored in big-endian
+        // format on Intel Macs and little-endian on Apple silicon Macs.
         
         let alphaInfo = alphaInfo
         let isLittleEndian = contains(.byteOrder32Little)
@@ -148,8 +155,9 @@ extension CGBitmapInfo {
             return nil
         }
         
-        let isAlphaFirst =
-        alphaInfo == .premultipliedFirst || alphaInfo == .first || alphaInfo == .noneSkipFirst
+        let isAlphaFirst = alphaInfo == .premultipliedFirst
+            || alphaInfo == .first
+            || alphaInfo == .noneSkipFirst
         
         if isLittleEndian {
             return isAlphaFirst ? .bgra : .abgr

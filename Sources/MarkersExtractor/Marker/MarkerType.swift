@@ -1,3 +1,9 @@
+//
+//  MarkerType.swift
+//  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
+//  Licensed under MIT License
+//
+
 // https://support.apple.com/en-sg/guide/final-cut-pro/ver397279dd/mac
 
 enum MarkerType: Equatable, Hashable {
