@@ -35,11 +35,14 @@ For code owners/maintainers, the following release spec is used:
 
 1. Unit tests must pass
 2. Update the version number string literal near the top of MarkersExtractor-CLI.swift (on main branch)
-3. Compile the CLI tool to binary executable and zip it
+3. Compile the CLI tool as a binary executable and zip it
 4. Update root CHANGELOG.md (on main branch)
    - with a condensed bullet-point list of changes/fixes/improvements according to its established format
    - where possible, reference the Issue number(s), PR(s) or commit(s) where each change was made
 5. Update root README.md (on main branch) with any pertinent revisions:
    - New help block output of the CLI tool
    - Updated version number of CLI tool
-6. Make GitHub Release using the new version number, the added CHANGELOG.md block as the release notes, and attach the zip file
+6. Make GitHub Release using
+   - the new version number as its new tag and release name
+   - the added CHANGELOG.md block as the release notes
+   - attach the binary zip file
