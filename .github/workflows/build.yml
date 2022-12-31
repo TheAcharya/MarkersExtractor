@@ -25,19 +25,9 @@ on:
     - cron: '30 10 * * *'   # once a day @ 10:30am UTC (3:30am PST)
     
 jobs:
-  macOS-11:
-    name: macOS 11 Big Sur
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@main
-    - name: Build
-      run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "generic/platform=macOS,name=Any Mac"
-    - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS"
-
   macOS-12:
-    name: macOS 12 Monterey
-    runs-on: macos-12
+    name: macOS
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@main
     - name: Build
