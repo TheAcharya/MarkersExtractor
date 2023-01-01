@@ -45,7 +45,7 @@ extension MarkersExtractor {
             return
         }
         
-        if !Resource.validateAll() {
+        if !EmbeddedResource.validateAll() {
             logger.warning(
                 "Could not validate internal resource files. Export may not work correctly."
             )

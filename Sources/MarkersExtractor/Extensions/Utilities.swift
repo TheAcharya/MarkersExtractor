@@ -184,19 +184,21 @@ extension FourCharCode {
 }
 
 extension URL {
-    /// Form a URL to a resource file contained within this Swift package.
-    init?(
-        moduleResource: String,
-        withExtension: String,
-        subFolder: String? = nil
-    ) {
-        guard let url = Bundle.module.url(
-            forResource: moduleResource,
-            withExtension: withExtension,
-            subdirectory: subFolder
-        ) else { return nil }
-        self = url
-    }
+    
+    // Note: this only compiles if Package.swift contains `.resources: []` for this package target
+    // /// Form a URL to a resource file contained within this Swift package.
+    //init?(
+    //    moduleResource: String,
+    //    withExtension: String,
+    //    subFolder: String? = nil
+    //) {
+    //    guard let url = Bundle.module.url(
+    //        forResource: moduleResource,
+    //        withExtension: withExtension,
+    //        subdirectory: subFolder
+    //    ) else { return nil }
+    //    self = url
+    //}
     
     var exists: Bool { FileManager.default.fileExists(atPath: path) }
     

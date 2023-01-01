@@ -24,7 +24,7 @@ extension Marker {
         case todo
         case standard
 
-        var resource: Resource {
+        var resource: EmbeddedResource {
             switch self {
             case .chapter: return .marker_chapter_png
             case .completed: return .marker_completed_png
@@ -33,12 +33,12 @@ extension Marker {
             }
         }
         
-        var url: URL? {
-            resource.url
-        }
-
         var fileName: String {
             resource.fileName
+        }
+        
+        var data: Data {
+            resource.data ?? Data()
         }
     }
 }

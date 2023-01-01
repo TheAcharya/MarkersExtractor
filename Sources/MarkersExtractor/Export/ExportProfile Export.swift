@@ -32,7 +32,7 @@ extension ExportProfile {
         if !isVideoPresent {
             logger.info("Media file has no video track, using video placeholder for markers.")
             
-            if let markerVideoPlaceholderData = Resource.marker_video_placeholder_mov.data {
+            if let markerVideoPlaceholderData = EmbeddedResource.marker_video_placeholder_mov.data {
                 videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
                 videoPath = videoPlaceholder.url!
             } else {
@@ -187,9 +187,7 @@ extension ExportProfile {
         
         for icon in icons {
             let targetURL = outputDir.appendingPathComponent(icon.fileName)
-            if let iconURL = icon.url {
-                try FileManager.default.copyItem(at: iconURL, to: targetURL)
-            }
+            try icon.data.write(to: targetURL)
         }
     }
     

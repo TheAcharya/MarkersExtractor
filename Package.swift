@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .library(
             name: "MarkersExtractor",
+            type: .static,
             targets: ["MarkersExtractor"]
         ),
         .executable(
@@ -35,8 +36,6 @@ let package = Package(
                 .product(name: "CodableCSV", package: "CodableCSV"),
                 .product(name: "Pipeline", package: "Pipeline"),
                 .product(name: "TimecodeKit", package: "TimecodeKit")
-            ], resources: [
-                .copy("Resources")
             ]
         ),
         .testTarget(
