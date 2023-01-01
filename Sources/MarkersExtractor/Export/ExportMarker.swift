@@ -9,8 +9,8 @@ import OrderedCollections
 
 public protocol ExportMarker {
     associatedtype Field: ExportField
+    associatedtype Icon: ExportIcon
     
     var imageFileName: String { get }
-    
-    func dictionaryRepresentation() -> OrderedDictionary<Field, String>
+    var icon: Icon { get }
 }

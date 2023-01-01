@@ -7,5 +7,17 @@
 import Foundation
 
 public enum ExportProfileFormat: String, CaseIterable {
+    case airtable = "airtable"
     case notion = "notion"
+}
+
+extension ExportProfileFormat {
+    var name: String {
+        switch self {
+        case .airtable:
+            return "Airtable"
+        case .notion:
+            return "Notion (csv2notion)"
+        }
+    }
 }

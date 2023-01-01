@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import OrderedCollections
 
 public protocol ExportProfile
     where PreparedMarker.Field == Field
@@ -12,6 +13,7 @@ public protocol ExportProfile
     associatedtype Field: ExportField
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
+    associatedtype Icon: ExportIcon
     
     /// Exports markers to disk.
     /// Writes metadata files, images, and any other resources necessary.
@@ -21,7 +23,9 @@ public protocol ExportProfile
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>,
+        createDoneFile: Bool,
+        doneFilename: String
     ) throws
     
     /// Converts raw FCP markers to the native format needed for export.
@@ -38,4 +42,8 @@ public protocol ExportProfile
         _ preparedMarkers: [PreparedMarker],
         payload: Payload
     ) throws
+    
+    static func doneFileContent(payload: Payload) throws -> Data
+    
+    static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<Field, String>
 }

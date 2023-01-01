@@ -10,7 +10,7 @@ import MarkersExtractor
 // Export
 
 extension ExportProfileFormat: ExpressibleByArgument { }
-extension CSVExportProfile.Field: ExpressibleByArgument { }
+extension StandardExportField: ExpressibleByArgument { }
 
 // Markers
 

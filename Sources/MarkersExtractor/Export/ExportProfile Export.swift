@@ -17,7 +17,9 @@ extension ExportProfile {
         videoPath: URL,
         outputPath: URL,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>
+        imageSettings: ExportImageSettings<Field>,
+        createDoneFile: Bool,
+        doneFilename: String
     ) throws {
         let logger = Logger(label: "markersExport")
         
@@ -107,6 +109,14 @@ extension ExportProfile {
         // metadata manifest file
         
         try writeManifest(preparedMarkers, payload: payload)
+        
+        // done file
+        
+        if createDoneFile {
+            logger.info("Creating \(doneFilename.quoted) done file at \(outputPath.path.quoted).")
+            let doneFileData = try doneFileContent(payload: payload)
+            try saveDoneFile(at: outputPath, fileName: doneFilename, data: doneFileData)
+        }
     }
     
     // MARK: Helpers
@@ -146,7 +156,7 @@ extension ExportProfile {
         preparedMarkers: [PreparedMarker]
     ) -> [String] {
         preparedMarkers
-            .map { $0.dictionaryRepresentation() }
+            .map { manifestFields(for: $0) }
             .map { markerDict in
                 headers
                     .map {
@@ -169,7 +179,7 @@ extension ExportProfile {
         
         // if no video - grabbing first frame from video placeholder
         let markerTimecodes = markers.map {
-            isVideoPresent ? $0.position : .init(at: $0.frameRate)
+            isVideoPresent ? $0.position : .init(at: $0.frameRate())
         }
         
         var markerPairs = zip(imageFileNames, markerTimecodes).map { ($0, $1) }
@@ -183,11 +193,28 @@ extension ExportProfile {
     }
     
     private static func exportIcons(from markers: [Marker], to outputDir: URL) throws {
-        let icons = Set(markers.map { $0.icon })
+        let icons = Set(markers.map { Icon($0.type) })
         
         for icon in icons {
+            if icon is EmptyExportIcon { continue }
             let targetURL = outputDir.appendingPathComponent(icon.fileName)
             try icon.data.write(to: targetURL)
+        }
+    }
+    
+    private static func saveDoneFile(
+        at outputPath: URL,
+        fileName: String,
+        data: Data
+    ) throws {
+        let doneFile = outputPath.appendingPathComponent(fileName)
+        
+        do {
+            try data.write(to: doneFile)
+        } catch {
+            throw MarkersExtractorError.runtimeError(
+                "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
+            )
         }
     }
     

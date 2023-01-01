@@ -57,8 +57,10 @@ extension MarkersExtractor {
         
         let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
         
+        logger.info("Using \(s.exportFormat.name) export profile.")
+        
         logger.info("Found project media file \(videoPath.path.quoted).")
-        logger.info("Generating CSV with \(imageFormatEXT) images into \(outputPath.path.quoted).")
+        logger.info("Generating metadata file(s) with \(imageFormatEXT) images into \(outputPath.path.quoted).")
         
         let labelProperties = MarkerLabelProperties(
             fontName: s.imageLabelFont,
@@ -73,38 +75,55 @@ extension MarkersExtractor {
             alignVertical: s.imageLabelAlignVertical
         )
         
-        let csvName = "\(projectName).csv"
-        let csvPath = outputPath.appendingPathComponent(csvName)
-        
         do {
-            try CSVExportProfile.export(
-                markers: markers,
-                idMode: s.idNamingMode,
-                csvPath: csvPath,
-                videoPath: videoPath,
-                outputPath: outputPath,
-                imageSettings: .init(
-                    gifFPS: s.gifFPS,
-                    gifSpan: s.gifSpan,
-                    format: s.imageFormat,
-                    quality: imageQuality,
-                    dimensions: calcVideoDimensions(for: videoPath),
-                    labelFields: imageLabels,
-                    labelCopyright: s.imageLabelCopyright,
-                    labelProperties: labelProperties,
-                    imageLabelHideNames: s.imageLabelHideNames
+            switch s.exportFormat {
+            case .airtable:
+                try AirtableExportProfile.export(
+                    markers: markers,
+                    idMode: s.idNamingMode,
+                    videoPath: videoPath,
+                    outputPath: outputPath,
+                    payload: .init(projectName: projectName, outputPath: outputPath),
+                    imageSettings: .init(
+                        gifFPS: s.gifFPS,
+                        gifSpan: s.gifSpan,
+                        format: s.imageFormat,
+                        quality: imageQuality,
+                        dimensions: calcVideoDimensions(for: videoPath),
+                        labelFields: imageLabels,
+                        labelCopyright: s.imageLabelCopyright,
+                        labelProperties: labelProperties,
+                        imageLabelHideNames: s.imageLabelHideNames
+                    ),
+                    createDoneFile: s.createDoneFile,
+                    doneFilename: s.doneFilename
                 )
-            )
+            case .notion:
+                try NotionExportProfile.export(
+                    markers: markers,
+                    idMode: s.idNamingMode,
+                    videoPath: videoPath,
+                    outputPath: outputPath,
+                    payload: .init(projectName: projectName, outputPath: outputPath),
+                    imageSettings: .init(
+                        gifFPS: s.gifFPS,
+                        gifSpan: s.gifSpan,
+                        format: s.imageFormat,
+                        quality: imageQuality,
+                        dimensions: calcVideoDimensions(for: videoPath),
+                        labelFields: imageLabels,
+                        labelCopyright: s.imageLabelCopyright,
+                        labelProperties: labelProperties,
+                        imageLabelHideNames: s.imageLabelHideNames
+                    ),
+                    createDoneFile: s.createDoneFile,
+                    doneFilename: s.doneFilename
+                )
+            }
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to export CSV: \(error.localizedDescription)"
+                "Failed to export: \(error.localizedDescription)"
             )
-        }
-        
-        if s.createDoneFile {
-            logger.info("Creating \(s.doneFilename.quoted) done file at \(outputPath.path.quoted).")
-            let doneFileContent = ["csvPath": csvPath.path]
-            try saveDoneFile(at: outputPath, fileName: s.doneFilename, content: doneFileContent)
         }
         
         logger.info("Done!")
@@ -214,30 +233,6 @@ extension MarkersExtractor {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd hh-mm-ss"
         return formatter.string(from: now)
-    }
-}
-
-// MARK: - Done File
-
-extension MarkersExtractor {
-    private func saveDoneFile<E: Encodable>(
-        at outputPath: URL,
-        fileName: String,
-        content: E
-    ) throws {
-        let doneFile = outputPath.appendingPathComponent(fileName)
-        
-        do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted]
-            
-            let data = try encoder.encode(content)
-            try data.write(to: doneFile)
-        } catch {
-            throw MarkersExtractorError.runtimeError(
-                "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
-            )
-        }
     }
 }
 

@@ -21,7 +21,7 @@ extension MarkersExtractor {
             public static let gifFPS: Double = 10.0
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
-            public static let imageLabels: [CSVExportProfile.Field] = []
+            public static let imageLabels: [StandardExportField] = []
             public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
             public static let imageLabelFontMaxSize = 30
@@ -57,7 +57,7 @@ extension MarkersExtractor {
         public var gifFPS: Double
         public var gifSpan: TimeInterval
         public var idNamingMode: MarkerIDMode
-        public var imageLabels: [CSVExportProfile.Field]
+        public var imageLabels: [StandardExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
         public var imageLabelFontMaxSize: Int
@@ -120,7 +120,7 @@ extension MarkersExtractor {
             gifFPS: Double,
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
-            imageLabels: [CSVExportProfile.Field],
+            imageLabels: [StandardExportField],
             imageLabelCopyright: String?,
             imageLabelFont: String,
             imageLabelFontMaxSize: Int,

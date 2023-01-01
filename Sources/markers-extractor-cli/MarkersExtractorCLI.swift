@@ -15,7 +15,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Tool to extract markers from Final Cut Pro FCPXML(D).",
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
-        version: "0.2.0-alpha"
+        version: "0.2.0-alpha-20221231.1"
     )
     
     // MARK: - Arguments
@@ -85,10 +85,10 @@ struct MarkersExtractorCLI: ParsableCommand {
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(CSVExportProfile.Field.allCases.map { $0.rawValue }.joined(separator: ","))"
+            valueName: "\(StandardExportField.allCases.map { $0.rawValue }.joined(separator: ","))"
         )
     )
-    var imageLabels: [CSVExportProfile.Field] = []
+    var imageLabels: [StandardExportField] = []
     
     @Option(
         name: [.customLong("label-copyright")],
@@ -300,13 +300,6 @@ extension MarkersExtractorCLI {
             }
 
             return MultiplexLogHandler(logHandlers)
-        }
-    }
-    
-    static func printHelpLabels() {
-        print("List of available label headers:")
-        for header in CSVExportProfile.Field.allCases {
-            print("    \(header.rawValue)")
         }
     }
 }

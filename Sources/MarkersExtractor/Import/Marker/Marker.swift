@@ -46,7 +46,7 @@ extension Marker {
         let baseID: String = {
             switch idMode {
             case .projectTimecode:
-                return "\(parentInfo.projectName)_\(positionTimecodeString)"
+                return "\(parentInfo.projectName)_\(positionTimecodeString())"
             case .name:
                 return name
             case .notes:
@@ -71,11 +71,20 @@ extension Marker {
         }
     }
     
-    var frameRate: TimecodeFrameRate {
+    func frameRate() -> TimecodeFrameRate {
         position.frameRate
     }
     
-    var positionTimecodeString: String {
+    func isChecked() -> Bool {
+        switch type {
+        case let .todo(completed):
+            return completed
+        default:
+            return false
+        }
+    }
+    
+    func positionTimecodeString() -> String {
         position.stringValue
     }
 }

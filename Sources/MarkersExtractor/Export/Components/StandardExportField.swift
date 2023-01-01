@@ -1,32 +1,30 @@
 //
-//  CSVExportProfile Field.swift
+//  StandardExportField.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
 
-extension CSVExportProfile {
-    /// Markers CSV fields (header column names).
-    public enum Field: String, CaseIterable {
-        case id
-        case name
-        case type
-        case checked
-        case status
-        case notes
-        case position
-        case clipName
-        case clipDuration
-        case videoRoles
-        case audioRoles
-        case eventName
-        case projectName
-        case libraryName
-        case iconImage
-        case imageFileName
-    }
+/// Markers CSV fields (header column names).
+public enum StandardExportField: String, CaseIterable {
+    case id
+    case name
+    case type
+    case checked
+    case status
+    case notes
+    case position
+    case clipName
+    case clipDuration
+    case videoRoles
+    case audioRoles
+    case eventName
+    case projectName
+    case libraryName
+    case iconImage
+    case imageFileName
 }
 
-extension CSVExportProfile.Field: ExportField {
+extension StandardExportField: ExportField {
     public var name: String {
         switch self {
         case .id: return "Marker ID"
