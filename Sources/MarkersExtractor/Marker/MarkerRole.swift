@@ -41,3 +41,11 @@ extension MarkerRole {
         return true
     }
 }
+
+extension Array where Element == MarkerRole {
+    func flattenedString() -> String {
+        filter(\.isVideo)
+            .map { $0.stringValue }
+            .joined(separator: ", ")
+    }
+}

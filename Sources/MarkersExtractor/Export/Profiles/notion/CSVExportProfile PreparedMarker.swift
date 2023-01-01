@@ -42,10 +42,8 @@ extension CSVExportProfile {
             position = marker.positionTimecodeString
             clipName = marker.parentInfo.clipName
             clipDuration = marker.parentInfo.clipDurationTimecodeString
-            videoRoles = marker.roles.filter(\.isVideo).map { $0.stringValue }
-                .joined(separator: ", ")
-            audioRoles = marker.roles.filter(\.isAudio).map { $0.stringValue }
-                .joined(separator: ", ")
+            videoRoles = marker.roles.flattenedString()
+            audioRoles = marker.roles.flattenedString()
             eventName = marker.parentInfo.eventName
             projectName = marker.parentInfo.projectName
             libraryName = marker.parentInfo.libraryName
@@ -56,7 +54,7 @@ extension CSVExportProfile {
         }
         
         public func dictionaryRepresentation() -> OrderedDictionary<Field, String> {
-            [
+            let dict: OrderedDictionary<Field, String> = [
                 .id: id,
                 .name: name,
                 .type: type,
@@ -74,6 +72,12 @@ extension CSVExportProfile {
                 .iconImage: iconImage,
                 .imageFileName: imageFileName
             ]
+            
+            // since we're maintaining the dictionary contents manually,
+            // make sure it's complete
+            assert(dict.count == Field.allCases.count)
+            
+            return dict
         }
     }
 }
