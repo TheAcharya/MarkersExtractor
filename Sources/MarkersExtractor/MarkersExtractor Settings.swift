@@ -11,6 +11,7 @@ extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
             public static let exportFormat: ExportProfileFormat = .csv2Notion
+            public static let enableSubframes: Bool = false
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
             public static let imageWidth: Int? = nil
@@ -47,6 +48,7 @@ extension MarkersExtractor {
         }
         
         public var exportFormat: ExportProfileFormat
+        public var enableSubframes: Bool
         public var imageFormat: MarkerImageFormat
         public var imageQuality: Int
         public var imageWidth: Int?
@@ -78,6 +80,7 @@ extension MarkersExtractor {
             outputDir: URL
         ) throws {
             exportFormat = Defaults.exportFormat
+            enableSubframes = Defaults.enableSubframes
             imageFormat = Defaults.imageFormat
             imageQuality = Defaults.imageQuality
             imageWidth = Defaults.imageWidth
@@ -108,6 +111,7 @@ extension MarkersExtractor {
         
         public init(
             exportFormat: ExportProfileFormat,
+            enableSubframes: Bool,
             imageFormat: MarkerImageFormat,
             imageQuality: Int,
             imageWidth: Int?,
@@ -134,6 +138,7 @@ extension MarkersExtractor {
             outputDir: URL
         ) throws {
             self.exportFormat = exportFormat
+            self.enableSubframes = enableSubframes
             self.imageFormat = imageFormat
             self.imageQuality = imageQuality
             self.imageWidth = imageWidth

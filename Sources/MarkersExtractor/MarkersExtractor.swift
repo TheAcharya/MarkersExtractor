@@ -124,7 +124,8 @@ extension MarkersExtractor {
         do {
             markers = try FCPXMLMarkerExtractor.extractMarkers(
                 from: s.fcpxml,
-                idNamingMode: s.idNamingMode
+                idNamingMode: s.idNamingMode,
+                enableSubframes: s.enableSubframes
             )
         } catch {
             throw MarkersExtractorError.runtimeError(

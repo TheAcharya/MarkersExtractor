@@ -57,9 +57,18 @@ extension Marker {
     }
     
     func id(pathSafe idMode: MarkerIDMode) -> String {
-        id(idMode)
-            .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
-            .replacingOccurrences(of: ":", with: "_")
+        // TODO: add better sanitation here that can deal with all illegal filename characters
+        
+        switch idMode {
+        case .projectTimecode:
+            return id(idMode)
+                .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
+                .replacingOccurrences(of: ":", with: "_")
+                .replacingOccurrences(of: ".", with: "_") // when subframes are enabled
+        case .name, .notes:
+            return id(idMode)
+                .replacingOccurrences(of: ":", with: "_")
+        }
     }
     
     var frameRate: TimecodeFrameRate {

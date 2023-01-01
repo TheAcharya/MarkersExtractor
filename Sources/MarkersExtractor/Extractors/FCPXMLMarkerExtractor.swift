@@ -15,28 +15,56 @@ class FCPXMLMarkerExtractor {
 
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
-
-    required init(_ fcpxml: URL, _ idNamingMode: MarkerIDMode) throws {
-        fcpxmlDoc = try XMLDocument(contentsOfFCPXML: fcpxml)
-        self.idNamingMode = idNamingMode
+    let enableSubframes: Bool
+    
+    required convenience init(
+        fcpxml: URL,
+        idNamingMode: MarkerIDMode,
+        enableSubframes: Bool
+    ) throws {
+        let xml = try XMLDocument(contentsOfFCPXML: fcpxml)
+        try self.init(
+            fcpxml: xml,
+            idNamingMode: idNamingMode,
+            enableSubframes: enableSubframes
+        )
     }
     
-    required init(_ fcpxml: XMLDocument, _ idNamingMode: MarkerIDMode) throws {
+    required init(
+        fcpxml: XMLDocument,
+        idNamingMode: MarkerIDMode,
+        enableSubframes: Bool
+    ) throws {
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
+        self.enableSubframes = enableSubframes
     }
 
     static func extractMarkers(
         from fcpxml: FCPXMLFile,
-        idNamingMode: MarkerIDMode
+        idNamingMode: MarkerIDMode,
+        enableSubframes: Bool
     ) throws -> [Marker] {
         let data = try fcpxml.data()
         let xml = try XMLDocument(data: data)
-        return try self.init(xml, idNamingMode).extractMarkers()
+        return try self.init(
+            fcpxml: xml,
+            idNamingMode: idNamingMode,
+            enableSubframes: enableSubframes
+        ).extractMarkers()
     }
     
-    static func extractMarkers(from fcpxml: URL, idNamingMode: MarkerIDMode) throws -> [Marker] {
-        try self.init(fcpxml, idNamingMode).extractMarkers()
+    static func extractMarkers(
+        from fcpxml: URL,
+        idNamingMode: MarkerIDMode,
+        enableSubframes: Bool
+    ) throws -> [Marker] {
+        try self.init(
+            fcpxml: fcpxml,
+            idNamingMode: idNamingMode,
+            enableSubframes: enableSubframes
+        )
+        .extractMarkers()
     }
 
     public func extractMarkers() -> [Marker] {
@@ -71,7 +99,7 @@ class FCPXMLMarkerExtractor {
         guard let parentProject = findParentByType(markerXML, .project) else {
             return nil
         }
-
+        
         let parentClip = markerXML.parentElement!
         let parentEvent = findParentByType(parentClip, .event)!
         let parentLibrary = parentEvent.parentElement!
@@ -79,7 +107,12 @@ class FCPXMLMarkerExtractor {
         let type = getMarkerType(markerXML)
 
         let fps = getParentFPS(markerXML)
-        let parentDuration = (try? parentClip.fcpxDuration?.toTimecode(at: fps)) ?? .init(at: fps)
+        let parentDuration: Timecode = {
+            guard let dur = parentClip.fcpxDuration,
+                  let tc = try? formTimecode(dur, at: fps)
+            else { return formTimecode(at: fps) }
+            return tc
+        }()
         let position = calcMarkerPosition(markerXML, parentFPS: fps, parentDuration: parentDuration)
         let roles = getClipRoles(parentClip)
         
@@ -112,13 +145,12 @@ class FCPXMLMarkerExtractor {
 
         let markerPosition = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
         let timecode: Timecode = {
-            guard let tc = try? markerPosition.toTimecode(at: parentFPS) else {
+            guard let tc = try? formTimecode(markerPosition, at: parentFPS) else {
                 let markerName = marker.fcpxValue ?? ""
                 let clipName = getClipName(parentClip)
-                logger
-                    .warning(
-                        "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
-                    )
+                logger.warning(
+                    "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
+                )
                 return .init(at: parentFPS)
             }
             return tc
@@ -149,10 +181,9 @@ class FCPXMLMarkerExtractor {
             case .nonDropFrame:
                 return false
             case nil:
-                logger
-                    .warning(
-                        "Couldn't detect whether FPS is drop (DF) or non-drop (NDF); using NDF to form marker timecode."
-                    )
+                logger.warning(
+                    "Couldn't detect whether FPS is drop (DF) or non-drop (NDF); using NDF to form marker timecode."
+                )
                 return false
             }
         }()
@@ -161,10 +192,9 @@ class FCPXMLMarkerExtractor {
               let videoRate = VideoFrameRate(frameDuration: frameDuration),
               let timecodeRate = videoRate.timecodeFrameRate(drop: isFPSDrop)
         else {
-            logger
-                .warning(
-                    "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
-                )
+            logger.warning(
+                "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
+            )
             return defaultFPS
         }
         
@@ -259,5 +289,28 @@ class FCPXMLMarkerExtractor {
         // return
         
         return videoRoles + audioRoles
+    }
+    
+    private func formTimecode(
+        at frameRate: TimecodeFrameRate
+    ) -> Timecode {
+        Timecode(
+            at: frameRate,
+            limit: ._24hours,
+            base: ._80SubFrames,
+            format: enableSubframes ? [.showSubFrames] : .default()
+        )
+    }
+    
+    private func formTimecode(
+        _ cmTime: CMTime,
+        at frameRate: TimecodeFrameRate
+    ) throws -> Timecode {
+        try cmTime.toTimecode(
+            at: frameRate,
+            limit: ._24hours,
+            base: ._80SubFrames,
+            format: enableSubframes ? [.showSubFrames] : .default()
+        )
     }
 }

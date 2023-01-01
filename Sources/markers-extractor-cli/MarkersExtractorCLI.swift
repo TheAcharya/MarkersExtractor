@@ -10,11 +10,15 @@ import Logging
 import MarkersExtractor
 
 struct MarkersExtractorCLI: ParsableCommand {
+    // MARK: - Config
+    
     static var configuration = CommandConfiguration(
-        abstract: "Tool to extract markers from FCPXML(D).",
+        abstract: "Tool to extract markers from Final Cut Pro FCPXML(D).",
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
         version: "0.2.0-alpha"
     )
+    
+    // MARK: - Arguments
     
     @Option(
         help: ArgumentHelp(
@@ -23,6 +27,9 @@ struct MarkersExtractorCLI: ParsableCommand {
         )
     )
     var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
+    
+    @Flag(help: ArgumentHelp("Enable output of timecode subframes."))
+    var enableSubframes: Bool = MarkersExtractor.Settings.Defaults.enableSubframes
     
     @Option(
         help: ArgumentHelp(
@@ -205,6 +212,8 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var mediaSearchPaths: [URL] = []
     
+    // MARK: - Protocol Method Implementations
+    
     mutating func validate() throws {
         if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
             throw ValidationError("Cannot write log file at \(log.path.quoted)")
@@ -228,6 +237,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             
             settings = try MarkersExtractor.Settings(
                 exportFormat: exportFormat,
+                enableSubframes: enableSubframes,
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,
