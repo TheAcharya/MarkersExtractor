@@ -14,7 +14,7 @@
 - Added `--label-hide-names` CLI flag to hide label names on thumbnail images (#16)
 - Added `--done-filename <filename>` CLI argument to customize done filename (#17)
 - Added `--media-search-path <path>` argument to allow custom media search path(s) (#20)
-- Added Airtable export profile (`--export-format airtable`) (#21) ⚠️
+- Added Airtable export profile (`--export-format airtable`) (#21)
 - Added `--enable-subframes` CLI flag to show subframes in all timecode strings (#29)
 
 ### Refinements
