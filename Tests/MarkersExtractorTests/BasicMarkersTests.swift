@@ -14,7 +14,7 @@ final class BasicMarkersTests: XCTestCase {
     /// Note that two markers share the same marker ID. This test also checks the default behavior of non-unique IDs.
     func testBasicMarkers_extractMarkers() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
+            fcpxml: .init(.fileContents(fcpxmlTestData)),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .projectTimecode
@@ -73,7 +73,7 @@ final class BasicMarkersTests: XCTestCase {
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
     func testBasicMarkers_extractMarkers_uniquing() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
+            fcpxml: .init(.fileContents(fcpxmlTestData)),
             outputDir: FileManager.default.temporaryDirectory
         )
         
@@ -108,8 +108,8 @@ final class BasicMarkersTests: XCTestCase {
     }
 }
 
-private let fcpxmlBasicMarkersData = fcpxmlBasicMarkers.data(using: .utf8)!
-private let fcpxmlBasicMarkers = """
+private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
+private let fcpxmlTestString = """
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE fcpxml>
 

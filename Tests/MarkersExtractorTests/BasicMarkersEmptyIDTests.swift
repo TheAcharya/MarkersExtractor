@@ -12,7 +12,7 @@ final class BasicMarkersEmptyIDTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
     func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlBasicMarkersData)),
+            fcpxml: .init(.fileContents(fcpxmlTestData)),
             outputDir: FileManager.default.temporaryDirectory
         )
         
@@ -38,8 +38,8 @@ final class BasicMarkersEmptyIDTests: XCTestCase {
     }
 }
 
-private let fcpxmlBasicMarkersData = fcpxmlBasicMarkers.data(using: .utf8)!
-private let fcpxmlBasicMarkers = """
+private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
+private let fcpxmlTestString = """
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE fcpxml>
 
