@@ -10,7 +10,7 @@ import Foundation
 extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
-            public static let exportFormat: ExportProfileFormat = .csv2Notion
+            public static let exportFormat: ExportProfileFormat = .notion
             public static let enableSubframes: Bool = false
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100

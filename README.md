@@ -104,7 +104,7 @@ OPTIONS:
 
 ```shell
 $ markers-extractor-cli --help
-OVERVIEW: Tool to extract markers from FCPXML(D).
+OVERVIEW: Tool to extract markers from Final Cut Pro FCPXML(D).
 
 https://github.com/TheAcharya/MarkersExtractor
 
@@ -115,8 +115,9 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <csv2notion>
-                          Metadata export format. (default: csv2notion)
+  --export-format <airtable,notion>
+                          Metadata export format. (default: notion)
+  --enable-subframes      Enable output of timecode subframes.
   --image-format <png,jpg,gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
