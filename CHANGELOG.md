@@ -5,7 +5,7 @@
 ### General
 
 - Major internal refactors to improve reliability and scalability for possible future formats and feature additions
-- Unit tests added with automated GitHub CI ⚠️
+- Unit tests added with automated GitHub CI
 
 ### New Features
 
