@@ -23,18 +23,14 @@ class TemporaryMediaFile {
     }
 
     public var avAsset: AVAsset? {
-        if let url = url {
-            return AVAsset(url: url)
-        }
-
-        return nil
+        guard let url = url else { return nil }
+        return AVAsset(url: url)
     }
 
     public func deleteFile() {
-        if let url = url {
-            try? FileManager.default.removeItem(at: url)
-            self.url = nil
-        }
+        guard let url = url else { return }
+        try? FileManager.default.removeItem(at: url)
+        self.url = nil
     }
 
     deinit {

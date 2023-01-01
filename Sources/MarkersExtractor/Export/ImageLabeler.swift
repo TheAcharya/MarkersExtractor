@@ -20,7 +20,6 @@ class ImageLabeler {
 
     init(labelText: [String], labelProperties: MarkerLabelProperties) {
         properties = labelProperties
-
         textIter = labelText.makeIterator()
     }
 
