@@ -52,6 +52,7 @@ extension File {
     
     public func data() throws -> Data {
         guard let fetched = try fetch().cache else {
+            // swiftlint:disable:next force_cast
             let u = url != nil ? "\(url!)" : "-"
             throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
         }
@@ -60,6 +61,7 @@ extension File {
             return data
         case let .string(string):
             guard let data = string.data(using: .utf8) else {
+                // swiftlint:disable:next force_cast
                 let u = url != nil ? "\(url!)" : "-"
                 throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
             }

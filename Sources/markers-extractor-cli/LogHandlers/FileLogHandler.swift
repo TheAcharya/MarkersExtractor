@@ -72,10 +72,9 @@ public struct FileLogHandler: LogHandler {
         function: String,
         line: UInt
     ) {
-        let prettyMetadata =
-            metadata?.isEmpty ?? true
-                ? prettyMetadata
-                : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+        let prettyMetadata = metadata?.isEmpty ?? true
+            ? prettyMetadata
+            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
 
         var stream = stream
         stream.write(
@@ -94,7 +93,8 @@ public struct FileLogHandler: LogHandler {
         strftime(&buffer, buffer.count, "%Y-%m-%dT%H:%M:%S%z", localTime)
         return buffer.withUnsafeBufferPointer {
             $0.withMemoryRebound(to: CChar.self) {
-                String(cString: $0.baseAddress!)
+                guard let addr = $0.baseAddress else { return "" }
+                return String(cString: addr)
             }
         }
     }

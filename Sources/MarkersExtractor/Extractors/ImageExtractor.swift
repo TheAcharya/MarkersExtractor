@@ -155,13 +155,13 @@ final class ImageExtractor {
                         of: ciimage,
                         to: url,
                         format: .RGBA8,
-                        colorSpace: ciimage.colorSpace!
+                        colorSpace: ciimage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
                     )
                 case .jpg:
                     try cicontext.writeJPEGRepresentation(
                         of: ciimage,
                         to: url,
-                        colorSpace: ciimage.colorSpace!,
+                        colorSpace: ciimage.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
                         options: options
                     )
                 }

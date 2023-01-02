@@ -101,10 +101,11 @@ class FCPXMLMarkerExtractor {
             return nil
         }
         
-        let parentClip = markerXML.parentElement!
-        let parentEvent = findParentByType(parentClip, .event)!
-        let parentLibrary = parentEvent.parentElement!
-
+        guard let parentClip = markerXML.parentElement,
+              let parentEvent = findParentByType(parentClip, .event),
+              let parentLibrary = parentEvent.parentElement
+        else { return nil }
+        
         let type = getMarkerType(markerXML)
 
         let fps = getParentFPS(markerXML)

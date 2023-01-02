@@ -59,11 +59,16 @@ extension AVAssetImageGenerator {
             switch result {
             case .succeeded:
                 completedCount += 1
-
+                
+                guard let image = image else {
+                    completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                    return
+                }
+                
                 completionHandler(
                     .success(
                         CompletionHandlerResult(
-                            image: image!,
+                            image: image,
                             requestedTime: requestedTime,
                             actualTime: actualTime,
                             completedCount: completedCount,
@@ -83,11 +88,16 @@ extension AVAssetImageGenerator {
                         guard completedCount == totalCount else {
                             return
                         }
-
+                        
+                        guard let emptyImage: CGImage = .empty else {
+                            completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                            return
+                        }
+                        
                         completionHandler(
                             .success(
                                 CompletionHandlerResult(
-                                    image: .empty,
+                                    image: emptyImage,
                                     requestedTime: requestedTime,
                                     actualTime: actualTime,
                                     completedCount: completedCount,
@@ -98,7 +108,7 @@ extension AVAssetImageGenerator {
                             )
                         )
                     }
-
+                    
                     // We ignore blank frames.
                     if error.code == .noImageAtTime {
                         totalCount -= 1
@@ -106,7 +116,7 @@ extension AVAssetImageGenerator {
                         finishWithoutImageIfNeeded()
                         break
                     }
-
+                    
                     // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed”
                     // error for some frames in screen recordings.
                     // As a workaround, we ignore these as the GIF seems fine still.
@@ -118,8 +128,12 @@ extension AVAssetImageGenerator {
                         break
                     }
                 }
-
-                completionHandler(.failure(error!))
+                
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                }
                 
             case .cancelled:
                 completionHandler(.failure(CancellationError()))

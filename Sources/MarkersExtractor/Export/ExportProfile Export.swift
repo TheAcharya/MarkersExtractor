@@ -36,7 +36,11 @@ extension ExportProfile {
             
             if let markerVideoPlaceholderData = EmbeddedResource.marker_video_placeholder_mov.data {
                 videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
-                videoPath = videoPlaceholder.url!
+                if let url = videoPlaceholder.url {
+                    videoPath = url
+                } else {
+                    logger.warning("Could not locate or read video placeholder file.")
+                }
             } else {
                 logger.warning("Could not locate or read video placeholder file.")
             }

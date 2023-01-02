@@ -244,7 +244,7 @@ class ImageLabeler {
         repeat {
             fontSize -= 1
 
-            let font = NSFont(name: properties.fontName, size: fontSize)!
+            let font = NSFont(name: properties.fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
 
             let attributesTest = attributes.merging([.font: font]) { _, new in new }
 
