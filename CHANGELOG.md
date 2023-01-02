@@ -9,6 +9,7 @@
 
 ### New Features
 
+- Default done file renamed to done.json and content is now JSON formatted (#2)
 - Markers that share the same ID will gain unique incrementing number suffixes by default (#9)
 - Markers are now sorted chronologically by timecode (#10)
 - Added `--label-hide-names` CLI flag to hide label names on thumbnail images (#16)
@@ -20,10 +21,10 @@
 ### Refinements
 
 - ` --id-naming-mode` and `--label` CLI arguments now take short-form label IDs (#15)
+- Redundant subroles are now stripped in metadata output (#33)
 
 ### Bug Fixes
 
-- Default done file renamed to done.json and content is now JSON formatted (#2)
 - Correctly supports all FCP frame rates (including drop frame) (#3)
 - Library name is now URL decoded and stripped of file extension (#13)
 
