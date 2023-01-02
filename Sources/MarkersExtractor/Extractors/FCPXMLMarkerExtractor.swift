@@ -257,7 +257,11 @@ class FCPXMLMarkerExtractor {
     private func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
         // handle special case of audio-channel-source XML element
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
-            return MarkerRoles(video: "", audio: acSourceRole.localizedCapitalized)
+            return MarkerRoles(
+                video: "",
+                audio: acSourceRole.localizedCapitalized,
+                collapseClipSubrole: true
+            )
         }
         
         // gather
