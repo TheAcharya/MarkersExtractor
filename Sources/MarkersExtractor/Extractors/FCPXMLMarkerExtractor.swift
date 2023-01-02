@@ -9,6 +9,7 @@ import Foundation
 import Logging
 import Pipeline
 import TimecodeKit
+import OTCore
 
 class FCPXMLMarkerExtractor {
     private let logger = Logger(label: "\(FCPXMLMarkerExtractor.self)")
@@ -253,42 +254,54 @@ class FCPXMLMarkerExtractor {
         return .standard
     }
 
-    private func getClipRoles(_ clip: XMLElement) -> [MarkerRole] {
+    private func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
+        // handle special case of audio-channel-source XML element
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
-            return [acSourceRole].map { .audio($0.localizedCapitalized) }
+            return MarkerRoles(video: "", audio: acSourceRole.localizedCapitalized)
         }
-
-        // gather
         
-        let audioRolesPool = [
-            clip.getElementAttribute("audioRole"),
-            clip.subElement(named: "video")?.subElement(named: "audio")?.fcpxRole, // TODO: ??
-            clip.subElement(named: "audio")?.fcpxRole
-        ].compactMap { $0?.localizedCapitalized }
+        // gather
         
         var videoRolesPool = [
             clip.getElementAttribute("videoRole"),
             clip.subElement(named: "video")?.fcpxRole,
             clip.fcpxRole
-        ].compactMap { $0?.localizedCapitalized }
-
-        if clip.name == "title", videoRolesPool.isEmpty {
-            videoRolesPool.append("Titles")
+        ]
+            .compactMap { $0?.localizedCapitalized }
+            .filter { !$0.isEmpty }
+        
+        var audioRolesPool = [
+            clip.getElementAttribute("audioRole"),
+            clip.subElement(named: "video")?.subElement(named: "audio")?.fcpxRole, // TODO: ??
+            clip.subElement(named: "audio")?.fcpxRole
+        ]
+            .compactMap { $0?.localizedCapitalized }
+            .filter { !$0.isEmpty }
+        
+        // assign defaults if needed
+        if let clipType = clip.name,
+           let defaultRoles = MarkerRoles(defaultForClipType: clipType)
+        {
+            if videoRolesPool.isEmpty {
+                videoRolesPool.append(defaultRoles.video)
+            }
+            if audioRolesPool.isEmpty {
+                audioRolesPool.append(defaultRoles.audio)
+            }
         }
-
         // pack into enum cases
         
-        let videoRoles: [MarkerRole] = videoRolesPool
+        let videoRole: String = videoRolesPool
             .sorted()
-            .map { .video($0) }
+            .first ?? ""
         
-        let audioRoles: [MarkerRole] = audioRolesPool
+        let audioRole: String = audioRolesPool
             .sorted()
-            .map { .audio($0) }
+            .first ?? ""
         
         // return
         
-        return videoRoles + audioRoles
+        return MarkerRoles(video: videoRole, audio: audioRole, collapseClipSubrole: true)
     }
     
     private func formTimecode(

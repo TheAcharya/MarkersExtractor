@@ -22,8 +22,8 @@ public struct StandardExportMarker: ExportMarker {
     public let position: String
     public let clipName: String
     public let clipDuration: String
-    public let audioRoles: String
-    public let videoRoles: String
+    public let audioRole: String
+    public let videoRole: String
     public let eventName: String
     public let projectName: String
     public let libraryName: String
@@ -45,8 +45,8 @@ public struct StandardExportMarker: ExportMarker {
         position = marker.positionTimecodeString()
         clipName = marker.parentInfo.clipName
         clipDuration = marker.parentInfo.clipDurationTimecodeString
-        videoRoles = marker.roles.flattenedString()
-        audioRoles = marker.roles.flattenedString()
+        videoRole = marker.roles.video
+        audioRole = marker.roles.audio
         eventName = marker.parentInfo.eventName
         projectName = marker.parentInfo.projectName
         libraryName = marker.parentInfo.libraryName

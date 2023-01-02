@@ -23,7 +23,7 @@ final class MarkersExtractorTests: XCTestCase {
                 type: .standard,
                 name: name,
                 notes: "",
-                roles: [.video("Video")],
+                roles: .init(video: "Video", audio: ""),
                 position: try! position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
@@ -74,7 +74,7 @@ final class MarkersExtractorTests: XCTestCase {
                 type: .standard,
                 name: name,
                 notes: "",
-                roles: [.video("Video")],
+                roles: .init(video: "Video", audio: ""),
                 position: try! position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",

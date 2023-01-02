@@ -15,8 +15,8 @@ public enum StandardExportField: String, CaseIterable {
     case position
     case clipName
     case clipDuration
-    case videoRoles
-    case audioRoles
+    case videoRole
+    case audioRole
     case eventName
     case projectName
     case libraryName
@@ -36,8 +36,8 @@ extension StandardExportField: ExportField {
         case .position: return "Marker Position"
         case .clipName: return "Clip Name"
         case .clipDuration: return "Clip Duration"
-        case .videoRoles: return "Video Role & Subrole"
-        case .audioRoles: return "Audio Role & Subrole"
+        case .videoRole: return "Video Role & Subrole"
+        case .audioRole: return "Audio Role & Subrole"
         case .eventName: return "Event Name"
         case .projectName: return "Project Name"
         case .libraryName: return "Library Name"
