@@ -81,8 +81,9 @@ OPTIONS:
   --include-outside-clip-boundaries
                           Include markers that are outside the bounds of a
                           clip. Also suppresses related log messages.
-  --exclude-roles <video, audio>
-                          Exclude all roles of a type.
+  --exclude-exclusive-roles <video, audio>
+                          Exclude markers that have specified role type but
+                          only if the opposite role type is absent.
   --label <id, name, type, checked, status, notes, position, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
