@@ -28,10 +28,12 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230101.1/markers-extractor-cli-0.2.0-alpha-20230101.1.zip).
 
+Stable releases will be available once development is out of alpha.
+
 ### From Source
 
 ```shell
-VERSION=0.1.0  # replace this with the version you need
+VERSION=0.1.0  # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -57,10 +59,10 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable,notion>
+  --export-format <airtable, notion>
                           Metadata export format. (default: notion)
   --enable-subframes      Enable output of timecode subframes.
-  --image-format <png,jpg,gif>
+  --image-format <png, jpg, gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
                           and --gif-span. (default: png)
@@ -73,10 +75,15 @@ OPTIONS:
                           for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
-  --id-naming-mode <projectTimecode,name,notes>
+  --id-naming-mode <projectTimecode, name, notes>
                           Marker naming mode. This affects Marker IDs and image
                           filenames. (default: projectTimecode)
-  --label <id,name,type,checked,status,notes,position,clipName,clipDuration,videoRoles,audioRoles,eventName,projectName,libraryName,iconImage,imageFileName>
+  --include-outside-clip-boundaries
+                          Include markers that are outside the bounds of a
+                          clip. Also suppresses related log messages.
+  --exclude-roles <video, audio>
+                          Exclude all roles of a type.
+  --label <id, name, type, checked, status, notes, position, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
@@ -92,9 +99,9 @@ OPTIONS:
                           Label stroke color (default: #000)
   --label-stroke-width <w>
                           Label stroke width, 0 to disable. (default: auto)
-  --label-align-horizontal <left,center,right>
+  --label-align-horizontal <left, center, right>
                           Horizontal alignment of image labels. (default: left)
-  --label-align-vertical <top,center,bottom>
+  --label-align-vertical <top, center, bottom>
                           Vertical alignment of image labels. (default: top)
   --label-hide-names      Hide names of image labels.
   --create-done-file      Create a file in output directory on successful
@@ -105,7 +112,7 @@ OPTIONS:
                           --create-done-file flag is also supplied. (default:
                           done.json)
   --log <log>             Log file path.
-  --log-level <trace,debug,info,notice,warning,error,critical>
+  --log-level <trace, debug, info, notice, warning, error, critical>
                           Log level. (default: info)
   --quiet                 Disable log.
   --media-search-path <media-search-path>
