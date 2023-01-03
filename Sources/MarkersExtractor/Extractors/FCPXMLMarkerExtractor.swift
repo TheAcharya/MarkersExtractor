@@ -180,8 +180,8 @@ class FCPXMLMarkerExtractor {
             return tc
         }()
 
-        if localInPoint.seconds > parentDuration.realTimeValue {
-            logger.warning("Marker at \(timecode) is out of bounds of its parent clip.")
+        if markerTimecode < parentInTime || markerTimecode > parentOutTime {
+            logger.notice("Marker \(markerName.quoted) at \(markerTimecode) is out of bounds of its parent clip \(clipName) (\(parentInTime) - \(parentOutTime)).")
         }
 
         return markerTimecode
