@@ -28,7 +28,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest stable release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.1.1/markers-extractor-cli-0.1.1.zip).
+Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230101.1/markers-extractor-cli-0.2.0-alpha-20230101.1.zip).
 
 ### From Source
 
@@ -209,7 +209,7 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
 
-Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) (0.1.0 ... 0.1.1)
+Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) (0.1.0 - 0.1.1)
 
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
