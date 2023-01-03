@@ -16,8 +16,6 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
 - [Usage](#usage)
-  - [CLI v0.1.1](#cli-v0.1.1)
-  - [CLI v0.2.0-alpha (Development in Progress)](#cli-v0.2.0-alpha-development-in-progress)
 - [Developer Library](#developer-library)
 - [Credits](#Credits)
 - [License](#License)
