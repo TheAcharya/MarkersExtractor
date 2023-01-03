@@ -10,7 +10,7 @@ import XCTest
 final class MarkerRolesTests: XCTestCase {
     func testCollapseClipSubrole() throws {
         func collapse(_ role: String) -> String {
-            MarkerRoles.collapseClipSubrole(role: role)
+            MarkerRoles.collapseSubrole(role: role)
         }
         
         XCTAssertEqual(collapse("Video"), "Video")

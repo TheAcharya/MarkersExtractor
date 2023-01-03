@@ -45,8 +45,8 @@ public struct StandardExportMarker: ExportMarker {
         position = marker.positionTimecodeString()
         clipName = marker.parentInfo.clipName
         clipDuration = marker.parentInfo.clipDurationTimecodeString
-        videoRole = marker.roles.video
-        audioRole = marker.roles.audio
+        videoRole = marker.roles.videoFormatted()
+        audioRole = marker.roles.audioFormatted()
         eventName = marker.parentInfo.eventName
         projectName = marker.parentInfo.projectName
         libraryName = marker.parentInfo.libraryName

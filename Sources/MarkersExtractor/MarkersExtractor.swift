@@ -33,6 +33,8 @@ extension MarkersExtractor {
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
+        logger.info("Using \(s.exportFormat.name) export profile.")
+        
         logger.info("Extracting markers from \(s.fcpxml).")
         
         var markers = try extractMarkers()
@@ -57,9 +59,8 @@ extension MarkersExtractor {
         
         let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
         
-        logger.info("Using \(s.exportFormat.name) export profile.")
-        
         logger.info("Found project media file \(videoPath.path.quoted).")
+        
         logger.info("Generating metadata file(s) with \(imageFormatEXT) images into \(outputPath.path.quoted).")
         
         let labelProperties = MarkerLabelProperties(
@@ -145,6 +146,7 @@ extension MarkersExtractor {
                 from: s.fcpxml,
                 idNamingMode: s.idNamingMode,
                 includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
+                excludeRoleType: s.excludeRoleType,
                 enableSubframes: s.enableSubframes
             )
         } catch {

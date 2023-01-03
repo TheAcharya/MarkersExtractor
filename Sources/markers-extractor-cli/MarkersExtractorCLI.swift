@@ -23,7 +23,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Metadata export format.",
-            valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ",")
+            valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
@@ -34,7 +34,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
-            valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ",")
+            valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var imageFormat: MarkerImageFormat = MarkersExtractor.Settings.Defaults.imageFormat
@@ -76,7 +76,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         help: ArgumentHelp(
             "Marker naming mode. This affects Marker IDs and image filenames.",
             valueName: MarkerIDMode.allCases
-                .map { $0.rawValue }.joined(separator: ",")
+                .map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
@@ -90,10 +90,19 @@ struct MarkersExtractorCLI: ParsableCommand {
         .includeOutsideClipBoundaries
     
     @Option(
+        name: [.customLong("exclude-exclusive-roles")],
+        help: ArgumentHelp(
+            "Exclude markers that have specified role type but only if the opposite role type is absent.",
+            valueName: "\(MarkerRoleType.allCases.map { $0.rawValue }.joined(separator: ", "))"
+        )
+    )
+    var excludeRoleType: MarkerRoleType?
+    
+    @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(StandardExportField.allCases.map { $0.rawValue }.joined(separator: ","))"
+            valueName: "\(StandardExportField.allCases.map { $0.rawValue }.joined(separator: ", "))"
         )
     )
     var imageLabels: [StandardExportField] = []
@@ -155,7 +164,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         help: ArgumentHelp(
             "Horizontal alignment of image labels.",
             valueName: MarkerLabelProperties.AlignHorizontal.allCases
-                .map { $0.rawValue }.joined(separator: ",")
+                .map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = MarkersExtractor.Settings
@@ -166,7 +175,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         help: ArgumentHelp(
             "Vertical alignment of image labels.",
             valueName: MarkerLabelProperties.AlignVertical.allCases
-                .map { $0.rawValue }.joined(separator: ",")
+                .map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
@@ -197,7 +206,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Log level.",
-            valueName: Logger.Level.allCases.map { $0.rawValue }.joined(separator: ",")
+            valueName: Logger.Level.allCases.map { $0.rawValue }.joined(separator: ", ")
         )
     )
     var logLevel: Logger.Level = .info
@@ -255,6 +264,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 gifSpan: gifSpan,
                 idNamingMode: idNamingMode,
                 includeOutsideClipBoundaries: includeOutsideClipBoundaries,
+                excludeRoleType: excludeRoleType,
                 imageLabels: imageLabels,
                 imageLabelCopyright: imageLabelCopyright,
                 imageLabelFont: imageLabelFont,

@@ -22,6 +22,7 @@ extension MarkersExtractor {
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
             public static let includeOutsideClipBoundaries = false
+            public static let excludeRoleType: MarkerRoleType? = nil
             public static let imageLabels: [StandardExportField] = []
             public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
@@ -59,6 +60,7 @@ extension MarkersExtractor {
         public var gifSpan: TimeInterval
         public var idNamingMode: MarkerIDMode
         public var includeOutsideClipBoundaries: Bool
+        public var excludeRoleType: MarkerRoleType?
         public var imageLabels: [StandardExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
@@ -92,6 +94,7 @@ extension MarkersExtractor {
             gifSpan = Defaults.gifSpan
             idNamingMode = Defaults.idNamingMode
             includeOutsideClipBoundaries = Defaults.includeOutsideClipBoundaries
+            excludeRoleType = Defaults.excludeRoleType
             imageLabels = Defaults.imageLabels
             imageLabelCopyright = Defaults.imageLabelCopyright
             imageLabelFont = Defaults.imageLabelFont
@@ -124,6 +127,7 @@ extension MarkersExtractor {
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
             includeOutsideClipBoundaries: Bool,
+            excludeRoleType: MarkerRoleType?,
             imageLabels: [StandardExportField],
             imageLabelCopyright: String?,
             imageLabelFont: String,
@@ -152,6 +156,7 @@ extension MarkersExtractor {
             self.gifSpan = gifSpan
             self.idNamingMode = idNamingMode
             self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
+            self.excludeRoleType = excludeRoleType
             self.imageLabels = imageLabels
             self.imageLabelCopyright = imageLabelCopyright
             self.imageLabelFont = imageLabelFont

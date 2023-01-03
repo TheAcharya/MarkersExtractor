@@ -42,7 +42,7 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker0.type, .standard)
         XCTAssertEqual(marker0.name, "Marker 1")
         XCTAssertEqual(marker0.notes, "some notes here")
-        XCTAssertEqual(marker0.roles, .init(video: "Titles", audio: ""))
+        XCTAssertEqual(marker0.roles, .init(video: "Titles", audio: nil))
         XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 29, f: 14).toTimecode(at: fr))
         XCTAssertEqual(marker0.parentInfo, parentInfo)
         
@@ -50,7 +50,7 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker1.type, .todo(completed: false))
         XCTAssertEqual(marker1.name, "Marker 1")
         XCTAssertEqual(marker1.notes, "more notes here")
-        XCTAssertEqual(marker1.roles, .init(video: "Titles", audio: ""))
+        XCTAssertEqual(marker1.roles, .init(video: "Titles", audio: nil))
         XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
         XCTAssertEqual(marker1.parentInfo, parentInfo)
         
@@ -58,7 +58,7 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker2.type, .todo(completed: true))
         XCTAssertEqual(marker2.name, "Marker 2")
         XCTAssertEqual(marker2.notes, "notes yay")
-        XCTAssertEqual(marker2.roles, .init(video: "Titles", audio: ""))
+        XCTAssertEqual(marker2.roles, .init(video: "Titles", audio: nil))
         XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
@@ -66,7 +66,7 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker3.type, .chapter)
         XCTAssertEqual(marker3.name, "Marker 3")
         XCTAssertEqual(marker3.notes, "more notes here")
-        XCTAssertEqual(marker3.roles, .init(video: "Titles", audio: ""))
+        XCTAssertEqual(marker3.roles, .init(video: "Titles", audio: nil))
         XCTAssertEqual(marker3.position, try TCC(h: 00, m: 00, s: 29, f: 17).toTimecode(at: fr))
         XCTAssertEqual(marker3.parentInfo, parentInfo)
     }

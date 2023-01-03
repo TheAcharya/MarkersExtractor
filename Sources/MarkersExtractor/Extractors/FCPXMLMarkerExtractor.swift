@@ -17,12 +17,14 @@ class FCPXMLMarkerExtractor {
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
     let includeOutsideClipBoundaries: Bool
+    let excludeRoleType: MarkerRoleType?
     let enableSubframes: Bool
     
     required convenience init(
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
+        excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool
     ) throws {
         let xml = try XMLDocument(contentsOfFCPXML: fcpxml)
@@ -30,6 +32,7 @@ class FCPXMLMarkerExtractor {
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
+            excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes
         )
     }
@@ -38,18 +41,21 @@ class FCPXMLMarkerExtractor {
         fcpxml: XMLDocument,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
+        excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool
     ) throws {
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
-        self.enableSubframes = enableSubframes
         self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
+        self.excludeRoleType = excludeRoleType
+        self.enableSubframes = enableSubframes
     }
 
     static func extractMarkers(
         from fcpxml: FCPXMLFile,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
+        excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool
     ) throws -> [Marker] {
         let data = try fcpxml.data()
@@ -58,6 +64,7 @@ class FCPXMLMarkerExtractor {
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
+            excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes
         ).extractMarkers()
     }
@@ -66,12 +73,14 @@ class FCPXMLMarkerExtractor {
         from fcpxml: URL,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
+        excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool
     ) throws -> [Marker] {
         try self.init(
             fcpxml: fcpxml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
+            excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes
         )
         .extractMarkers()
@@ -82,9 +91,30 @@ class FCPXMLMarkerExtractor {
 
         // TODO: Shouldn't there be only one project?
         for project in fcpxmlDoc.fcpxAllProjects {
-            fcpxmlMarkers += extractAllProjectMarkers(project).compactMap(convertMarker)
+            fcpxmlMarkers += extractAllXMLMarkers(project: project).compactMap(convertMarker)
         }
 
+        // apply role filter
+        if let excludeRoleType = excludeRoleType {
+            logger.info("Excluding all roles of \(excludeRoleType.rawValue) type.")
+            
+            let beforeMarkerCount = fcpxmlMarkers.count
+            
+            fcpxmlMarkers = fcpxmlMarkers.filter { marker in
+                switch excludeRoleType {
+                case .video:
+                    return !marker.roles.audioIsEmpty
+                case .audio:
+                    return !marker.roles.videoIsEmpty
+                }
+            }
+            
+            let countDiff = beforeMarkerCount - fcpxmlMarkers.count
+            if countDiff > 0 {
+                logger.info("Omitted \(countDiff) markers with \(excludeRoleType.rawValue) type.")
+            }
+        }
+        
         // apply out-of-bounds filter
         if !includeOutsideClipBoundaries {
             let (kept, omitted): ([Marker], [Marker]) = fcpxmlMarkers
@@ -108,7 +138,7 @@ class FCPXMLMarkerExtractor {
         return fcpxmlMarkers
     }
 
-    private func extractAllProjectMarkers(_ project: XMLElement) -> [XMLElement] {
+    private func extractAllXMLMarkers(project: XMLElement) -> [XMLElement] {
         var markers: [XMLElement] = []
 
         let eventChildrenElements = project.subelements(
@@ -160,6 +190,7 @@ class FCPXMLMarkerExtractor {
             parentInTime: parentInTime,
             parentOutTime: parentOutTime
         )
+        
         let roles = getClipRoles(parentClip)
         
         return Marker(
@@ -302,14 +333,12 @@ class FCPXMLMarkerExtractor {
     }
 
     internal func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
-        let notAssignedRole = "Not Assigned"
-        
         // handle special case of audio-channel-source XML element
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
             return MarkerRoles(
-                video: notAssignedRole,
+                video: nil,
                 audio: acSourceRole.localizedCapitalized,
-                collapseClipSubrole: true
+                collapseSubroles: true
             )
         }
         
@@ -335,27 +364,27 @@ class FCPXMLMarkerExtractor {
         if let clipType = clip.name,
            let defaultRoles = MarkerRoles(defaultForClipType: clipType)
         {
-            if videoRolesPool.isEmpty {
-                videoRolesPool.append(defaultRoles.video)
+            if videoRolesPool.isEmpty, let r = defaultRoles.video {
+                videoRolesPool.append(r)
             }
-            if audioRolesPool.isEmpty {
-                audioRolesPool.append(defaultRoles.audio)
+            if audioRolesPool.isEmpty, let r = defaultRoles.audio {
+                audioRolesPool.append(r)
             }
         }
         
         // sort
-        let videoRole: String = videoRolesPool
+        let videoRole: String? = videoRolesPool
             .filter { !$0.isEmpty }
             .sorted()
-            .first ?? notAssignedRole
-        let audioRole: String = audioRolesPool
+            .first
+        let audioRole: String? = audioRolesPool
             .filter { !$0.isEmpty }
             .sorted()
-            .first ?? notAssignedRole
+            .first
         
         // return
         
-        return MarkerRoles(video: videoRole, audio: audioRole, collapseClipSubrole: true)
+        return MarkerRoles(video: videoRole, audio: audioRole, collapseSubroles: true)
     }
     
     private func formTimecode(
