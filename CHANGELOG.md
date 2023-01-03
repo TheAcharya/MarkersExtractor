@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-01-??)
+## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-01-??) - currently alpha
 
 ### General
 
@@ -17,16 +17,19 @@
 - Added `--media-search-path <path>` argument to allow custom media search path(s) (#20)
 - Added Airtable export profile (`--export-format airtable`) (#21)
 - Added `--enable-subframes` CLI flag to show subframes in all timecode strings (#29)
+- Added `--include-outside-clip-boundaries` CLI flag (#34)
 
 ### Refinements
 
 - ` --id-naming-mode` and `--label` CLI arguments now take short-form label IDs (#15)
 - Redundant subroles are now stripped in metadata output (#33)
+- Parsing marker locations is now more reliable (#34)
 
 ### Bug Fixes
 
 - Correctly supports all FCP frame rates (including drop frame) (#3)
 - Library name is now URL decoded and stripped of file extension (#13)
+- Markers outside of clip bounds now correctly log a warning (#34)
 
 ## [0.1.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.1.1) (2022-09-08)
 
