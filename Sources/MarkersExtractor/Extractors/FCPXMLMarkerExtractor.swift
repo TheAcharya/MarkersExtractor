@@ -16,17 +16,20 @@ class FCPXMLMarkerExtractor {
 
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
+    let includeOutsideClipBoundaries: Bool
     let enableSubframes: Bool
     
     required convenience init(
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
+        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool
     ) throws {
         let xml = try XMLDocument(contentsOfFCPXML: fcpxml)
         try self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
+            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             enableSubframes: enableSubframes
         )
     }
@@ -34,16 +37,19 @@ class FCPXMLMarkerExtractor {
     required init(
         fcpxml: XMLDocument,
         idNamingMode: MarkerIDMode,
+        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool
     ) throws {
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
         self.enableSubframes = enableSubframes
+        self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
     }
 
     static func extractMarkers(
         from fcpxml: FCPXMLFile,
         idNamingMode: MarkerIDMode,
+        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool
     ) throws -> [Marker] {
         let data = try fcpxml.data()
@@ -51,6 +57,7 @@ class FCPXMLMarkerExtractor {
         return try self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
+            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             enableSubframes: enableSubframes
         ).extractMarkers()
     }
@@ -58,11 +65,13 @@ class FCPXMLMarkerExtractor {
     static func extractMarkers(
         from fcpxml: URL,
         idNamingMode: MarkerIDMode,
+        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool
     ) throws -> [Marker] {
         try self.init(
             fcpxml: fcpxml,
             idNamingMode: idNamingMode,
+            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             enableSubframes: enableSubframes
         )
         .extractMarkers()
@@ -73,13 +82,33 @@ class FCPXMLMarkerExtractor {
 
         // TODO: Shouldn't there be only one project?
         for project in fcpxmlDoc.fcpxAllProjects {
-            fcpxmlMarkers += extractProjectMarkers(project).compactMap(convertMarker)
+            fcpxmlMarkers += extractAllProjectMarkers(project).compactMap(convertMarker)
         }
 
+        // apply out-of-bounds filter
+        if !includeOutsideClipBoundaries {
+            let (kept, omitted): ([Marker], [Marker]) = fcpxmlMarkers
+                .reduce(into: ([], [])) { base, marker in
+                    marker.isOutOfClipBounds()
+                        ? base.1.append(marker)
+                        : base.0.append(marker)
+                }
+            
+            // remove out-of-bounds markers from output
+            fcpxmlMarkers = kept
+            
+            // emit log messages for out-of-bounds markers
+            omitted.forEach { marker in
+                logger.notice(
+                    "Marker \(marker.name.quoted) at \(marker.position) is out of bounds of its parent clip \(marker.parentInfo.clipName) (\(marker.parentInfo.clipInTime) - \(marker.parentInfo.clipOutTime)) and will be omitted."
+                )
+            }
+        }
+        
         return fcpxmlMarkers
     }
 
-    private func extractProjectMarkers(_ project: XMLElement) -> [XMLElement] {
+    private func extractAllProjectMarkers(_ project: XMLElement) -> [XMLElement] {
         var markers: [XMLElement] = []
 
         let eventChildrenElements = project.subelements(
@@ -180,10 +209,6 @@ class FCPXMLMarkerExtractor {
             return tc
         }()
 
-        if markerTimecode < parentInTime || markerTimecode > parentOutTime {
-            logger.notice("Marker \(markerName.quoted) at \(markerTimecode) is out of bounds of its parent clip \(clipName) (\(parentInTime) - \(parentOutTime)).")
-        }
-
         return markerTimecode
     }
 
@@ -191,10 +216,9 @@ class FCPXMLMarkerExtractor {
         let defaultFPS: TimecodeFrameRate = ._24
 
         guard let parent = findParentByType(marker, .sequence) else {
-            logger
-                .warning(
-                    "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
-                )
+            logger.warning(
+                "Couldn't parse format FPS; using \(defaultFPS.stringValue) to form marker timecode."
+            )
             return defaultFPS
         }
         

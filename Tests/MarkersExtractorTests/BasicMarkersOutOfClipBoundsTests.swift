@@ -10,12 +10,12 @@ import TimecodeKit
 
 final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    func testOutOfClipBoundsTests() throws {
+    func testOutOfClipBoundsTests_Include() throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: .init(.fileContents(fcpxmlTestData)),
             outputDir: FileManager.default.temporaryDirectory
         )
-//        settings.includeOutsideClipBoundaries = true
+        settings.includeOutsideClipBoundaries = true
         
         let extractor = MarkersExtractor(settings)
         let markers = try extractor.extractMarkers()
@@ -44,9 +44,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // check markers
         
-        
         XCTAssertEqual(markers.count, 6)
-        //dump(markers.map { var t = $0.position ; t.stringFormat = [.showSubFrames] ; return t.stringValue })
         
         // if the clip is the first clip on the timeline (it starts at 00:00:00:00) and
         // it had been resized from its left edge to result in an out-of-boundary marker prior to
@@ -91,6 +89,37 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         XCTAssertEqual(marker5.position, try TCC(h: 00, m: 00, s: 42, f: 18).toTimecode(at: fr))
         XCTAssertEqual(marker5.isOutOfClipBounds(), true)
         XCTAssertEqual(marker5.parentInfo, clip2ParentInfo)
+    }
+    
+    func testOutOfClipBoundsTests_DoNotInclude() throws {
+        var settings = try MarkersExtractor.Settings(
+            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            outputDir: FileManager.default.temporaryDirectory
+        )
+        settings.includeOutsideClipBoundaries = false
+        
+        let extractor = MarkersExtractor(settings)
+        let markers = try extractor.extractMarkers()
+        
+        let fr: TimecodeFrameRate = ._25
+        
+        // check markers
+        
+        XCTAssertEqual(markers.count, 2)
+        
+        // clip 1
+        
+        let marker0 = markers[0]
+        XCTAssertEqual(marker0.name, "Marker 2")
+        XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 07, f: 23).toTimecode(at: fr))
+        XCTAssertEqual(marker0.isOutOfClipBounds(), false)
+        
+        // clip 2
+        
+        let marker1 = markers[1]
+        XCTAssertEqual(marker1.name, "Marker 5")
+        XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 28, f: 18).toTimecode(at: fr))
+        XCTAssertEqual(marker1.isOutOfClipBounds(), false)
     }
 }
 

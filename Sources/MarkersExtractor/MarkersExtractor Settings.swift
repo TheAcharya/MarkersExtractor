@@ -11,7 +11,7 @@ extension MarkersExtractor {
     public struct Settings {
         public enum Defaults {
             public static let exportFormat: ExportProfileFormat = .notion
-            public static let enableSubframes: Bool = false
+            public static let enableSubframes = false
             public static let imageFormat: MarkerImageFormat = .still(.png)
             public static let imageQuality = 100
             public static let imageWidth: Int? = nil
@@ -21,6 +21,7 @@ extension MarkersExtractor {
             public static let gifFPS: Double = 10.0
             public static let gifSpan: TimeInterval = 2
             public static let idNamingMode: MarkerIDMode = .projectTimecode
+            public static let includeOutsideClipBoundaries = false
             public static let imageLabels: [StandardExportField] = []
             public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
@@ -57,6 +58,7 @@ extension MarkersExtractor {
         public var gifFPS: Double
         public var gifSpan: TimeInterval
         public var idNamingMode: MarkerIDMode
+        public var includeOutsideClipBoundaries: Bool
         public var imageLabels: [StandardExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
@@ -89,6 +91,7 @@ extension MarkersExtractor {
             gifFPS = Defaults.gifFPS
             gifSpan = Defaults.gifSpan
             idNamingMode = Defaults.idNamingMode
+            includeOutsideClipBoundaries = Defaults.includeOutsideClipBoundaries
             imageLabels = Defaults.imageLabels
             imageLabelCopyright = Defaults.imageLabelCopyright
             imageLabelFont = Defaults.imageLabelFont
@@ -120,6 +123,7 @@ extension MarkersExtractor {
             gifFPS: Double,
             gifSpan: TimeInterval,
             idNamingMode: MarkerIDMode,
+            includeOutsideClipBoundaries: Bool,
             imageLabels: [StandardExportField],
             imageLabelCopyright: String?,
             imageLabelFont: String,
@@ -147,6 +151,7 @@ extension MarkersExtractor {
             self.gifFPS = gifFPS
             self.gifSpan = gifSpan
             self.idNamingMode = idNamingMode
+            self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
             self.imageLabels = imageLabels
             self.imageLabelCopyright = imageLabelCopyright
             self.imageLabelFont = imageLabelFont

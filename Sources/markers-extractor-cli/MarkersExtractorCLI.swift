@@ -81,6 +81,14 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
     
+    @Flag(
+        help: ArgumentHelp(
+            "Include markers that are outside the bounds of a clip. Also suppresses related log messages."
+        )
+    )
+    var includeOutsideClipBoundaries: Bool = MarkersExtractor.Settings.Defaults
+        .includeOutsideClipBoundaries
+    
     @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
@@ -246,6 +254,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 gifFPS: gifFPS,
                 gifSpan: gifSpan,
                 idNamingMode: idNamingMode,
+                includeOutsideClipBoundaries: includeOutsideClipBoundaries,
                 imageLabels: imageLabels,
                 imageLabelCopyright: imageLabelCopyright,
                 imageLabelFont: imageLabelFont,
