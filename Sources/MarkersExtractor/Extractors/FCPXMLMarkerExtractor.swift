@@ -301,11 +301,13 @@ class FCPXMLMarkerExtractor {
         return .standard
     }
 
-    private func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
+    internal func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
+        let notAssignedRole = "Not Assigned"
+        
         // handle special case of audio-channel-source XML element
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
             return MarkerRoles(
-                video: "",
+                video: notAssignedRole,
                 audio: acSourceRole.localizedCapitalized,
                 collapseClipSubrole: true
             )
@@ -340,15 +342,16 @@ class FCPXMLMarkerExtractor {
                 audioRolesPool.append(defaultRoles.audio)
             }
         }
-        // pack into enum cases
         
+        // sort
         let videoRole: String = videoRolesPool
+            .filter { !$0.isEmpty }
             .sorted()
-            .first ?? ""
-        
+            .first ?? notAssignedRole
         let audioRole: String = audioRolesPool
+            .filter { !$0.isEmpty }
             .sorted()
-            .first ?? ""
+            .first ?? notAssignedRole
         
         // return
         
