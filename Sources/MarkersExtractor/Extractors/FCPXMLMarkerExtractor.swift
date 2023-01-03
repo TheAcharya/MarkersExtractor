@@ -109,13 +109,28 @@ class FCPXMLMarkerExtractor {
         let type = getMarkerType(markerXML)
 
         let fps = getParentFPS(markerXML)
-        let parentDuration: Timecode = {
-            guard let dur = parentClip.fcpxDuration,
-                  let tc = try? formTimecode(dur, at: fps)
+        
+        let parentInTime: Timecode = {
+            guard let time = parentClip.fcpxTimelineInPoint,
+                  let tc = try? formTimecode(time, at: fps)
             else { return formTimecode(at: fps) }
             return tc
         }()
-        let position = calcMarkerPosition(markerXML, parentFPS: fps, parentDuration: parentDuration)
+        
+        // TODO: in complex FCPXML, `fcpxTimelineOutPoint` is sometimes incorrect, so we need to workaround it by using clip duration instead
+        let parentOutTime: Timecode = {
+            guard let dur = parentClip.fcpxDuration,
+                  let tc = try? formTimecode(dur, at: fps)
+            else { return parentInTime + formTimecode(at: fps) }
+            return parentInTime + tc
+        }()
+        
+        let position = calcMarkerPosition(
+            markerXML,
+            parentFPS: fps,
+            parentInTime: parentInTime,
+            parentOutTime: parentOutTime
+        )
         let roles = getClipRoles(parentClip)
         
         return Marker(
@@ -126,7 +141,8 @@ class FCPXMLMarkerExtractor {
             position: position,
             parentInfo: Marker.ParentInfo(
                 clipName: getClipName(parentClip),
-                clipDuration: parentDuration,
+                clipInTime: parentInTime,
+                clipOutTime: parentOutTime,
                 eventName: parentEvent.fcpxName ?? "",
                 projectName: parentProject.fcpxName ?? "",
                 libraryName: getLibraryName(parentLibrary) ?? ""
@@ -137,19 +153,25 @@ class FCPXMLMarkerExtractor {
     private func calcMarkerPosition(
         _ marker: XMLElement,
         parentFPS: TimecodeFrameRate,
-        parentDuration: Timecode
+        parentInTime: Timecode,
+        parentOutTime: Timecode
     ) -> Timecode {
         let parentClip = marker.parentElement!
+        
+        // FYI: clips can be resized from either side so it's possible for out-of-boundary
+        // markers to exist prior to the clip's start time or after the clip's end time,
+        // as FCP still exports them to the XML even though they are not visible in the FCP timeline
         
         let localInPoint: CMTime = parentClip.fcpxStartValue.seconds > 0
             ? marker.fcpxLocalInPoint - parentClip.fcpxStartValue
             : marker.fcpxLocalInPoint
 
-        let markerPosition = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
-        let timecode: Timecode = {
-            guard let tc = try? formTimecode(markerPosition, at: parentFPS) else {
-                let markerName = marker.fcpxValue ?? ""
-                let clipName = getClipName(parentClip)
+        let markerCMTime = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
+        let markerName = marker.fcpxValue ?? ""
+        let clipName = getClipName(parentClip)
+        let markerTimecode: Timecode = {
+            guard let tc = try? formTimecodeInterval(markerCMTime, at: parentFPS).flattened()
+            else {
                 logger.warning(
                     "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
                 )
@@ -162,7 +184,7 @@ class FCPXMLMarkerExtractor {
             logger.warning("Marker at \(timecode) is out of bounds of its parent clip.")
         }
 
-        return timecode
+        return markerTimecode
     }
 
     private func getParentFPS(_ marker: XMLElement) -> TimecodeFrameRate {
@@ -325,6 +347,19 @@ class FCPXMLMarkerExtractor {
         at frameRate: TimecodeFrameRate
     ) throws -> Timecode {
         try cmTime.toTimecode(
+            at: frameRate,
+            limit: ._24hours,
+            base: ._80SubFrames,
+            format: enableSubframes ? [.showSubFrames] : .default()
+        )
+    }
+    
+    private func formTimecodeInterval(
+        _ cmTime: CMTime,
+        at frameRate: TimecodeFrameRate
+    ) throws -> TimecodeInterval {
+        try TimecodeInterval(
+            cmTime,
             at: frameRate,
             limit: ._24hours,
             base: ._80SubFrames,

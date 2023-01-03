@@ -27,7 +27,8 @@ final class MarkersExtractorTests: XCTestCase {
                 position: try position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
-                    clipDuration: try TCC(h: 1).toTimecode(at: ._24),
+                    clipInTime: try TCC().toTimecode(at: ._24),
+                    clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"
@@ -69,16 +70,17 @@ final class MarkersExtractorTests: XCTestCase {
         
         let extractor = MarkersExtractor(settings)
         
-        func makeMarker(_ name: String, position: TCC) -> Marker {
+        func makeMarker(_ name: String, position: TCC) throws -> Marker {
             Marker(
                 type: .standard,
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
-                position: try! position.toTimecode(at: ._24),
+                position: try position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
-                    clipDuration: try! TCC(h: 1).toTimecode(at: ._24),
+                    clipInTime: try TCC().toTimecode(at: ._24),
+                    clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"
@@ -86,8 +88,8 @@ final class MarkersExtractorTests: XCTestCase {
             )
         }
         
-        let marker1 = makeMarker("marker1", position: TCC(f: 1))
-        let marker2 = makeMarker("", position: TCC(f: 2))
+        let marker1 = try makeMarker("marker1", position: TCC(f: 1))
+        let marker2 = try makeMarker("", position: TCC(f: 2))
         
         XCTAssertTrue(
             extractor.isAllUniqueIDNonEmpty(in: [])

@@ -14,13 +14,14 @@ import TimecodeKit
 public struct Marker: Equatable, Hashable {
     struct ParentInfo: Equatable, Hashable {
         var clipName: String
-        var clipDuration: Timecode
+        var clipInTime: Timecode
+        var clipOutTime: Timecode
         var eventName: String
         var projectName: String
         var libraryName: String
         
         var clipDurationTimecodeString: String {
-            clipDuration.stringValue
+            (clipOutTime - clipInTime).stringValue
         }
     }
     
@@ -86,6 +87,12 @@ extension Marker {
     
     func positionTimecodeString() -> String {
         position.stringValue
+    }
+    
+    /// A marker is considered outside of its clip's bounds if its position is
+    /// `<= clip exact start` or `>= clip exact end`.
+    func isOutOfClipBounds() -> Bool {
+        position <= parentInfo.clipInTime || position >= parentInfo.clipOutTime
     }
 }
 
