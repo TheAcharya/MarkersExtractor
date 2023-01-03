@@ -10,6 +10,7 @@
 ### New Features
 
 - Default done file renamed to done.json and content is now JSON formatted (#2)
+- Added `--exclude-exclusive-roles <video, audio>` CLI flag (#5)
 - Markers that share the same ID will gain unique incrementing number suffixes by default (#9)
 - Markers are now sorted chronologically by timecode (#10)
 - Added `--label-hide-names` CLI flag to hide label names on thumbnail images (#16)
