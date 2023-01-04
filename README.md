@@ -124,7 +124,7 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
-## macOS Gatekeeper & Notarization
+### macOS Gatekeeper & Notarization
 
 After trying to run `markers-extractor-cli` for the first time, the process will be blocked by macOS's Gatekeeper, and a system dialog will appear which includes
 
