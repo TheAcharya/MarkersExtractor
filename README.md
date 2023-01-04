@@ -124,6 +124,16 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
+## macOS Gatekeeper & Notarization
+
+After trying to run `markers-extractor-cli` for the first time, the process will be blocked by macOS's Gatekeeper, and a system dialog will appear which includes
+
+> "markers-extractor-cli" can't be opened because the developer cannot be verified...
+
+- To approve the process and allow `markers-extractor-cli` to run, go to System Preferences, Security & Privacy, General, and look in the bottom right corner for a button to click.
+- After approving `markers-extractor-cli`, it should run successfully. 
+- For more information, visit https://support.apple.com/en-us/HT202491.
+
 ### Developer Library
 
 To use this package in a SwiftPM project, you need to set it up as a package dependency:
