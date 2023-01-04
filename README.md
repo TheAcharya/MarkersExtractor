@@ -16,6 +16,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
 - [Usage](#usage)
+- [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
 - [Developer Library](#developer-library)
 - [Credits](#Credits)
 - [License](#License)
