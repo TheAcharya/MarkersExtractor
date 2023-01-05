@@ -164,6 +164,10 @@ let package = Package(
 
 Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
 
+## Featured
+
+- [Newsshooter](https://www.newsshooter.com/2023/01/03/markersextractor-cli-marker-metadata-extraction-conversion-tool-for-final-cut-pro/)
+
 ## Credits
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
