@@ -173,7 +173,7 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
 
-Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) (0.1.0 ... 0.1.1)
+Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
 
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
