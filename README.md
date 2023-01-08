@@ -16,8 +16,9 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
 - [Usage](#usage)
-- [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
-- [Developer Library](#developer-library)
+  - [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
+  - [Examples](#examples)
+  - [Developer Library](#developer-library)
 - [Featured](#featured)
 - [Credits](#Credits)
 - [License](#License)
@@ -136,6 +137,59 @@ After trying to run `markers-extractor-cli` for the first time, the process will
 - After approving `markers-extractor-cli`, it should run successfully. 
 - For more information, visit https://support.apple.com/en-us/HT202491.
 
+### Examples
+
+For ease of use, usage and creation of `.sh` files is **recommended**. 
+
+1. Create a folder called **MarkersExtractor** on your Desktop.
+2. Place the latest pre-compiled binary with the folder. 
+3. Within that folder, create two more additional folders, **Render** and **Output**.
+4. **Render** is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename. **Output** is where your **Marker Data Set** will be generated.
+5. Create a file using any text editor. Name script file with extension `.sh`
+6. Copy and paste this syntax into the file, where **xxx** is the name of of your user directory and **zzz** is the name of your `.fcpxmld` file.
+
+```bash
+#!/bin/sh
+
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
+OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
+ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
+
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --create-done-file --log-level debug --log $ERROR_LOG
+```
+
+7. Save the script file as `myscript.sh` within your **MarkersExtractor** folder.
+8. To give execute permission to your script, open Terminal, `chmod +x /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
+9. To execute your script, open Terminal, `sh /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
+10. You can create and save multiple `.sh` files for different modes and configurations.
+
+**PNG Mode with Labels**
+
+```bash
+#!/bin/sh
+
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
+OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
+ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
+
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 30 --label-font-color E6ffff00 --label-stroke-color 003366 --label-stroke-width 3 --log-level debug --log $ERROR_LOG
+```
+
+**GIF Mode with Labels**
+
+```bash
+#!/bin/sh
+
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
+OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
+ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
+
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --image-size-percent 50 --create-done-file --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 20 --label-font-color ffff00 --label-stroke-color 003366 --label-stroke-width 4 --log-level debug --log $ERROR_LOG
+```
+
 ### Developer Library
 
 To use this package in a SwiftPM project, you need to set it up as a package dependency:
@@ -173,9 +227,9 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
 
-Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
-
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
+
+Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
 
 ## License
 
