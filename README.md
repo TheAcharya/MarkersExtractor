@@ -75,8 +75,7 @@ OPTIONS:
   --image-width <w>       Limit image width keeping aspect ratio.
   --image-height <h>      Limit image height keeping aspect ratio.
   --image-size-percent <1...100>
-                          Limit image size to % keeping aspect ratio. (default
-                          for GIF: 50)
+                          Limit image size to % keeping aspect ratio. (default for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
   --id-naming-mode <projectTimecode, name, notes>
