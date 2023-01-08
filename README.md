@@ -18,6 +18,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 - [Usage](#usage)
   - [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
   - [Examples](#examples)
+  - [Intended Behaviour & Logic](#intended-behaviour--logic)
   - [Developer Library](#developer-library)
 - [Featured](#featured)
 - [Credits](#Credits)
@@ -189,6 +190,9 @@ ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
 $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --image-size-percent 50 --create-done-file --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 20 --label-font-color ffff00 --label-stroke-color 003366 --label-stroke-width 4 --log-level debug --log $ERROR_LOG
 ```
+
+### Intended Behaviour & Logic
+- If you have Markers nested deep within compound clips, multicam or Synchronize Clips, it will ignore them. The will only parse Markers of your main timeline.
 
 ### Developer Library
 
