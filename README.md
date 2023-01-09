@@ -190,8 +190,21 @@ ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --image-size-percent 50 --create-done-file --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 20 --label-font-color ffff00 --label-stroke-color 003366 --label-stroke-width 4 --log-level debug --log $ERROR_LOG
 ```
 
+**PNG Mode + Name Mode with Labels**
+
+```bash
+#!/bin/sh
+
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
+OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
+ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
+
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --id-naming-mode name --label "name" --label "type" --label "notes" --label "position" --label-font-color ffff00 --log-level debug --log $ERROR_LOG
+```
+
 ### Intended Behaviour & Logic
-- If you have Markers nested deep within compound clips, multicam or Synchronize Clips, it will ignore them. The will only parse Markers of your main timeline.
+- If you have Markers nested deep within compound clips, multicam or Synchronize Clips, it will ignore them. The tool will only parse Markers of your main timeline.
 
 ### Developer Library
 
