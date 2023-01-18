@@ -1,6 +1,6 @@
-# MarkersExtractor CLI
-
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
+
+# MarkersExtractor CLI
 
 Marker metadata extraction and conversion tool for Final Cut Pro.
 
