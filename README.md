@@ -241,7 +241,7 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 ## Credits
 
-Original Idea and Workflow by [Vigneswaran Rajkumar](https://vigneswaranrajkumar.com/)
+Original Idea and Workflow by [Vigneswaran Rajkumar](https://twitter.com/IAmVigneswaran)
 
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
