@@ -1,6 +1,7 @@
 ![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
 
 # MarkersExtractor CLI
+![Platforms - macOS](https://img.shields.io/badge/platforms-macOS-lightgrey.svg?style=flat) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE)
 
 Marker metadata extraction and conversion tool for Final Cut Pro.
 
