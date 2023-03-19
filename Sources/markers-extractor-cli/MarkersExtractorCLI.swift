@@ -253,6 +253,9 @@ struct MarkersExtractorCLI: ParsableCommand {
                 : mediaSearchPaths
             
             settings = try MarkersExtractor.Settings(
+                fcpxml: fcpxml,
+                outputDir: outputDir,
+                mediaSearchPaths: mediaSearchPaths,
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,
                 imageFormat: imageFormat,
@@ -277,10 +280,7 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelAlignVertical: imageLabelAlignVertical,
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
-                doneFilename: doneFilename,
-                fcpxml: fcpxml,
-                mediaSearchPaths: mediaSearchPaths,
-                outputDir: outputDir
+                doneFilename: doneFilename
             )
         } catch let MarkersExtractorError.validationError(error) {
             throw ValidationError(error)

@@ -78,73 +78,40 @@ extension MarkersExtractor {
         public var outputDir: URL
         public var doneFilename: String
         
-        /// Initialize with defaults for defaultable parameters.
         public init(
             fcpxml: FCPXMLFile,
-            outputDir: URL
+            outputDir: URL,
+            mediaSearchPaths: [URL]? = nil,
+            exportFormat: ExportProfileFormat = Defaults.exportFormat,
+            enableSubframes: Bool = Defaults.enableSubframes,
+            imageFormat: MarkerImageFormat = Defaults.imageFormat,
+            imageQuality: Int = Defaults.imageQuality,
+            imageWidth: Int? = Defaults.imageWidth,
+            imageHeight: Int? = Defaults.imageHeight,
+            imageSizePercent: Int? = Defaults.imageSizePercent,
+            gifFPS: Double = Defaults.gifFPS,
+            gifSpan: TimeInterval = Defaults.gifSpan,
+            idNamingMode: MarkerIDMode = Defaults.idNamingMode,
+            includeOutsideClipBoundaries: Bool = Defaults.includeOutsideClipBoundaries,
+            excludeRoleType: MarkerRoleType? = Defaults.excludeRoleType,
+            imageLabels: [StandardExportField] = Defaults.imageLabels,
+            imageLabelCopyright: String? = Defaults.imageLabelCopyright,
+            imageLabelFont: String = Defaults.imageLabelFont,
+            imageLabelFontMaxSize: Int = Defaults.imageLabelFontMaxSize,
+            imageLabelFontOpacity: Int = Defaults.imageLabelFontOpacity,
+            imageLabelFontColor: String = Defaults.imageLabelFontColor,
+            imageLabelFontStrokeColor: String = Defaults.imageLabelFontStrokeColor,
+            imageLabelFontStrokeWidth: Int? = Defaults.imageLabelFontStrokeWidth,
+            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = Defaults.imageLabelAlignHorizontal,
+            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = Defaults.imageLabelAlignVertical,
+            imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
+            createDoneFile: Bool = Defaults.createDoneFile,
+            doneFilename: String = Defaults.doneFilename
         ) throws {
-            exportFormat = Defaults.exportFormat
-            enableSubframes = Defaults.enableSubframes
-            imageFormat = Defaults.imageFormat
-            imageQuality = Defaults.imageQuality
-            imageWidth = Defaults.imageWidth
-            imageHeight = Defaults.imageHeight
-            imageSizePercent = Defaults.imageSizePercent
-            gifFPS = Defaults.gifFPS
-            gifSpan = Defaults.gifSpan
-            idNamingMode = Defaults.idNamingMode
-            includeOutsideClipBoundaries = Defaults.includeOutsideClipBoundaries
-            excludeRoleType = Defaults.excludeRoleType
-            imageLabels = Defaults.imageLabels
-            imageLabelCopyright = Defaults.imageLabelCopyright
-            imageLabelFont = Defaults.imageLabelFont
-            imageLabelFontMaxSize = Defaults.imageLabelFontMaxSize
-            imageLabelFontOpacity = Defaults.imageLabelFontOpacity
-            imageLabelFontColor = Defaults.imageLabelFontColor
-            imageLabelFontStrokeColor = Defaults.imageLabelFontStrokeColor
-            imageLabelFontStrokeWidth = Defaults.imageLabelFontStrokeWidth
-            imageLabelAlignHorizontal = Defaults.imageLabelAlignHorizontal
-            imageLabelAlignVertical = Defaults.imageLabelAlignVertical
-            imageLabelHideNames = Defaults.imageLabelHideNames
-            createDoneFile = Defaults.createDoneFile
-            doneFilename = Defaults.doneFilename
             self.fcpxml = fcpxml
-            mediaSearchPaths = Defaults.mediaSearchPaths(from: fcpxml)
             self.outputDir = outputDir
             
-            try validate()
-        }
-        
-        public init(
-            exportFormat: ExportProfileFormat,
-            enableSubframes: Bool,
-            imageFormat: MarkerImageFormat,
-            imageQuality: Int,
-            imageWidth: Int?,
-            imageHeight: Int?,
-            imageSizePercent: Int?,
-            gifFPS: Double,
-            gifSpan: TimeInterval,
-            idNamingMode: MarkerIDMode,
-            includeOutsideClipBoundaries: Bool,
-            excludeRoleType: MarkerRoleType?,
-            imageLabels: [StandardExportField],
-            imageLabelCopyright: String?,
-            imageLabelFont: String,
-            imageLabelFontMaxSize: Int,
-            imageLabelFontOpacity: Int,
-            imageLabelFontColor: String,
-            imageLabelFontStrokeColor: String,
-            imageLabelFontStrokeWidth: Int?,
-            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal,
-            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical,
-            imageLabelHideNames: Bool,
-            createDoneFile: Bool,
-            doneFilename: String,
-            fcpxml: FCPXMLFile,
-            mediaSearchPaths: [URL],
-            outputDir: URL
-        ) throws {
+            self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
             self.imageFormat = imageFormat
@@ -170,9 +137,6 @@ extension MarkersExtractor {
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
             self.doneFilename = doneFilename
-            self.fcpxml = fcpxml
-            self.mediaSearchPaths = mediaSearchPaths
-            self.outputDir = outputDir
             
             try validate()
         }
