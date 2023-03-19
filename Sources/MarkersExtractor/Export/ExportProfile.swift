@@ -7,10 +7,7 @@
 import Foundation
 import OrderedCollections
 
-public protocol ExportProfile
-    where PreparedMarker.Field == Field
-{
-    associatedtype Field: ExportField
+public protocol ExportProfile {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
@@ -20,21 +17,20 @@ public protocol ExportProfile
     static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
-        videoPath: URL,
+        media: ExportMedia?,
         outputPath: URL,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>,
         createDoneFile: Bool,
         doneFilename: String
     ) throws
     
     /// Converts raw FCP markers to the native format needed for export.
+    /// If media is not present, pass `nil` to `isSingleFrame`.
     static func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>,
-        isSingleFrame: Bool
+        mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker]
     
     /// Encode and write metadata manifest file to disk. (Such as csv file)
@@ -45,5 +41,5 @@ public protocol ExportProfile
     
     static func doneFileContent(payload: Payload) throws -> Data
     
-    static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<Field, String>
+    static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<ExportField, String>
 }

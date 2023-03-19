@@ -16,15 +16,13 @@ extension AirtableExportProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>,
-        isSingleFrame: Bool
+        mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
         markers.map {
             PreparedMarker(
                 $0,
                 idMode: idMode,
-                imageFormat: imageSettings.format,
-                isSingleFrame: isSingleFrame
+                mediaInfo: mediaInfo
             )
         }
     }
@@ -33,14 +31,14 @@ extension AirtableExportProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload
     ) throws {
-        try csvWiteManifest(csvPath: payload.csvPath, preparedMarkers, payload: payload)
+        try csvWiteManifest(csvPath: payload.csvPath, preparedMarkers)
     }
     
     public static func doneFileContent(payload: Payload) throws -> Data {
         try csvDoneFileContent(csvPath: payload.csvPath)
     }
     
-    public static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<Field, String> {
+    public static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<ExportField, String> {
         [
             .id: marker.id,
             .name: marker.name,

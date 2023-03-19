@@ -10,7 +10,7 @@ import MarkersExtractor
 // Export
 
 extension ExportProfileFormat: ExpressibleByArgument { }
-extension StandardExportField: ExpressibleByArgument { }
+extension ExportField: ExpressibleByArgument { }
 
 // Markers
 

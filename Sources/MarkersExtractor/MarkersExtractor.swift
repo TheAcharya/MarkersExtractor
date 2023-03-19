@@ -28,9 +28,6 @@ extension MarkersExtractor {
     }
     
     func run() throws {
-        let imageQuality = Double(s.imageQuality) / 100
-        let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
-        let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
         logger.info("Using \(s.exportFormat.name) export profile.")
@@ -61,64 +58,72 @@ extension MarkersExtractor {
         
         logger.info("Found project media file \(videoPath.path.quoted).")
         
-        logger.info("Generating metadata file(s) with \(imageFormatEXT) images into \(outputPath.path.quoted).")
+        if s.noMedia {
+            logger.info("No media present. Skipping thumbnail generation.")
+            logger.info("Generating metadata file(s) into \(outputPath.path.quoted).")
+        } else {
+            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputPath.path.quoted).")
+        }
         
-        let labelProperties = MarkerLabelProperties(
-            fontName: s.imageLabelFont,
-            fontMaxSize: s.imageLabelFontMaxSize,
-            fontColor: NSColor(hexString: s.imageLabelFontColor, alpha: imageLabelFontAlpha),
-            fontStrokeColor: NSColor(
-                hexString: s.imageLabelFontStrokeColor,
-                alpha: imageLabelFontAlpha
-            ),
-            fontStrokeWidth: s.imageLabelFontStrokeWidth,
-            alignHorizontal: s.imageLabelAlignHorizontal,
-            alignVertical: s.imageLabelAlignVertical
-        )
+        func callExport<P: ExportProfile>(
+            for format: P.Type,
+            payload: P.Payload
+        ) throws {
+            var media: ExportMedia? = nil
+            if !s.noMedia {
+                let imageQuality = Double(s.imageQuality) / 100
+                let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
+                let imageLabels = OrderedSet(s.imageLabels).map { $0 }
+                
+                let labelProperties = MarkerLabelProperties(
+                    fontName: s.imageLabelFont,
+                    fontMaxSize: s.imageLabelFontMaxSize,
+                    fontColor: NSColor(hexString: s.imageLabelFontColor, alpha: imageLabelFontAlpha),
+                    fontStrokeColor: NSColor(
+                        hexString: s.imageLabelFontStrokeColor,
+                        alpha: imageLabelFontAlpha
+                    ),
+                    fontStrokeWidth: s.imageLabelFontStrokeWidth,
+                    alignHorizontal: s.imageLabelAlignHorizontal,
+                    alignVertical: s.imageLabelAlignVertical
+                )
+                
+                let imageSettings = ExportImageSettings(
+                    gifFPS: s.gifFPS,
+                    gifSpan: s.gifSpan,
+                    format: s.imageFormat,
+                    quality: imageQuality,
+                    dimensions: calcVideoDimensions(for: videoPath),
+                    labelFields: imageLabels,
+                    labelCopyright: s.imageLabelCopyright,
+                    labelProperties: labelProperties,
+                    imageLabelHideNames: s.imageLabelHideNames
+                )
+                
+                media = .init(videoURL: videoPath, imageSettings: imageSettings)
+            }
+            try P.export(
+                markers: markers,
+                idMode: s.idNamingMode,
+                media: media,
+                outputPath: outputPath,
+                payload: payload,
+                createDoneFile: s.createDoneFile,
+                doneFilename: s.doneFilename
+            )
+        }
         
         do {
             switch s.exportFormat {
             case .airtable:
-                try AirtableExportProfile.export(
-                    markers: markers,
-                    idMode: s.idNamingMode,
-                    videoPath: videoPath,
-                    outputPath: outputPath,
-                    payload: .init(projectName: projectName, outputPath: outputPath),
-                    imageSettings: .init(
-                        gifFPS: s.gifFPS,
-                        gifSpan: s.gifSpan,
-                        format: s.imageFormat,
-                        quality: imageQuality,
-                        dimensions: calcVideoDimensions(for: videoPath),
-                        labelFields: imageLabels,
-                        labelCopyright: s.imageLabelCopyright,
-                        labelProperties: labelProperties,
-                        imageLabelHideNames: s.imageLabelHideNames
-                    ),
-                    createDoneFile: s.createDoneFile,
-                    doneFilename: s.doneFilename
+                try callExport(
+                    for: AirtableExportProfile.self,
+                    payload: .init(projectName: projectName, outputPath: outputPath)
                 )
             case .notion:
-                try NotionExportProfile.export(
-                    markers: markers,
-                    idMode: s.idNamingMode,
-                    videoPath: videoPath,
-                    outputPath: outputPath,
-                    payload: .init(projectName: projectName, outputPath: outputPath),
-                    imageSettings: .init(
-                        gifFPS: s.gifFPS,
-                        gifSpan: s.gifSpan,
-                        format: s.imageFormat,
-                        quality: imageQuality,
-                        dimensions: calcVideoDimensions(for: videoPath),
-                        labelFields: imageLabels,
-                        labelCopyright: s.imageLabelCopyright,
-                        labelProperties: labelProperties,
-                        imageLabelHideNames: s.imageLabelHideNames
-                    ),
-                    createDoneFile: s.createDoneFile,
-                    doneFilename: s.doneFilename
+                try callExport(
+                    for: NotionExportProfile.self,
+                    payload: .init(projectName: projectName, outputPath: outputPath)
                 )
             }
         } catch {

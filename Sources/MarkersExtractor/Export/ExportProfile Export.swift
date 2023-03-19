@@ -14,36 +14,24 @@ extension ExportProfile {
     public static func export(
         markers: [Marker],
         idMode: MarkerIDMode,
-        videoPath: URL,
+        media: ExportMedia?,
         outputPath: URL,
         payload: Payload,
-        imageSettings: ExportImageSettings<Field>,
         createDoneFile: Bool,
         doneFilename: String
     ) throws {
         let logger = Logger(label: "markersExport")
         
-        var videoPath: URL = videoPath
-        let videoPlaceholder: TemporaryMediaFile
+        var isVideoPresent: Bool = false
+        var isSingleFrame: Bool? = nil
+        var mediaInfo: ExportMarkerMediaInfo? = nil
         
-        let isVideoPresent = isVideoPresent(in: videoPath)
-        let isSingleFrame = !isVideoPresent
-            && imageSettings.labelFields.isEmpty
-            && imageSettings.labelCopyright == nil
-        
-        if !isVideoPresent {
-            logger.info("Media file has no video track, using video placeholder for markers.")
-            
-            if let markerVideoPlaceholderData = EmbeddedResource.marker_video_placeholder_mov.data {
-                videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
-                if let url = videoPlaceholder.url {
-                    videoPath = url
-                } else {
-                    logger.warning("Could not locate or read video placeholder file.")
-                }
-            } else {
-                logger.warning("Could not locate or read video placeholder file.")
-            }
+        if let media {
+            isVideoPresent = self.isVideoPresent(in: media.videoURL)
+            isSingleFrame = !isVideoPresent
+                && media.imageSettings.labelFields.isEmpty
+                && media.imageSettings.labelCopyright == nil
+            mediaInfo = .init(imageFormat: media.imageSettings.format, isSingleFrame: isSingleFrame!)
         }
         
         // prepare markers
@@ -52,8 +40,7 @@ extension ExportProfile {
             markers: markers,
             idMode: idMode,
             payload: payload,
-            imageSettings: imageSettings,
-            isSingleFrame: isSingleFrame
+            mediaInfo: mediaInfo
         )
         
         // icons
@@ -68,46 +55,66 @@ extension ExportProfile {
         
         // thumbnail images
         
-        logger.info("Generating \(imageSettings.format.rawValue.uppercased()) images for markers.")
-        
-        let imageLabelText = makeImageLabelText(
-            preparedMarkers: preparedMarkers,
-            imageLabelFields: imageSettings.labelFields,
-            imageLabelCopyright: imageSettings.labelCopyright,
-            includeHeaders: !imageSettings.imageLabelHideNames
-        )
-        
-        let timecodes = makeTimecodes(
-            markers: markers,
-            preparedMarkers: preparedMarkers,
-            isVideoPresent: isVideoPresent,
-            isSingleFrame: isSingleFrame
-        )
-        
-        switch imageSettings.format {
-        case let .still(stillImageFormat):
-            try writeStillImages(
-                timecodes: timecodes,
-                video: videoPath,
-                outputPath: outputPath,
-                imageFormat: stillImageFormat,
-                imageJPGQuality: imageSettings.quality,
-                imageDimensions: imageSettings.dimensions,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: imageSettings.labelProperties
+        if let media {
+            var videoURL: URL = media.videoURL
+            let videoPlaceholder: TemporaryMediaFile
+            
+            if !isVideoPresent {
+                logger.info("Media file has no video track, using video placeholder for markers.")
+                
+                if let markerVideoPlaceholderData = EmbeddedResource.marker_video_placeholder_mov.data {
+                    videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
+                    if let url = videoPlaceholder.url {
+                        videoURL = url
+                    } else {
+                        logger.warning("Could not locate or read video placeholder file.")
+                    }
+                } else {
+                    logger.warning("Could not locate or read video placeholder file.")
+                }
+            }
+            
+            logger.info("Generating \(media.imageSettings.format.rawValue.uppercased()) images for markers.")
+            
+            let imageLabelText = makeImageLabelText(
+                preparedMarkers: preparedMarkers,
+                imageLabelFields: media.imageSettings.labelFields,
+                imageLabelCopyright: media.imageSettings.labelCopyright,
+                includeHeaders: !media.imageSettings.imageLabelHideNames
             )
-        case let .animated(animatedImageFormat):
-            try writeAnimatedImages(
-                timecodes: timecodes,
-                video: videoPath,
-                outputPath: outputPath,
-                gifFPS: imageSettings.gifFPS,
-                gifSpan: imageSettings.gifSpan,
-                gifDimensions: imageSettings.dimensions,
-                imageFormat: animatedImageFormat,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: imageSettings.labelProperties
+            
+            let timecodes = makeTimecodes(
+                markers: markers,
+                preparedMarkers: preparedMarkers,
+                isVideoPresent: isVideoPresent,
+                isSingleFrame: isSingleFrame ?? true
             )
+            
+            switch media.imageSettings.format {
+            case let .still(stillImageFormat):
+                try writeStillImages(
+                    timecodes: timecodes,
+                    video: videoURL,
+                    outputPath: outputPath,
+                    imageFormat: stillImageFormat,
+                    imageJPGQuality: media.imageSettings.quality,
+                    imageDimensions: media.imageSettings.dimensions,
+                    imageLabelText: imageLabelText,
+                    imageLabelProperties: media.imageSettings.labelProperties
+                )
+            case let .animated(animatedImageFormat):
+                try writeAnimatedImages(
+                    timecodes: timecodes,
+                    video: videoURL,
+                    outputPath: outputPath,
+                    gifFPS: media.imageSettings.gifFPS,
+                    gifSpan: media.imageSettings.gifSpan,
+                    gifDimensions: media.imageSettings.dimensions,
+                    imageFormat: animatedImageFormat,
+                    imageLabelText: imageLabelText,
+                    imageLabelProperties: media.imageSettings.labelProperties
+                )
+            }
         }
         
         // metadata manifest file
@@ -127,7 +134,7 @@ extension ExportProfile {
     
     private static func makeImageLabelText(
         preparedMarkers: [PreparedMarker],
-        imageLabelFields: [Field],
+        imageLabelFields: [ExportField],
         imageLabelCopyright: String?,
         includeHeaders: Bool
     ) -> [String] {
@@ -155,7 +162,7 @@ extension ExportProfile {
     }
     
     private static func makeLabels(
-        headers: [Field],
+        headers: [ExportField],
         includeHeaders: Bool,
         preparedMarkers: [PreparedMarker]
     ) -> [String] {

@@ -102,10 +102,10 @@ struct MarkersExtractorCLI: ParsableCommand {
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(StandardExportField.allCases.map { $0.rawValue }.joined(separator: ", "))"
+            valueName: "\(ExportField.allCases.map { $0.rawValue }.joined(separator: ", "))"
         )
     )
-    var imageLabels: [StandardExportField] = []
+    var imageLabels: [ExportField] = []
     
     @Option(
         name: [.customLong("label-copyright")],
@@ -220,6 +220,12 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
     var outputDir: URL
     
+    @Flag(
+        name: [.customLong("no-media")],
+        help: "Bypass media. No thumbnails will be generated."
+    )
+    var noMedia: Bool = MarkersExtractor.Settings.Defaults.noMedia
+    
     @Option(
         name: [.customLong("media-search-path")],
         help: ArgumentHelp(
@@ -255,6 +261,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
                 outputDir: outputDir,
+                noMedia: noMedia,
                 mediaSearchPaths: mediaSearchPaths,
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,

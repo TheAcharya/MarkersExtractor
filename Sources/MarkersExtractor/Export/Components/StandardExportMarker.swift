@@ -10,9 +10,8 @@ import OrderedCollections
 /// A marker with its contents prepared as flat String values in a standard format suitable for
 /// various different export profiles.
 public struct StandardExportMarker: ExportMarker {    
-    public typealias Field = StandardExportField
     public typealias Icon = NotionExportProfile.Icon
-        
+    
     public let id: String
     public let name: String
     public let type: String
@@ -28,13 +27,14 @@ public struct StandardExportMarker: ExportMarker {
     public let projectName: String
     public let libraryName: String
     public let icon: Icon
+    
     public let imageFileName: String
-        
+    //public let mediaInfo: ExportMarkerMediaInfo?
+    
     public init(
         _ marker: Marker,
         idMode: MarkerIDMode,
-        imageFormat: MarkerImageFormat,
-        isSingleFrame: Bool
+        mediaInfo: ExportMarkerMediaInfo?
     ) {
         id = marker.id(idMode)
         name = marker.name
@@ -51,8 +51,8 @@ public struct StandardExportMarker: ExportMarker {
         projectName = marker.parentInfo.projectName
         libraryName = marker.parentInfo.libraryName
         icon = Icon(marker.type)
-        imageFileName = isSingleFrame
-            ? "marker-placeholder.\(imageFormat)"
-            : "\(marker.id(pathSafe: idMode)).\(imageFormat)"
+        
+        //self.mediaInfo = mediaInfo
+        imageFileName = mediaInfo?.imageFileName(for: marker, idMode: idMode) ?? ""
     }
 }

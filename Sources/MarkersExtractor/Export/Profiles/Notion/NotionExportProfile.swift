@@ -8,6 +8,5 @@ import Foundation
 
 public enum NotionExportProfile: ExportProfile {
     public typealias Payload = CSVExportPayload
-    public typealias Field = StandardExportField
     public typealias PreparedMarker = StandardExportMarker
 }

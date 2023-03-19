@@ -7,13 +7,13 @@
 import AVFoundation
 import Foundation
 
-public struct ExportImageSettings<Field> {
+public struct ExportImageSettings {
     public let gifFPS: Double
     public let gifSpan: TimeInterval
     public let format: MarkerImageFormat
     public let quality: Double
     public let dimensions: CGSize?
-    public let labelFields: [Field]
+    public let labelFields: [ExportField]
     public let labelCopyright: String?
     public let labelProperties: MarkerLabelProperties
     public let imageLabelHideNames: Bool

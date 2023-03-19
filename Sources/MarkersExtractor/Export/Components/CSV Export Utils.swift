@@ -11,8 +11,7 @@ import CodableCSV
 extension ExportProfile {
     static func csvWiteManifest(
         csvPath: URL,
-        _ preparedMarkers: [PreparedMarker],
-        payload: Payload
+        _ preparedMarkers: [PreparedMarker]
     ) throws {
         let rows = csvDictsToRows(preparedMarkers)
         let csvData = try CSVWriter.encode(rows: rows, into: Data.self)

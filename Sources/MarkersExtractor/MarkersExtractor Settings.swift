@@ -23,7 +23,7 @@ extension MarkersExtractor {
             public static let idNamingMode: MarkerIDMode = .projectTimecode
             public static let includeOutsideClipBoundaries = false
             public static let excludeRoleType: MarkerRoleType? = nil
-            public static let imageLabels: [StandardExportField] = []
+            public static let imageLabels: [ExportField] = []
             public static let imageLabelCopyright: String? = nil
             public static let imageLabelFont = "Menlo-Regular"
             public static let imageLabelFontMaxSize = 30
@@ -35,6 +35,7 @@ extension MarkersExtractor {
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static let noMedia: Bool = false
             public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
                 [fcpxml.defaultMediaSearchPath].compactMap { $0 }
             }
@@ -61,7 +62,7 @@ extension MarkersExtractor {
         public var idNamingMode: MarkerIDMode
         public var includeOutsideClipBoundaries: Bool
         public var excludeRoleType: MarkerRoleType?
-        public var imageLabels: [StandardExportField]
+        public var imageLabels: [ExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
         public var imageLabelFontMaxSize: Int
@@ -74,6 +75,7 @@ extension MarkersExtractor {
         public var imageLabelHideNames: Bool
         public var createDoneFile: Bool
         public var fcpxml: FCPXMLFile
+        public var noMedia: Bool
         public var mediaSearchPaths: [URL]
         public var outputDir: URL
         public var doneFilename: String
@@ -81,6 +83,7 @@ extension MarkersExtractor {
         public init(
             fcpxml: FCPXMLFile,
             outputDir: URL,
+            noMedia: Bool = Defaults.noMedia,
             mediaSearchPaths: [URL]? = nil,
             exportFormat: ExportProfileFormat = Defaults.exportFormat,
             enableSubframes: Bool = Defaults.enableSubframes,
@@ -94,7 +97,7 @@ extension MarkersExtractor {
             idNamingMode: MarkerIDMode = Defaults.idNamingMode,
             includeOutsideClipBoundaries: Bool = Defaults.includeOutsideClipBoundaries,
             excludeRoleType: MarkerRoleType? = Defaults.excludeRoleType,
-            imageLabels: [StandardExportField] = Defaults.imageLabels,
+            imageLabels: [ExportField] = Defaults.imageLabels,
             imageLabelCopyright: String? = Defaults.imageLabelCopyright,
             imageLabelFont: String = Defaults.imageLabelFont,
             imageLabelFontMaxSize: Int = Defaults.imageLabelFontMaxSize,
@@ -111,6 +114,7 @@ extension MarkersExtractor {
             self.fcpxml = fcpxml
             self.outputDir = outputDir
             
+            self.noMedia = noMedia
             self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
@@ -166,55 +170,58 @@ extension MarkersExtractor {
                 }
             }
             
-            guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError
-                    .validationError("Cannot use font \(imageLabelFont.quoted).")
-            }
-            
-            if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
-               imageLabelFontStrokeWidth < 0
-            {
-                throw MarkersExtractorError.validationError(
-                    "--label-stroke-width must be a positive integer or 0."
-                )
-            }
-            
-            guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
-                throw MarkersExtractorError.validationError(
-                    "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range."
-                )
-            }
-            
-            if let imageHeight = imageHeight, imageHeight <= 0 {
-                throw MarkersExtractorError.validationError(
-                    "--image-height must be a positive integer."
-                )
-            }
-            
-            if let imageWidth = imageWidth, imageWidth <= 0 {
-                throw MarkersExtractorError.validationError(
-                    "--image-width must be a positive integer."
-                )
-            }
-            
-            if let imageSizePercent = imageSizePercent,
-               !Validation.imageSizePercent.contains(imageSizePercent)
-            {
-                throw MarkersExtractorError.validationError(
-                    "--image-size-percent must be within \(Validation.imageSizePercent) range."
-                )
-            }
-            
-            guard Validation.imageQuality.contains(imageQuality) else {
-                throw MarkersExtractorError.validationError(
-                    "--image-quality must be within \(Validation.imageQuality) range."
-                )
-            }
-            
-            guard Validation.gifFPS.contains(gifFPS) else {
-                throw MarkersExtractorError.validationError(
-                    "--gif-fps must be within \(Validation.gifFPS) range."
-                )
+            // if media is bypassed, none of the thumbnail parameters will be used.
+            if !noMedia {
+                guard NSFont(name: imageLabelFont, size: 1) != nil else {
+                    throw MarkersExtractorError
+                        .validationError("Cannot use font \(imageLabelFont.quoted).")
+                }
+                
+                if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
+                   imageLabelFontStrokeWidth < 0
+                {
+                    throw MarkersExtractorError.validationError(
+                        "--label-stroke-width must be a positive integer or 0."
+                    )
+                }
+                
+                guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
+                    throw MarkersExtractorError.validationError(
+                        "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range."
+                    )
+                }
+                
+                if let imageHeight = imageHeight, imageHeight <= 0 {
+                    throw MarkersExtractorError.validationError(
+                        "--image-height must be a positive integer."
+                    )
+                }
+                
+                if let imageWidth = imageWidth, imageWidth <= 0 {
+                    throw MarkersExtractorError.validationError(
+                        "--image-width must be a positive integer."
+                    )
+                }
+                
+                if let imageSizePercent = imageSizePercent,
+                   !Validation.imageSizePercent.contains(imageSizePercent)
+                {
+                    throw MarkersExtractorError.validationError(
+                        "--image-size-percent must be within \(Validation.imageSizePercent) range."
+                    )
+                }
+                
+                guard Validation.imageQuality.contains(imageQuality) else {
+                    throw MarkersExtractorError.validationError(
+                        "--image-quality must be within \(Validation.imageQuality) range."
+                    )
+                }
+                
+                guard Validation.gifFPS.contains(gifFPS) else {
+                    throw MarkersExtractorError.validationError(
+                        "--gif-fps must be within \(Validation.gifFPS) range."
+                    )
+                }
             }
         }
     }
