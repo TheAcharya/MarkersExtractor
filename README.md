@@ -31,7 +31,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230103.0/markers-extractor-cli-0.2.0-alpha-20230103.0.zip).
+Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230318.0/markers-extractor-cli-0.2.0-alpha-20230318.0.zip).
 
 Stable releases will be available once development is out of alpha.
 
@@ -76,7 +76,8 @@ OPTIONS:
   --image-width <w>       Limit image width keeping aspect ratio.
   --image-height <h>      Limit image height keeping aspect ratio.
   --image-size-percent <1...100>
-                          Limit image size to % keeping aspect ratio. (default for GIF: 50)
+                          Limit image size to % keeping aspect ratio. (default
+                          for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
   --id-naming-mode <projectTimecode, name, notes>
@@ -120,6 +121,7 @@ OPTIONS:
   --log-level <trace, debug, info, notice, warning, error, critical>
                           Log level. (default: info)
   --quiet                 Disable log.
+  --no-media              Bypass media. No thumbnails will be generated.
   --media-search-path <media-search-path>
                           Media search path. This argument can be supplied more
                           than once to use multiple paths. (default: same
