@@ -177,7 +177,9 @@ extension MarkersExtractor {
             try validate()
         }
         
-        private func validate() throws {
+        /// Validate settings parameters.
+        /// Throws an error if validation fails.
+        public func validate() throws {
             if let fcpxmlPath = fcpxml.url {
                 guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
                     throw MarkersExtractorError.validationError(
