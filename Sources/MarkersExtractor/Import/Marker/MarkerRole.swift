@@ -53,15 +53,21 @@ extension Array where Element == MarkerRole {
 
 public struct MarkerRoles: Equatable, Hashable {
     public var video: String?
+    public var isVideoDefault: Bool
     public var audio: String?
+    public var isAudioDefault: Bool
     
     public init(
         video: String? = nil,
+        isVideoDefault: Bool = false,
         audio: String? = nil,
+        isAudioDefault: Bool = false,
         collapseSubroles: Bool = false
     ) {
         self.video = video
+        self.isVideoDefault = isVideoDefault
         self.audio = audio
+        self.isAudioDefault = isAudioDefault
         if collapseSubroles { self.collapseSubroles() }
     }
     
@@ -76,9 +82,9 @@ public struct MarkerRoles: Equatable, Hashable {
     public init?(defaultForClipType clipType: String) {
         switch clipType {
         case "asset-clip":
-            self.init(video: "Video")
+            self.init(video: "Video", isVideoDefault: true)
         case "title":
-            self.init(video: "Titles")
+            self.init(video: "Titles", isVideoDefault: true)
         default:
             return nil
         }
@@ -88,12 +94,24 @@ public struct MarkerRoles: Equatable, Hashable {
 // MARK: - Methods
 
 extension MarkerRoles {
-    public var videoIsEmpty: Bool {
+    /// Has a non-empty video role.
+    public var isVideoEmpty: Bool {
         video == nil || video?.isEmpty == true
     }
     
-    public var audioIsEmpty: Bool {
-        video == nil || video?.isEmpty == true
+    /// Has a defined (non-default) video role.
+    public var isVideoDefined: Bool {
+        !isVideoEmpty && !isVideoDefault
+    }
+    
+    /// Has a non-empty audio role.
+    public var isAudioEmpty: Bool {
+        audio == nil || audio?.isEmpty == true
+    }
+    
+    /// Has a defined (non-default) audio role.
+    public var isAudioDefined: Bool {
+        !isAudioEmpty && !isAudioDefault
     }
     
     static let notAssignedRole = "Not Assigned"
@@ -143,7 +161,6 @@ extension MarkerRoles {
         guard matches.count == 4,
               let role = matches[1],
               let subrole = matches[2]
-                
         else { return role }
         
         if role == subrole { return role }

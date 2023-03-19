@@ -103,9 +103,13 @@ class FCPXMLMarkerExtractor {
             fcpxmlMarkers = fcpxmlMarkers.filter { marker in
                 switch excludeRoleType {
                 case .video:
-                    return !marker.roles.audioIsEmpty
+                    if marker.roles.isVideoEmpty { return true }
+                    if marker.roles.isVideoDefault { return false }
+                    return false
                 case .audio:
-                    return !marker.roles.videoIsEmpty
+                    if marker.roles.isAudioEmpty { return true }
+                    if marker.roles.isAudioDefault { return false }
+                    return false
                 }
             }
             
@@ -343,10 +347,15 @@ class FCPXMLMarkerExtractor {
         if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
             return MarkerRoles(
                 video: nil,
+                isVideoDefault: false,
                 audio: acSourceRole.localizedCapitalized,
+                isAudioDefault: false,
                 collapseSubroles: true
             )
         }
+        
+        var isVideoDefault = false
+        var isAudioDefault = false
         
         // gather
         
@@ -371,9 +380,11 @@ class FCPXMLMarkerExtractor {
            let defaultRoles = MarkerRoles(defaultForClipType: clipType)
         {
             if videoRolesPool.isEmpty, let r = defaultRoles.video {
+                isVideoDefault = true
                 videoRolesPool.append(r)
             }
             if audioRolesPool.isEmpty, let r = defaultRoles.audio {
+                isAudioDefault = true
                 audioRolesPool.append(r)
             }
         }
@@ -390,7 +401,13 @@ class FCPXMLMarkerExtractor {
         
         // return
         
-        return MarkerRoles(video: videoRole, audio: audioRole, collapseSubroles: true)
+        return MarkerRoles(
+            video: videoRole,
+            isVideoDefault: isVideoDefault,
+            audio: audioRole,
+            isAudioDefault: isAudioDefault,
+            collapseSubroles: true
+        )
     }
     
     private func formTimecode(
