@@ -216,7 +216,14 @@ class FCPXMLMarkerExtractor {
         parentInTime: Timecode,
         parentOutTime: Timecode
     ) -> Timecode {
-        let parentClip = marker.parentElement!
+        let markerName = marker.fcpxValue ?? ""
+        
+        guard let parentClip = marker.parentElement else {
+            logger.warning(
+                "Could not find parent element while attempting to form position timecode for marker \(markerName.quoted)."
+            )
+            return .init(at: parentFPS)
+        }
         
         // FYI: clips can be resized from either side so it's possible for out-of-boundary
         // markers to exist prior to the clip's start time or after the clip's end time,
@@ -227,7 +234,6 @@ class FCPXMLMarkerExtractor {
             : marker.fcpxLocalInPoint
 
         let markerCMTime = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
-        let markerName = marker.fcpxValue ?? ""
         let clipName = getClipName(parentClip)
         let markerTimecode: Timecode = {
             guard let tc = try? formTimecodeInterval(markerCMTime, at: parentFPS).flattened()
