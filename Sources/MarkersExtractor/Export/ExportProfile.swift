@@ -18,14 +18,14 @@ public protocol ExportProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         media: ExportMedia?,
-        outputPath: URL,
+        outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
         doneFilename: String
     ) throws
     
     /// Converts raw FCP markers to the native format needed for export.
-    /// If media is not present, pass `nil` to `isSingleFrame`.
+    /// If media is not present, pass `nil` to `mediaInfo` to bypass thumbnail generation.
     static func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
@@ -36,10 +36,14 @@ public protocol ExportProfile {
     /// Encode and write metadata manifest file to disk. (Such as csv file)
     static func writeManifest(
         _ preparedMarkers: [PreparedMarker],
-        payload: Payload
+        payload: Payload,
+        noMedia: Bool
     ) throws
     
     static func doneFileContent(payload: Payload) throws -> Data
     
-    static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<ExportField, String>
+    static func manifestFields(
+        for marker: PreparedMarker,
+        noMedia: Bool
+    ) -> OrderedDictionary<ExportField, String>
 }

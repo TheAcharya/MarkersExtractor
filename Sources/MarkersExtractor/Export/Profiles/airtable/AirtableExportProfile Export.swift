@@ -29,17 +29,21 @@ extension AirtableExportProfile {
     
     public static func writeManifest(
         _ preparedMarkers: [PreparedMarker],
-        payload: Payload
+        payload: Payload,
+        noMedia: Bool
     ) throws {
-        try csvWiteManifest(csvPath: payload.csvPath, preparedMarkers)
+        try csvWiteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
     }
     
     public static func doneFileContent(payload: Payload) throws -> Data {
         try csvDoneFileContent(csvPath: payload.csvPath)
     }
     
-    public static func manifestFields(for marker: PreparedMarker) -> OrderedDictionary<ExportField, String> {
-        [
+    public static func manifestFields(
+        for marker: PreparedMarker,
+        noMedia: Bool
+    ) -> OrderedDictionary<ExportField, String> {
+        var dict: OrderedDictionary<ExportField, String> = [
             .id: marker.id,
             .name: marker.name,
             .type: marker.type,
@@ -53,9 +57,13 @@ extension AirtableExportProfile {
             .audioRole: marker.audioRole,
             .eventName: marker.eventName,
             .projectName: marker.projectName,
-            .libraryName: marker.libraryName,
-            //.iconImage: marker.icon.fileName,
-            .imageFileName: marker.imageFileName
+            .libraryName: marker.libraryName
         ]
+        
+        if !noMedia {
+            dict[.imageFileName] = marker.imageFileName
+        }
+        
+        return dict
     }
 }

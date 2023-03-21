@@ -11,9 +11,10 @@ import CodableCSV
 extension ExportProfile {
     static func csvWiteManifest(
         csvPath: URL,
+        noMedia: Bool,
         _ preparedMarkers: [PreparedMarker]
     ) throws {
-        let rows = csvDictsToRows(preparedMarkers)
+        let rows = csvDictsToRows(preparedMarkers, noMedia: noMedia)
         let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
         try csvData.write(to: csvPath)
     }
@@ -29,9 +30,10 @@ extension ExportProfile {
     // MARK: Helpers
     
     private static func csvDictsToRows(
-        _ preparedMarkers: [PreparedMarker]
+        _ preparedMarkers: [PreparedMarker],
+        noMedia: Bool
     ) -> [[String]] {
-        let dicts = preparedMarkers.map { manifestFields(for: $0) }
+        let dicts = preparedMarkers.map { manifestFields(for: $0, noMedia: noMedia) }
         guard !dicts.isEmpty else { return [] }
         
         // header

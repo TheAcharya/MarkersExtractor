@@ -52,17 +52,13 @@ extension MarkersExtractor {
         
         let projectName = markers[0].parentInfo.projectName
         
-        let outputPath = try makeOutputPath(for: projectName)
-        
-        let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
-        
-        logger.info("Found project media file \(videoPath.path.quoted).")
+        let outputURL = try makeOutputPath(for: projectName)
         
         if s.noMedia {
             logger.info("No media present. Skipping thumbnail generation.")
-            logger.info("Generating metadata file(s) into \(outputPath.path.quoted).")
+            logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
         } else {
-            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputPath.path.quoted).")
+            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
         }
         
         func callExport<P: ExportProfile>(
@@ -71,6 +67,9 @@ extension MarkersExtractor {
         ) throws {
             var media: ExportMedia? = nil
             if !s.noMedia {
+                let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
+                logger.info("Found project media file \(videoPath.path.quoted).")
+                
                 let imageQuality = Double(s.imageQuality) / 100
                 let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
                 let imageLabels = OrderedSet(s.imageLabels).map { $0 }
@@ -106,7 +105,7 @@ extension MarkersExtractor {
                 markers: markers,
                 idMode: s.idNamingMode,
                 media: media,
-                outputPath: outputPath,
+                outputURL: outputURL,
                 payload: payload,
                 createDoneFile: s.createDoneFile,
                 doneFilename: s.doneFilename
@@ -118,12 +117,12 @@ extension MarkersExtractor {
             case .airtable:
                 try callExport(
                     for: AirtableExportProfile.self,
-                    payload: .init(projectName: projectName, outputPath: outputPath)
+                    payload: .init(projectName: projectName, outputURL: outputURL)
                 )
             case .notion:
                 try callExport(
                     for: NotionExportProfile.self,
-                    payload: .init(projectName: projectName, outputPath: outputPath)
+                    payload: .init(projectName: projectName, outputURL: outputURL)
                 )
             }
         } catch {
@@ -221,19 +220,19 @@ extension MarkersExtractor {
 
 extension MarkersExtractor {
     private func makeOutputPath(for projectName: String) throws -> URL {
-        let outputPath = s.outputDir.appendingPathComponent(
+        let outputURL = s.outputDir.appendingPathComponent(
             "\(projectName) \(nowTimestamp())"
         )
         
         do {
-            try FileManager.default.mkdirWithParent(outputPath.path, reuseExisting: false)
+            try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
         } catch {
             throw MarkersExtractorError.runtimeError(
-                "Failed to create output dir \(outputPath.path.quoted): \(error.localizedDescription)"
+                "Failed to create output dir \(outputURL.path.quoted): \(error.localizedDescription)"
             )
         }
         
-        return outputPath
+        return outputURL
     }
     
     private func nowTimestamp() -> String {
