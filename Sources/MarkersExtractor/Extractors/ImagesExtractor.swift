@@ -58,7 +58,7 @@ extension ImagesExtractor {
                 return
             }
 
-            let frameResult = self.processFrame(for: imageResult, frameName: frameName)
+            let frameResult = self.processAndWriteFrameToDisk(for: imageResult, frameName: frameName)
 
             switch frameResult {
             case let .success(finished):
@@ -84,6 +84,7 @@ extension ImagesExtractor {
 
     private func imageGenerator() throws -> AVAssetImageGenerator {
         let asset = AVAsset(url: conversion.sourceMediaFile)
+        
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
@@ -97,7 +98,7 @@ extension ImagesExtractor {
         return generator
     }
 
-    private func processFrame(
+    private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         frameName: String
     ) -> Result<Bool, Error> {
@@ -105,8 +106,8 @@ extension ImagesExtractor {
         case let .success(result):
             let image = conversion.imageFilter?(result.image) ?? result.image
 
-            let cicontext = CIContext()
-            let ciimage = CIImage(cgImage: image)
+            let ciContext = CIContext()
+            let ciImage = CIImage(cgImage: image)
 
             let url = conversion.outputFolder.appendingPathComponent(frameName)
 
@@ -114,11 +115,11 @@ extension ImagesExtractor {
                 switch conversion.frameFormat {
                 case .png:
                     // PNG does not offer 'compression' or 'quality' options
-                    try cicontext.writePNGRepresentation(
-                        of: ciimage,
+                    try ciContext.writePNGRepresentation(
+                        of: ciImage,
                         to: url,
                         format: .RGBA8,
-                        colorSpace: ciimage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
+                        colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
                     )
                 case .jpg:
                     var options = [:] as [CIImageRepresentationOption: Any]
@@ -130,10 +131,10 @@ extension ImagesExtractor {
                         ]
                     }
                     
-                    try cicontext.writeJPEGRepresentation(
-                        of: ciimage,
+                    try ciContext.writeJPEGRepresentation(
+                        of: ciImage,
                         to: url,
-                        colorSpace: ciimage.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
+                        colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
                         options: options
                     )
                 }

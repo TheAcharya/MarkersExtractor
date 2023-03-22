@@ -178,8 +178,8 @@ extension AnimatedImageExtractor {
 
     private func imageGenerator() -> AVAssetImageGenerator {
         let asset = AVAsset(url: conversion.sourceMediaFile)
-        let generator = AVAssetImageGenerator(asset: asset)
 
+        let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
