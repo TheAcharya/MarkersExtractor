@@ -42,8 +42,8 @@ extension ExportProfile {
             imageLabeler?.nextText()
             
             let conversion = AnimatedImageExtractor.ConversionSettings(
-                sourceURL: videoPath,
-                outputURL: outputURL,
+                sourceMediaFile: videoPath,
+                outputFolder: outputURL,
                 timeRange: timeRange,
                 dimensions: gifDimensions,
                 fps: gifFPS,

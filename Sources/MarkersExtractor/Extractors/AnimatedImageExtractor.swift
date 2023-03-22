@@ -9,58 +9,23 @@ import ImageIO
 import Foundation
 import Logging
 
+/// Extract a sequence of frames from a video asset and produce an animated image (such as animated GIF).
 final class AnimatedImageExtractor {
-    enum Error: LocalizedError {
-        case invalidSettings
-        case unreadableFile
-        case gifInitializationFailed
-        case gifFinalizationFailed
-        case notEnoughFrames(Int)
-        case generateFrameFailed(Swift.Error)
-        case addFrameFailed(Swift.Error)
-        case writeFailed(Swift.Error)
-
-        var errorDescription: String? {
-            switch self {
-            case .invalidSettings:
-                return "Invalid settings."
-            case .unreadableFile:
-                return "The selected file is no longer readable."
-            case .gifInitializationFailed:
-                return "Failed to initialize the GIF file."
-            case .gifFinalizationFailed:
-                return "Failed to finalize the GIF file."
-            case let .notEnoughFrames(frameCount):
-                let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
-                return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
-            case let .generateFrameFailed(error):
-                return "Failed to generate frame: \(error.localizedDescription)"
-            case let .addFrameFailed(error):
-                return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-            case let .writeFailed(error):
-                return "Failed to write, with underlying error: \(error.localizedDescription)"
-            }
-        }
-    }
-
-    struct ConversionSettings {
-        let sourceURL: URL
-        let outputURL: URL
-        var timeRange: ClosedRange<Double>?
-        var dimensions: CGSize?
-        var fps: Double
-        let imageFilter: ((CGImage) -> CGImage)?
-        let imageFormat: MarkerImageFormat.Animated
-    }
-
+    // MARK: - Properties
+    
     private let logger = Logger(label: "\(AnimatedImageExtractor.self)")
-
     private var conversion: ConversionSettings
-
+    
+    // MARK: - Init
+    
     init(_ conversion: ConversionSettings) {
         self.conversion = conversion
     }
+}
 
+// MARK: - Convert
+
+extension AnimatedImageExtractor {
     static func convert(_ conversion: ConversionSettings) throws {
         let conv = self.init(conversion)
         conv.validate()
@@ -71,7 +36,9 @@ final class AnimatedImageExtractor {
             try conv.generateGIF()
         }
     }
-
+    
+    // MARK: - Helpers
+    
     private func validate() {
         // Even though we enforce a minimum of 3 FPS in the GUI, a source video could have lower
         // FPS, and we should allow that.
@@ -148,7 +115,7 @@ final class AnimatedImageExtractor {
         ] as [String: Any]
 
         guard let destination = CGImageDestinationCreateWithURL(
-            conversion.outputURL as CFURL,
+            conversion.outputFolder as CFURL,
             kUTTypeGIF,
             framesCount,
             nil
@@ -162,7 +129,7 @@ final class AnimatedImageExtractor {
     }
 
     private func imageGenerator() -> AVAssetImageGenerator {
-        let asset = AVAsset(url: conversion.sourceURL)
+        let asset = AVAsset(url: conversion.sourceMediaFile)
         let generator = AVAssetImageGenerator(asset: asset)
 
         generator.appliesPreferredTrackTransform = true
@@ -220,7 +187,7 @@ final class AnimatedImageExtractor {
         nominalFrameRate: Double,
         videoTrackRange: ClosedRange<Double>
     ) {
-        let asset = AVAsset(url: conversion.sourceURL)
+        let asset = AVAsset(url: conversion.sourceMediaFile)
 
         guard asset.isReadable,
               let nominalFrameRate = asset.frameRate,
@@ -279,6 +246,53 @@ final class AnimatedImageExtractor {
             
         case let .failure(error):
             throw Error.generateFrameFailed(error)
+        }
+    }
+}
+
+// MARK: - Types
+
+extension AnimatedImageExtractor {
+    struct ConversionSettings {
+        let sourceMediaFile: URL
+        let outputFolder: URL
+        var timeRange: ClosedRange<TimeInterval>?
+        var dimensions: CGSize?
+        var fps: Double
+        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFormat: MarkerImageFormat.Animated
+    }
+    
+    enum Error: LocalizedError {
+        case invalidSettings
+        case unreadableFile
+        case gifInitializationFailed
+        case gifFinalizationFailed
+        case notEnoughFrames(Int)
+        case generateFrameFailed(Swift.Error)
+        case addFrameFailed(Swift.Error)
+        case writeFailed(Swift.Error)
+        
+        var errorDescription: String? {
+            switch self {
+            case .invalidSettings:
+                return "Invalid settings."
+            case .unreadableFile:
+                return "The selected file is no longer readable."
+            case .gifInitializationFailed:
+                return "Failed to initialize the GIF file."
+            case .gifFinalizationFailed:
+                return "Failed to finalize the GIF file."
+            case let .notEnoughFrames(frameCount):
+                let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
+                return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
+            case let .generateFrameFailed(error):
+                return "Failed to generate frame: \(error.localizedDescription)"
+            case let .addFrameFailed(error):
+                return "Failed to add frame, with underlying error: \(error.localizedDescription)"
+            case let .writeFailed(error):
+                return "Failed to write, with underlying error: \(error.localizedDescription)"
+            }
         }
     }
 }
