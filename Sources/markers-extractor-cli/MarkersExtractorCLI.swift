@@ -64,7 +64,7 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "GIF frame rate.",
-            valueName: "\(MarkersExtractor.Settings.Validation.gifFPS)"
+            valueName: "\(MarkersExtractor.Settings.Validation.outputFPS)"
         )
     )
     var gifFPS: Double = MarkersExtractor.Settings.Defaults.gifFPS

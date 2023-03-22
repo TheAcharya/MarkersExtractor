@@ -35,18 +35,21 @@ extension ExportProfile {
         for (imageName, timecode) in timecodes {
             let outputURL = outputURL.appendingPathComponent(imageName)
             
-            let timePoint = timecode.realTimeValue
-            let gifSpan = gifSpan / 2
-            let timeRange = (timePoint - gifSpan) ... (timePoint + gifSpan)
+            var delta = timecode
+            delta.setTimecode(clampingRealTime: gifSpan / 2)
+            
+            let timeIn = timecode - delta
+            let timeOut = timecode + delta
+            let timeRange = timeIn ... timeOut
             
             imageLabeler?.nextText()
             
             let conversion = AnimatedImageExtractor.ConversionSettings(
                 sourceMediaFile: videoPath,
                 outputFolder: outputURL,
-                timeRange: timeRange,
+                timecodeRange: timeRange,
                 dimensions: gifDimensions,
-                fps: gifFPS,
+                outputFPS: gifFPS,
                 imageFilter: imageLabeler?.labelImage,
                 imageFormat: imageFormat
             )

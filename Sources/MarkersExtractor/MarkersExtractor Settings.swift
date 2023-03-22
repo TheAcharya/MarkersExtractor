@@ -46,7 +46,7 @@ extension MarkersExtractor {
         public enum Validation {
             public static let imageSizePercent = 1 ... 100
             public static let imageQuality = 0 ... 100
-            public static let gifFPS = 0.1 ... 60.0
+            public static let outputFPS = 0.1 ... 60.0
             public static let imageLabelFontOpacity = 0 ... 100
         }
         
@@ -217,9 +217,9 @@ extension MarkersExtractor {
                     )
                 }
                 
-                guard Validation.gifFPS.contains(gifFPS) else {
+                guard Validation.outputFPS.contains(gifFPS) else {
                     throw MarkersExtractorError.validationError(
-                        "--gif-fps must be within \(Validation.gifFPS) range."
+                        "--gif-fps must be within \(Validation.outputFPS) range."
                     )
                 }
             }
