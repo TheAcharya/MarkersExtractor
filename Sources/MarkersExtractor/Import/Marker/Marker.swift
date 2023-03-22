@@ -14,6 +14,7 @@ import TimecodeKit
 public struct Marker: Equatable, Hashable {
     struct ParentInfo: Equatable, Hashable {
         var clipName: String
+        var clipFilename: String
         var clipInTime: Timecode
         var clipOutTime: Timecode
         var eventName: String

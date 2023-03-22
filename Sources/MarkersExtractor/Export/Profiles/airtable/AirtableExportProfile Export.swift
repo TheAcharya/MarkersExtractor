@@ -52,6 +52,7 @@ extension AirtableExportProfile {
             .notes: marker.notes,
             .position: marker.position,
             .clipName: marker.clipName,
+            .clipFilename: marker.clipFilename,
             .clipDuration: marker.clipDuration,
             .videoRole: marker.videoRole,
             .audioRole: marker.audioRole,

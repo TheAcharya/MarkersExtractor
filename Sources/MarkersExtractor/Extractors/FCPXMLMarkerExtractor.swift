@@ -205,6 +205,7 @@ class FCPXMLMarkerExtractor {
             position: position,
             parentInfo: Marker.ParentInfo(
                 clipName: getClipName(parentClip),
+                clipFilename: getClipFilename(parentClip) ?? "",
                 clipInTime: parentInTime,
                 clipOutTime: parentOutTime,
                 eventName: parentEvent.fcpxName ?? "",
@@ -302,15 +303,11 @@ class FCPXMLMarkerExtractor {
     }
 
     private func getClipName(_ clip: XMLElement) -> String {
-        guard let clipName = clip.fcpxName else {
-            return ""
-        }
-
-        if let clipMediaSrc = clip.fcpxResource?.subElement(named: "media-rep")?.fcpxSrc {
-            return "\(clipName).\(clipMediaSrc.fileExtension)"
-        }
-
-        return clipName
+        clip.fcpxName ?? ""
+    }
+    
+    private func getClipFilename(_ clip: XMLElement) -> String? {
+        clip.fcpxResource?.subElement(named: "media-rep")?.fcpxSrc?.lastPathComponent ?? ""
     }
 
     private func getLibraryName(_ library: XMLElement) -> String? {
