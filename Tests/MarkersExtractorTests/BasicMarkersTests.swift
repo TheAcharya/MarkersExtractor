@@ -31,6 +31,7 @@ final class BasicMarkersTests: XCTestCase {
         
         let parentInfo = Marker.ParentInfo(
             clipName: "Basic Title",
+            clipFilename: "",
             clipInTime: try TCC().toTimecode(at: fr),
             clipOutTime: try TCC(h: 00, m: 01, s: 03, f: 29).toTimecode(at: fr),
             eventName: "Test Event",

@@ -25,7 +25,8 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let fr: TimecodeFrameRate = ._25
         
         let clip1ParentInfo = Marker.ParentInfo(
-            clipName: "Marker Test.m4v",
+            clipName: "Marker Test",
+            clipFilename: "Marker Test.m4v",
             clipInTime: try TCC().toTimecode(at: fr),
             clipOutTime: try TCC(h: 00, m: 00, s: 20, f: 20).toTimecode(at: fr),
             eventName: "Test Event",
@@ -34,7 +35,8 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         )
         
         let clip2ParentInfo = Marker.ParentInfo(
-            clipName: "Marker Test.m4v",
+            clipName: "Marker Test",
+            clipFilename: "Marker Test.m4v",
             clipInTime: try TCC(h: 00, m: 00, s: 20, f: 20).toTimecode(at: fr),
             clipOutTime: try TCC(h: 00, m: 00, s: 41, f: 15).toTimecode(at: fr),
             eventName: "Test Event",

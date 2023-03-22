@@ -27,6 +27,7 @@ final class MarkersExtractorTests: XCTestCase {
                 position: try position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
+                    clipFilename: "",
                     clipInTime: try TCC().toTimecode(at: ._24),
                     clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
@@ -79,6 +80,7 @@ final class MarkersExtractorTests: XCTestCase {
                 position: try position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
+                    clipFilename: "",
                     clipInTime: try TCC().toTimecode(at: ._24),
                     clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
