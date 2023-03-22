@@ -33,7 +33,7 @@ extension ExportProfile {
         }
         
         for (imageName, timecode) in timecodes {
-            let gifPath = outputURL.appendingPathComponent(imageName)
+            let outputURL = outputURL.appendingPathComponent(imageName)
             
             let timePoint = timecode.realTimeValue
             let gifSpan = gifSpan / 2
@@ -43,7 +43,7 @@ extension ExportProfile {
             
             let conversion = AnimatedImageExtractor.ConversionSettings(
                 sourceURL: videoPath,
-                outputURL: gifPath,
+                outputURL: outputURL,
                 timeRange: timeRange,
                 dimensions: gifDimensions,
                 fps: gifFPS,
@@ -55,7 +55,7 @@ extension ExportProfile {
                 try AnimatedImageExtractor.convert(conversion)
             } catch {
                 throw MarkersExtractorError.runtimeError(
-                    "Error while generating gif \(gifPath.lastPathComponent.quoted):"
+                    "Error while generating animated thumbnail \(outputURL.lastPathComponent.quoted):"
                         + " \(error.localizedDescription)"
                 )
             }
@@ -81,9 +81,9 @@ extension ExportProfile {
             )
         }
         
-        let conversion = ImageExtractor.ConversionSettings(
-            sourceURL: videoPath,
-            outputURL: outputURL,
+        let conversion = ImagesExtractor.ConversionSettings(
+            sourceMediaFile: videoPath,
+            outputFolder: outputURL,
             timecodes: timecodes,
             frameFormat: imageFormat,
             frameJPGQuality: imageJPGQuality,
@@ -92,7 +92,7 @@ extension ExportProfile {
         )
         
         do {
-            try ImageExtractor.convert(conversion)
+            try ImagesExtractor.convert(conversion)
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Error while generating images: \(error.localizedDescription)"
