@@ -89,7 +89,7 @@ extension ExportProfile {
             outputFolder: outputURL,
             timecodes: timecodes,
             frameFormat: imageFormat,
-            frameJPGQuality: imageJPGQuality,
+            jpgQuality: imageJPGQuality,
             dimensions: imageDimensions,
             imageFilter: imageLabeler?.labelImageNextText
         )

@@ -91,7 +91,7 @@ extension ImagesExtractor {
 
         // This improves the performance a little bit.
         if let dimensions = conversion.dimensions {
-            generator.maximumSize = CGSize(widthHeight: dimensions.longestSide)
+            generator.maximumSize = CGSize(square: dimensions.longestSide)
         }
 
         return generator
@@ -110,18 +110,10 @@ extension ImagesExtractor {
 
             let url = conversion.outputFolder.appendingPathComponent(frameName)
 
-            var options = [:] as [CIImageRepresentationOption: Any]
-
-            if let jpgQuality = conversion.frameJPGQuality {
-                options = [
-                    kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption:
-                        jpgQuality
-                ]
-            }
-
             do {
                 switch conversion.frameFormat {
                 case .png:
+                    // PNG does not offer 'compression' or 'quality' options
                     try cicontext.writePNGRepresentation(
                         of: ciimage,
                         to: url,
@@ -129,6 +121,15 @@ extension ImagesExtractor {
                         colorSpace: ciimage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
                     )
                 case .jpg:
+                    var options = [:] as [CIImageRepresentationOption: Any]
+                    
+                    if let jpgQuality = conversion.jpgQuality {
+                        options = [
+                            kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption:
+                                jpgQuality
+                        ]
+                    }
+                    
                     try cicontext.writeJPEGRepresentation(
                         of: ciimage,
                         to: url,
@@ -155,7 +156,10 @@ extension ImagesExtractor {
         let outputFolder: URL
         let timecodes: OrderedDictionary<String, Timecode>
         let frameFormat: MarkerImageFormat.Still
-        let frameJPGQuality: Double?
+        
+        /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`
+        let jpgQuality: Double?
+        
         let dimensions: CGSize?
         let imageFilter: ((CGImage) -> CGImage)?
     }

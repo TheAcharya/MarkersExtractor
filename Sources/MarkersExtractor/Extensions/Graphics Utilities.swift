@@ -11,8 +11,9 @@ import CoreGraphics
 // MARK: - Basic Types
 
 extension CGSize {
-    init(widthHeight: Double) {
-        self.init(width: widthHeight, height: widthHeight)
+    @_disfavoredOverload
+    init(square: Double) {
+        self.init(width: square, height: square)
     }
     
     var longestSide: Double { max(width, height) }
@@ -67,7 +68,7 @@ extension NSImage {
 }
 
 extension CGImage {
-    static let empty = NSImage(size: CGSize(widthHeight: 1), flipped: false) { _ in true }
+    static let empty = NSImage(size: CGSize(square: 1), flipped: false) { _ in true }
         .cgImage(forProposedRect: nil, context: nil, hints: nil)
     
     var nsImage: NSImage {

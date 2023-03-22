@@ -186,7 +186,7 @@ extension AnimatedImageExtractor {
 
         // This improves the performance a little bit.
         if let dimensions = conversion.dimensions {
-            generator.maximumSize = CGSize(widthHeight: dimensions.longestSide)
+            generator.maximumSize = CGSize(square: dimensions.longestSide)
         }
 
         return generator
