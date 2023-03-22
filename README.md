@@ -51,7 +51,7 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 ### CLI v0.2.0-alpha-* (Development in Progress)
 
-```shell
+```plain
 $ markers-extractor-cli --help
 OVERVIEW: Tool to extract markers from Final Cut Pro FCPXML(D).
 
