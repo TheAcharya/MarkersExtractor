@@ -82,8 +82,6 @@ extension ExportProfile {
     
     // MARK: Helpers
     
-    
-    
     private static func exportIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })
         

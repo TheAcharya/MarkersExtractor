@@ -9,10 +9,14 @@ import Logging
 import TimecodeKit
 import OrderedCollections
 
+// MARK: - Export media information packet
+
 public struct ExportMedia {
     var videoURL: URL
     var imageSettings: ExportImageSettings
 }
+
+// MARK: - Export methods when Media is present
 
 extension ExportProfile {
     // TODO: shouldn't take both markers and preparedMarkers

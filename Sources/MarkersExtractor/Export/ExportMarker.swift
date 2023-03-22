@@ -12,7 +12,6 @@ public protocol ExportMarker {
     
     var imageFileName: String { get }
     var icon: Icon { get }
-    //var mediaInfo: ExportMarkerMediaInfo? { get }
 }
 
 public struct ExportMarkerMediaInfo {
