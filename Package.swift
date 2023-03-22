@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/dehesa/CodableCSV.git", from: "0.6.7"),
         .package(url: "https://github.com/vzhd1701/pipeline.git", from: "0.1.1"),
-        .package(url: "https://github.com/orchetect/TimecodeKit.git", branch: "main"), //from: "1.6.10"),
+        .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "1.6.10"),
         .package(url: "https://github.com/orchetect/OTCore.git", from: "1.4.5")
     ],
     targets: [
