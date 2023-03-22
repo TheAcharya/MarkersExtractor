@@ -13,7 +13,7 @@ extension MarkersExtractor {
             public static let exportFormat: ExportProfileFormat = .notion
             public static let enableSubframes = false
             public static let imageFormat: MarkerImageFormat = .still(.png)
-            public static let imageQuality = 100
+            public static let imageQuality = 85
             public static let imageWidth: Int? = nil
             public static let imageHeight: Int? = nil
             public static let imageSizePercent: Int? = 100
