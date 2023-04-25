@@ -37,6 +37,7 @@ struct FileHandlerOutputStream: TextOutputStream {
 }
 
 public struct FileLogHandler: LogHandler {
+    private let queue: DispatchQueue
     private let stream: TextOutputStream
     private var label: String
 
@@ -61,6 +62,7 @@ public struct FileLogHandler: LogHandler {
     public init(label: String, localFile url: URL) throws {
         self.label = label
         stream = try FileHandlerOutputStream(localFile: url)
+        queue = DispatchQueue(label: "FileLogHandler-\(label)", qos: .default)
     }
 
     public func log(
@@ -72,14 +74,16 @@ public struct FileLogHandler: LogHandler {
         function: String,
         line: UInt
     ) {
-        let prettyMetadata = metadata?.isEmpty ?? true
+        queue.sync {
+            let prettyMetadata = metadata?.isEmpty ?? true
             ? prettyMetadata
             : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
-
-        var stream = stream
-        stream.write(
-            "\(timestamp()) \(level) \(label) :\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
-        )
+            
+            var stream = stream
+            stream.write(
+                "\(timestamp()) \(level) \(label) :\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
+            )
+        }
     }
 
     private func prettify(_ metadata: Logger.Metadata) -> String? {
