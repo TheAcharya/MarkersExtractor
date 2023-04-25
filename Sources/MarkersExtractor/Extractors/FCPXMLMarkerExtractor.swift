@@ -11,7 +11,7 @@ import Pipeline
 import TimecodeKit
 
 class FCPXMLMarkerExtractor {
-    private let logger = Logger(label: "\(FCPXMLMarkerExtractor.self)")
+    private let logger: Logger
 
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
@@ -19,12 +19,32 @@ class FCPXMLMarkerExtractor {
     let excludeRoleType: MarkerRoleType?
     let enableSubframes: Bool
     
+    // MARK: - Init
+    
+    required init(
+        fcpxml: XMLDocument,
+        idNamingMode: MarkerIDMode,
+        includeOutsideClipBoundaries: Bool,
+        excludeRoleType: MarkerRoleType?,
+        enableSubframes: Bool,
+        logger: Logger? = nil
+    ) throws {
+        self.logger = logger ?? Logger(label: "\(Self.self)")
+        
+        fcpxmlDoc = fcpxml
+        self.idNamingMode = idNamingMode
+        self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
+        self.excludeRoleType = excludeRoleType
+        self.enableSubframes = enableSubframes
+    }
+    
     required convenience init(
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
-        enableSubframes: Bool
+        enableSubframes: Bool,
+        logger: Logger? = nil
     ) throws {
         let xml = try XMLDocument(contentsOfFCPXML: fcpxml)
         try self.init(
@@ -32,58 +52,32 @@ class FCPXMLMarkerExtractor {
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             excludeRoleType: excludeRoleType,
-            enableSubframes: enableSubframes
+            enableSubframes: enableSubframes,
+            logger: logger
         )
     }
     
-    required init(
-        fcpxml: XMLDocument,
+    required convenience init(
+        fcpxml: FCPXMLFile,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
-        enableSubframes: Bool
+        enableSubframes: Bool,
+        logger: Logger? = nil
     ) throws {
-        fcpxmlDoc = fcpxml
-        self.idNamingMode = idNamingMode
-        self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
-        self.excludeRoleType = excludeRoleType
-        self.enableSubframes = enableSubframes
-    }
-
-    static func extractMarkers(
-        from fcpxml: FCPXMLFile,
-        idNamingMode: MarkerIDMode,
-        includeOutsideClipBoundaries: Bool,
-        excludeRoleType: MarkerRoleType?,
-        enableSubframes: Bool
-    ) throws -> [Marker] {
         let data = try fcpxml.data()
         let xml = try XMLDocument(data: data)
-        return try self.init(
+        try self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             excludeRoleType: excludeRoleType,
-            enableSubframes: enableSubframes
-        ).extractMarkers()
+            enableSubframes: enableSubframes,
+            logger: logger
+        )
     }
     
-    static func extractMarkers(
-        from fcpxml: URL,
-        idNamingMode: MarkerIDMode,
-        includeOutsideClipBoundaries: Bool,
-        excludeRoleType: MarkerRoleType?,
-        enableSubframes: Bool
-    ) throws -> [Marker] {
-        try self.init(
-            fcpxml: fcpxml,
-            idNamingMode: idNamingMode,
-            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
-            excludeRoleType: excludeRoleType,
-            enableSubframes: enableSubframes
-        )
-        .extractMarkers()
-    }
+    // MARK: - Public Instance Methods
 
     public func extractMarkers() -> [Marker] {
         var fcpxmlMarkers: [Marker] = []
@@ -140,6 +134,8 @@ class FCPXMLMarkerExtractor {
         
         return fcpxmlMarkers
     }
+    
+    // MARK: - Private Methods
 
     private func extractAllXMLMarkers(project: XMLElement) -> [XMLElement] {
         var markers: [XMLElement] = []
