@@ -90,6 +90,7 @@ public struct FileLogHandler: LogHandler {
         !metadata.isEmpty ? metadata.map { "\($0)=\($1)" }.joined(separator: " ") : nil
     }
 
+    // TODO: Gross. Probably a safer/simpler way to do this.
     private func timestamp() -> String {
         var buffer = [Int8](repeating: 0, count: 255)
         var timestamp = time(nil)
