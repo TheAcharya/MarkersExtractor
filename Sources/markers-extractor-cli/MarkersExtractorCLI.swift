@@ -238,8 +238,13 @@ struct MarkersExtractorCLI: ParsableCommand {
     // MARK: - Protocol Method Implementations
     
     mutating func validate() throws {
-        if let log = log, !FileManager.default.isWritableFile(atPath: log.path) {
-            throw ValidationError("Cannot write log file at \(log.path.quoted)")
+        if let log {
+            if FileManager.default.fileExists(atPath: log.path) {
+                // check that existing file is writable
+                if !FileManager.default.isWritableFile(atPath: log.path) {
+                    throw ValidationError("Cannot write log file at \(log.path.quoted)")
+                }
+            }
         }
         
         if imageFormat == .animated(.gif), imageSizePercent == nil {
