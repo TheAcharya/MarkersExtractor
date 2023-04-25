@@ -18,9 +18,10 @@ extension ExportProfile {
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
-        doneFilename: String
+        doneFilename: String,
+        logger: Logger? = nil
     ) throws {
-        var logger = Logger(label: "markersExport")
+        var logger = logger ?? Logger(label: "\(Self.self)")
         
         var isVideoPresent: Bool = false
         var isSingleFrame: Bool? = nil

@@ -6,6 +6,7 @@
 
 import AVFoundation
 import Foundation
+import Logging
 import OrderedCollections
 import TimecodeKit
 
@@ -21,14 +22,18 @@ extension ExportProfile {
         gifDimensions: CGSize?,
         imageFormat: MarkerImageFormat.Animated,
         imageLabelText: [String],
-        imageLabelProperties: MarkerLabelProperties
+        imageLabelProperties: MarkerLabelProperties,
+        logger: Logger? = nil
     ) throws {
+        let logger = logger ?? Logger(label: "\(Self.self)")
+        
         var imageLabeler: ImageLabeler?
         
         if !imageLabelText.isEmpty {
             imageLabeler = ImageLabeler(
                 labelText: imageLabelText,
-                labelProperties: imageLabelProperties
+                labelProperties: imageLabelProperties,
+                logger: logger
             )
         }
         
@@ -55,7 +60,7 @@ extension ExportProfile {
             )
             
             do {
-                try AnimatedImageExtractor.convert(conversion)
+                try AnimatedImageExtractor(conversion, logger: logger).convert()
             } catch {
                 throw MarkersExtractorError.runtimeError(
                     "Error while generating animated thumbnail \(outputURL.lastPathComponent.quoted):"
@@ -73,14 +78,18 @@ extension ExportProfile {
         imageJPGQuality: Double,
         imageDimensions: CGSize?,
         imageLabelText: [String],
-        imageLabelProperties: MarkerLabelProperties
+        imageLabelProperties: MarkerLabelProperties,
+        logger: Logger? = nil
     ) throws {
+        let logger = logger ?? Logger(label: "\(Self.self)")
+        
         var imageLabeler: ImageLabeler?
         
         if !imageLabelText.isEmpty {
             imageLabeler = ImageLabeler(
                 labelText: imageLabelText,
-                labelProperties: imageLabelProperties
+                labelProperties: imageLabelProperties,
+                logger: logger
             )
         }
         
@@ -95,7 +104,7 @@ extension ExportProfile {
         )
         
         do {
-            try ImagesExtractor.convert(conversion)
+            try ImagesExtractor(conversion, logger: logger).convert()
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Error while generating images: \(error.localizedDescription)"

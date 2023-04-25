@@ -81,7 +81,7 @@ public struct FileLogHandler: LogHandler {
             
             var stream = stream
             stream.write(
-                "\(timestamp()) \(level) \(label) :\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
+                "\(timestamp()) \(level):\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
             )
         }
     }

@@ -15,12 +15,13 @@ import TimecodeKit
 final class ImagesExtractor {
     // MARK: - Properties
     
-    private let logger = Logger(label: "\(ImagesExtractor.self)")
+    private let logger: Logger
     private let conversion: ConversionSettings
     
     // MARK: - Init
     
-    init(_ conversion: ConversionSettings) {
+    init(_ conversion: ConversionSettings, logger: Logger? = nil) {
+        self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
     }
 }
@@ -28,9 +29,8 @@ final class ImagesExtractor {
 // MARK: - Convert
 
 extension ImagesExtractor {
-    static func convert(_ conversion: ConversionSettings) throws {
-        let conv = self.init(conversion)
-        try conv.generateImages()
+    func convert() throws {
+        try generateImages()
     }
     
     // MARK: - Helpers

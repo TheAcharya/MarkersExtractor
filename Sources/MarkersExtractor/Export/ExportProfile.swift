@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import Logging
 import OrderedCollections
 
 public protocol ExportProfile {
@@ -21,7 +22,8 @@ public protocol ExportProfile {
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
-        doneFilename: String
+        doneFilename: String,
+        logger: Logger?
     ) throws
     
     /// Converts raw FCP markers to the native format needed for export.

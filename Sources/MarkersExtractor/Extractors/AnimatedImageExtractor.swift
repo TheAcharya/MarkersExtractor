@@ -14,7 +14,7 @@ import TimecodeKit
 final class AnimatedImageExtractor {
     // MARK: - Properties
     
-    private let logger = Logger(label: "\(AnimatedImageExtractor.self)")
+    private let logger: Logger
     private var conversion: ConversionSettings
     
     private let asset: AVAsset
@@ -24,7 +24,9 @@ final class AnimatedImageExtractor {
     
     // MARK: - Init
     
-    init(_ conversion: ConversionSettings) throws {
+    init(_ conversion: ConversionSettings, logger: Logger? = nil) throws {
+        self.logger = logger ?? Logger(label: "\(AnimatedImageExtractor.self)")
+        
         self.conversion = conversion
         self.asset = AVAsset(url: conversion.sourceMediaFile)
         
@@ -57,14 +59,13 @@ final class AnimatedImageExtractor {
 // MARK: - Convert
 
 extension AnimatedImageExtractor {
-    static func convert(_ conversion: ConversionSettings) throws {
-        let conv = try self.init(conversion)
-        conv.validate()
+    func convert() throws {
+        validate()
         
         // only gif is supported for now, but more formats could be added in future
-        switch conv.conversion.imageFormat {
+        switch conversion.imageFormat {
         case .gif:
-            try conv.generateGIF()
+            try generateGIF()
         }
     }
     

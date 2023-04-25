@@ -10,7 +10,7 @@ import Foundation
 import Logging
 
 class ImageLabeler {
-    private let logger = Logger(label: "\(ImageLabeler.self)")
+    private let logger: Logger
 
     private var fontSizeCache: [[String]: CGFloat] = [:]
     private var curText: String?
@@ -18,7 +18,8 @@ class ImageLabeler {
     let properties: MarkerLabelProperties
     var textIter: IndexingIterator<[String]>
 
-    init(labelText: [String], labelProperties: MarkerLabelProperties) {
+    init(labelText: [String], labelProperties: MarkerLabelProperties, logger: Logger? = nil) {
+        self.logger = logger ?? Logger(label: "\(ImageLabeler.self)")
         properties = labelProperties
         textIter = labelText.makeIterator()
     }

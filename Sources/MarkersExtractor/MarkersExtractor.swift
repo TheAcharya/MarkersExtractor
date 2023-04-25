@@ -12,10 +12,11 @@ import OrderedCollections
 import TimecodeKit
 
 public final class MarkersExtractor {
-    private let logger = Logger(label: "\(MarkersExtractor.self)")
+    private let logger: Logger
     private let s: Settings
     
-    init(_ settings: Settings) {
+    public init(_ settings: Settings, logger: Logger? = nil) {
+        self.logger = logger ?? Logger(label: "\(MarkersExtractor.self)")
         s = settings
     }
 }
@@ -23,12 +24,14 @@ public final class MarkersExtractor {
 // MARK: - Run
 
 extension MarkersExtractor {
-    public static func extract(_ settings: Settings) throws {
-        try self.init(settings).run()
+    public func extract() throws {
+        try self.run()
     }
     
     func run() throws {
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
+        
+        logger.info("Starting")
         
         logger.info("Using \(s.exportFormat.name) export profile.")
         
@@ -108,7 +111,8 @@ extension MarkersExtractor {
                 outputURL: outputURL,
                 payload: payload,
                 createDoneFile: s.createDoneFile,
-                doneFilename: s.doneFilename
+                doneFilename: s.doneFilename,
+                logger: logger
             )
         }
         
@@ -131,7 +135,7 @@ extension MarkersExtractor {
             )
         }
         
-        logger.info("Done!")
+        logger.info("Done")
     }
 }
 
@@ -146,13 +150,14 @@ extension MarkersExtractor {
         var markers: [Marker]
         
         do {
-            markers = try FCPXMLMarkerExtractor.extractMarkers(
-                from: s.fcpxml,
+            markers = try FCPXMLMarkerExtractor(
+                fcpxml: s.fcpxml,
                 idNamingMode: s.idNamingMode,
                 includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
                 excludeRoleType: s.excludeRoleType,
-                enableSubframes: s.enableSubframes
-            )
+                enableSubframes: s.enableSubframes,
+                logger: logger
+            ).extractMarkers()
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"

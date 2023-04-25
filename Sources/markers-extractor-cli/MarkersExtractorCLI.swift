@@ -298,7 +298,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             throw ValidationError(error)
         }
         
-        try MarkersExtractor.extract(settings)
+        try MarkersExtractor(settings).extract()
     }
 }
 
@@ -326,9 +326,7 @@ extension MarkersExtractorCLI {
                 }
             }
 
-            for i in 0 ..< logHandlers.count {
-                logHandlers[i].logLevel = logLevel
-            }
+            logHandlers.indices.forEach { logHandlers[$0].logLevel = logLevel }
 
             return MultiplexLogHandler(logHandlers)
         }
