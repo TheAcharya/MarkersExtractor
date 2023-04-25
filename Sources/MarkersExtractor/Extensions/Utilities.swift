@@ -167,19 +167,10 @@ extension FixedWidthInteger {
 
 // FourCharCode is short for "four character code".
 // An identifier for a video codec, compression format, color or pixel format used in media files.
-extension FourCharCode {
+extension FourCharCode { // a.k.a. UInt32
     /// Create a String representation of a FourCC.
     func fourCharCodeToString() -> String {
-        let bytes: [CChar] = [
-            CChar((self >> 24) & 0xFF),
-            CChar((self >> 16) & 0xFF),
-            CChar((self >> 8) & 0xFF),
-            CChar(self & 0xFF),
-            0x00
-        ]
-        
-        return String(cString: bytes)
-            .trimmingCharacters(in: .whitespaces)
+        NSFileTypeForHFSTypeCode(self)
     }
 }
 
