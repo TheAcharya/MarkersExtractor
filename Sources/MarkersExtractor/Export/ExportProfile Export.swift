@@ -51,7 +51,7 @@ extension ExportProfile {
         do {
             try exportIcons(from: markers, to: outputURL)
         } catch {
-            throw MarkersExtractorError.runtimeError("Failed to write marker icons.")
+            throw MarkersExtractorError.runtimeError("Failed to write marker icons. \(error)")
         }
         
         // thumbnail images
