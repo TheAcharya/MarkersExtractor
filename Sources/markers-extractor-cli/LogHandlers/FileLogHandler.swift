@@ -8,7 +8,7 @@ import Foundation
 import Logging
 
 struct FileHandlerOutputStream: TextOutputStream {
-    enum FileHandlerOutputStream: Error {
+    enum StreamError: Error {
         case couldNotCreateFile
     }
 
@@ -19,7 +19,7 @@ struct FileHandlerOutputStream: TextOutputStream {
         if !FileManager.default.fileExists(atPath: url.path) {
             guard FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
             else {
-                throw FileHandlerOutputStream.couldNotCreateFile
+                throw StreamError.couldNotCreateFile
             }
         }
 
