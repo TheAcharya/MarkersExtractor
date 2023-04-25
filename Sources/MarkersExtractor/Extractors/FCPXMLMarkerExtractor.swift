@@ -9,7 +9,6 @@ import Foundation
 import Logging
 import Pipeline
 import TimecodeKit
-import OTCore
 
 class FCPXMLMarkerExtractor {
     private let logger = Logger(label: "\(FCPXMLMarkerExtractor.self)")
