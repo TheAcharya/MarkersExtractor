@@ -94,7 +94,7 @@ public struct FileLogHandler: LogHandler {
         var buffer = [Int8](repeating: 0, count: 255)
         var timestamp = time(nil)
         let localTime = localtime(&timestamp)
-        strftime(&buffer, buffer.count, "%Y-%m-%dT%H:%M:%S%z", localTime)
+        strftime(&buffer, buffer.count, "%Y-%m-%d %H:%M:%S", localTime)
         return buffer.withUnsafeBufferPointer {
             $0.withMemoryRebound(to: CChar.self) {
                 guard let addr = $0.baseAddress else { return "" }
