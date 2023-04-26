@@ -12,6 +12,10 @@ public struct FCPXMLFile {
     public init(_ inputFile: File) {
         self.inputFile = inputFile
     }
+    
+    public init(_ url: URL) {
+        self.inputFile = File(url)
+    }
 }
 
 extension FCPXMLFile: CustomStringConvertible {
