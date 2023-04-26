@@ -31,7 +31,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230318.0/markers-extractor-cli-0.2.0-alpha-20230318.0.zip).
+Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230425.0/markers-extractor-cli-0.2.0-alpha-20230425.0.zip).
 
 Stable releases will be available once development is out of alpha.
 
@@ -72,7 +72,7 @@ OPTIONS:
                           additional options can be specified with --gif-fps
                           and --gif-span. (default: png)
   --image-quality <0...100>
-                          Image quality percent for JPG. (default: 100)
+                          Image quality percent for JPG. (default: 85)
   --image-width <w>       Limit image width keeping aspect ratio.
   --image-height <h>      Limit image height keeping aspect ratio.
   --image-size-percent <1...100>
@@ -89,7 +89,7 @@ OPTIONS:
   --exclude-exclusive-roles <video, audio>
                           Exclude markers that have specified role type but
                           only if the opposite role type is absent.
-  --label <id, name, type, checked, status, notes, position, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
+  --label <id, name, type, checked, status, notes, position, clipName, clipFilename, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
