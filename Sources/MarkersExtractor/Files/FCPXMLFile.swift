@@ -16,6 +16,11 @@ public struct FCPXMLFile {
     public init(_ url: URL) {
         self.inputFile = File(url)
     }
+    
+    public init(_ path: String) {
+        let url = URL(fileURLWithPath: path)
+        self.init(url)
+    }
 }
 
 extension FCPXMLFile: CustomStringConvertible {
