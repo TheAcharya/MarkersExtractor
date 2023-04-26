@@ -258,7 +258,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         let settings: MarkersExtractor.Settings
         
         do {
-            let fcpxml = FCPXMLFile(.init(fcpxmlPath))
+            let fcpxml = FCPXMLFile(fcpxmlPath)
             let mediaSearchPaths = mediaSearchPaths.isEmpty
                 ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
                 : mediaSearchPaths

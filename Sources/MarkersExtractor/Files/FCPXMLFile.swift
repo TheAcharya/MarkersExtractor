@@ -9,7 +9,7 @@ import Foundation
 public struct FCPXMLFile {
     private var inputFile: File
     
-    public init(_ inputFile: File) {
+    internal init(_ inputFile: File) {
         self.inputFile = inputFile
     }
     

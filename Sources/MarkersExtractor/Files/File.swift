@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct File {
+internal struct File {
     public var cache: FileCache?
     public var url: URL?
 }
