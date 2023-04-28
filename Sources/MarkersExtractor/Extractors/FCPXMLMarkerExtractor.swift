@@ -126,7 +126,7 @@ class FCPXMLMarkerExtractor {
             // emit log messages for out-of-bounds markers
             omitted.forEach { marker in
                 logger.notice(
-                    "Marker \(marker.name.quoted) at \(marker.position) is out of bounds of its parent clip \(marker.parentInfo.clipName) (\(marker.parentInfo.clipInTime) - \(marker.parentInfo.clipOutTime)) and will be omitted."
+                    "Marker \(marker.name.quoted) at \(marker.position) is out of bounds of its parent clip \(marker.parentInfo.clipName.quoted) (\(marker.parentInfo.clipInTime) - \(marker.parentInfo.clipOutTime)) and will be omitted."
                 )
             }
         }
