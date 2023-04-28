@@ -49,5 +49,11 @@ public protocol ExportProfile {
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String>
     
-    init()
+    /// Boolean describing whether the export format is capable of using media.
+    /// (ie: able to generate thumbnail image files, etc.)
+    static var isMediaCapable: Bool { get }
+    
+    var logger: Logger? { get set }
+    
+    init(logger: Logger?)
 }

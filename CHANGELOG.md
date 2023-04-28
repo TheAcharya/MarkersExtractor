@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases) (2023-04-??) - currently alpha
+## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-04-28)
 
 ### General
 
@@ -17,6 +17,7 @@
 - Added `--done-filename <filename>` CLI argument to customize done filename (#17)
 - Added `--media-search-path <path>` argument to allow custom media search path(s) (#20)
 - Added Airtable export profile (`--export-format airtable`) (#21)
+- Added MIDI file export profile (`--export-format midi`) (#23)
 - Added `--enable-subframes` CLI flag to show subframes in all timecode strings (#29)
 - Added `--include-outside-clip-boundaries` CLI flag (#34)
 - Added `--folder-format` CLI flag (#35)

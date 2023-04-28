@@ -65,8 +65,7 @@ class FCPXMLMarkerExtractor {
         enableSubframes: Bool,
         logger: Logger? = nil
     ) throws {
-        let data = try fcpxml.data()
-        let xml = try XMLDocument(data: data)
+        let xml = try fcpxml.xmlDocument
         try self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,

@@ -55,6 +55,33 @@ extension MarkersExtractor {
         
         let projectName = markers[0].parentInfo.projectName
         
+        let dawFile = try s.fcpxml.dawFile
+        guard let project = dawFile.projects().first else {
+            throw MarkersExtractorError.runtimeError(
+                "Could not find a project in the XML file."
+            )
+            
+        }
+        
+        let projectStartTimecode: Timecode = {
+            if let tc = project.startTimecode {
+                logger.info("Project start timecode: \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose).")
+                return tc
+            } else if let frameRate = project.frameRate {
+                let tc = Timecode(at: frameRate, base: ._100SubFrames)
+                logger.warning(
+                    "Could not determine project start timecode. Defaulting to \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose)."
+                )
+                return tc
+            } else {
+                let tc = Timecode(at: ._30, base: ._100SubFrames)
+                logger.warning(
+                    "Could not determine project start timecode. Defaulting to \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose)."
+                )
+                return tc
+            }
+        }()
+        
         let outputURL = try makeOutputPath(for: projectName)
         
         if s.noMedia {
@@ -109,7 +136,7 @@ extension MarkersExtractor {
                 
                 media = .init(videoURL: videoPath, imageSettings: imageSettings)
             }
-            try P().export(
+            try P(logger: logger).export(
                 markers: markers,
                 idMode: s.idNamingMode,
                 media: media,
@@ -127,6 +154,13 @@ extension MarkersExtractor {
                 try callExport(
                     for: AirtableExportProfile.self,
                     payload: .init(projectName: projectName, outputURL: outputURL)
+                )
+            case .midi:
+                try callExport(
+                    for: MIDIFileExportProfile.self,
+                    payload: .init(projectName: projectName,
+                                   outputURL: outputURL,
+                                   sessionStartTimecode: projectStartTimecode)
                 )
             case .notion:
                 try callExport(

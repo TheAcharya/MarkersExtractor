@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import DAWFileKit
 
 public struct FCPXMLFile {
     private var inputFile: File
@@ -74,6 +75,15 @@ extension FCPXMLFile {
         return url.fileExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame
             ? url.appendingPathComponent("Info.fcpxml")
             : url
+    }
+    
+    /// Returns a new `XMLDocument` instance representing the XML file's contents.
+    var xmlDocument: XMLDocument {
+        get throws { try XMLDocument(data: data()) }
+    }
+    
+    var dawFile: FinalCutPro.FCPXML {
+        get throws { try FinalCutPro.FCPXML(fileContent: data()) }
     }
     
     var defaultMediaSearchPath: URL? {

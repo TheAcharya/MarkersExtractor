@@ -77,6 +77,10 @@ extension Marker {
         position.frameRate
     }
     
+    func subFramesBase() -> Timecode.SubFramesBase {
+        position.subFramesBase
+    }
+    
     func isChecked() -> Bool {
         switch type {
         case let .todo(completed):

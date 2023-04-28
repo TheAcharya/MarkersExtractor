@@ -260,6 +260,11 @@ struct MarkersExtractorCLI: ParsableCommand {
         if imageFormat == .animated(.gif), imageSizePercent == nil {
             imageSizePercent = MarkersExtractor.Settings.Defaults.imageSizePercentGIF
         }
+        
+        if !exportFormat.concreteType.isMediaCapable {
+            // force no media for profiles that are not able to use media
+            noMedia = true
+        }
     }
     
     mutating func run() throws {

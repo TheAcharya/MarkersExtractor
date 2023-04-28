@@ -5,10 +5,17 @@
 //
 
 import Foundation
+import Logging
 
 public struct NotionExportProfile: ExportProfile {
     public typealias Payload = CSVExportPayload
     public typealias PreparedMarker = StandardExportMarker
     
-    public init() { }
+    public static let isMediaCapable: Bool = true
+    
+    public var logger: Logger?
+    
+    public init(logger: Logger? = nil) {
+        self.logger = logger
+    }
 }

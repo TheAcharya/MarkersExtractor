@@ -1,5 +1,5 @@
 //
-//  AirtableExportProfile.swift
+//  MIDIFileExportProfile.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -7,12 +7,12 @@
 import Foundation
 import Logging
 
-public struct AirtableExportProfile: ExportProfile {
-    public typealias Payload = CSVJSONExportPayload
+public struct MIDIFileExportProfile: ExportProfile {
+    public typealias Payload = MIDIFileExportPayload
     public typealias Icon = EmptyExportIcon
-    public typealias PreparedMarker = StandardExportMarker
+    public typealias PreparedMarker = MIDIFileExportMarker
     
-    public static let isMediaCapable: Bool = true
+    public static let isMediaCapable: Bool = false
     
     public var logger: Logger?
     
