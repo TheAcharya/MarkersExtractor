@@ -26,7 +26,7 @@
 
 ### Refinements
 
-- ` --id-naming-mode` and `--label` CLI arguments now take short-form label IDs (#15)
+- `--id-naming-mode` and `--label` CLI arguments now take short-form label IDs (#15)
 - Empty roles with no default role receive placeholder role (#33)
 - Redundant subroles are now stripped in metadata output (#33)
 - Parsing marker locations is now more reliable (#34)
