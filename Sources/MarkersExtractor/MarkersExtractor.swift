@@ -109,7 +109,7 @@ extension MarkersExtractor {
                 
                 media = .init(videoURL: videoPath, imageSettings: imageSettings)
             }
-            try P.export(
+            try P().export(
                 markers: markers,
                 idMode: s.idNamingMode,
                 media: media,

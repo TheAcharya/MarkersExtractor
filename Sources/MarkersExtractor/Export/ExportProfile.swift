@@ -15,7 +15,7 @@ public protocol ExportProfile {
     
     /// Exports markers to disk.
     /// Writes metadata files, images, and any other resources necessary.
-    static func export(
+    func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         media: ExportMedia?,
@@ -28,7 +28,7 @@ public protocol ExportProfile {
     
     /// Converts raw FCP markers to the native format needed for export.
     /// If media is not present, pass `nil` to `mediaInfo` to bypass thumbnail generation.
-    static func prepareMarkers(
+    func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
@@ -36,16 +36,18 @@ public protocol ExportProfile {
     ) -> [PreparedMarker]
     
     /// Encode and write metadata manifest file to disk. (Such as csv file)
-    static func writeManifest(
+    func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
     ) throws
     
-    static func doneFileContent(payload: Payload) throws -> Data
+    func doneFileContent(payload: Payload) throws -> Data
     
-    static func manifestFields(
+    func manifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String>
+    
+    init()
 }

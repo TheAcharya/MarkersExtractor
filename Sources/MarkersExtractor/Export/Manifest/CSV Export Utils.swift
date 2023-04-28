@@ -9,7 +9,7 @@ import OrderedCollections
 import CodableCSV
 
 extension ExportProfile {
-    static func csvWiteManifest(
+    func csvWriteManifest(
         csvPath: URL,
         noMedia: Bool,
         _ preparedMarkers: [PreparedMarker]
@@ -19,17 +19,9 @@ extension ExportProfile {
         try csvData.write(to: csvPath)
     }
     
-    public static func csvDoneFileContent(csvPath: URL) throws -> Data {
-        let content = ["csvPath": csvPath.path]
-        
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted]
-        return try encoder.encode(content)
-    }
-    
     // MARK: Helpers
     
-    private static func csvDictsToRows(
+    private func csvDictsToRows(
         _ preparedMarkers: [PreparedMarker],
         noMedia: Bool
     ) -> [[String]] {

@@ -20,7 +20,7 @@ public struct ExportMedia {
 
 extension ExportProfile {
     // TODO: shouldn't take both markers and preparedMarkers
-    static func exportThumbnails(
+    func exportThumbnails(
         markers: [Marker],
         preparedMarkers: [Self.PreparedMarker],
         isVideoPresent: Bool,
@@ -67,7 +67,7 @@ extension ExportProfile {
         
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try writeStillImages(
+            try Self.writeStillImages(
                 timecodes: timecodes,
                 video: videoURL,
                 outputURL: outputURL,
@@ -78,7 +78,7 @@ extension ExportProfile {
                 imageLabelProperties: media.imageSettings.labelProperties
             )
         case let .animated(animatedImageFormat):
-            try writeAnimatedImages(
+            try Self.writeAnimatedImages(
                 timecodes: timecodes,
                 video: videoURL,
                 outputURL: outputURL,
@@ -92,7 +92,7 @@ extension ExportProfile {
         }
     }
     
-    private static func makeImageLabelText(
+    private func makeImageLabelText(
         preparedMarkers: [PreparedMarker],
         imageLabelFields: [ExportField],
         imageLabelCopyright: String?,
@@ -121,7 +121,7 @@ extension ExportProfile {
         return imageLabelText
     }
     
-    private static func makeLabels(
+    private func makeLabels(
         headers: [ExportField],
         includeHeaders: Bool,
         preparedMarkers: [PreparedMarker]
@@ -140,7 +140,7 @@ extension ExportProfile {
     
     /// Returns an ordered dictionary keyed by marker image filename with a value of timecode
     /// position.
-    private static func makeTimecodes(
+    private func makeTimecodes(
         markers: [Marker],
         preparedMarkers: [PreparedMarker],
         isVideoPresent: Bool,

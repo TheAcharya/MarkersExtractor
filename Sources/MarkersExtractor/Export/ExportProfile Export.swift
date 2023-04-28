@@ -11,7 +11,7 @@ import OrderedCollections
 import TimecodeKit
 
 extension ExportProfile {
-    public static func export(
+    public func export(
         markers: [Marker],
         idMode: MarkerIDMode,
         media: ExportMedia?,
@@ -86,7 +86,7 @@ extension ExportProfile {
     
     // MARK: Helpers
     
-    private static func exportIcons(from markers: [Marker], to outputDir: URL) throws {
+    private func exportIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })
         
         for icon in icons {
@@ -96,7 +96,7 @@ extension ExportProfile {
         }
     }
     
-    private static func saveDoneFile(
+    private func saveDoneFile(
         at outputURL: URL,
         fileName: String,
         data: Data
@@ -112,7 +112,7 @@ extension ExportProfile {
         }
     }
     
-    private static func isVideoPresent(in videoPath: URL) -> Bool {
+    private func isVideoPresent(in videoPath: URL) -> Bool {
         let asset = AVAsset(url: videoPath)
         
         return asset.firstVideoTrack != nil

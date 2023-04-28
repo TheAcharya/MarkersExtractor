@@ -6,8 +6,10 @@
 
 import Foundation
 
-public enum AirtableExportProfile: ExportProfile {
-    public typealias Payload = CSVExportPayload
+public struct AirtableExportProfile: ExportProfile {
+    public typealias Payload = CSVJSONExportPayload
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = StandardExportMarker
+    
+    public init() { }
 }

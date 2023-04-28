@@ -12,7 +12,7 @@ import OrderedCollections
 import TimecodeKit
 
 extension NotionExportProfile {
-    public static func prepareMarkers(
+    public func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
@@ -27,19 +27,19 @@ extension NotionExportProfile {
         }
     }
     
-    public static func writeManifest(
+    public func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
     ) throws {
-        try csvWiteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
+        try csvWriteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
     }
     
-    public static func doneFileContent(payload: Payload) throws -> Data {
-        try csvDoneFileContent(csvPath: payload.csvPath)
+    public func doneFileContent(payload: Payload) throws -> Data {
+        try csvDoneFileData(csvPath: payload.csvPath)
     }
     
-    public static func manifestFields(
+    public func manifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {

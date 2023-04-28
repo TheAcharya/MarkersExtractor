@@ -6,7 +6,9 @@
 
 import Foundation
 
-public enum NotionExportProfile: ExportProfile {
+public struct NotionExportProfile: ExportProfile {
     public typealias Payload = CSVExportPayload
     public typealias PreparedMarker = StandardExportMarker
+    
+    public init() { }
 }

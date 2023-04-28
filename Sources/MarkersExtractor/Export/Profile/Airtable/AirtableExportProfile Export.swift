@@ -12,7 +12,7 @@ import OrderedCollections
 import TimecodeKit
 
 extension AirtableExportProfile {
-    public static func prepareMarkers(
+    public func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
         payload: Payload,
@@ -27,19 +27,33 @@ extension AirtableExportProfile {
         }
     }
     
-    public static func writeManifest(
+    public func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
     ) throws {
-        try csvWiteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
+        try csvWriteManifest(
+            csvPath: payload.csvPayload.csvPath,
+            noMedia: noMedia,
+            preparedMarkers
+        )
+        try jsonWriteManifest(
+            jsonPath: payload.jsonPayload.jsonPath,
+            noMedia: noMedia,
+            preparedMarkers
+        )
     }
     
-    public static func doneFileContent(payload: Payload) throws -> Data {
-        try csvDoneFileContent(csvPath: payload.csvPath)
+    public func doneFileContent(payload: Payload) throws -> Data {
+        let csv = csvDoneFileContent(csvPath: payload.csvPayload.csvPath)
+        let json = jsonDoneFileContent(jsonPath: payload.jsonPayload.jsonPath)
+        
+        let dict = csv.merging(json) { a, b in a }
+        let data = try dictToJSON(dict)
+        return data
     }
     
-    public static func manifestFields(
+    public func manifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
