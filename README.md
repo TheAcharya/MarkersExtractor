@@ -31,14 +31,12 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest alpha release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0-alpha-20230425.0/markers-extractor-cli-0.2.0-alpha-20230425.0.zip).
-
-Stable releases will be available once development is out of alpha.
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip).
 
 ### From Source
 
 ```shell
-VERSION=0.1.0  # replace this with the git tag of the version you need
+VERSION=0.2.0  # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -49,7 +47,7 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 ## Usage
 
-### CLI v0.2.0-alpha-* (Development in Progress)
+### CLI 0.2.0
 
 ```plain
 $ markers-extractor-cli --help
@@ -64,7 +62,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable, notion>
+  --export-format <airtable, midi, notion>
                           Metadata export format. (default: notion)
   --enable-subframes      Enable output of timecode subframes.
   --image-format <png, jpg, gif>
@@ -117,6 +115,8 @@ OPTIONS:
                           Done file filename. Has no effect unless
                           --create-done-file flag is also supplied. (default:
                           done.json)
+  --folder-format <short, medium, long>
+                          Output folder name format. (default: medium)
   --log <log>             Log file path.
   --log-level <trace, debug, info, notice, warning, error, critical>
                           Log level. (default: info)
