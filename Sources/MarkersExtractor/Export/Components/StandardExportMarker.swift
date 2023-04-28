@@ -9,7 +9,7 @@ import OrderedCollections
 
 /// A marker with its contents prepared as flat String values in a standard format suitable for
 /// various different export profiles.
-public struct StandardExportMarker: ExportMarker {    
+public struct StandardExportMarker: ExportMarker {
     public typealias Icon = NotionExportProfile.Icon
     
     public let id: String
@@ -30,7 +30,7 @@ public struct StandardExportMarker: ExportMarker {
     public let icon: Icon
     
     public let imageFileName: String
-    //public let mediaInfo: ExportMarkerMediaInfo?
+    // public let mediaInfo: ExportMarkerMediaInfo?
     
     public init(
         _ marker: Marker,
@@ -54,7 +54,7 @@ public struct StandardExportMarker: ExportMarker {
         libraryName = marker.parentInfo.libraryName
         icon = Icon(marker.type)
         
-        //self.mediaInfo = mediaInfo
+        // self.mediaInfo = mediaInfo
         imageFileName = mediaInfo?.imageFileName(for: marker, idMode: idMode) ?? ""
     }
 }

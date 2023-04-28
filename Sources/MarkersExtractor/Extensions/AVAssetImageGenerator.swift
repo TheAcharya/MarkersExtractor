@@ -61,7 +61,11 @@ extension AVAssetImageGenerator {
                 completedCount += 1
                 
                 guard let image = image else {
-                    completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                    completionHandler(.failure(
+                        MarkersExtractorError.runtimeError(
+                            "Internal error while generating image."
+                        )
+                    ))
                     return
                 }
                 
@@ -90,7 +94,11 @@ extension AVAssetImageGenerator {
                         }
                         
                         guard let emptyImage: CGImage = .empty else {
-                            completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                            completionHandler(.failure(
+                                MarkersExtractorError.runtimeError(
+                                    "Internal error while generating image."
+                                )
+                            ))
                             return
                         }
                         
@@ -132,7 +140,11 @@ extension AVAssetImageGenerator {
                 if let error = error {
                     completionHandler(.failure(error))
                 } else {
-                    completionHandler(.failure(MarkersExtractorError.runtimeError("Internal error while generating image.")))
+                    completionHandler(.failure(
+                        MarkersExtractorError.runtimeError(
+                            "Internal error while generating image."
+                        )
+                    ))
                 }
                 
             case .cancelled:

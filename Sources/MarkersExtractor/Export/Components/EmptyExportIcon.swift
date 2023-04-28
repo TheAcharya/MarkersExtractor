@@ -12,7 +12,7 @@ public struct EmptyExportIcon: ExportIcon {
     
     public var fileName: String = "empty.png"
     
-    public let data: Data = Data()
+    public let data: Data = .init()
     
     public init(_ type: MarkerType) { }
 }

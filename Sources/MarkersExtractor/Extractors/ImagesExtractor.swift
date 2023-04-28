@@ -58,7 +58,10 @@ extension ImagesExtractor {
                 return
             }
 
-            let frameResult = self.processAndWriteFrameToDisk(for: imageResult, frameName: frameName)
+            let frameResult = self.processAndWriteFrameToDisk(
+                for: imageResult,
+                frameName: frameName
+            )
 
             switch frameResult {
             case let .success(finished):

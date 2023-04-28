@@ -25,7 +25,7 @@ public final class MarkersExtractor {
 
 extension MarkersExtractor {
     public func extract() throws {
-        try self.run()
+        try run()
     }
     
     func run() throws {
@@ -61,14 +61,16 @@ extension MarkersExtractor {
             logger.info("No media present. Skipping thumbnail generation.")
             logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
         } else {
-            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
+            logger.info(
+                "Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted)."
+            )
         }
         
         func callExport<P: ExportProfile>(
             for format: P.Type,
             payload: P.Payload
         ) throws {
-            var media: ExportMedia? = nil
+            var media: ExportMedia?
             if !s.noMedia {
                 let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
                 logger.info("Found project media file \(videoPath.path.quoted).")
@@ -80,7 +82,10 @@ extension MarkersExtractor {
                 let labelProperties = MarkerLabelProperties(
                     fontName: s.imageLabelFont,
                     fontMaxSize: s.imageLabelFontMaxSize,
-                    fontColor: NSColor(hexString: s.imageLabelFontColor, alpha: imageLabelFontAlpha),
+                    fontColor: NSColor(
+                        hexString: s.imageLabelFontColor,
+                        alpha: imageLabelFontAlpha
+                    ),
                     fontStrokeColor: NSColor(
                         hexString: s.imageLabelFontStrokeColor,
                         alpha: imageLabelFontAlpha

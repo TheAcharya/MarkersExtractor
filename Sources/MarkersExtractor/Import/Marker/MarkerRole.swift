@@ -72,7 +72,8 @@ public struct MarkerRoles: Equatable, Hashable {
     }
     
     /// Returns FCP's default role(s) for each clip type.
-    /// FCP does not write the role to the XML when it does not have a custom role set and is using a default role.
+    /// FCP does not write the role to the XML when it does not have a custom role set and is using
+    /// a default role.
     ///
     /// - Note: This does not cover all cases as clip type is not the only identifier
     ///   that can be used to determine clip role.

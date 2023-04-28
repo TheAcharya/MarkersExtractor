@@ -108,8 +108,9 @@ extension FileManager {
             if reuseExisting, fileIsDirectory(path) {
                 return
             } else {
-                throw MarkersExtractorError
-                    .runtimeError("Directory with path already exists: \(path)")
+                throw MarkersExtractorError.runtimeError(
+                    "Directory with path already exists: \(path)"
+                )
             }
         }
         
@@ -175,21 +176,20 @@ extension FourCharCode { // a.k.a. UInt32
 }
 
 extension URL {
-    
     // Note: this only compiles if Package.swift contains `.resources: []` for this package target
     // /// Form a URL to a resource file contained within this Swift package.
-    //init?(
+    // init?(
     //    moduleResource: String,
     //    withExtension: String,
     //    subFolder: String? = nil
-    //) {
+    // ) {
     //    guard let url = Bundle.module.url(
     //        forResource: moduleResource,
     //        withExtension: withExtension,
     //        subdirectory: subFolder
     //    ) else { return nil }
     //    self = url
-    //}
+    // }
     
     var exists: Bool { FileManager.default.fileExists(atPath: path) }
     
@@ -202,7 +202,7 @@ extension URL {
 
 extension StringProtocol {
     /// Returns an array of RegEx matches
-    /// (Borrowed from OTCore 1.4.10)
+    /// (Borrowed from OTCore 1.4.10, under MIT license)
     func regexMatches(
         pattern: String,
         options: NSRegularExpression.Options = [],
@@ -244,7 +244,7 @@ extension StringProtocol {
     }
     
     /// Returns a string from a tokenized string of RegEx matches
-    /// (Borrowed from OTCore 1.4.10)
+    /// (Borrowed from OTCore 1.4.10, under MIT license)
     func regexMatches(
         pattern: String,
         replacementTemplate: String,
@@ -285,8 +285,9 @@ extension StringProtocol {
         }
     }
     
-    /// Returns capture groups from regex matches. If any capture group is not matched it will be `nil`.
-    /// (Borrowed from OTCore 1.4.10)
+    /// Returns capture groups from regex matches.
+    /// If any capture group is not matched it will be `nil`.
+    /// (Borrowed from OTCore 1.4.10, under MIT license)
     func regexMatches(
         captureGroupsFromPattern: String,
         options: NSRegularExpression.Options = [],

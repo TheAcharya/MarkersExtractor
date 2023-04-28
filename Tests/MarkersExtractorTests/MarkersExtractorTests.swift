@@ -19,17 +19,17 @@ final class MarkersExtractorTests: XCTestCase {
         let extractor = MarkersExtractor(settings)
         
         func makeMarker(_ name: String, position: TCC) throws -> Marker {
-            Marker(
+            try Marker(
                 type: .standard,
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
-                position: try position.toTimecode(at: ._24),
+                position: position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
                     clipFilename: "",
-                    clipInTime: try TCC().toTimecode(at: ._24),
-                    clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
+                    clipInTime: TCC().toTimecode(at: ._24),
+                    clipOutTime: TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"
@@ -72,17 +72,17 @@ final class MarkersExtractorTests: XCTestCase {
         let extractor = MarkersExtractor(settings)
         
         func makeMarker(_ name: String, position: TCC) throws -> Marker {
-            Marker(
+            try Marker(
                 type: .standard,
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
-                position: try position.toTimecode(at: ._24),
+                position: position.toTimecode(at: ._24),
                 parentInfo: .init(
                     clipName: "Some Clip",
                     clipFilename: "",
-                    clipInTime: try TCC().toTimecode(at: ._24),
-                    clipOutTime: try TCC(h: 1).toTimecode(at: ._24),
+                    clipInTime: TCC().toTimecode(at: ._24),
+                    clipOutTime: TCC(h: 1).toTimecode(at: ._24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"

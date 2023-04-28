@@ -31,7 +31,8 @@ extension MarkersExtractor {
             public static let imageLabelFontColor = "#FFF"
             public static let imageLabelFontStrokeColor = "#000"
             public static let imageLabelFontStrokeWidth: Int? = nil
-            public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
+            public static let imageLabelAlignHorizontal: MarkerLabelProperties
+                .AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
@@ -105,8 +106,10 @@ extension MarkersExtractor {
             imageLabelFontColor: String = Defaults.imageLabelFontColor,
             imageLabelFontStrokeColor: String = Defaults.imageLabelFontStrokeColor,
             imageLabelFontStrokeWidth: Int? = Defaults.imageLabelFontStrokeWidth,
-            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = Defaults.imageLabelAlignHorizontal,
-            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = Defaults.imageLabelAlignVertical,
+            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal =
+                Defaults.imageLabelAlignHorizontal,
+            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical =
+                Defaults.imageLabelAlignVertical,
             imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
             createDoneFile: Bool = Defaults.createDoneFile,
             doneFilename: String = Defaults.doneFilename

@@ -7,8 +7,8 @@
 import Foundation
 
 public enum ExportProfileFormat: String, CaseIterable {
-    case airtable = "airtable"
-    case notion = "notion"
+    case airtable
+    case notion
 }
 
 extension ExportProfileFormat {

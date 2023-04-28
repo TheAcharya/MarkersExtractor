@@ -10,7 +10,8 @@ import Foundation
 import Logging
 import TimecodeKit
 
-/// Extract a sequence of frames from a video asset and produce an animated image (such as animated GIF).
+/// Extract a sequence of frames from a video asset and produce an animated image (such as animated
+/// GIF).
 final class AnimatedImageExtractor {
     // MARK: - Properties
     
@@ -28,7 +29,7 @@ final class AnimatedImageExtractor {
         self.logger = logger ?? Logger(label: "\(AnimatedImageExtractor.self)")
         
         self.conversion = conversion
-        self.asset = AVAsset(url: conversion.sourceMediaFile)
+        asset = AVAsset(url: conversion.sourceMediaFile)
         
         // parse video asset
         

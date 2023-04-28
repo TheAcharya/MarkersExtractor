@@ -47,7 +47,9 @@ extension ExportProfile {
             }
         }
         
-        logger.info("Generating \(media.imageSettings.format.rawValue.uppercased()) images for markers.")
+        logger.info(
+            "Generating \(media.imageSettings.format.rawValue.uppercased()) images for markers."
+        )
         
         let imageLabelText = makeImageLabelText(
             preparedMarkers: preparedMarkers,
@@ -130,7 +132,7 @@ extension ExportProfile {
                 headers
                     .map {
                         (includeHeaders ? "\($0.name): " : "")
-                        + "\(markerDict[$0] ?? "")"
+                            + "\(markerDict[$0] ?? "")"
                     }
                     .joined(separator: "\n")
             }

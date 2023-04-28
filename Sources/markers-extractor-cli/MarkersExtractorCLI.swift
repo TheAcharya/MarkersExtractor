@@ -317,7 +317,7 @@ extension MarkersExtractorCLI {
 
             if let logFile = logFile {
                 do {
-                    logHandlers.append(try FileLogHandler(label: label, localFile: logFile))
+                    try logHandlers.append(FileLogHandler(label: label, localFile: logFile))
                 } catch {
                     print(
                         "Cannot write to log file \(logFile.lastPathComponent.quoted):"

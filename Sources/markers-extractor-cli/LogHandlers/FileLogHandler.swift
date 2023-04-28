@@ -76,8 +76,8 @@ public struct FileLogHandler: LogHandler {
     ) {
         queue.sync {
             let prettyMetadata = metadata?.isEmpty ?? true
-            ? prettyMetadata
-            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+                ? prettyMetadata
+                : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
             
             var stream = stream
             stream.write(

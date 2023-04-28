@@ -23,16 +23,19 @@ extension ExportProfile {
     ) throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
-        var isVideoPresent: Bool = false
-        var isSingleFrame: Bool? = nil
-        var mediaInfo: ExportMarkerMediaInfo? = nil
+        var isVideoPresent = false
+        var isSingleFrame: Bool?
+        var mediaInfo: ExportMarkerMediaInfo?
         
         if let media {
             isVideoPresent = self.isVideoPresent(in: media.videoURL)
             isSingleFrame = !isVideoPresent
                 && media.imageSettings.labelFields.isEmpty
                 && media.imageSettings.labelCopyright == nil
-            mediaInfo = .init(imageFormat: media.imageSettings.format, isSingleFrame: isSingleFrame!)
+            mediaInfo = .init(
+                imageFormat: media.imageSettings.format,
+                isSingleFrame: isSingleFrame!
+            )
         }
         
         // prepare markers
@@ -115,4 +118,3 @@ extension ExportProfile {
         return asset.firstVideoTrack != nil
     }
 }
-

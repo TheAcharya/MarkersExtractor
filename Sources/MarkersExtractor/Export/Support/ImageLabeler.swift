@@ -245,7 +245,8 @@ class ImageLabeler {
         repeat {
             fontSize -= 1
 
-            let font = NSFont(name: properties.fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
+            let font = NSFont(name: properties.fontName, size: fontSize)
+                ?? .systemFont(ofSize: fontSize)
 
             let attributesTest = attributes.merging([.font: font]) { _, new in new }
 
@@ -256,7 +257,7 @@ class ImageLabeler {
 
             isOutOfBounds = (
                 attributedString.size().height > restraint.height
-                || attributedString.size().width > restraint.width
+                    || attributedString.size().width > restraint.width
             )
         } while fontSize > 10 && isOutOfBounds
 
