@@ -11,6 +11,7 @@ import MarkersExtractor
 
 extension ExportProfileFormat: ExpressibleByArgument { }
 extension ExportField: ExpressibleByArgument { }
+extension ExportFolderFormat: ExpressibleByArgument { }
 
 // Markers
 

@@ -31,11 +31,11 @@ extension MarkersExtractor {
             public static let imageLabelFontColor = "#FFF"
             public static let imageLabelFontStrokeColor = "#000"
             public static let imageLabelFontStrokeWidth: Int? = nil
-            public static let imageLabelAlignHorizontal: MarkerLabelProperties
-                .AlignHorizontal = .left
+            public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
             public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
             public static let imageLabelHideNames = false
             public static let createDoneFile = false
+            public static let exportFolderFormat: ExportFolderFormat = .medium
             public static let noMedia: Bool = false
             public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
                 [fcpxml.defaultMediaSearchPath].compactMap { $0 }
@@ -80,6 +80,7 @@ extension MarkersExtractor {
         public var mediaSearchPaths: [URL]
         public var outputDir: URL
         public var doneFilename: String
+        public var exportFolderFormat: ExportFolderFormat
         
         public init(
             fcpxml: FCPXMLFile,
@@ -112,7 +113,8 @@ extension MarkersExtractor {
                 Defaults.imageLabelAlignVertical,
             imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
             createDoneFile: Bool = Defaults.createDoneFile,
-            doneFilename: String = Defaults.doneFilename
+            doneFilename: String = Defaults.doneFilename,
+            exportFolderFormat: ExportFolderFormat = Defaults.exportFolderFormat
         ) throws {
             self.fcpxml = fcpxml
             self.outputDir = outputDir
@@ -144,6 +146,7 @@ extension MarkersExtractor {
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
             self.doneFilename = doneFilename
+            self.exportFolderFormat = exportFolderFormat
             
             try validate()
         }

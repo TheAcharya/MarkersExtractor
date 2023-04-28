@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-03-??) - currently alpha
+## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases) (2023-04-??) - currently alpha
 
 ### General
 
@@ -19,7 +19,9 @@
 - Added Airtable export profile (`--export-format airtable`) (#21)
 - Added `--enable-subframes` CLI flag to show subframes in all timecode strings (#29)
 - Added `--include-outside-clip-boundaries` CLI flag (#34)
+- Added `--folder-format` CLI flag (#35)
 - Added `--no-media` CLI flag (#40)
+- Added JSON manifest file output in addition to CSV (#44)
 
 ### Refinements
 

@@ -231,7 +231,7 @@ extension MarkersExtractor {
 extension MarkersExtractor {
     private func makeOutputPath(for projectName: String) throws -> URL {
         let outputURL = s.outputDir.appendingPathComponent(
-            "\(projectName) \(nowTimestamp())"
+            s.exportFolderFormat.folderName(projectName: projectName, profile: s.exportFormat)
         )
         
         do {
@@ -243,13 +243,6 @@ extension MarkersExtractor {
         }
         
         return outputURL
-    }
-    
-    private func nowTimestamp() -> String {
-        let now = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd hh-mm-ss"
-        return formatter.string(from: now)
     }
 }
 

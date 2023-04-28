@@ -200,6 +200,16 @@ struct MarkersExtractorCLI: ParsableCommand {
     )
     var doneFilename: String = MarkersExtractor.Settings.Defaults.doneFilename
     
+    @Option(
+        name: [.customLong("folder-format")],
+        help: ArgumentHelp(
+            "Output folder name format.",
+            valueName: ExportFolderFormat.allCases
+                .map { $0.rawValue }.joined(separator: ", ")
+        )
+    )
+    var exportFolderFormat: ExportFolderFormat = MarkersExtractor.Settings.Defaults.exportFolderFormat
+    
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
     var log: URL?
     
@@ -292,7 +302,8 @@ struct MarkersExtractorCLI: ParsableCommand {
                 imageLabelAlignVertical: imageLabelAlignVertical,
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
-                doneFilename: doneFilename
+                doneFilename: doneFilename,
+                exportFolderFormat: exportFolderFormat
             )
         } catch let MarkersExtractorError.validationError(error) {
             throw ValidationError(error)
