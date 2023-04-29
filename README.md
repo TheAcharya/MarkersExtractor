@@ -7,9 +7,16 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 
 ## Core Features
 
-- Accurately extract Markers from FCP's FCPXML/FCPXMLD to CSV (additional formats coming in future)
+- Accurately extract Markers from FCP's FCPXML/FCPXMLD
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
+
+## Avaliable Extract Profiles
+
+- Notion (CSV)
+- Airtable (CSV & JSON)
+- Pro Tools (MIDI)
+- Cubase (MIDI)
 
 ## Table of contents
 
@@ -222,7 +229,7 @@ let package = Package(
   dependencies: [
     .package(
         url: "https://github.com/TheAcharya/MarkersExtractor.git",
-        from: "0.1.0"
+        from: "0.2.0"
     )
   ],
   targets: [
