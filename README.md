@@ -11,7 +11,7 @@ Marker metadata extraction and conversion tool for Final Cut Pro.
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
 
-## Avaliable Extract Profiles
+## Available Extract Profiles
 
 - Notion (CSV)
 - Airtable (CSV & JSON)
