@@ -21,8 +21,8 @@ public struct Marker: Equatable, Hashable {
         var projectName: String
         var libraryName: String
         
-        var clipDurationTimecodeString: String {
-            (clipOutTime - clipInTime).stringValue
+        func clipDurationTimecodeString(format: Timecode.StringFormat) -> String {
+            (clipOutTime - clipInTime).stringValue(format: format)
         }
     }
     
@@ -44,11 +44,11 @@ public struct Marker: Equatable, Hashable {
 // MARK: Computed
 
 extension Marker {
-    func id(_ idMode: MarkerIDMode) -> String {
+    func id(_ idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         let baseID: String = {
             switch idMode {
             case .projectTimecode:
-                return "\(parentInfo.projectName)_\(positionTimecodeString())"
+                return "\(parentInfo.projectName)_\(positionTimecodeString(format: tcStringFormat))"
             case .name:
                 return name
             case .notes:
@@ -58,17 +58,17 @@ extension Marker {
         return baseID + (idSuffix ?? "")
     }
     
-    func id(pathSafe idMode: MarkerIDMode) -> String {
+    func id(pathSafe idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         // TODO: add better sanitation here that can deal with all illegal filename characters
         
         switch idMode {
         case .projectTimecode:
-            return id(idMode)
+            return id(idMode, tcStringFormat: tcStringFormat)
                 .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
                 .replacingOccurrences(of: ":", with: "_")
                 .replacingOccurrences(of: ".", with: "_") // when subframes are enabled
         case .name, .notes:
-            return id(idMode)
+            return id(idMode, tcStringFormat: tcStringFormat)
                 .replacingOccurrences(of: ":", with: "_")
         }
     }
@@ -90,8 +90,8 @@ extension Marker {
         }
     }
     
-    func positionTimecodeString() -> String {
-        position.stringValue
+    func positionTimecodeString(format: Timecode.StringFormat) -> String {
+        position.stringValue(format: format)
     }
     
     /// A marker is considered outside of its clip's bounds if its position is

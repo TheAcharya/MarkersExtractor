@@ -28,13 +28,13 @@ final class BasicMarkersTests: XCTestCase {
         
         XCTAssertEqual(markers.count, 4)
         
-        let fr: TimecodeFrameRate = ._29_97
+        let fr: TimecodeFrameRate = .fps29_97
         
         let parentInfo = try Marker.ParentInfo(
             clipName: "Basic Title",
             clipFilename: "",
-            clipInTime: TCC().toTimecode(at: fr),
-            clipOutTime: TCC(h: 00, m: 01, s: 03, f: 29).toTimecode(at: fr),
+            clipInTime: Timecode(.zero, at: fr),
+            clipOutTime: Timecode(.components(h: 00, m: 01, s: 03, f: 29), at: fr),
             eventName: "Test Event",
             projectName: "Test Project",
             libraryName: "MyLibrary"
@@ -48,7 +48,7 @@ final class BasicMarkersTests: XCTestCase {
             marker0.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 29, f: 14).toTimecode(at: fr))
+        XCTAssertEqual(marker0.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 14), at: fr))
         XCTAssertEqual(marker0.parentInfo, parentInfo)
         
         let marker1 = markers[1]
@@ -59,7 +59,7 @@ final class BasicMarkersTests: XCTestCase {
             marker1.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
+        XCTAssertEqual(marker1.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 15), at: fr))
         XCTAssertEqual(marker1.parentInfo, parentInfo)
         
         let marker2 = markers[2]
@@ -70,7 +70,7 @@ final class BasicMarkersTests: XCTestCase {
             marker2.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 29, f: 15).toTimecode(at: fr))
+        XCTAssertEqual(marker2.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 15), at: fr))
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
         let marker3 = markers[3]
@@ -81,7 +81,7 @@ final class BasicMarkersTests: XCTestCase {
             marker3.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker3.position, try TCC(h: 00, m: 00, s: 29, f: 17).toTimecode(at: fr))
+        XCTAssertEqual(marker3.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 17), at: fr))
         XCTAssertEqual(marker3.parentInfo, parentInfo)
     }
     
@@ -104,20 +104,20 @@ final class BasicMarkersTests: XCTestCase {
             // verify correct IDs
             switch idMode {
             case .projectTimecode:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode), "Test Project_00:00:29:14")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode), "Test Project_00:00:29:15-1")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode), "Test Project_00:00:29:15-2")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode), "Test Project_00:00:29:17")
+                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:14")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:15-1")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:15-2")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:17")
             case .name:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode), "Marker 1-1")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode), "Marker 1-2")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode), "Marker 2")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode), "Marker 3")
+                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 1-1")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 1-2")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 2")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 3")
             case .notes:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode), "some notes here")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode), "more notes here-1")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode), "notes yay")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode), "more notes here-2")
+                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "some notes here")
+                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "more notes here-1")
+                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "notes yay")
+                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "more notes here-2")
             }
         }
     }

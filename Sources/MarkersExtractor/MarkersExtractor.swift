@@ -65,18 +65,18 @@ extension MarkersExtractor {
         
         let projectStartTimecode: Timecode = {
             if let tc = project.startTimecode {
-                logger.info("Project start timecode: \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose).")
+                logger.info("Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose).")
                 return tc
             } else if let frameRate = project.frameRate {
-                let tc = Timecode(at: frameRate, base: ._100SubFrames)
+                let tc = Timecode(.zero, at: frameRate, base: .max100SubFrames)
                 logger.warning(
-                    "Could not determine project start timecode. Defaulting to \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose)."
+                    "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
                 )
                 return tc
             } else {
-                let tc = Timecode(at: ._30, base: ._100SubFrames)
+                let tc = Timecode(.zero, at: .fps30, base: .max100SubFrames)
                 logger.warning(
-                    "Could not determine project start timecode. Defaulting to \(tc.stringValue) @ \(tc.frameRate.stringValueVerbose)."
+                    "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
                 )
                 return tc
             }
@@ -140,6 +140,7 @@ extension MarkersExtractor {
                 markers: markers,
                 idMode: s.idNamingMode,
                 media: media,
+                tcStringFormat: timecodeStringFormat,
                 outputURL: outputURL,
                 payload: payload,
                 createDoneFile: s.createDoneFile,
@@ -175,6 +176,10 @@ extension MarkersExtractor {
         }
         
         logger.info("Done")
+    }
+    
+    var timecodeStringFormat: Timecode.StringFormat {
+        s.enableSubframes ? [.showSubFrames] : .default()
     }
 }
 
@@ -230,7 +235,7 @@ extension MarkersExtractor {
         
         let dupeIndices = Dictionary(
             grouping: markers.indices,
-            by: { markers[$0].id(s.idNamingMode) }
+            by: { markers[$0].id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
         )
         .filter { $1.count > 1 }
         
@@ -246,16 +251,16 @@ extension MarkersExtractor {
     }
     
     internal func findDuplicateIDs(in markers: [Marker]) -> [String] {
-        Dictionary(grouping: markers, by: { $0.id(s.idNamingMode) })
+        Dictionary(grouping: markers, by: { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) })
             .filter { $1.count > 1 }
             .compactMap { $0.1.first }
-            .map { $0.id(s.idNamingMode) }
+            .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
             .sorted()
     }
     
     internal func isAllUniqueIDNonEmpty(in markers: [Marker]) -> Bool {
         markers
-            .map { $0.id(s.idNamingMode) }
+            .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
             .allSatisfy { !$0.isEmpty }
     }
 }

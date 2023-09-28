@@ -150,7 +150,7 @@ extension ExportProfile {
         
         // if no video - grabbing first frame from video placeholder
         let markerTimecodes = markers.map {
-            isVideoPresent ? $0.position : .init(at: $0.frameRate())
+            isVideoPresent ? $0.position : .init(.zero, at: $0.frameRate())
         }
         
         var markerPairs = zip(imageFileNames, markerTimecodes).map { ($0, $1) }

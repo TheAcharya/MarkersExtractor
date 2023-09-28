@@ -6,6 +6,7 @@
 
 import Foundation
 import OrderedCollections
+import TimecodeKit
 
 public protocol ExportMarker {
     associatedtype Icon: ExportIcon
@@ -23,9 +24,13 @@ public struct ExportMarkerMediaInfo {
         self.isSingleFrame = isSingleFrame
     }
     
-    public func imageFileName(for marker: Marker, idMode: MarkerIDMode) -> String {
+    public func imageFileName(
+        for marker: Marker,
+        idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat
+    ) -> String {
         isSingleFrame
             ? "marker-placeholder.\(imageFormat)"
-            : "\(marker.id(pathSafe: idMode)).\(imageFormat)"
+            : "\(marker.id(pathSafe: idMode, tcStringFormat: tcStringFormat)).\(imageFormat)"
     }
 }

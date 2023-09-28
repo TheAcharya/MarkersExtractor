@@ -53,7 +53,7 @@ final class AnimatedImageExtractor {
         // video track is shorter than the asset duration, so the handling here is not
         // strictly necessary but kept just to be safe.
         let dur = try videoTrackForThumbnails.durationTimecode(at: frameRate)
-        videoTrackRange = Timecode(at: frameRate) ... dur
+        videoTrackRange = Timecode(.zero, at: frameRate) ... dur
     }
 }
 
@@ -99,8 +99,8 @@ extension AnimatedImageExtractor {
         )
         
         let times = frameStride
-            .map { Timecode(clampingRealTime: $0, at: frameRate) }
-            .map(\.cmTime)
+            .map { Timecode(.realTime(seconds: $0), at: frameRate, by: .clamping) }
+            .map(\.cmTimeValue)
         
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [

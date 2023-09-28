@@ -15,6 +15,7 @@ extension NotionExportProfile {
     public func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
@@ -22,7 +23,8 @@ extension NotionExportProfile {
             PreparedMarker(
                 $0,
                 idMode: idMode,
-                mediaInfo: mediaInfo
+                mediaInfo: mediaInfo,
+                tcStringFormat: tcStringFormat
             )
         }
     }

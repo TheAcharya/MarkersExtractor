@@ -37,7 +37,7 @@ extension ImagesExtractor {
     
     private func generateImages() throws {
         let generator = try imageGenerator()
-        let times = conversion.timecodes.values.map { $0.cmTime }
+        let times = conversion.timecodes.values.map(\.cmTimeValue)
         var frameNamesIterator = conversion.timecodes.keys.makeIterator()
 
         var result: Result<Void, Error> = .failure(.invalidSettings)

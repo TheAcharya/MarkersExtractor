@@ -6,6 +6,7 @@
 
 import Foundation
 import OrderedCollections
+import TimecodeKit
 
 /// A marker with its contents prepared as flat String values in a standard format suitable for
 /// various different export profiles.
@@ -35,18 +36,19 @@ public struct StandardExportMarker: ExportMarker {
     public init(
         _ marker: Marker,
         idMode: MarkerIDMode,
-        mediaInfo: ExportMarkerMediaInfo?
+        mediaInfo: ExportMarkerMediaInfo?,
+        tcStringFormat: Timecode.StringFormat
     ) {
-        id = marker.id(idMode)
+        id = marker.id(idMode, tcStringFormat: tcStringFormat)
         name = marker.name
         type = marker.type.name
         checked = String(marker.isChecked())
         status = NotionExportProfile.Status(marker.type).rawValue
         notes = marker.notes
-        position = marker.positionTimecodeString()
+        position = marker.positionTimecodeString(format: tcStringFormat)
         clipName = marker.parentInfo.clipName
         clipFilename = marker.parentInfo.clipFilename
-        clipDuration = marker.parentInfo.clipDurationTimecodeString
+        clipDuration = marker.parentInfo.clipDurationTimecodeString(format: tcStringFormat)
         videoRole = marker.roles.videoFormatted()
         audioRole = marker.roles.audioFormatted()
         eventName = marker.parentInfo.eventName
@@ -55,6 +57,8 @@ public struct StandardExportMarker: ExportMarker {
         icon = Icon(marker.type)
         
         // self.mediaInfo = mediaInfo
-        imageFileName = mediaInfo?.imageFileName(for: marker, idMode: idMode) ?? ""
+        imageFileName = mediaInfo?
+            .imageFileName(for: marker, idMode: idMode, tcStringFormat: tcStringFormat)
+            ?? ""
     }
 }

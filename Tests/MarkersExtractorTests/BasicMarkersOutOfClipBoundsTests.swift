@@ -22,13 +22,13 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // check clips
         
-        let fr: TimecodeFrameRate = ._25
+        let fr: TimecodeFrameRate = .fps25
         
         let clip1ParentInfo = try Marker.ParentInfo(
             clipName: "Marker Test",
             clipFilename: "Marker Test.m4v",
-            clipInTime: TCC().toTimecode(at: fr),
-            clipOutTime: TCC(h: 00, m: 00, s: 20, f: 20).toTimecode(at: fr),
+            clipInTime: Timecode(.zero, at: fr),
+            clipOutTime: Timecode(.components(h: 00, m: 00, s: 20, f: 20), at: fr),
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
             libraryName: "MyLibrary"
@@ -37,8 +37,8 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let clip2ParentInfo = try Marker.ParentInfo(
             clipName: "Marker Test",
             clipFilename: "Marker Test.m4v",
-            clipInTime: TCC(h: 00, m: 00, s: 20, f: 20).toTimecode(at: fr),
-            clipOutTime: TCC(h: 00, m: 00, s: 41, f: 15).toTimecode(at: fr),
+            clipInTime: Timecode(.components(h: 00, m: 00, s: 20, f: 20), at: fr),
+            clipOutTime: Timecode(.components(h: 00, m: 00, s: 41, f: 15), at: fr),
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
             libraryName: "MyLibrary"
@@ -56,19 +56,19 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         let marker0 = markers[5]
         XCTAssertEqual(marker0.name, "Marker 1")
-        XCTAssertEqual(marker0.position, try (-Timecode(TCC(f: 22), at: fr)).flattened())
+        XCTAssertEqual(marker0.position, try (-Timecode(.components(f: 22), at: fr)).flattened())
         XCTAssertEqual(marker0.isOutOfClipBounds(), true)
         XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
         
         let marker1 = markers[0]
         XCTAssertEqual(marker1.name, "Marker 2")
-        XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 07, f: 23).toTimecode(at: fr))
+        XCTAssertEqual(marker1.position, try Timecode(.components(h: 00, m: 00, s: 07, f: 23), at: fr))
         XCTAssertEqual(marker1.isOutOfClipBounds(), false)
         XCTAssertEqual(marker1.parentInfo, clip1ParentInfo)
         
         let marker2 = markers[2]
         XCTAssertEqual(marker2.name, "Marker 3")
-        XCTAssertEqual(marker2.position, try TCC(h: 00, m: 00, s: 21, f: 23).toTimecode(at: fr))
+        XCTAssertEqual(marker2.position, try Timecode(.components(h: 00, m: 00, s: 21, f: 23), at: fr))
         XCTAssertEqual(marker2.isOutOfClipBounds(), true)
         XCTAssertEqual(marker2.parentInfo, clip1ParentInfo)
         
@@ -76,19 +76,19 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         let marker3 = markers[1]
         XCTAssertEqual(marker3.name, "Marker 4")
-        XCTAssertEqual(marker3.position, try TCC(h: 00, m: 00, s: 19, f: 23).toTimecode(at: fr))
+        XCTAssertEqual(marker3.position, try Timecode(.components(h: 00, m: 00, s: 19, f: 23), at: fr))
         XCTAssertEqual(marker3.isOutOfClipBounds(), true)
         XCTAssertEqual(marker3.parentInfo, clip2ParentInfo)
         
         let marker4 = markers[3]
         XCTAssertEqual(marker4.name, "Marker 5")
-        XCTAssertEqual(marker4.position, try TCC(h: 00, m: 00, s: 28, f: 18).toTimecode(at: fr))
+        XCTAssertEqual(marker4.position, try Timecode(.components(h: 00, m: 00, s: 28, f: 18), at: fr))
         XCTAssertEqual(marker4.isOutOfClipBounds(), false)
         XCTAssertEqual(marker4.parentInfo, clip2ParentInfo)
         
         let marker5 = markers[4]
         XCTAssertEqual(marker5.name, "Marker 6")
-        XCTAssertEqual(marker5.position, try TCC(h: 00, m: 00, s: 42, f: 18).toTimecode(at: fr))
+        XCTAssertEqual(marker5.position, try Timecode(.components(h: 00, m: 00, s: 42, f: 18), at: fr))
         XCTAssertEqual(marker5.isOutOfClipBounds(), true)
         XCTAssertEqual(marker5.parentInfo, clip2ParentInfo)
     }
@@ -103,7 +103,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let extractor = MarkersExtractor(settings)
         let markers = try extractor.extractMarkers()
         
-        let fr: TimecodeFrameRate = ._25
+        let fr: TimecodeFrameRate = .fps25
         
         // check markers
         
@@ -113,14 +113,14 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         let marker0 = markers[0]
         XCTAssertEqual(marker0.name, "Marker 2")
-        XCTAssertEqual(marker0.position, try TCC(h: 00, m: 00, s: 07, f: 23).toTimecode(at: fr))
+        XCTAssertEqual(marker0.position, try Timecode(.components(h: 00, m: 00, s: 07, f: 23), at: fr))
         XCTAssertEqual(marker0.isOutOfClipBounds(), false)
         
         // clip 2
         
         let marker1 = markers[1]
         XCTAssertEqual(marker1.name, "Marker 5")
-        XCTAssertEqual(marker1.position, try TCC(h: 00, m: 00, s: 28, f: 18).toTimecode(at: fr))
+        XCTAssertEqual(marker1.position, try Timecode(.components(h: 00, m: 00, s: 28, f: 18), at: fr))
         XCTAssertEqual(marker1.isOutOfClipBounds(), false)
     }
 }

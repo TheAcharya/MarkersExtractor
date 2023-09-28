@@ -15,6 +15,7 @@ extension AirtableExportProfile {
     public func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
@@ -22,7 +23,7 @@ extension AirtableExportProfile {
             PreparedMarker(
                 $0,
                 idMode: idMode,
-                mediaInfo: mediaInfo
+                mediaInfo: mediaInfo, tcStringFormat: tcStringFormat
             )
         }
     }

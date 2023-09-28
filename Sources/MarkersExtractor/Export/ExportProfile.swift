@@ -7,6 +7,7 @@
 import Foundation
 import Logging
 import OrderedCollections
+import TimecodeKit
 
 public protocol ExportProfile {
     associatedtype Payload: ExportPayload
@@ -19,6 +20,7 @@ public protocol ExportProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         media: ExportMedia?,
+        tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
@@ -31,6 +33,7 @@ public protocol ExportProfile {
     func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker]

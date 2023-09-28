@@ -41,7 +41,7 @@ extension ExportProfile {
             let outputURL = outputURL.appendingPathComponent(imageName)
             
             var delta = timecode
-            delta.setTimecode(clampingRealTime: gifSpan / 2)
+            delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
             
             let timeIn = timecode - delta
             let timeOut = timecode + delta

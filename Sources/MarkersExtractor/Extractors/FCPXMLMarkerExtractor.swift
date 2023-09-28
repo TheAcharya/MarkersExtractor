@@ -221,7 +221,7 @@ class FCPXMLMarkerExtractor {
             logger.warning(
                 "Could not find parent element while attempting to form position timecode for marker \(markerName.quoted)."
             )
-            return .init(at: parentFPS)
+            return Timecode(.zero, at: parentFPS)
         }
         
         // FYI: clips can be resized from either side so it's possible for out-of-boundary
@@ -240,7 +240,7 @@ class FCPXMLMarkerExtractor {
                 logger.warning(
                     "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
                 )
-                return .init(at: parentFPS)
+                return Timecode(.zero, at: parentFPS)
             }
             return tc
         }()
@@ -249,7 +249,7 @@ class FCPXMLMarkerExtractor {
     }
 
     private func getParentFPS(_ marker: XMLElement) -> TimecodeFrameRate {
-        let defaultFPS: TimecodeFrameRate = ._24
+        let defaultFPS: TimecodeFrameRate = .fps24
 
         guard let parent = findParentByType(marker, .sequence) else {
             logger.warning(
@@ -405,10 +405,10 @@ class FCPXMLMarkerExtractor {
         at frameRate: TimecodeFrameRate
     ) -> Timecode {
         Timecode(
+            .zero,
             at: frameRate,
-            limit: ._24hours,
-            base: ._80SubFrames,
-            format: enableSubframes ? [.showSubFrames] : .default()
+            base: .max80SubFrames,
+            limit: .max24Hours
         )
     }
     
@@ -416,11 +416,11 @@ class FCPXMLMarkerExtractor {
         _ cmTime: CMTime,
         at frameRate: TimecodeFrameRate
     ) throws -> Timecode {
-        try cmTime.toTimecode(
+        try Timecode(
+            .cmTime(cmTime),
             at: frameRate,
-            limit: ._24hours,
-            base: ._80SubFrames,
-            format: enableSubframes ? [.showSubFrames] : .default()
+            base: .max80SubFrames,
+            limit: .max24Hours
         )
     }
     
@@ -431,9 +431,12 @@ class FCPXMLMarkerExtractor {
         try TimecodeInterval(
             cmTime,
             at: frameRate,
-            limit: ._24hours,
-            base: ._80SubFrames,
-            format: enableSubframes ? [.showSubFrames] : .default()
+            base: .max80SubFrames,
+            limit: .max24Hours
         )
+    }
+    
+    private func timecodeStringFormat() -> Timecode.StringFormat {
+        enableSubframes ? [.showSubFrames] : .default()
     }
 }

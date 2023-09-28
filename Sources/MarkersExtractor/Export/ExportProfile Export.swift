@@ -15,6 +15,7 @@ extension ExportProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         media: ExportMedia?,
+        tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
@@ -43,6 +44,7 @@ extension ExportProfile {
         let preparedMarkers = prepareMarkers(
             markers: markers,
             idMode: idMode,
+            tcStringFormat: tcStringFormat,
             payload: payload,
             mediaInfo: mediaInfo
         )

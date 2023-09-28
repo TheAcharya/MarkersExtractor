@@ -16,13 +16,14 @@ extension MIDIFileExportProfile {
     public func prepareMarkers(
         markers: [Marker],
         idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
         markers.map {
             PreparedMarker(
                 $0,
-                idMode: idMode
+                idMode: idMode, tcStringFormat: tcStringFormat
             )
         }
     }
@@ -92,10 +93,11 @@ public struct MIDIFileExportMarker: ExportMarker {
     
     public init(
         _ marker: Marker,
-        idMode: MarkerIDMode
+        idMode: MarkerIDMode,
+        tcStringFormat: Timecode.StringFormat
     ) {
         name = marker.name
-        position = marker.positionTimecodeString()
+        position = marker.positionTimecodeString(format: tcStringFormat)
         frameRate = marker.frameRate()
         subFramesBase = marker.subFramesBase()
     }
