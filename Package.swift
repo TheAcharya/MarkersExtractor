@@ -35,7 +35,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "CodableCSV", package: "CodableCSV"),
-                .product(name: "Pipeline", package: "Pipeline"),
+                .product(name: "Pipeline", package: "pipeline-neo"),
                 .product(name: "TimecodeKit", package: "TimecodeKit"),
                 "DAWFileKit"
             ]
