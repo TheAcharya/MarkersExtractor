@@ -106,7 +106,7 @@ public struct MIDIFileExportMarker: ExportMarker {
     func dawMarker() -> DAWMarker {
         DAWMarker(
             storage: .init(
-                value: .timecodeString(position),
+                value: .timecodeString(absolute: position),
                 frameRate: frameRate,
                 base: subFramesBase
             ),

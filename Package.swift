@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/dehesa/CodableCSV.git", from: "0.6.7"),
         .package(url: "https://github.com/TheAcharya/pipeline-neo.git", from: "0.1.1"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.0.3"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.2.8")
+        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.2.10")
     ],
     targets: [
         .target(
