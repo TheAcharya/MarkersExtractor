@@ -17,6 +17,7 @@
 <p>
 <p>Marker metadata extraction and conversion tool and library for Final Cut Pro.</p>
 
+<br>
 </div>
 
 ## Core Features
