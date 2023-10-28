@@ -1,9 +1,25 @@
-![MarkersExtractorCLI.gif](assets/MarkersExtractorCLI.gif)
+<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/>
 
-# MarkersExtractor CLI
-[![Platforms - macOS](https://img.shields.io/badge/platforms-macOS-lightgrey.svg?style=flat)](https://www.apple.com/macos) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE)
+<div>
+<h1>MarkersExtractor (CLI & API)</h1>
+<!-- license -->
+<a href="https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE">
+<img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="license"/>
+</a>
+<!-- platform -->
+<a href="https://github.com/TheAcharya/MarkerData">
+<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg?style=flat" alt="platform"/>
+</a>
+<!-- build -->
+<a href="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml">
+<img src="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml/badge.svg" alt="build"/>
+</a>
+<p>
+<p>Marker metadata extraction and conversion tool and library for Final Cut Pro.</p>
 
-Marker metadata extraction and conversion tool for Final Cut Pro.
+<br>
+<br>
+</div>
 
 ## Core Features
 
@@ -251,11 +267,13 @@ Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtra
 
 ## Credits
 
-Original Idea and Workflow by [Vigneswaran Rajkumar](https://twitter.com/IAmVigneswaran)
+Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://twitter.com/IAmVigneswaran)
 
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
 Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
+
+Icon Design by [Bor Jen Goh](https://www.artstation.com/borjengoh)
 
 ## License
 
