@@ -1,5 +1,5 @@
 //
-//  ImagesExtractor.swift
+//  ImageExtractor.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -12,7 +12,7 @@ import OrderedCollections
 import TimecodeKit
 
 /// Extract one or more images from a video asset.
-final class ImagesExtractor {
+final class ImageExtractor {
     // MARK: - Properties
     
     private let logger: Logger
@@ -28,19 +28,21 @@ final class ImagesExtractor {
 
 // MARK: - Convert
 
-extension ImagesExtractor {
+extension ImageExtractor {
+    /// - Throws: ``ExtractorError``
     func convert() throws {
         try generateImages()
     }
     
     // MARK: - Helpers
     
+    /// - Throws: ``ExtractorError``
     private func generateImages() throws {
-        let generator = try imageGenerator()
+        let generator = imageGenerator()
         let times = conversion.timecodes.values.map(\.cmTimeValue)
         var frameNamesIterator = conversion.timecodes.keys.makeIterator()
 
-        var result: Result<Void, Error> = .failure(.invalidSettings)
+        var result: Result<Void, ExtractorError> = .failure(.invalidSettings)
 
         let group = DispatchGroup()
         group.enter()
@@ -85,7 +87,7 @@ extension ImagesExtractor {
         }
     }
 
-    private func imageGenerator() throws -> AVAssetImageGenerator {
+    private func imageGenerator() -> AVAssetImageGenerator {
         let asset = AVAsset(url: conversion.sourceMediaFile)
         
         let generator = AVAssetImageGenerator(asset: asset)
@@ -104,7 +106,7 @@ extension ImagesExtractor {
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         frameName: String
-    ) -> Result<Bool, Error> {
+    ) -> Result<Bool, ExtractorError> {
         switch result {
         case let .success(result):
             let image = conversion.imageFilter?(result.image) ?? result.image
@@ -154,7 +156,7 @@ extension ImagesExtractor {
 
 // MARK: - Types
 
-extension ImagesExtractor {
+extension ImageExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
         let outputFolder: URL
@@ -167,33 +169,33 @@ extension ImagesExtractor {
         let dimensions: CGSize?
         let imageFilter: ((CGImage) -> CGImage)?
     }
+}
+
+public enum ExtractorError: LocalizedError {
+    case invalidSettings
+    case unreadableFile
+    case unsupportedType
+    case labelsDepleted
+    case generateFrameFailed(Swift.Error)
+    case addFrameFailed(Swift.Error)
+    case writeFailed(Swift.Error)
     
-    enum Error: LocalizedError {
-        case invalidSettings
-        case unreadableFile
-        case unsupportedType
-        case labelsDepleted
-        case generateFrameFailed(Swift.Error)
-        case addFrameFailed(Swift.Error)
-        case writeFailed(Swift.Error)
-        
-        var errorDescription: String? {
-            switch self {
-            case .invalidSettings:
-                return "Invalid settings."
-            case .unreadableFile:
-                return "The selected file is no longer readable."
-            case .unsupportedType:
-                return "Image type is not supported."
-            case .labelsDepleted:
-                return "Image labels depleted before images."
-            case let .generateFrameFailed(error):
-                return "Failed to generate frame: \(error.localizedDescription)"
-            case let .addFrameFailed(error):
-                return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-            case let .writeFailed(error):
-                return "Failed to write, with underlying error: \(error.localizedDescription)"
-            }
+    public var errorDescription: String? {
+        switch self {
+        case .invalidSettings:
+            return "Invalid settings."
+        case .unreadableFile:
+            return "The selected file is no longer readable."
+        case .unsupportedType:
+            return "Image type is not supported."
+        case .labelsDepleted:
+            return "Image labels depleted before images."
+        case let .generateFrameFailed(error):
+            return "Failed to generate frame: \(error.localizedDescription)"
+        case let .addFrameFailed(error):
+            return "Failed to add frame, with underlying error: \(error.localizedDescription)"
+        case let .writeFailed(error):
+            return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
     }
 }

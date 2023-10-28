@@ -93,7 +93,7 @@ extension ExportProfile {
             )
         }
         
-        let conversion = ImagesExtractor.ConversionSettings(
+        let conversion = ImageExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
             outputFolder: outputURL,
             timecodes: timecodes,
@@ -104,7 +104,7 @@ extension ExportProfile {
         )
         
         do {
-            try ImagesExtractor(conversion, logger: logger).convert()
+            try ImageExtractor(conversion, logger: logger).convert()
         } catch {
             throw MarkersExtractorError.runtimeError(
                 "Error while generating images: \(error.localizedDescription)"
