@@ -12,13 +12,15 @@ import OrderedCollections
 import DAWFileKit
 import TimecodeKit
 
-public final class MarkersExtractor {
+public final class MarkersExtractor: NSObject, ProgressReporting {
     private let logger: Logger
     private var s: Settings
+    public let progress: Progress
     
     public init(_ settings: Settings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(MarkersExtractor.self)")
         s = settings
+        progress = Progress()
     }
 }
 
@@ -27,13 +29,18 @@ public final class MarkersExtractor {
 extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     public func extract() async throws {
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = 5
+        
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
         logger.info("Starting")
         logger.info("Using \(s.exportFormat.name) export profile.")
         logger.info("Extracting markers from \(s.fcpxml).")
         
-        var markers = try extractMarkers()
+        var markers = try extractMarkers(progressUnitCount: 1) // increments progress by 1
+        
+        progress.completedUnitCount += 1
         
         markers = uniquingMarkerIDs(in: markers)
         
@@ -42,6 +49,8 @@ extension MarkersExtractor {
             // TODO: should we output done file still?
             return
         }
+        
+        progress.completedUnitCount += 1
         
         if !EmbeddedResource.validateAll() {
             logger.warning(
@@ -74,6 +83,8 @@ extension MarkersExtractor {
             logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
         }
         
+        progress.completedUnitCount += 1
+        
         try export(
             projectName: projectName,
             projectStartTimecode: projectStartTimecode,
@@ -81,6 +92,8 @@ extension MarkersExtractor {
             markers: markers,
             outputURL: outputURL
         )
+        
+        progress.completedUnitCount += 1
         
         logger.info("Done")
     }
@@ -214,18 +227,20 @@ extension MarkersExtractor {
     ///
     /// Does not perform any ID uniquing.
     /// To subsequently unique the resulting `[Marker]`, call `uniquingMarkerIDs(in:)`
-    internal func extractMarkers(sort: Bool = true) throws -> [Marker] {
+    internal func extractMarkers(sort: Bool = true, progressUnitCount: Int64 = 0) throws -> [Marker] {
         var markers: [Marker]
         
         do {
-            markers = try FCPXMLMarkerExtractor(
+            let extractor = try FCPXMLMarkerExtractor(
                 fcpxml: &s.fcpxml,
                 idNamingMode: s.idNamingMode,
                 includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
                 excludeRoleType: s.excludeRoleType,
                 enableSubframes: s.enableSubframes,
                 logger: logger
-            ).extractMarkers()
+            )
+            progress.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
+            markers = extractor.extractMarkers()
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
