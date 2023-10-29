@@ -15,10 +15,6 @@ public struct FCPXMLFile {
     /// Reads and caches the actual XML file from disk.
     private var xmlFileContents: File
     
-//    internal init(_ inputFile: File) {
-//        self.xmlFile = inputFile
-//    }
-    
     public init(at url: URL) throws {
         let path = try FCPXMLFilePath(inputURL: url)
         source = .fileOnDisk(path)

@@ -17,24 +17,24 @@ internal struct File {
 // MARK: - Constructors
 
 extension File {
-    public init(_ url: URL) {
+    init(_ url: URL) {
         cache = nil
         self.url = url
     }
     
-    public init(fileContents: FileContentsCache) {
+    init(fileContents: FileContentsCache) {
         cache = fileContents
         url = nil
     }
     
-    public static func fileContents(_ contents: FileContentsCache) -> Self {
+    static func fileContents(_ contents: FileContentsCache) -> Self {
         File(cache: contents, url: nil)
     }
 }
 
 extension File {
     /// Type-erased ``File`` contents cache.
-    public enum FileContentsCache {
+    enum FileContentsCache {
         /// Pre-fetched file contents as `Data`.
         case data(Data)
         
@@ -46,7 +46,7 @@ extension File {
 extension File {
     /// Returns a Boolean value indicating whether the file's contents has been read off disk
     /// and cached.
-    public var isFetched: Bool {
+    var isFetched: Bool {
         cache != nil
     }
     
@@ -58,7 +58,7 @@ extension File {
     ///
     /// - Parameters:
     ///   - resetCache: Force the cache to reset (flush) and re-read the file's contents from disk.
-    public func fetch(resetCache: Bool = false) throws -> Self {
+    func fetch(resetCache: Bool = false) throws -> Self {
         var copy = self
         
         if resetCache {
@@ -86,7 +86,7 @@ extension File {
     /// - Parameters:
     ///   - resetCache: Force the cache to reset (flush) and re-read the file's contents from disk.
     /// - Returns: File contents.
-    public func data(resetCache: Bool = false) throws -> Data {
+    func data(resetCache: Bool = false) throws -> Data {
         let fetched = try fetch(resetCache: resetCache)
         guard let contents = fetched.cache else {
             // swiftlint:disable:next force_cast
