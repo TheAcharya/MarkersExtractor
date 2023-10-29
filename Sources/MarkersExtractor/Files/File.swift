@@ -70,9 +70,9 @@ extension File {
         }
         
         guard let url = url else {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.fileRead(
                 "File URL is missing while attempting to read file contents."
-            )
+            ))
         }
         
         let data = try Data(contentsOf: url)
@@ -80,20 +80,34 @@ extension File {
         return copy
     }
     
-    public func data() throws -> Data {
-        guard let fetched = try fetch().cache else {
+    /// Reads the file's contents off disk and returns it as a new `Data` instance.
+    /// After the first access, the file's data is cached so subsequent calls are more performant.
+    ///
+    /// - Parameters:
+    ///   - resetCache: Force the cache to reset (flush) and re-read the file's contents from disk.
+    /// - Returns: File contents.
+    public func data(resetCache: Bool = false) throws -> Data {
+        let fetched = try fetch(resetCache: resetCache)
+        guard let contents = fetched.cache else {
             // swiftlint:disable:next force_cast
-            let u = url != nil ? "\(url!)" : "-"
-            throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
+            if let url {
+                throw MarkersExtractorError.extraction(.fileRead(
+                    "File could not be read: \(url.path.quoted)."
+                ))
+            } else {
+                throw MarkersExtractorError.extraction(.fileRead(
+                    "File could not be read."
+                ))
+            }
         }
-        switch fetched {
+        switch contents {
         case let .data(data):
             return data
         case let .string(string):
             guard let data = string.data(using: .utf8) else {
-                // swiftlint:disable:next force_cast
-                let u = url != nil ? "\(url!)" : "-"
-                throw MarkersExtractorError.runtimeError("File \(u.quoted) could not be read.")
+                throw MarkersExtractorError.validation(
+                    .unsupportedFileFormat(atPath: url?.path)
+                )
             }
             return data
         }

@@ -8,7 +8,7 @@ import AVKit
 import Foundation
 
 class TemporaryMediaFile {
-    var url: URL?
+    let url: URL
 
     init(withData: Data) throws {
         let directory = FileManager.default.temporaryDirectory
@@ -18,19 +18,18 @@ class TemporaryMediaFile {
             try withData.write(to: url)
             self.url = url
         } catch {
-            throw MarkersExtractorError.runtimeError("Error creating temporary file: \(error)")
+            throw MarkersExtractorError.extraction(
+                .fileWrite("Error creating temporary file: \(error)")
+            )
         }
     }
 
-    public var avAsset: AVAsset? {
-        guard let url = url else { return nil }
+    var avAsset: AVAsset? {
         return AVAsset(url: url)
     }
 
-    public func deleteFile() {
-        guard let url = url else { return }
+    private func deleteFile() {
         try? FileManager.default.removeItem(at: url)
-        self.url = nil
     }
 
     deinit {

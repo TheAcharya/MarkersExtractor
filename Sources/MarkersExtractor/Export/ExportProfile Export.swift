@@ -53,11 +53,7 @@ extension ExportProfile {
         
         logger.info("Exporting marker icons.")
         
-        do {
-            try exportIcons(from: markers, to: outputURL)
-        } catch {
-            throw MarkersExtractorError.runtimeError("Failed to write marker icons. \(error)")
-        }
+        try exportIcons(from: markers, to: outputURL)
         
         // thumbnail images
         
@@ -94,7 +90,11 @@ extension ExportProfile {
         for icon in icons {
             if icon is EmptyExportIcon { continue }
             let targetURL = outputDir.appendingPathComponent(icon.fileName)
-            try icon.data.write(to: targetURL)
+            do {
+                try icon.data.write(to: targetURL)
+            } catch {
+                throw MarkersExtractorError.extraction(.fileWrite(error.localizedDescription))
+            }
         }
     }
     
@@ -108,15 +108,14 @@ extension ExportProfile {
         do {
             try data.write(to: doneFile)
         } catch {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.fileWrite(
                 "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
-            )
+            ))
         }
     }
     
     private func isVideoPresent(in videoPath: URL) -> Bool {
         let asset = AVAsset(url: videoPath)
-        
         return asset.firstVideoTrack != nil
     }
 }

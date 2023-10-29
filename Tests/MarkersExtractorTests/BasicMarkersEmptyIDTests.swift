@@ -12,7 +12,7 @@ final class BasicMarkersEmptyIDTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
     func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         

@@ -154,24 +154,24 @@ extension MarkersExtractor {
         /// Validate settings parameters.
         /// Throws an error if validation fails.
         public func validate() throws {
-            if let fcpxmlPath = fcpxml.url {
+            if let fcpxmlPath = fcpxml.baseURL {
                 guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
-                    throw MarkersExtractorError.validationError(
-                        "Unsupported input format \(fcpxmlPath.path.quoted)."
+                    throw MarkersExtractorError.validation(
+                        .unsupportedFileFormat(atPath: fcpxmlPath.path)
                     )
                 }
                 
                 if fcpxmlPath.fileExtension == "fcpxmld" {
                     guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
-                        throw MarkersExtractorError.validationError(
-                            "Path does not exist at \(fcpxmlPath.path.quoted)."
+                        throw MarkersExtractorError.validation(
+                            .fcpxmldIsNotADirectory(atPath: fcpxmlPath.path)
                         )
                     }
                 }
                 
                 guard fcpxmlPath.exists else {
-                    throw MarkersExtractorError.validationError(
-                        "File does not exist at \(fcpxmlPath.path.quoted)."
+                    throw MarkersExtractorError.validation(
+                        .fileNotExists(atPath: fcpxmlPath.path)
                     )
                 }
             }
@@ -179,53 +179,54 @@ extension MarkersExtractor {
             // if media is bypassed, none of the thumbnail parameters will be used.
             if !noMedia {
                 guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                    throw MarkersExtractorError
-                        .validationError("Cannot use font \(imageLabelFont.quoted).")
+                    throw MarkersExtractorError.validation(
+                        .fontNotUsable(imageLabelFont)
+                    )
                 }
                 
                 if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
                    imageLabelFontStrokeWidth < 0
                 {
-                    throw MarkersExtractorError.validationError(
-                        "--label-stroke-width must be a positive integer or 0."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageLabelStrokeWidth
                     )
                 }
                 
                 guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
-                    throw MarkersExtractorError.validationError(
-                        "--label-font-opacity must be within \(Validation.imageLabelFontOpacity) range."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageLabelFontOpacity
                     )
                 }
                 
                 if let imageHeight = imageHeight, imageHeight <= 0 {
-                    throw MarkersExtractorError.validationError(
-                        "--image-height must be a positive integer."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageHeight
                     )
                 }
                 
                 if let imageWidth = imageWidth, imageWidth <= 0 {
-                    throw MarkersExtractorError.validationError(
-                        "--image-width must be a positive integer."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageWidth
                     )
                 }
                 
                 if let imageSizePercent = imageSizePercent,
                    !Validation.imageSizePercent.contains(imageSizePercent)
                 {
-                    throw MarkersExtractorError.validationError(
-                        "--image-size-percent must be within \(Validation.imageSizePercent) range."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageSizePercent
                     )
                 }
                 
                 guard Validation.imageQuality.contains(imageQuality) else {
-                    throw MarkersExtractorError.validationError(
-                        "--image-quality must be within \(Validation.imageQuality) range."
+                    throw MarkersExtractorError.validation(
+                        .invalidImageQuality
                     )
                 }
                 
                 guard Validation.outputFPS.contains(gifFPS) else {
-                    throw MarkersExtractorError.validationError(
-                        "--gif-fps must be within \(Validation.outputFPS) range."
+                    throw MarkersExtractorError.validation(
+                        .invalidOutputFPS
                     )
                 }
             }

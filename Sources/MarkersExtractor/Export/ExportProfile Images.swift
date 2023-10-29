@@ -61,11 +61,13 @@ extension ExportProfile {
             
             do {
                 try AnimatedImageExtractor(conversion, logger: logger).convert()
+            } catch let err as AnimatedImageExtractorError {
+                throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
             } catch {
-                throw MarkersExtractorError.runtimeError(
+                throw MarkersExtractorError.extraction(.image(.generic(
                     "Error while generating animated thumbnail \(outputURL.lastPathComponent.quoted):"
                         + " \(error.localizedDescription)"
-                )
+                )))
             }
         }
     }
@@ -105,10 +107,12 @@ extension ExportProfile {
         
         do {
             try ImageExtractor(conversion, logger: logger).convert()
+        } catch let err as ImageExtractorError {
+            throw MarkersExtractorError.extraction(.image(.staticImage(err)))
         } catch {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.image(.generic(
                 "Error while generating images: \(error.localizedDescription)"
-            )
+            )))
         }
     }
 }

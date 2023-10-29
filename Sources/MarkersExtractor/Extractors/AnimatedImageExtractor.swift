@@ -25,6 +25,7 @@ final class AnimatedImageExtractor {
     
     // MARK: - Init
     
+    /// - Throws: ``AnimatedImageExtractorError``
     init(_ conversion: ConversionSettings, logger: Logger? = nil) throws {
         self.logger = logger ?? Logger(label: "\(AnimatedImageExtractor.self)")
         
@@ -36,15 +37,19 @@ final class AnimatedImageExtractor {
         guard asset.isReadable else {
             // This can happen if the user selects a file, and then the file becomes
             // unavailable or deleted before the "Convert" button is clicked.
-            throw Error.unreadableFile
+            throw AnimatedImageExtractorError.unreadableFile
         }
         
         guard let videoTrack = asset.firstVideoTrack else {
-            throw Error.noVideoTracks
+            throw AnimatedImageExtractorError.noVideoTracks
         }
         videoTrackForThumbnails = videoTrack
         
-        frameRate = try asset.timecodeFrameRate()
+        do {
+            frameRate = try asset.timecodeFrameRate()
+        } catch {
+            throw AnimatedImageExtractorError.couldNotDetermineFrameRate(error)
+        }
         
         // We use the duration of the first video track since the total duration of the asset
         // can actually be longer than the video track. If we use the total duration and the
@@ -52,14 +57,19 @@ final class AnimatedImageExtractor {
         // We already extract the video into a new asset in `VideoValidator` if the first
         // video track is shorter than the asset duration, so the handling here is not
         // strictly necessary but kept just to be safe.
-        let dur = try videoTrackForThumbnails.durationTimecode(at: frameRate)
-        videoTrackRange = Timecode(.zero, at: frameRate) ... dur
+        do {
+            let dur = try videoTrackForThumbnails.durationTimecode(at: frameRate)
+            videoTrackRange = Timecode(.zero, at: frameRate) ... dur
+        } catch {
+            throw AnimatedImageExtractorError.couldNotDetermineVideoTrackDuration(error)
+        }
     }
 }
 
 // MARK: - Convert
 
 extension AnimatedImageExtractor {
+    /// - Throws: ``AnimatedImageExtractorError``
     func convert() throws {
         validate()
         
@@ -79,6 +89,7 @@ extension AnimatedImageExtractor {
             .clamped(to: MarkersExtractor.Settings.Validation.outputFPS)
     }
     
+    /// - Throws: ``AnimatedImageExtractorError``
     private func generateGIF() throws {
         let generator = imageGenerator()
         
@@ -110,7 +121,7 @@ extension AnimatedImageExtractor {
         
         let gifDestination = try initGIF(framesCount: times.count)
 
-        var result: Result<Void, Error> = .failure(.invalidSettings)
+        var result: Result<Void, AnimatedImageExtractorError> = .failure(.invalidSettings)
 
         let group = DispatchGroup()
         group.enter()
@@ -133,7 +144,7 @@ extension AnimatedImageExtractor {
                     result = .success(())
                     group.leave()
                 }
-            } catch let error as AnimatedImageExtractor.Error {
+            } catch let error as AnimatedImageExtractorError {
                 result = .failure(error)
                 group.leave()
             } catch {
@@ -145,7 +156,7 @@ extension AnimatedImageExtractor {
         group.wait()
 
         if !CGImageDestinationFinalize(gifDestination) {
-            throw Error.gifFinalizationFailed
+            throw AnimatedImageExtractorError.gifFinalizationFailed
         }
 
         switch result {
@@ -170,7 +181,7 @@ extension AnimatedImageExtractor {
             framesCount,
             nil
         ) else {
-            throw Error.gifInitializationFailed
+            throw AnimatedImageExtractorError.gifInitializationFailed
         }
 
         CGImageDestinationSetProperties(destination, fileProperties as CFDictionary)
@@ -195,7 +206,7 @@ extension AnimatedImageExtractor {
     }
 
     /// - Returns: `true` if finished.
-    /// - Throws: `AnimatedImageExtractor.Error`
+    /// - Throws: ``AnimatedImageExtractorError``
     private func processFrame(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval,
@@ -230,7 +241,7 @@ extension AnimatedImageExtractor {
             return result.isFinished
             
         case let .failure(error):
-            throw Error.generateFrameFailed(error)
+            throw AnimatedImageExtractorError.generateFrameFailed(error)
         }
     }
 }
@@ -247,40 +258,47 @@ extension AnimatedImageExtractor {
         let imageFilter: ((CGImage) -> CGImage)?
         let imageFormat: MarkerImageFormat.Animated
     }
+}
+
+/// Animated image extraction error.
+public enum AnimatedImageExtractorError: LocalizedError {
+    case invalidSettings
+    case unreadableFile
+    case noVideoTracks
+    case couldNotDetermineFrameRate(Error)
+    case couldNotDetermineVideoTrackDuration(Error)
+    case gifInitializationFailed
+    case gifFinalizationFailed
+    case notEnoughFrames(Int)
+    case generateFrameFailed(Swift.Error)
+    case addFrameFailed(Swift.Error)
+    case writeFailed(Swift.Error)
     
-    enum Error: LocalizedError {
-        case invalidSettings
-        case unreadableFile
-        case noVideoTracks
-        case gifInitializationFailed
-        case gifFinalizationFailed
-        case notEnoughFrames(Int)
-        case generateFrameFailed(Swift.Error)
-        case addFrameFailed(Swift.Error)
-        case writeFailed(Swift.Error)
-        
-        var errorDescription: String? {
-            switch self {
-            case .invalidSettings:
-                return "Invalid settings."
-            case .unreadableFile:
-                return "The selected file is no longer readable."
-            case .noVideoTracks:
-                return "The media file does not contain a video track."
-            case .gifInitializationFailed:
-                return "Failed to initialize the GIF file."
-            case .gifFinalizationFailed:
-                return "Failed to finalize the GIF file."
-            case let .notEnoughFrames(frameCount):
-                let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
-                return "An animated GIF requires a minimum of 2 frames. Your video contains \(framesString)."
-            case let .generateFrameFailed(error):
-                return "Failed to generate frame: \(error.localizedDescription)"
-            case let .addFrameFailed(error):
-                return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-            case let .writeFailed(error):
-                return "Failed to write, with underlying error: \(error.localizedDescription)"
-            }
+    public var errorDescription: String? {
+        switch self {
+        case .invalidSettings:
+            return "Invalid settings."
+        case .unreadableFile:
+            return "The selected file is no longer readable."
+        case .noVideoTracks:
+            return "The media file does not contain a video track."
+        case let .couldNotDetermineFrameRate(error):
+            return "Could not determine the media file's frame rate. \(error.localizedDescription)"
+        case let .couldNotDetermineVideoTrackDuration(error):
+            return "Could not determine the media file's video track duration. \(error.localizedDescription)"
+        case .gifInitializationFailed:
+            return "Failed to initialize GIF file."
+        case .gifFinalizationFailed:
+            return "Failed to finalize GIF file."
+        case let .notEnoughFrames(frameCount):
+            let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
+            return "An animated GIF requires a minimum of 2 frames but the video contains \(framesString)."
+        case let .generateFrameFailed(error):
+            return "Failed to generate frame: \(error.localizedDescription)"
+        case let .addFrameFailed(error):
+            return "Failed to add frame, with underlying error: \(error.localizedDescription)"
+        case let .writeFailed(error):
+            return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
     }
 }

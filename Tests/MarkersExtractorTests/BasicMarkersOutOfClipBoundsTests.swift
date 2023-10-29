@@ -12,7 +12,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
     func testOutOfClipBoundsTests_Include() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.includeOutsideClipBoundaries = true
@@ -95,7 +95,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
     
     func testOutOfClipBoundsTests_DoNotInclude() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.includeOutsideClipBoundaries = false

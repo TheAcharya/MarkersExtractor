@@ -12,7 +12,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
     /// Test that fraction time values that have subframes correctly convert to Timecode.
     func testBasicMarkers_extractMarkers_TimecodeSubframes() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.enableSubframes = true

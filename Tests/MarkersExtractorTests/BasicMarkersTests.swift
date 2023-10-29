@@ -15,7 +15,7 @@ final class BasicMarkersTests: XCTestCase {
     /// of non-unique IDs.
     func testBasicMarkers_extractMarkers() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .projectTimecode
@@ -88,7 +88,7 @@ final class BasicMarkersTests: XCTestCase {
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
     func testBasicMarkers_extractMarkers_uniquing() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: .init(.fileContents(fcpxmlTestData)),
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         

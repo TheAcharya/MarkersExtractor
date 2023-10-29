@@ -273,7 +273,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         let settings: MarkersExtractor.Settings
         
         do {
-            let fcpxml = FCPXMLFile(fcpxmlPath)
+            let fcpxml = try FCPXMLFile(at: fcpxmlPath)
             let mediaSearchPaths = mediaSearchPaths.isEmpty
                 ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
                 : mediaSearchPaths
@@ -310,8 +310,8 @@ struct MarkersExtractorCLI: ParsableCommand {
                 doneFilename: doneFilename,
                 exportFolderFormat: exportFolderFormat
             )
-        } catch let MarkersExtractorError.validationError(error) {
-            throw ValidationError(error)
+        } catch let err as MarkersExtractorError {
+            throw ValidationError(err.localizedDescription)
         }
         
         try MarkersExtractor(settings).extract()

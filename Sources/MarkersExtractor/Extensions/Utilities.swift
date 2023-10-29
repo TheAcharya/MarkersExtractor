@@ -108,17 +108,24 @@ extension FileManager {
             if reuseExisting, fileIsDirectory(path) {
                 return
             } else {
-                throw MarkersExtractorError.runtimeError(
-                    "Directory with path already exists: \(path)"
-                )
+                throw MarkersExtractorError.extraction(.outputFolderAlreadyExists(
+                    "Directory with path already exists: \(path.quoted)"
+                ))
             }
         }
         
-        try FileManager.default.createDirectory(
-            atPath: path,
-            withIntermediateDirectories: true,
-            attributes: nil
-        )
+        do {
+            try FileManager.default.createDirectory(
+                atPath: path,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
+        } catch {
+            // we're just assuming this fails because of a permission issue, but it could be something else
+            throw MarkersExtractorError.extraction(
+                .filePermission(error.localizedDescription)
+            )
+        }
     }
 }
 

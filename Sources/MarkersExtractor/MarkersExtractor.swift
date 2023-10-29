@@ -13,7 +13,7 @@ import TimecodeKit
 
 public final class MarkersExtractor {
     private let logger: Logger
-    private let s: Settings
+    private var s: Settings
     
     public init(_ settings: Settings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(MarkersExtractor.self)")
@@ -55,11 +55,11 @@ extension MarkersExtractor {
         
         let projectName = markers[0].parentInfo.projectName
         
-        let dawFile = try s.fcpxml.dawFile
+        let dawFile = try s.fcpxml.dawFile()
         guard let project = dawFile.projects().first else {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.projectMissing(
                 "Could not find a project in the XML file."
-            )
+            ))
             
         }
         
@@ -149,29 +149,23 @@ extension MarkersExtractor {
             )
         }
         
-        do {
-            switch s.exportFormat {
-            case .airtable:
-                try callExport(
-                    for: AirtableExportProfile.self,
-                    payload: .init(projectName: projectName, outputURL: outputURL)
-                )
-            case .midi:
-                try callExport(
-                    for: MIDIFileExportProfile.self,
-                    payload: .init(projectName: projectName,
-                                   outputURL: outputURL,
-                                   sessionStartTimecode: projectStartTimecode)
-                )
-            case .notion:
-                try callExport(
-                    for: NotionExportProfile.self,
-                    payload: .init(projectName: projectName, outputURL: outputURL)
-                )
-            }
-        } catch {
-            throw MarkersExtractorError.runtimeError(
-                "Failed to export: \(error.localizedDescription)"
+        switch s.exportFormat {
+        case .airtable:
+            try callExport(
+                for: AirtableExportProfile.self,
+                payload: .init(projectName: projectName, outputURL: outputURL)
+            )
+        case .midi:
+            try callExport(
+                for: MIDIFileExportProfile.self,
+                payload: .init(projectName: projectName,
+                               outputURL: outputURL,
+                               sessionStartTimecode: projectStartTimecode)
+            )
+        case .notion:
+            try callExport(
+                for: NotionExportProfile.self,
+                payload: .init(projectName: projectName, outputURL: outputURL)
             )
         }
         
@@ -195,7 +189,7 @@ extension MarkersExtractor {
         
         do {
             markers = try FCPXMLMarkerExtractor(
-                fcpxml: s.fcpxml,
+                fcpxml: &s.fcpxml,
                 idNamingMode: s.idNamingMode,
                 includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
                 excludeRoleType: s.excludeRoleType,
@@ -203,15 +197,15 @@ extension MarkersExtractor {
                 logger: logger
             ).extractMarkers()
         } catch {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
-            )
+            ))
         }
         
         if !isAllUniqueIDNonEmpty(in: markers) {
-            throw MarkersExtractorError.runtimeError(
+            throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Empty marker ID encountered. Markers must have valid non-empty IDs."
-            )
+            ))
         }
         
         let duplicates = findDuplicateIDs(in: markers)
@@ -273,13 +267,7 @@ extension MarkersExtractor {
             s.exportFolderFormat.folderName(projectName: projectName, profile: s.exportFormat)
         )
         
-        do {
-            try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
-        } catch {
-            throw MarkersExtractorError.runtimeError(
-                "Failed to create output dir \(outputURL.path.quoted): \(error.localizedDescription)"
-            )
-        }
+        try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
         
         return outputURL
     }
@@ -292,18 +280,14 @@ extension MarkersExtractor {
         let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
         
         let files: [URL] = try paths.reduce(into: []) { base, path in
-            do {
-                let matches = try matchFiles(at: path, name: name, exts: mediaFormats)
-                base.append(contentsOf: matches)
-            } catch {
-                throw MarkersExtractorError.runtimeError(
-                    "Error finding media for \(name.quoted): \(error.localizedDescription)"
-                )
-            }
+            let matches = try matchFiles(at: path, name: name, exts: mediaFormats)
+            base.append(contentsOf: matches)
         }
         
         if files.isEmpty {
-            throw MarkersExtractorError.runtimeError("No media found for \(name.quoted).")
+            throw MarkersExtractorError.extraction(
+                .noMediaFound("No media found for \(name.quoted).")
+            )
         }
         
         let selection = files[0]
@@ -318,11 +302,17 @@ extension MarkersExtractor {
     }
     
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
-        try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
-            .filter {
-                $0.lastPathComponent.starts(with: name)
+        do {
+            return try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
+                .filter {
+                    $0.lastPathComponent.starts(with: name)
                     && exts.contains($0.fileExtension)
-            }
+                }
+        } catch {
+            throw MarkersExtractorError.extraction(
+                .filePermission(error.localizedDescription)
+            )
+        }
     }
 }
 

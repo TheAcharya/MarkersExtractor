@@ -29,20 +29,20 @@ final class ImageExtractor {
 // MARK: - Convert
 
 extension ImageExtractor {
-    /// - Throws: ``ExtractorError``
+    /// - Throws: ``ImageExtractorError``
     func convert() throws {
         try generateImages()
     }
     
     // MARK: - Helpers
     
-    /// - Throws: ``ExtractorError``
+    /// - Throws: ``ImageExtractorError``
     private func generateImages() throws {
         let generator = imageGenerator()
         let times = conversion.timecodes.values.map(\.cmTimeValue)
         var frameNamesIterator = conversion.timecodes.keys.makeIterator()
 
-        var result: Result<Void, ExtractorError> = .failure(.invalidSettings)
+        var result: Result<Void, ImageExtractorError> = .failure(.invalidSettings)
 
         let group = DispatchGroup()
         group.enter()
@@ -106,7 +106,7 @@ extension ImageExtractor {
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         frameName: String
-    ) -> Result<Bool, ExtractorError> {
+    ) -> Result<Bool, ImageExtractorError> {
         switch result {
         case let .success(result):
             let image = conversion.imageFilter?(result.image) ?? result.image
@@ -171,7 +171,8 @@ extension ImageExtractor {
     }
 }
 
-public enum ExtractorError: LocalizedError {
+/// Static image extraction error.
+public enum ImageExtractorError: LocalizedError {
     case invalidSettings
     case unreadableFile
     case unsupportedType

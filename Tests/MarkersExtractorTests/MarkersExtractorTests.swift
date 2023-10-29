@@ -11,7 +11,7 @@ import TimecodeKit
 final class MarkersExtractorTests: XCTestCase {
     func testFindDuplicateIDs_inMarkers() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: FCPXMLFile(.fileContents("")),
+            fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .projectTimecode
@@ -64,7 +64,7 @@ final class MarkersExtractorTests: XCTestCase {
     
     func testIsAllUniqueIDNonEmpty_inMarkers() throws {
         var settings = try MarkersExtractor.Settings(
-            fcpxml: FCPXMLFile(.fileContents("")),
+            fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .name

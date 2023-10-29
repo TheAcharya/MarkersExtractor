@@ -53,7 +53,9 @@ extension AVAssetImageGenerator {
         var totalCount = times.count
         var completedCount = 0
         var decodeFailureFrameCount = 0
-
+        
+        let baseErrorMessage = "Internal error while generating image."
+        
         // TODO: When minimum OS requirements can bump to macOS 13, this can be refactored to use `images(for:)` which is recommended as per Apple docs.
         generateCGImagesAsynchronously(forTimes: times) { requestedTime, image, actualTime, result, error in
             switch result {
@@ -61,11 +63,13 @@ extension AVAssetImageGenerator {
                 completedCount += 1
                 
                 guard let image = image else {
-                    completionHandler(.failure(
-                        MarkersExtractorError.runtimeError(
-                            "Internal error while generating image."
-                        )
-                    ))
+                    var errorMsg = baseErrorMessage
+                    if let error {
+                        errorMsg += " \(error.localizedDescription)"
+                    }
+                    completionHandler(
+                        .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
+                    )
                     return
                 }
                 
@@ -94,11 +98,10 @@ extension AVAssetImageGenerator {
                         }
                         
                         guard let emptyImage: CGImage = .empty else {
-                            completionHandler(.failure(
-                                MarkersExtractorError.runtimeError(
-                                    "Internal error while generating image."
-                                )
-                            ))
+                            let errorMsg = "\(baseErrorMessage) \(error.localizedDescription)"
+                            completionHandler(
+                                .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
+                            )
                             return
                         }
                         
@@ -141,9 +144,7 @@ extension AVAssetImageGenerator {
                     completionHandler(.failure(error))
                 } else {
                     completionHandler(.failure(
-                        MarkersExtractorError.runtimeError(
-                            "Internal error while generating image."
-                        )
+                        MarkersExtractorError.extraction(.image(.generic(baseErrorMessage)))
                     ))
                 }
                 
