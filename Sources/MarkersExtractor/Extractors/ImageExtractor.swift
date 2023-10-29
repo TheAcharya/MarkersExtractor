@@ -26,7 +26,7 @@ final class ImageExtractor: NSObject, ProgressReporting {
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
-        progress = Progress(totalUnitCount: Int64(conversion.timecodes.count))
+        progress = Progress(totalUnitCount: Int64(conversion.descriptors.count))
     }
 }
 
@@ -36,9 +36,12 @@ extension ImageExtractor {
     /// - Throws: ``ImageExtractorError``
     func convert() throws {
         let generator = imageGenerator()
-        let times = conversion.timecodes.values.map(\.cmTimeValue)
-        var frameNamesIterator = conversion.timecodes.keys.makeIterator()
-
+        
+        // TODO: these iterators need to go. it's super brittle. refactor to process all variables together in a single descriptor.
+        let times = conversion.descriptors.map(\.timecode).map(\.cmTimeValue)
+        var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
+        var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
+        
         var result: Result<Void, ImageExtractorError> = .failure(.invalidSettings)
 
         let group = DispatchGroup()
@@ -59,10 +62,17 @@ extension ImageExtractor {
                 group.leave()
                 return
             }
+            
+            guard let label = labelsIterator.next() else {
+                result = .failure(.labelsDepleted)
+                group.leave()
+                return
+            }
 
             let frameResult = self.processAndWriteFrameToDisk(
                 for: imageResult,
-                frameName: frameName
+                frameName: frameName,
+                label: label
             )
 
             switch frameResult {
@@ -105,11 +115,12 @@ extension ImageExtractor {
 
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
-        frameName: String
+        frameName: String,
+        label: String?
     ) -> Result<Bool, ImageExtractorError> {
         switch result {
         case let .success(result):
-            let image = conversion.imageFilter?(result.image) ?? result.image
+            let image = conversion.imageFilter?(result.image, label) ?? result.image
 
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)
@@ -160,14 +171,14 @@ extension ImageExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
         let outputFolder: URL
-        let timecodes: OrderedDictionary<String, Timecode>
+        let descriptors: [ImageDescriptor]
         let frameFormat: MarkerImageFormat.Still
         
         /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`
         let jpgQuality: Double?
         
         let dimensions: CGSize?
-        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFilter: ((_ image: CGImage, _ label: String?) -> CGImage)?
     }
 }
 

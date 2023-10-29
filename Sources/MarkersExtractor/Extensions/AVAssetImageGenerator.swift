@@ -60,8 +60,7 @@ extension AVAssetImageGenerator {
     }
 
     /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its
-    /// usage in each
-    /// `completionHandler` call as it can change if frames are skipped, for example, blank frames.
+    /// usage in each `completionHandler` call as it can change if frames are skipped, for example, blank frames.
     func generateCGImagesAsynchronously(
         forTimePoints timePoints: [CMTime],
         updating progress: Progress? = nil,
