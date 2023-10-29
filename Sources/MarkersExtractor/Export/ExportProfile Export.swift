@@ -51,7 +51,7 @@ extension ExportProfile {
         
         // thumbnail images
         
-        #warning("> add progress to complete 90 units of overall progress")
+        let thumbnailsProgressUnitCount: Int64 = 90
         if let media {
             try exportThumbnails(
                 markers: markers,
@@ -60,10 +60,11 @@ extension ExportProfile {
                 isSingleFrame: isSingleFrame,
                 media: media,
                 outputURL: outputURL,
-                logger: &logger
+                logger: &logger,
+                progressUnitCount: thumbnailsProgressUnitCount
             )
         } else {
-            progress.completedUnitCount += 90
+            progress.completedUnitCount += thumbnailsProgressUnitCount
         }
         
         // metadata manifest file
