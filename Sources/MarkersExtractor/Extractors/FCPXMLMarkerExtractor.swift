@@ -28,7 +28,7 @@ class FCPXMLMarkerExtractor {
         excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool,
         logger: Logger? = nil
-    ) throws {
+    ) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         
         fcpxmlDoc = fcpxml
@@ -47,7 +47,7 @@ class FCPXMLMarkerExtractor {
         logger: Logger? = nil
     ) throws {
         let xml = try XMLDocument(contentsOfFCPXML: fcpxml)
-        try self.init(
+        self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
@@ -58,15 +58,15 @@ class FCPXMLMarkerExtractor {
     }
     
     required convenience init(
-        fcpxml: FCPXMLFile,
+        fcpxml: inout FCPXMLFile,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool,
         logger: Logger? = nil
     ) throws {
-        let xml = try fcpxml.xmlDocument
-        try self.init(
+        let xml = try fcpxml.xmlDocument()
+        self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
