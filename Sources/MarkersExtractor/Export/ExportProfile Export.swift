@@ -24,6 +24,9 @@ extension ExportProfile {
     ) throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = 100
+        
         // gather media info
         
         let (isVideoPresent, isSingleFrame, mediaInfo) = gatherMediaInfo(media: media)
@@ -44,8 +47,11 @@ extension ExportProfile {
         
         try exportIcons(from: markers, to: outputURL)
         
+        progress.completedUnitCount += 5
+        
         // thumbnail images
         
+        #warning("> add progress to complete 90 units of overall progress")
         if let media {
             try exportThumbnails(
                 markers: markers,
@@ -56,6 +62,8 @@ extension ExportProfile {
                 outputURL: outputURL,
                 logger: &logger
             )
+        } else {
+            progress.completedUnitCount += 90
         }
         
         // metadata manifest file
@@ -69,6 +77,8 @@ extension ExportProfile {
             let doneFileData = try doneFileContent(payload: payload)
             try saveDoneFile(at: outputURL, fileName: doneFilename, data: doneFileData)
         }
+        
+        progress.completedUnitCount += 5
     }
 }
 
