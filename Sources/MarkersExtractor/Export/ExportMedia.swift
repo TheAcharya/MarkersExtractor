@@ -27,7 +27,8 @@ extension ExportProfile {
         isSingleFrame: Bool,
         media: ExportMedia,
         outputURL: URL,
-        logger: inout Logger
+        logger: inout Logger,
+        progressUnitCount: Int64 = 0
     ) throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
@@ -71,7 +72,9 @@ extension ExportProfile {
                 imageJPGQuality: media.imageSettings.quality,
                 imageDimensions: media.imageSettings.dimensions,
                 imageLabelText: imageLabelText,
-                imageLabelProperties: media.imageSettings.labelProperties
+                imageLabelProperties: media.imageSettings.labelProperties,
+                exportProfileProgress: progress,
+                progressUnitCount: progressUnitCount
             )
         case let .animated(animatedImageFormat):
             try Self.writeAnimatedImages(

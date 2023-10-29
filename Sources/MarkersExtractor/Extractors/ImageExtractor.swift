@@ -12,17 +12,21 @@ import OrderedCollections
 import TimecodeKit
 
 /// Extract one or more images from a video asset.
-final class ImageExtractor {
+final class ImageExtractor: NSObject, ProgressReporting {
     // MARK: - Properties
     
     private let logger: Logger
     private let conversion: ConversionSettings
+    
+    // ProgressReporting
+    let progress: Progress
     
     // MARK: - Init
     
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
+        progress = Progress()
     }
 }
 
@@ -31,13 +35,6 @@ final class ImageExtractor {
 extension ImageExtractor {
     /// - Throws: ``ImageExtractorError``
     func convert() throws {
-        try generateImages()
-    }
-    
-    // MARK: - Helpers
-    
-    /// - Throws: ``ImageExtractorError``
-    private func generateImages() throws {
         let generator = imageGenerator()
         let times = conversion.timecodes.values.map(\.cmTimeValue)
         var frameNamesIterator = conversion.timecodes.keys.makeIterator()
@@ -47,7 +44,10 @@ extension ImageExtractor {
         let group = DispatchGroup()
         group.enter()
 
-        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
+        generator.generateCGImagesAsynchronously(
+            forTimePoints: times,
+            updating: progress
+        ) { [weak self] imageResult in
             guard let self = self else {
                 result = .failure(.invalidSettings)
                 group.leave()

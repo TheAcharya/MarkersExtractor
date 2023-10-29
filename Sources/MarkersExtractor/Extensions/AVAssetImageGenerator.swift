@@ -41,18 +41,41 @@ extension AVAssetImageGenerator {
         let isFinished: Bool
         let isFinishedIgnoreImage: Bool
     }
+    
+    private class Counter {
+        private(set) var count: Int
+        private let onUpdate: ((_ count: Int) -> Void)?
+        
+        init(count: Int, onUpdate: ((_ count: Int) -> Void)? = nil) {
+            self.count = count
+            self.onUpdate = onUpdate
+        }
+        
+        func increment() { setCount(count + 1) }
+        func decrement() { setCount(count - 1) }
+        func setCount(_ count: Int) {
+            self.count = count
+            onUpdate?(count)
+        }
+    }
 
     /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its
     /// usage in each
     /// `completionHandler` call as it can change if frames are skipped, for example, blank frames.
     func generateCGImagesAsynchronously(
         forTimePoints timePoints: [CMTime],
+        updating progress: Progress? = nil,
         completionHandler: @escaping (Swift.Result<CompletionHandlerResult, Error>) -> Void
     ) {
         let times = timePoints.map { NSValue(time: $0) }
-        var totalCount = times.count
-        var completedCount = 0
-        var decodeFailureFrameCount = 0
+        
+        let totalCount = Counter(count: times.count) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        let completedCount = Counter(count: 0) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        let decodeFailureFrameCount = Counter(count: 0)
         
         let baseErrorMessage = "Internal error while generating image."
         
@@ -60,7 +83,7 @@ extension AVAssetImageGenerator {
         generateCGImagesAsynchronously(forTimes: times) { requestedTime, image, actualTime, result, error in
             switch result {
             case .succeeded:
-                completedCount += 1
+                completedCount.increment()
                 
                 guard let image = image else {
                     var errorMsg = baseErrorMessage
@@ -79,9 +102,9 @@ extension AVAssetImageGenerator {
                             image: image,
                             requestedTime: requestedTime,
                             actualTime: actualTime,
-                            completedCount: completedCount,
-                            totalCount: totalCount,
-                            isFinished: completedCount == totalCount,
+                            completedCount: completedCount.count,
+                            totalCount: totalCount.count,
+                            isFinished: completedCount.count == totalCount.count,
                             isFinishedIgnoreImage: false
                         )
                     )
@@ -93,7 +116,7 @@ extension AVAssetImageGenerator {
                 if let error = error as? AVError {
                     // Ugly workaround for when the last frame is a failure.
                     func finishWithoutImageIfNeeded() {
-                        guard completedCount == totalCount else {
+                        guard completedCount.count == totalCount.count else {
                             return
                         }
                         
@@ -111,8 +134,8 @@ extension AVAssetImageGenerator {
                                     image: emptyImage,
                                     requestedTime: requestedTime,
                                     actualTime: actualTime,
-                                    completedCount: completedCount,
-                                    totalCount: totalCount,
+                                    completedCount: completedCount.count,
+                                    totalCount: totalCount.count,
                                     isFinished: true,
                                     isFinishedIgnoreImage: true
                                 )
@@ -122,7 +145,7 @@ extension AVAssetImageGenerator {
                     
                     // We ignore blank frames.
                     if error.code == .noImageAtTime {
-                        totalCount -= 1
+                        totalCount.decrement()
                         print("No image at time. Completed: \(completedCount) Total: \(totalCount)")
                         finishWithoutImageIfNeeded()
                         break
@@ -132,8 +155,8 @@ extension AVAssetImageGenerator {
                     // error for some frames in screen recordings.
                     // As a workaround, we ignore these as the GIF seems fine still.
                     if error.code == .decodeFailed {
-                        decodeFailureFrameCount += 1
-                        totalCount -= 1
+                        decodeFailureFrameCount.increment()
+                        totalCount.decrement()
                         print("Decode failure. Completed: \(completedCount) Total: \(totalCount)")
                         finishWithoutImageIfNeeded()
                         break

@@ -81,7 +81,9 @@ extension ExportProfile {
         imageDimensions: CGSize?,
         imageLabelText: [String],
         imageLabelProperties: MarkerLabelProperties,
-        logger: Logger? = nil
+        logger: Logger? = nil,
+        exportProfileProgress progress: Progress? = nil,
+        progressUnitCount: Int64 = 0
     ) throws {
         let logger = logger ?? Logger(label: "\(Self.self)")
         
@@ -105,8 +107,11 @@ extension ExportProfile {
             imageFilter: imageLabeler?.labelImageNextText
         )
         
+        let extractor = ImageExtractor(conversion, logger: logger)
+        progress?.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
+        
         do {
-            try ImageExtractor(conversion, logger: logger).convert()
+            try extractor.convert()
         } catch let err as ImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.staticImage(err)))
         } catch {
