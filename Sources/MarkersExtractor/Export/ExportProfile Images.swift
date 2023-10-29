@@ -23,7 +23,9 @@ extension ExportProfile {
         imageFormat: MarkerImageFormat.Animated,
         imageLabelText: [String],
         imageLabelProperties: MarkerLabelProperties,
-        logger: Logger? = nil
+        logger: Logger? = nil,
+        exportProfileProgress progress: Progress? = nil,
+        progressUnitCount: Int64 = 0
     ) throws {
         let logger = logger ?? Logger(label: "\(Self.self)")
         
@@ -34,6 +36,15 @@ extension ExportProfile {
                 labelText: imageLabelText,
                 labelProperties: imageLabelProperties,
                 logger: logger
+            )
+        }
+        
+        var filesProgress: Progress? = nil
+        if let progress {
+            filesProgress = Progress(
+                totalUnitCount: Int64(timecodes.count),
+                parent: progress,
+                pendingUnitCount: progressUnitCount
             )
         }
         
@@ -69,6 +80,8 @@ extension ExportProfile {
                         + " \(error.localizedDescription)"
                 )))
             }
+            
+            filesProgress?.completedUnitCount += 1
         }
     }
     

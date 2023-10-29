@@ -86,7 +86,9 @@ extension ExportProfile {
                 gifDimensions: media.imageSettings.dimensions,
                 imageFormat: animatedImageFormat,
                 imageLabelText: imageLabelText,
-                imageLabelProperties: media.imageSettings.labelProperties
+                imageLabelProperties: media.imageSettings.labelProperties,
+                exportProfileProgress: progress,
+                progressUnitCount: progressUnitCount
             )
         }
     }
