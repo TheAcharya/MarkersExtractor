@@ -70,6 +70,11 @@ extension FCPXMLFile {
             }
         }
         
+        /// Returns the path to the directory containing the base path.
+        public var parentPath: URL {
+            basePath.deletingLastPathComponent()
+        }
+        
         /// Returns the base path.
         /// For an `fcpxml` file, the file's path is returned.
         /// For an `dcpxmld` bundle, the bundle's path is returned.
@@ -114,7 +119,12 @@ extension FCPXMLFile {
     /// Returns the directory that contains the Final Cut Pro XML file/bundle.
     /// Returns `nil` if file contents were supplied instead of a URL.
     var parentDir: URL? {
-        baseURL?.deletingLastPathComponent()
+        switch source {
+        case let .fileOnDisk(path):
+            return path.parentPath
+        case .rawFileContents:
+            return nil
+        }
     }
     
     /// Returns a new `XMLDocument` instance representing the XML file's contents.

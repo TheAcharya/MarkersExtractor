@@ -9,7 +9,8 @@ import Foundation
 import Logging
 import MarkersExtractor
 
-struct MarkersExtractorCLI: ParsableCommand {
+@main
+struct MarkersExtractorCLI: AsyncParsableCommand {
     // MARK: - Config
     
     static var configuration = CommandConfiguration(
@@ -224,12 +225,6 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
-    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
-    var fcpxmlPath: URL
-    
-    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
-    var outputDir: URL
-    
     @Flag(
         name: [.customLong("no-media")],
         help: "Bypass media. No thumbnails will be generated."
@@ -244,6 +239,12 @@ struct MarkersExtractorCLI: ParsableCommand {
         transform: URL.init(fileURLWithPath:)
     )
     var mediaSearchPaths: [URL] = []
+    
+    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
+    var fcpxmlPath: URL
+    
+    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
+    var outputDir: URL
     
     // MARK: - Protocol Method Implementations
     
@@ -315,9 +316,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         }
         
         let extractor = MarkersExtractor(settings)
-        
-        // TODO: add KVO monitor for extractor.progress.fractionCompleted and output progress % to console
-        
+        let o = ConsoleProgressOutput(progress: extractor.progress); _ = o
         try await extractor.extract()
     }
 }
@@ -349,6 +348,21 @@ extension MarkersExtractorCLI {
             logHandlers.indices.forEach { logHandlers[$0].logLevel = logLevel }
 
             return MultiplexLogHandler(logHandlers)
+        }
+    }
+    
+    private final class ConsoleProgressOutput: NSObject {
+        var progress: Progress?
+        var observation: NSKeyValueObservation
+        
+        init(progress: Progress) {
+            self.progress = progress
+            self.observation = progress.observe(\.fractionCompleted, options: [.new]) { _, _ in
+                let formattedPercentage = String(format: "%.0f", progress.fractionCompleted * 100)
+                DispatchQueue.main.async {
+                    print(formattedPercentage + "%")
+                }
+            }
         }
     }
 }
