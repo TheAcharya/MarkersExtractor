@@ -4,7 +4,7 @@
 
 ### General
 
-- Updated README and added new icon thanks to Bor [Jen Goh](https://www.artstation.com/borjengoh)
+- Updated README and added new icon thanks to [Bor Jen Goh](https://www.artstation.com/borjengoh)
 
 ### Refinements
 
