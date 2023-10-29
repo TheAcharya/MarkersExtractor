@@ -1,5 +1,16 @@
 # MarkersExtractor Change Log
 
+## Next Release
+
+### General
+
+- Updated README and added new icon thanks to Bor [Jen Goh](https://www.artstation.com/borjengoh)
+
+### Refinements
+
+- Now produces more granular errors (#46)
+- Internal refactors and improvements
+
 ## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-04-28)
 
 ### General
