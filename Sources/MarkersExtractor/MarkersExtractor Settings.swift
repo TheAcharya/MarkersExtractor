@@ -9,48 +9,6 @@ import Foundation
 
 extension MarkersExtractor {
     public struct Settings {
-        public enum Defaults {
-            public static let exportFormat: ExportProfileFormat = .notion
-            public static let enableSubframes = false
-            public static let imageFormat: MarkerImageFormat = .still(.png)
-            public static let imageQuality = 85
-            public static let imageWidth: Int? = nil
-            public static let imageHeight: Int? = nil
-            public static let imageSizePercent: Int? = 100
-            public static let imageSizePercentGIF = 50
-            public static let gifFPS: Double = 10.0
-            public static let gifSpan: TimeInterval = 2
-            public static let idNamingMode: MarkerIDMode = .projectTimecode
-            public static let includeOutsideClipBoundaries = false
-            public static let excludeRoleType: MarkerRoleType? = nil
-            public static let imageLabels: [ExportField] = []
-            public static let imageLabelCopyright: String? = nil
-            public static let imageLabelFont = "Menlo-Regular"
-            public static let imageLabelFontMaxSize = 30
-            public static let imageLabelFontOpacity = 100
-            public static let imageLabelFontColor = "#FFF"
-            public static let imageLabelFontStrokeColor = "#000"
-            public static let imageLabelFontStrokeWidth: Int? = nil
-            public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
-            public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
-            public static let imageLabelHideNames = false
-            public static let createDoneFile = false
-            public static let exportFolderFormat: ExportFolderFormat = .medium
-            public static let noMedia: Bool = false
-            public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
-                [fcpxml.defaultMediaSearchPath].compactMap { $0 }
-            }
-
-            public static let doneFilename = "done.json"
-        }
-        
-        public enum Validation {
-            public static let imageSizePercent = 1 ... 100
-            public static let imageQuality = 0 ... 100
-            public static let outputFPS = 0.1 ... 60.0
-            public static let imageLabelFontOpacity = 0 ... 100
-        }
-        
         public var exportFormat: ExportProfileFormat
         public var enableSubframes: Bool
         public var imageFormat: MarkerImageFormat
@@ -107,18 +65,18 @@ extension MarkersExtractor {
             imageLabelFontColor: String = Defaults.imageLabelFontColor,
             imageLabelFontStrokeColor: String = Defaults.imageLabelFontStrokeColor,
             imageLabelFontStrokeWidth: Int? = Defaults.imageLabelFontStrokeWidth,
-            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal =
-                Defaults.imageLabelAlignHorizontal,
-            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical =
-                Defaults.imageLabelAlignVertical,
+            imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = Defaults.imageLabelAlignHorizontal,
+            imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = Defaults.imageLabelAlignVertical,
             imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
             createDoneFile: Bool = Defaults.createDoneFile,
             doneFilename: String = Defaults.doneFilename,
             exportFolderFormat: ExportFolderFormat = Defaults.exportFolderFormat
         ) throws {
+            // mandatory parameters
             self.fcpxml = fcpxml
             self.outputDir = outputDir
             
+            // defaulted parameters
             self.noMedia = noMedia
             self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
             self.exportFormat = exportFormat
@@ -148,88 +106,140 @@ extension MarkersExtractor {
             self.doneFilename = doneFilename
             self.exportFolderFormat = exportFolderFormat
             
+            // validation
             try validate()
         }
-        
-        /// Validate settings parameters.
-        /// Throws an error if validation fails.
-        public func validate() throws {
-            if let fcpxmlPath = fcpxml.baseURL {
-                guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
+    }
+}
+
+// MARK: - Validation
+
+extension MarkersExtractor.Settings {
+    public enum Validation {
+        public static let imageSizePercent = 1 ... 100
+        public static let imageQuality = 0 ... 100
+        public static let outputFPS = 0.1 ... 60.0
+        public static let imageLabelFontOpacity = 0 ... 100
+    }
+    
+    /// Validate settings parameters.
+    /// Throws an error if validation fails.
+    ///
+    /// - Throws: ``MarkersExtractorError``
+    public func validate() throws {
+        if let fcpxmlPath = fcpxml.baseURL {
+            guard ["fcpxml", "fcpxmld"].contains(fcpxmlPath.fileExtension) else {
+                throw MarkersExtractorError.validation(
+                    .unsupportedFileFormat(atPath: fcpxmlPath.path)
+                )
+            }
+            
+            if fcpxmlPath.fileExtension == "fcpxmld" {
+                guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
                     throw MarkersExtractorError.validation(
-                        .unsupportedFileFormat(atPath: fcpxmlPath.path)
-                    )
-                }
-                
-                if fcpxmlPath.fileExtension == "fcpxmld" {
-                    guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
-                        throw MarkersExtractorError.validation(
-                            .fcpxmldIsNotADirectory(atPath: fcpxmlPath.path)
-                        )
-                    }
-                }
-                
-                guard fcpxmlPath.exists else {
-                    throw MarkersExtractorError.validation(
-                        .fileNotExists(atPath: fcpxmlPath.path)
+                        .fcpxmldIsNotADirectory(atPath: fcpxmlPath.path)
                     )
                 }
             }
             
-            // if media is bypassed, none of the thumbnail parameters will be used.
-            if !noMedia {
-                guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                    throw MarkersExtractorError.validation(
-                        .fontNotUsable(imageLabelFont)
-                    )
-                }
-                
-                if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
-                   imageLabelFontStrokeWidth < 0
-                {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageLabelStrokeWidth
-                    )
-                }
-                
-                guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageLabelFontOpacity
-                    )
-                }
-                
-                if let imageHeight = imageHeight, imageHeight <= 0 {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageHeight
-                    )
-                }
-                
-                if let imageWidth = imageWidth, imageWidth <= 0 {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageWidth
-                    )
-                }
-                
-                if let imageSizePercent = imageSizePercent,
-                   !Validation.imageSizePercent.contains(imageSizePercent)
-                {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageSizePercent
-                    )
-                }
-                
-                guard Validation.imageQuality.contains(imageQuality) else {
-                    throw MarkersExtractorError.validation(
-                        .invalidImageQuality
-                    )
-                }
-                
-                guard Validation.outputFPS.contains(gifFPS) else {
-                    throw MarkersExtractorError.validation(
-                        .invalidOutputFPS
-                    )
-                }
+            guard fcpxmlPath.exists else {
+                throw MarkersExtractorError.validation(
+                    .fileNotExists(atPath: fcpxmlPath.path)
+                )
             }
         }
+        
+        // if media is bypassed, none of the thumbnail parameters will be used.
+        if !noMedia {
+            guard NSFont(name: imageLabelFont, size: 1) != nil else {
+                throw MarkersExtractorError.validation(
+                    .fontNotUsable(imageLabelFont)
+                )
+            }
+            
+            if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
+               imageLabelFontStrokeWidth < 0
+            {
+                throw MarkersExtractorError.validation(
+                    .invalidImageLabelStrokeWidth
+                )
+            }
+            
+            guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
+                throw MarkersExtractorError.validation(
+                    .invalidImageLabelFontOpacity
+                )
+            }
+            
+            if let imageHeight = imageHeight, imageHeight <= 0 {
+                throw MarkersExtractorError.validation(
+                    .invalidImageHeight
+                )
+            }
+            
+            if let imageWidth = imageWidth, imageWidth <= 0 {
+                throw MarkersExtractorError.validation(
+                    .invalidImageWidth
+                )
+            }
+            
+            if let imageSizePercent = imageSizePercent,
+               !Validation.imageSizePercent.contains(imageSizePercent)
+            {
+                throw MarkersExtractorError.validation(
+                    .invalidImageSizePercent
+                )
+            }
+            
+            guard Validation.imageQuality.contains(imageQuality) else {
+                throw MarkersExtractorError.validation(
+                    .invalidImageQuality
+                )
+            }
+            
+            guard Validation.outputFPS.contains(gifFPS) else {
+                throw MarkersExtractorError.validation(
+                    .invalidOutputFPS
+                )
+            }
+        }
+    }
+}
+
+// MARK: - Defaults
+
+extension MarkersExtractor.Settings {
+    public enum Defaults {
+        public static let exportFormat: ExportProfileFormat = .notion
+        public static let enableSubframes = false
+        public static let imageFormat: MarkerImageFormat = .still(.png)
+        public static let imageQuality = 85
+        public static let imageWidth: Int? = nil
+        public static let imageHeight: Int? = nil
+        public static let imageSizePercent: Int? = 100
+        public static let imageSizePercentGIF = 50
+        public static let gifFPS: Double = 10.0
+        public static let gifSpan: TimeInterval = 2
+        public static let idNamingMode: MarkerIDMode = .projectTimecode
+        public static let includeOutsideClipBoundaries = false
+        public static let excludeRoleType: MarkerRoleType? = nil
+        public static let imageLabels: [ExportField] = []
+        public static let imageLabelCopyright: String? = nil
+        public static let imageLabelFont = "Menlo-Regular"
+        public static let imageLabelFontMaxSize = 30
+        public static let imageLabelFontOpacity = 100
+        public static let imageLabelFontColor = "#FFF"
+        public static let imageLabelFontStrokeColor = "#000"
+        public static let imageLabelFontStrokeWidth: Int? = nil
+        public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
+        public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
+        public static let imageLabelHideNames = false
+        public static let createDoneFile = false
+        public static let exportFolderFormat: ExportFolderFormat = .medium
+        public static let noMedia: Bool = false
+        public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
+            [fcpxml.defaultMediaSearchPath].compactMap { $0 }
+        }
+        public static let doneFilename = "done.json"
     }
 }
