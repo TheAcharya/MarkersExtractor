@@ -29,8 +29,8 @@
 
 ## Available Extract Profiles
 
-- Notion (CSV)
-- Airtable (CSV & JSON)
+- Notion (CSV) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
+- Airtable (CSV & JSON) - Compatible [Airlift](https://github.com/TheAcharya/Airlift)
 - Pro Tools (MIDI)
 - Cubase (MIDI)
 
