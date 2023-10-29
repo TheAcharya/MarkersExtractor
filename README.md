@@ -1,4 +1,4 @@
-<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/>
+<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="Assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/>
 
 <div>
 <h1>MarkersExtractor (CLI & API)</h1>
@@ -29,8 +29,8 @@
 
 ## Available Extract Profiles
 
-- Notion (CSV)
-- Airtable (CSV & JSON)
+- Notion (CSV) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
+- Airtable (CSV & JSON) - Compatible [Airlift](https://github.com/TheAcharya/Airlift)
 - Pro Tools (MIDI)
 - Cubase (MIDI)
 
