@@ -6,13 +6,35 @@
 
 import Foundation
 
+/// Represents a file's contents, either in memory or from a file stored on disk.
+/// In either case, the file content is cached in memory to improve performance and reduce
+/// unnecessary disk activity.
 internal struct File {
-    public var cache: FileCache?
+    public var cache: FileContentsCache?
     public var url: URL?
 }
 
+// MARK: - Constructors
+
 extension File {
-    public enum FileCache {
+    public init(_ url: URL) {
+        cache = nil
+        self.url = url
+    }
+    
+    public init(fileContents: FileContentsCache) {
+        cache = fileContents
+        url = nil
+    }
+    
+    public static func fileContents(_ contents: FileContentsCache) -> Self {
+        File(cache: contents, url: nil)
+    }
+}
+
+extension File {
+    /// Type-erased ``File`` contents cache.
+    public enum FileContentsCache {
         /// Pre-fetched file contents as `Data`.
         case data(Data)
         
@@ -22,12 +44,20 @@ extension File {
 }
 
 extension File {
+    /// Returns a Boolean value indicating whether the file's contents has been read off disk
+    /// and cached.
     public var isFetched: Bool {
         cache != nil
     }
     
     /// Reads the data off disk and returns a new instance containing the cached data.
-    /// If the current instance already contains cached data
+    /// If the current instance already contains cached data, the cache is returned.
+    ///
+    /// There is no need to call this manually. Calling ``data(resetCache:)`` to retrieve
+    /// the file's contents will also fill the cache if needed.
+    ///
+    /// - Parameters:
+    ///   - resetCache: Force the cache to reset (flush) and re-read the file's contents from disk.
     public func fetch(resetCache: Bool = false) throws -> Self {
         var copy = self
         
@@ -67,32 +97,5 @@ extension File {
             }
             return data
         }
-    }
-}
-
-// MARK: - Static Constructors
-
-extension File {
-    public init(_ url: URL) {
-        cache = nil
-        self.url = url
-    }
-    
-    public init(fileContents: Data) {
-        cache = .data(fileContents)
-        url = nil
-    }
-    
-    public init(fileContents: String) {
-        cache = .string(fileContents)
-        url = nil
-    }
-    
-    public static func fileContents(_ contents: Data) -> Self {
-        File(cache: .data(contents), url: nil)
-    }
-    
-    public static func fileContents(_ contents: String) -> Self {
-        File(cache: .string(contents), url: nil)
     }
 }
