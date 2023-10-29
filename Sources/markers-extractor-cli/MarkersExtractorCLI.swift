@@ -267,7 +267,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         }
     }
     
-    mutating func run() throws {
+    mutating func run() async throws {
         initLogging(logLevel: logQuiet ? nil : logLevel, logFile: log)
         
         let settings: MarkersExtractor.Settings
@@ -314,7 +314,7 @@ struct MarkersExtractorCLI: ParsableCommand {
             throw ValidationError(err.localizedDescription)
         }
         
-        try MarkersExtractor(settings).extract()
+        try await MarkersExtractor(settings).extract()
     }
 }
 

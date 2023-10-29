@@ -24,11 +24,7 @@ public final class MarkersExtractor {
 // MARK: - Run
 
 extension MarkersExtractor {
-    public func extract() throws {
-        try run()
-    }
-    
-    func run() throws {
+    public func extract() async throws {
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
         logger.info("Starting")
