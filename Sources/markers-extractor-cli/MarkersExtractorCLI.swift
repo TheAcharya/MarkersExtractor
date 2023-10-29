@@ -314,7 +314,11 @@ struct MarkersExtractorCLI: ParsableCommand {
             throw ValidationError(err.localizedDescription)
         }
         
-        try await MarkersExtractor(settings).extract()
+        let extractor = MarkersExtractor(settings)
+        
+        // TODO: add KVO monitor for extractor.progress.fractionCompleted and output progress % to console
+        
+        try await extractor.extract()
     }
 }
 
