@@ -24,20 +24,9 @@ extension ExportProfile {
     ) throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
-        var isVideoPresent = false
-        var isSingleFrame: Bool?
-        var mediaInfo: ExportMarkerMediaInfo?
+        // gather media info
         
-        if let media {
-            isVideoPresent = self.isVideoPresent(in: media.videoURL)
-            isSingleFrame = !isVideoPresent
-                && media.imageSettings.labelFields.isEmpty
-                && media.imageSettings.labelCopyright == nil
-            mediaInfo = .init(
-                imageFormat: media.imageSettings.format,
-                isSingleFrame: isSingleFrame!
-            )
-        }
+        let (isVideoPresent, isSingleFrame, mediaInfo) = gatherMediaInfo(media: media)
         
         // prepare markers
         
@@ -62,7 +51,7 @@ extension ExportProfile {
                 markers: markers,
                 preparedMarkers: preparedMarkers,
                 isVideoPresent: isVideoPresent,
-                isSingleFrame: isSingleFrame ?? true,
+                isSingleFrame: isSingleFrame,
                 media: media,
                 outputURL: outputURL,
                 logger: &logger
@@ -81,8 +70,29 @@ extension ExportProfile {
             try saveDoneFile(at: outputURL, fileName: doneFilename, data: doneFileData)
         }
     }
-    
-    // MARK: Helpers
+}
+
+// MARK: - Helpers
+
+extension ExportProfile {
+    private func gatherMediaInfo(
+        media: ExportMedia?
+    ) -> (isVideoPresent: Bool, isSingleFrame: Bool, mediaInfo: ExportMarkerMediaInfo?) {
+        guard let media else {
+            return (isVideoPresent: false, isSingleFrame: true, mediaInfo: nil)
+        }
+        
+        let isVideoPresent = self.isVideoPresent(in: media.videoURL)
+        let isSingleFrame = !isVideoPresent
+            && media.imageSettings.labelFields.isEmpty
+            && media.imageSettings.labelCopyright == nil
+        let mediaInfo = ExportMarkerMediaInfo(
+            imageFormat: media.imageSettings.format,
+            isSingleFrame: isSingleFrame
+        )
+        
+        return (isVideoPresent: isVideoPresent, isSingleFrame: isSingleFrame, mediaInfo: mediaInfo)
+    }
     
     private func exportIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })
