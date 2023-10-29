@@ -9,6 +9,7 @@ import AppKit
 import Foundation
 import Logging
 import OrderedCollections
+import DAWFileKit
 import TimecodeKit
 
 public final class MarkersExtractor {
@@ -28,9 +29,7 @@ extension MarkersExtractor {
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
         logger.info("Starting")
-        
         logger.info("Using \(s.exportFormat.name) export profile.")
-        
         logger.info("Extracting markers from \(s.fcpxml).")
         
         var markers = try extractMarkers()
@@ -56,120 +55,154 @@ extension MarkersExtractor {
             throw MarkersExtractorError.extraction(.projectMissing(
                 "Could not find a project in the XML file."
             ))
-            
         }
         
-        let projectStartTimecode: Timecode = {
-            if let tc = project.startTimecode {
-                logger.info("Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose).")
-                return tc
-            } else if let frameRate = project.frameRate {
-                let tc = Timecode(.zero, at: frameRate, base: .max100SubFrames)
-                logger.warning(
-                    "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
-                )
-                return tc
-            } else {
-                let tc = Timecode(.zero, at: .fps30, base: .max100SubFrames)
-                logger.warning(
-                    "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
-                )
-                return tc
-            }
-        }()
+        let projectStartTimecode: Timecode = startTimecode(forProject: project)
         
         let outputURL = try makeOutputPath(for: projectName)
         
+        let media: ExportMedia?
         if s.noMedia {
+            media = nil
             logger.info("No media present. Skipping thumbnail generation.")
             logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
         } else {
-            logger.info(
-                "Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted)."
-            )
+            let exportMedia = try formExportMedia(projectName: projectName)
+            media = exportMedia
+            logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
+            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
         }
         
-        func callExport<P: ExportProfile>(
-            for format: P.Type,
-            payload: P.Payload
-        ) throws {
-            var media: ExportMedia?
-            if !s.noMedia {
-                let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
-                logger.info("Found project media file \(videoPath.path.quoted).")
-                
-                let imageQuality = Double(s.imageQuality) / 100
-                let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
-                let imageLabels = OrderedSet(s.imageLabels).map { $0 }
-                
-                let labelProperties = MarkerLabelProperties(
-                    fontName: s.imageLabelFont,
-                    fontMaxSize: s.imageLabelFontMaxSize,
-                    fontColor: NSColor(
-                        hexString: s.imageLabelFontColor,
-                        alpha: imageLabelFontAlpha
-                    ),
-                    fontStrokeColor: NSColor(
-                        hexString: s.imageLabelFontStrokeColor,
-                        alpha: imageLabelFontAlpha
-                    ),
-                    fontStrokeWidth: s.imageLabelFontStrokeWidth,
-                    alignHorizontal: s.imageLabelAlignHorizontal,
-                    alignVertical: s.imageLabelAlignVertical
-                )
-                
-                let imageSettings = ExportImageSettings(
-                    gifFPS: s.gifFPS,
-                    gifSpan: s.gifSpan,
-                    format: s.imageFormat,
-                    quality: imageQuality,
-                    dimensions: calcVideoDimensions(for: videoPath),
-                    labelFields: imageLabels,
-                    labelCopyright: s.imageLabelCopyright,
-                    labelProperties: labelProperties,
-                    imageLabelHideNames: s.imageLabelHideNames
-                )
-                
-                media = .init(videoURL: videoPath, imageSettings: imageSettings)
-            }
-            try P(logger: logger).export(
-                markers: markers,
-                idMode: s.idNamingMode,
-                media: media,
-                tcStringFormat: timecodeStringFormat,
-                outputURL: outputURL,
-                payload: payload,
-                createDoneFile: s.createDoneFile,
-                doneFilename: s.doneFilename,
-                logger: logger
-            )
-        }
+        try export(
+            projectName: projectName,
+            projectStartTimecode: projectStartTimecode,
+            media: media,
+            markers: markers,
+            outputURL: outputURL
+        )
         
+        logger.info("Done")
+    }
+    
+    /// Returns `nil` if
+    private func formExportMedia(
+        projectName: String
+    ) throws -> ExportMedia {
+        let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
+        
+        let imageQuality = Double(s.imageQuality) / 100
+        let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
+        let imageLabels = OrderedSet(s.imageLabels).map { $0 }
+        
+        let labelProperties = MarkerLabelProperties(
+            fontName: s.imageLabelFont,
+            fontMaxSize: s.imageLabelFontMaxSize,
+            fontColor: NSColor(
+                hexString: s.imageLabelFontColor,
+                alpha: imageLabelFontAlpha
+            ),
+            fontStrokeColor: NSColor(
+                hexString: s.imageLabelFontStrokeColor,
+                alpha: imageLabelFontAlpha
+            ),
+            fontStrokeWidth: s.imageLabelFontStrokeWidth,
+            alignHorizontal: s.imageLabelAlignHorizontal,
+            alignVertical: s.imageLabelAlignVertical
+        )
+        
+        let imageSettings = ExportImageSettings(
+            gifFPS: s.gifFPS,
+            gifSpan: s.gifSpan,
+            format: s.imageFormat,
+            quality: imageQuality,
+            dimensions: calcVideoDimensions(for: videoPath),
+            labelFields: imageLabels,
+            labelCopyright: s.imageLabelCopyright,
+            labelProperties: labelProperties,
+            imageLabelHideNames: s.imageLabelHideNames
+        )
+        
+        return ExportMedia(videoURL: videoPath, imageSettings: imageSettings)
+    }
+    
+    var timecodeStringFormat: Timecode.StringFormat {
+        s.enableSubframes ? [.showSubFrames] : .default()
+    }
+    
+    func startTimecode(forProject project: FinalCutPro.FCPXML.Project) -> Timecode {
+        if let tc = project.startTimecode {
+            logger.info("Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose).")
+            return tc
+        } else if let frameRate = project.frameRate {
+            let tc = Timecode(.zero, at: frameRate, base: .max100SubFrames)
+            logger.warning(
+                "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
+            )
+            return tc
+        } else {
+            let tc = Timecode(.zero, at: .fps30, base: .max100SubFrames)
+            logger.warning(
+                "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
+            )
+            return tc
+        }
+    }
+    
+    private func export(
+        projectName: String,
+        projectStartTimecode: Timecode,
+        media: ExportMedia?,
+        markers: [Marker],
+        outputURL: URL
+    ) throws {
         switch s.exportFormat {
         case .airtable:
-            try callExport(
+            try export(
                 for: AirtableExportProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
                 payload: .init(projectName: projectName, outputURL: outputURL)
             )
         case .midi:
-            try callExport(
+            try export(
                 for: MIDIFileExportProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
                 payload: .init(projectName: projectName,
                                outputURL: outputURL,
                                sessionStartTimecode: projectStartTimecode)
             )
         case .notion:
-            try callExport(
+            try export(
                 for: NotionExportProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
                 payload: .init(projectName: projectName, outputURL: outputURL)
             )
         }
-        
-        logger.info("Done")
     }
     
-    var timecodeStringFormat: Timecode.StringFormat {
-        s.enableSubframes ? [.showSubFrames] : .default()
+    private func export<P: ExportProfile>(
+        for format: P.Type,
+        media: ExportMedia?,
+        markers: [Marker],
+        outputURL: URL,
+        payload: P.Payload
+    ) throws {
+        try P(logger: logger).export(
+            markers: markers,
+            idMode: s.idNamingMode,
+            media: media,
+            tcStringFormat: timecodeStringFormat,
+            outputURL: outputURL,
+            payload: payload,
+            createDoneFile: s.createDoneFile,
+            doneFilename: s.doneFilename,
+            logger: logger
+        )
     }
 }
 
