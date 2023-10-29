@@ -25,6 +25,7 @@ public final class MarkersExtractor {
 // MARK: - Run
 
 extension MarkersExtractor {
+    /// - Throws: ``MarkersExtractorError``
     public func extract() async throws {
         let imageFormatEXT = s.imageFormat.rawValue.uppercased()
         
@@ -84,7 +85,7 @@ extension MarkersExtractor {
         logger.info("Done")
     }
     
-    /// Returns `nil` if
+    /// - Throws: ``MarkersExtractorError``
     private func formExportMedia(
         projectName: String
     ) throws -> ExportMedia {
@@ -305,6 +306,7 @@ extension MarkersExtractor {
 // MARK: - Media
 
 extension MarkersExtractor {
+    /// - Throws: ``MarkersExtractorError``
     private func findMedia(name: String, paths: [URL]) throws -> URL {
         let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
         
@@ -330,6 +332,7 @@ extension MarkersExtractor {
         return selection
     }
     
+    /// - Throws: ``MarkersExtractorError``
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
         do {
             return try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
