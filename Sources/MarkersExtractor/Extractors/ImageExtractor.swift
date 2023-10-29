@@ -26,7 +26,7 @@ final class ImageExtractor: NSObject, ProgressReporting {
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
-        progress = Progress()
+        progress = Progress(totalUnitCount: Int64(conversion.timecodes.count))
     }
 }
 

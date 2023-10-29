@@ -14,10 +14,10 @@ extension MarkersExtractor {
         media: ExportMedia?,
         markers: [Marker],
         outputURL: URL
-    ) throws {
+    ) async throws {
         switch s.exportFormat {
         case .airtable:
-            try export(
+            try await export(
                 for: AirtableExportProfile.self,
                 media: media,
                 markers: markers,
@@ -25,7 +25,7 @@ extension MarkersExtractor {
                 payload: .init(projectName: projectName, outputURL: outputURL)
             )
         case .midi:
-            try export(
+            try await export(
                 for: MIDIFileExportProfile.self,
                 media: media,
                 markers: markers,
@@ -35,7 +35,7 @@ extension MarkersExtractor {
                                sessionStartTimecode: projectStartTimecode)
             )
         case .notion:
-            try export(
+            try await export(
                 for: NotionExportProfile.self,
                 media: media,
                 markers: markers,
@@ -51,8 +51,8 @@ extension MarkersExtractor {
         markers: [Marker],
         outputURL: URL,
         payload: P.Payload
-    ) throws {
-        try P(logger: logger).export(
+    ) async throws {
+        try await P(logger: logger).export(
             markers: markers,
             idMode: s.idNamingMode,
             media: media,

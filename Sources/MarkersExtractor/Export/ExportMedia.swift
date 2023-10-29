@@ -29,7 +29,7 @@ extension ExportProfile {
         outputURL: URL,
         logger: inout Logger,
         progressUnitCount: Int64 = 0
-    ) throws {
+    ) async throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
         
@@ -64,9 +64,9 @@ extension ExportProfile {
         
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try Self.writeStillImages(
+            try ImagesWriter(
                 timecodes: timecodes,
-                video: videoURL,
+                videoPath: videoURL,
                 outputURL: outputURL,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: media.imageSettings.quality,
@@ -76,10 +76,11 @@ extension ExportProfile {
                 exportProfileProgress: progress,
                 progressUnitCount: progressUnitCount
             )
+            .write()
         case let .animated(animatedImageFormat):
-            try Self.writeAnimatedImages(
+            try await AnimatedImagesWriter(
                 timecodes: timecodes,
-                video: videoURL,
+                videoPath: videoURL,
                 outputURL: outputURL,
                 gifFPS: media.imageSettings.gifFPS,
                 gifSpan: media.imageSettings.gifSpan,
@@ -90,6 +91,7 @@ extension ExportProfile {
                 exportProfileProgress: progress,
                 progressUnitCount: progressUnitCount
             )
+            .write()
         }
     }
     

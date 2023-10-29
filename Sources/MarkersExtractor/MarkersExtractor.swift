@@ -87,7 +87,7 @@ extension MarkersExtractor {
         
         progress.completedUnitCount += 1
         
-        try export(
+        try await export(
             projectName: projectName,
             projectStartTimecode: projectStartTimecode,
             media: media,

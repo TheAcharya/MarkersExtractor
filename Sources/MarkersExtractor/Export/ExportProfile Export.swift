@@ -21,7 +21,7 @@ extension ExportProfile {
         createDoneFile: Bool,
         doneFilename: String,
         logger: Logger? = nil
-    ) throws {
+    ) async throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
         progress.completedUnitCount = 0
@@ -53,7 +53,7 @@ extension ExportProfile {
         
         let thumbnailsProgressUnitCount: Int64 = 90
         if let media {
-            try exportThumbnails(
+            try await exportThumbnails(
                 markers: markers,
                 preparedMarkers: preparedMarkers,
                 isVideoPresent: isVideoPresent,
