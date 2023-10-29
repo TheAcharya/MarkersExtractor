@@ -9,7 +9,7 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-public protocol ExportProfile {
+public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
@@ -59,4 +59,8 @@ public protocol ExportProfile {
     var logger: Logger? { get set }
     
     init(logger: Logger?)
+}
+
+extension ExportProfile {
+    static var defaultProgress: Progress { Progress() }
 }
