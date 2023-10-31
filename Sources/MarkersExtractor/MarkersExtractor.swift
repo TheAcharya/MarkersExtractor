@@ -32,9 +32,7 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     public func extract() async throws {
         progress.completedUnitCount = 0
-        progress.totalUnitCount = 5
-        
-        let imageFormatEXT = s.imageFormat.rawValue.uppercased()
+        progress.totalUnitCount = 100
         
         logger.info("Starting")
         logger.info("Using \(s.exportFormat.name) export profile.")
@@ -82,7 +80,7 @@ extension MarkersExtractor {
             let exportMedia = try formExportMedia(projectName: projectName)
             media = exportMedia
             logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
-            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
+            logger.info("Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted).")
         }
         
         progress.completedUnitCount += 1
