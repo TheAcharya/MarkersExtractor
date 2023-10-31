@@ -70,6 +70,8 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
                 }
             }
         }
+        
+        assert(progress.fractionCompleted == 1.0)
     }
     
     private func write(descriptor: ImageDescriptor) async throws {
