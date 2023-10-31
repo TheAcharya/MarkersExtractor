@@ -169,9 +169,9 @@ extension AnimatedImageExtractor {
             ],
             kCGImagePropertyGIFHasGlobalColorMap as String: NSValue(nonretainedObject: true)
         ] as [String: Any]
-
+        
         guard let destination = CGImageDestinationCreateWithURL(
-            conversion.outputFolder as CFURL,
+            conversion.outputFileWithoutExtension as CFURL,
             kUTTypeGIF,
             framesCount,
             nil
@@ -246,7 +246,7 @@ extension AnimatedImageExtractor {
 extension AnimatedImageExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
-        let outputFolder: URL
+        let outputFileWithoutExtension: URL
         var timecodeRange: ClosedRange<Timecode>?
         var dimensions: CGSize?
         var outputFPS: Double

@@ -101,6 +101,7 @@ extension FCPXMLFile {
 
 extension FCPXMLFile {
     // TODO: refactor so that this is processed on init, not on each access to data()
+    /// Return file contents. Method is mutating because it maintains an internal cache.
     mutating func data() throws -> Data {
         try xmlFileContents.data()
     }

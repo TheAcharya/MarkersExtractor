@@ -74,7 +74,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     }
     
     private func process(descriptor: ImageDescriptor) async throws {
-        let outputURL = outputURL.appendingPathComponent(descriptor.name)
+        let outputFileWithoutExtension = outputURL.appendingPathComponent(descriptor.name)
         
         var delta = descriptor.timecode
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
@@ -85,7 +85,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         
         let conversion = AnimatedImageExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
-            outputFolder: outputURL,
+            outputFileWithoutExtension: outputFileWithoutExtension,
             timecodeRange: timeRange,
             dimensions: gifDimensions,
             outputFPS: gifFPS,
