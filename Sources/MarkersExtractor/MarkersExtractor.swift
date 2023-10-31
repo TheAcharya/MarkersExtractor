@@ -12,7 +12,7 @@ import DAWFileKit
 import TimecodeKit
 
 public final class MarkersExtractor: NSObject, ProgressReporting {
-    internal let logger: Logger
+    public let logger: Logger
     internal var s: Settings
     public let progress: Progress
     
