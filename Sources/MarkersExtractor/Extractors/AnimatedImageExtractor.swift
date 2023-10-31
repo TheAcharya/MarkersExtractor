@@ -69,13 +69,13 @@ final class AnimatedImageExtractor {
 
 extension AnimatedImageExtractor {
     /// - Throws: ``AnimatedImageExtractorError``
-    func convert() throws {
+    func convert() async throws {
         validate()
         
         // only gif is supported for now, but more formats could be added in future
         switch conversion.imageFormat {
         case .gif:
-            try generateGIF()
+            try await generateGIF()
         }
     }
     
@@ -89,7 +89,7 @@ extension AnimatedImageExtractor {
     }
     
     /// - Throws: ``AnimatedImageExtractorError``
-    private func generateGIF() throws {
+    private func generateGIF() async throws {
         let generator = imageGenerator()
         
         // TODO: this is potentially very inefficient in the event that a LOT of frames are requested (such as an entire video length)
@@ -125,7 +125,9 @@ extension AnimatedImageExtractor {
         )
 
         let group = DispatchGroup()
-        group.enter()
+        
+        let proposedImageCount = times.count
+        for _ in 0 ..< proposedImageCount { group.enter() }
 
         generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
             defer { group.leave() }
@@ -151,18 +153,16 @@ extension AnimatedImageExtractor {
                 result = .failure(.generateFrameFailed(error))
             }
         }
-
-        group.wait()
-
-        if !CGImageDestinationFinalize(gifDestination) {
-            throw AnimatedImageExtractorError.gifFinalizationFailed
-        }
-
-        switch result {
-        case let .failure(error):
-            throw error
-        case .success():
-            return
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            group.notify(queue: .main) {
+                if !CGImageDestinationFinalize(gifDestination) {
+                    continuation.resume(
+                        throwing: AnimatedImageExtractorError.gifFinalizationFailed
+                    )
+                }
+                continuation.resume(with: result)
+            }
         }
     }
 

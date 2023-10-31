@@ -108,7 +108,7 @@ class AnimatedImagesWriter {
         )
         
         do {
-            try AnimatedImageExtractor(conversion, logger: logger).convert()
+            try await AnimatedImageExtractor(conversion, logger: logger).convert()
         } catch let err as AnimatedImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
         } catch {
