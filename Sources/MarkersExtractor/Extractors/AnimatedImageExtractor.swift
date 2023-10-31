@@ -10,8 +10,7 @@ import Foundation
 import Logging
 import TimecodeKit
 
-/// Extract a sequence of frames from a video asset and produce an animated image (such as animated
-/// GIF).
+/// Extract a sequence of frames from a video asset and produce an animated image (such as animated GIF).
 final class AnimatedImageExtractor {
     // MARK: - Properties
     

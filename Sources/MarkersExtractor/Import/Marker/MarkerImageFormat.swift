@@ -4,16 +4,16 @@
 //  Licensed under MIT License
 //
 
-public enum MarkerImageFormat: Equatable, Hashable {
+public enum MarkerImageFormat: Equatable, Hashable, Sendable {
     case still(Still)
     case animated(Animated)
     
-    public enum Still: String, CaseIterable {
+    public enum Still: String, CaseIterable, Sendable {
         case png
         case jpg
     }
     
-    public enum Animated: String, CaseIterable {
+    public enum Animated: String, CaseIterable, Sendable {
         case gif
     }
 }
