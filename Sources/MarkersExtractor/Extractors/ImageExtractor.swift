@@ -42,7 +42,9 @@ extension ImageExtractor {
         var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
         var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
         
-        var result: Result<Void, ImageExtractorError> = .failure(.internalInconsistency)
+        var result: Result<Void, ImageExtractorError> = .failure(
+            .internalInconsistency("Image generation could not start.")
+        )
 
         let group = DispatchGroup()
         
@@ -56,17 +58,17 @@ extension ImageExtractor {
             defer { group.leave() }
             
             guard let self = self else {
-                result = .failure(.internalInconsistency)
+                result = .failure(.internalInconsistency("No reference to image extractor."))
                 return
             }
 
             guard let frameName = frameNamesIterator.next() else {
-                result = .failure(.labelsDepleted)
+                result = .failure(.internalInconsistency("Image extractor depleted names."))
                 return
             }
             
             guard let label = labelsIterator.next() else {
-                result = .failure(.labelsDepleted)
+                result = .failure(.internalInconsistency("Image extractor depleted labels."))
                 return
             }
 
@@ -181,24 +183,21 @@ extension ImageExtractor {
 
 /// Static image extraction error.
 public enum ImageExtractorError: LocalizedError {
-    case internalInconsistency
+    case internalInconsistency(_ verboseError: String)
     case unreadableFile
     case unsupportedType
-    case labelsDepleted
     case generateFrameFailed(Swift.Error)
     case addFrameFailed(Swift.Error)
     case writeFailed(Swift.Error)
     
     public var errorDescription: String? {
         switch self {
-        case .internalInconsistency:
-            return "Internal error occurred."
+        case let .internalInconsistency(verboseError):
+            return "Internal error occurred: \(verboseError)"
         case .unreadableFile:
             return "The selected file is no longer readable."
         case .unsupportedType:
             return "Image type is not supported."
-        case .labelsDepleted:
-            return "Image labels depleted before images."
         case let .generateFrameFailed(error):
             return "Failed to generate frame: \(error.localizedDescription)"
         case let .addFrameFailed(error):
