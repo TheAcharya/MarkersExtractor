@@ -13,9 +13,10 @@
 
 ### Library Refinements
 
-- Now throws more granular errors (#46)
-- Most concrete types now conform to `Sendable`
+- Added `async`/`await` support (#49)
+- Errors thrown now provide more granular error cases (#46)
 - `MarkersExtractor` now conforms to `ProgressReporting` (#31)
+- Most concrete types now conform to `Sendable`
 - Internal refactors and improvements
 
 ## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-04-28)
