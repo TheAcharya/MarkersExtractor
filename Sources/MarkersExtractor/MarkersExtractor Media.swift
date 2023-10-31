@@ -15,32 +15,14 @@ extension MarkersExtractor {
         projectName: String
     ) throws -> ExportMedia {
         let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
-        
-        let imageQuality = Double(s.imageQuality) / 100
-        let imageLabelFontAlpha = Double(s.imageLabelFontOpacity) / 100
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
-        
-        let labelProperties = MarkerLabelProperties(
-            fontName: s.imageLabelFont,
-            fontMaxSize: s.imageLabelFontMaxSize,
-            fontColor: NSColor(
-                hexString: s.imageLabelFontColor,
-                alpha: imageLabelFontAlpha
-            ),
-            fontStrokeColor: NSColor(
-                hexString: s.imageLabelFontStrokeColor,
-                alpha: imageLabelFontAlpha
-            ),
-            fontStrokeWidth: s.imageLabelFontStrokeWidth,
-            alignHorizontal: s.imageLabelAlignHorizontal,
-            alignVertical: s.imageLabelAlignVertical
-        )
+        let labelProperties = MarkerLabelProperties(using: s)
         
         let imageSettings = ExportImageSettings(
             gifFPS: s.gifFPS,
             gifSpan: s.gifSpan,
             format: s.imageFormat,
-            quality: imageQuality,
+            quality: s.imageQualityDouble,
             dimensions: calcVideoDimensions(for: videoPath),
             labelFields: imageLabels,
             labelCopyright: s.imageLabelCopyright,
