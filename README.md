@@ -23,9 +23,10 @@
 
 ## Core Features
 
-- Accurately extract Markers from FCP's FCPXML/FCPXMLD
+- Accurately extract Markers from FCP's FCPXML/FCPXMLD data export format
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
+- Fast, multithreaded operation
 
 ## Available Extract Profiles
 
@@ -54,12 +55,12 @@
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.1/markers-extractor-cli-0.2.1.zip).
 
 ### From Source
 
 ```shell
-VERSION=0.2.0  # replace this with the git tag of the version you need
+VERSION=0.2.1  # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -70,7 +71,7 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 ## Usage
 
-### CLI 0.2.0
+### CLI 0.2.1
 
 ```plain
 $ markers-extractor-cli --help
