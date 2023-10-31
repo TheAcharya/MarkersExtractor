@@ -42,7 +42,7 @@ extension ImageExtractor {
         var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
         var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
         
-        var result: Result<Void, ImageExtractorError> = .failure(.invalidSettings)
+        var result: Result<Void, ImageExtractorError> = .failure(.internalInconsistency)
 
         let group = DispatchGroup()
         group.enter()
@@ -52,7 +52,7 @@ extension ImageExtractor {
             updating: progress
         ) { [weak self] imageResult in
             guard let self = self else {
-                result = .failure(.invalidSettings)
+                result = .failure(.internalInconsistency)
                 group.leave()
                 return
             }
@@ -185,7 +185,7 @@ extension ImageExtractor {
 
 /// Static image extraction error.
 public enum ImageExtractorError: LocalizedError {
-    case invalidSettings
+    case internalInconsistency
     case unreadableFile
     case unsupportedType
     case labelsDepleted
@@ -195,8 +195,8 @@ public enum ImageExtractorError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .invalidSettings:
-            return "Invalid settings."
+        case .internalInconsistency:
+            return "Internal error occurred."
         case .unreadableFile:
             return "The selected file is no longer readable."
         case .unsupportedType:
