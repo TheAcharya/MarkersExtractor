@@ -126,9 +126,10 @@ extension AnimatedImageExtractor {
         group.enter()
 
         generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
+            defer { group.leave() }
+            
             guard let self = self else {
                 result = .failure(.invalidSettings)
-                group.leave()
                 return
             }
 
@@ -141,14 +142,11 @@ extension AnimatedImageExtractor {
                 )
                 if isFinished {
                     result = .success(())
-                    group.leave()
                 }
             } catch let error as AnimatedImageExtractorError {
                 result = .failure(error)
-                group.leave()
             } catch {
                 result = .failure(.generateFrameFailed(error))
-                group.leave()
             }
         }
 
