@@ -166,7 +166,7 @@ class ImagesWriter {
         )
     }
     
-    func write() throws {
+    func write() async throws {
         let conversion = ImageExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
             outputFolder: outputURL,
@@ -185,7 +185,7 @@ class ImagesWriter {
         exportProfileProgress?.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
         
         do {
-            try extractor.convert()
+            try await extractor.convert()
         } catch let err as ImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.staticImage(err)))
         } catch {

@@ -34,7 +34,7 @@ final class ImageExtractor: NSObject, ProgressReporting {
 
 extension ImageExtractor {
     /// - Throws: ``ImageExtractorError``
-    func convert() throws {
+    func convert() async throws {
         let generator = imageGenerator()
         
         // TODO: these iterators need to go. it's super brittle. refactor to process all variables together in a single descriptor.
@@ -45,27 +45,28 @@ extension ImageExtractor {
         var result: Result<Void, ImageExtractorError> = .failure(.internalInconsistency)
 
         let group = DispatchGroup()
-        group.enter()
+        
+        let proposedImageCount = times.count
+        for _ in 0 ..< proposedImageCount { group.enter() }
 
         generator.generateCGImagesAsynchronously(
             forTimePoints: times,
             updating: progress
         ) { [weak self] imageResult in
+            defer { group.leave() }
+            
             guard let self = self else {
                 result = .failure(.internalInconsistency)
-                group.leave()
                 return
             }
 
             guard let frameName = frameNamesIterator.next() else {
                 result = .failure(.labelsDepleted)
-                group.leave()
                 return
             }
             
             guard let label = labelsIterator.next() else {
                 result = .failure(.labelsDepleted)
-                group.leave()
                 return
             }
 
@@ -77,24 +78,19 @@ extension ImageExtractor {
 
             // TODO: Throw on first error, don't just update with the last error and then check at the end of the batch
             switch frameResult {
-            case let .success(finished):
-                if finished {
+            case let .success(isFinished):
+                if isFinished {
                     result = .success(())
-                    group.leave()
                 }
             case let .failure(error):
                 result = .failure(error)
-                group.leave()
             }
         }
-
-        group.wait()
-
-        switch result {
-        case let .failure(error):
-            throw error
-        case .success:
-            return
+        
+        try await withCheckedThrowingContinuation { continuation in
+            group.notify(queue: .main) {
+                continuation.resume(with: result)
+            }
         }
     }
 

@@ -59,7 +59,7 @@ extension ExportProfile {
         
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try ImagesWriter(
+            try await ImagesWriter(
                 descriptors: imageDescriptors,
                 videoPath: videoURL,
                 outputURL: outputURL,
