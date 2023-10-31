@@ -75,6 +75,7 @@ extension ImageExtractor {
                 label: label
             )
 
+            // TODO: Throw on first error, don't just update with the last error and then check at the end of the batch
             switch frameResult {
             case let .success(finished):
                 if finished {
