@@ -32,7 +32,7 @@ final class ProgressTests: XCTestCase {
         let descriptors: [ImageDescriptor] = range.map {
             ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
         }
-        let outputFolder = URL.temporaryDirectory
+        let outputFolder = FileManager.default.temporaryDirectory
         let outputFile = outputFolder.appendingPathComponent(UUID().uuidString + ".gif")
         
         // MARK: - AnimatedImagesWriter
@@ -86,7 +86,7 @@ final class ProgressTests: XCTestCase {
         let descriptors: [ImageDescriptor] = range.map {
             ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
         }
-        let outputFolder = URL.temporaryDirectory
+        let outputFolder = FileManager.default.temporaryDirectory
         
         // ImagesWriter
         
