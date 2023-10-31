@@ -39,7 +39,7 @@ extension AVAssetImageGenerator {
         forTimesIn descriptors: [ImageDescriptor],
         updating progress: Progress? = nil,
         completionHandler: @escaping (_ descriptor: ImageDescriptor,
-                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
+                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) async -> Void
     ) async throws {
         let totalCount = Counter(count: descriptors.count) { count in
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
@@ -54,7 +54,7 @@ extension AVAssetImageGenerator {
             
             completedCount.increment()
             
-            completionHandler(
+            await completionHandler(
                 descriptor,
                 .success(
                     CompletionHandlerResult(

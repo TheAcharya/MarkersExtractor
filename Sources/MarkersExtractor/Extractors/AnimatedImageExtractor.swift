@@ -136,7 +136,7 @@ extension AnimatedImageExtractor {
             }
 
             do {
-                let isFinished = try self.processFrame(
+                let isFinished = try await self.processFrame(
                     for: imageResult,
                     at: startTime,
                     destination: gifDestination,
@@ -207,7 +207,7 @@ extension AnimatedImageExtractor {
         at startTime: TimeInterval,
         destination: CGImageDestination,
         frameProperties: CFDictionary
-    ) throws -> Bool {
+    ) async throws -> Bool {
         switch result {
         case let .success(result):
             // This happens if the last frame in the video failed to be generated.
@@ -226,7 +226,7 @@ extension AnimatedImageExtractor {
                 return false
             }
 
-            let image = conversion.imageFilter?(result.image) ?? result.image
+            let image = await conversion.imageFilter?(result.image) ?? result.image
 
             let frameNumber = result.completedCount - 1
             assert(result.actualTime.seconds > 0 || frameNumber == 0)
@@ -250,7 +250,7 @@ extension AnimatedImageExtractor {
         var timecodeRange: ClosedRange<Timecode>?
         var dimensions: CGSize?
         var outputFPS: Double
-        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFilter: ((CGImage) async -> CGImage)?
         let imageFormat: MarkerImageFormat.Animated
     }
 }

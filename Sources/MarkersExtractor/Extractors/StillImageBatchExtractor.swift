@@ -51,7 +51,7 @@ extension StillImageBatchExtractor {
             let frameName = descriptor.name
             let label = descriptor.label
             
-            let frameResult = self.processAndWriteFrameToDisk(
+            let frameResult = await self.processAndWriteFrameToDisk(
                 for: imageResult,
                 frameName: frameName,
                 label: label
@@ -93,10 +93,10 @@ extension StillImageBatchExtractor {
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         frameName: String,
         label: String?
-    ) -> Result<Bool, StillImageBatchExtractorError> {
+    ) async -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
-            let image = conversion.imageFilter?(result.image, label) ?? result.image
+            let image = await conversion.imageFilter?(result.image, label) ?? result.image
 
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)
@@ -154,7 +154,7 @@ extension StillImageBatchExtractor {
         let jpgQuality: Double?
         
         let dimensions: CGSize?
-        let imageFilter: ((_ image: CGImage, _ label: String?) -> CGImage)?
+        let imageFilter: ((_ image: CGImage, _ label: String?) async -> CGImage)?
     }
 }
 

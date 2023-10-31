@@ -31,7 +31,6 @@ class AnimatedImagesWriter {
     let exportProfileProgress: Progress?
     let progressUnitCount: Int64
     
-    private var imageLabeler: ImageLabeler
     private var filesProgress: Progress? = nil
     
     init(
@@ -58,11 +57,6 @@ class AnimatedImagesWriter {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.exportProfileProgress = exportProfileProgress
         self.progressUnitCount = progressUnitCount
-        
-        imageLabeler = ImageLabeler(
-            labelProperties: imageLabelProperties,
-            logger: logger
-        )
     }
     
     /// Write all images concurrently (in parallel) by multithreading.
@@ -100,10 +94,13 @@ class AnimatedImagesWriter {
             timecodeRange: timeRange,
             dimensions: gifDimensions,
             outputFPS: gifFPS,
-            imageFilter: {
-                if let text = descriptor.label {
-                    self.imageLabeler.labelImage(image: $0, text: text)
-                } else { $0 }
+            imageFilter: { [weak self] inputImage in
+                if let self, let label = descriptor.label {
+                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
+                    return await labeler.labelImage(image: inputImage, text: label)
+                } else {
+                    return inputImage
+                }
             },
             imageFormat: imageFormat
         )
@@ -143,8 +140,6 @@ class ImagesWriter {
     let exportProfileProgress: Progress?
     let progressUnitCount: Int64
     
-    private var imageLabeler: ImageLabeler
-    
     init(
         descriptors: [ImageDescriptor],
         videoPath: URL,
@@ -167,11 +162,6 @@ class ImagesWriter {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.exportProfileProgress = exportProfileProgress
         self.progressUnitCount = progressUnitCount
-        
-        imageLabeler = ImageLabeler(
-            labelProperties: imageLabelProperties,
-            logger: logger
-        )
     }
     
     func write() async throws {
@@ -182,10 +172,13 @@ class ImagesWriter {
             frameFormat: imageFormat,
             jpgQuality: imageJPGQuality,
             dimensions: imageDimensions,
-            imageFilter: { image, label in
-                if let label {
-                    self.imageLabeler.labelImage(image: image, text: label)
-                } else { image }
+            imageFilter: { [weak self] inputImage, label in
+                if let self, let label {
+                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
+                    return await labeler.labelImage(image: inputImage, text: label)
+                } else {
+                    return inputImage
+                }
             }
         )
         
