@@ -7,15 +7,27 @@
 public enum MarkerImageFormat: Equatable, Hashable, Sendable {
     case still(Still)
     case animated(Animated)
-    
+}
+
+extension MarkerImageFormat {
     public enum Still: String, CaseIterable, Sendable {
         case png
         case jpg
     }
-    
+}
+
+extension MarkerImageFormat.Still: Identifiable {
+    public var id: RawValue { rawValue }
+}
+
+extension MarkerImageFormat {
     public enum Animated: String, CaseIterable, Sendable {
         case gif
     }
+}
+
+extension MarkerImageFormat.Animated: Identifiable {
+    public var id: RawValue { rawValue }
 }
 
 extension MarkerImageFormat: RawRepresentable {
@@ -37,6 +49,17 @@ extension MarkerImageFormat: RawRepresentable {
             return fmt.rawValue
         case let .animated(fmt):
             return fmt.rawValue
+        }
+    }
+}
+
+extension MarkerImageFormat: Identifiable {
+    public var id: RawValue {
+        switch self {
+        case .still(let format):
+            return "still-\(format.id)"
+        case .animated(let format):
+            return "animated-\(format.id)"
         }
     }
 }
