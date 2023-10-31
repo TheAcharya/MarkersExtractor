@@ -69,7 +69,7 @@ extension StillImageBatchExtractor {
                 batchResult.addError(for: descriptor, error)
             }
             
-            progress.completedUnitCount += 1
+            self.progress.completedUnitCount += 1
         }
         
         // TODO: throw error if `isBatchFinished == false`?
