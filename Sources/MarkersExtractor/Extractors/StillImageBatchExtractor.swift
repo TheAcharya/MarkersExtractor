@@ -26,7 +26,7 @@ final class StillImageBatchExtractor: NSObject, ProgressReporting {
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
-        progress = Progress(totalUnitCount: Int64(conversion.descriptors.count))
+        progress = Progress()
     }
 }
 
@@ -36,6 +36,9 @@ extension StillImageBatchExtractor {
     /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
     /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully or partially.
     func convert() async throws -> StillImageBatchExtractorResult {
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = Int64(conversion.descriptors.count)
+        
         let generator = imageGenerator()
         
         var batchResult = StillImageBatchExtractorResult()
@@ -65,6 +68,8 @@ extension StillImageBatchExtractor {
             case let .failure(error):
                 batchResult.addError(for: descriptor, error)
             }
+            
+            progress.completedUnitCount += 1
         }
         
         // TODO: throw error if `isBatchFinished == false`?
