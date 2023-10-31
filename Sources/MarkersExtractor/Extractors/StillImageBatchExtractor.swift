@@ -1,5 +1,5 @@
 //
-//  ImageExtractor.swift
+//  StillImageBatchExtractor.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -12,7 +12,7 @@ import OrderedCollections
 import TimecodeKit
 
 /// Extract one or more images from a video asset.
-final class ImageExtractor: NSObject, ProgressReporting {
+final class StillImageBatchExtractor: NSObject, ProgressReporting {
     // MARK: - Properties
     
     private let logger: Logger
@@ -32,8 +32,8 @@ final class ImageExtractor: NSObject, ProgressReporting {
 
 // MARK: - Convert
 
-extension ImageExtractor {
-    /// - Throws: ``ImageExtractorError``
+extension StillImageBatchExtractor {
+    /// - Throws: ``StillImageBatchExtractorError``
     func convert() async throws {
         let generator = imageGenerator()
         
@@ -42,7 +42,7 @@ extension ImageExtractor {
         var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
         var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
         
-        var result: Result<Void, ImageExtractorError> = .failure(
+        var result: Result<Void, StillImageBatchExtractorError> = .failure(
             .internalInconsistency("Image generation could not start.")
         )
 
@@ -116,7 +116,7 @@ extension ImageExtractor {
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         frameName: String,
         label: String?
-    ) -> Result<Bool, ImageExtractorError> {
+    ) -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
             let image = conversion.imageFilter?(result.image, label) ?? result.image
@@ -166,7 +166,7 @@ extension ImageExtractor {
 
 // MARK: - Types
 
-extension ImageExtractor {
+extension StillImageBatchExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
         let outputFolder: URL
@@ -181,8 +181,8 @@ extension ImageExtractor {
     }
 }
 
-/// Static image extraction error.
-public enum ImageExtractorError: LocalizedError {
+/// Still image extraction error.
+public enum StillImageBatchExtractorError: LocalizedError {
     case internalInconsistency(_ verboseError: String)
     case unreadableFile
     case unsupportedType

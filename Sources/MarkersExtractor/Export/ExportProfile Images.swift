@@ -167,7 +167,7 @@ class ImagesWriter {
     }
     
     func write() async throws {
-        let conversion = ImageExtractor.ConversionSettings(
+        let conversion = StillImageBatchExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
             outputFolder: outputURL,
             descriptors: descriptors,
@@ -181,13 +181,13 @@ class ImagesWriter {
             }
         )
         
-        let extractor = ImageExtractor(conversion, logger: logger)
+        let extractor = StillImageBatchExtractor(conversion, logger: logger)
         exportProfileProgress?.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
         
         do {
             try await extractor.convert()
-        } catch let err as ImageExtractorError {
-            throw MarkersExtractorError.extraction(.image(.staticImage(err)))
+        } catch let err as StillImageBatchExtractorError {
+            throw MarkersExtractorError.extraction(.image(.stillImage(err)))
         } catch {
             throw MarkersExtractorError.extraction(.image(.generic(
                 "Error while generating images: \(error.localizedDescription)"
