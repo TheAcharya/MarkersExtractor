@@ -47,7 +47,7 @@ extension ExportProfile {
             "Generating \(media.imageSettings.format.rawValue.uppercased()) images for markers."
         )
         
-        let imageDescriptors = makeImageDescriptors(
+        let imageDescriptors = try makeImageDescriptors(
             markers: markers,
             preparedMarkers: preparedMarkers,
             imageLabelFields: media.imageSettings.labelFields,
@@ -97,7 +97,14 @@ extension ExportProfile {
         imageLabelIncludeHeaders: Bool,
         isVideoPresent: Bool,
         isSingleFrame: Bool
-    ) -> [ImageDescriptor] {
+    ) throws -> [ImageDescriptor] {
+        // TODO: factor out this validation, we shouldn't need both [Marker] and [PreparedMarker]
+        guard markers.count == preparedMarkers.count else {
+            throw MarkersExtractorError.extraction(
+                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+            )
+        }
+        
         let imageFileNames = preparedMarkers.map { $0.imageFileName }
         
         // if no video - grabbing first frame from video placeholder
@@ -105,10 +112,18 @@ extension ExportProfile {
             isVideoPresent ? $0.position : .init(.zero, at: $0.frameRate())
         }
         
-        let labels = makeImageLabelText(preparedMarkers: preparedMarkers,
-                                        imageLabelFields: imageLabelFields,
-                                        imageLabelCopyright: imageLabelCopyright,
-                                        includeHeaders: imageLabelIncludeHeaders)
+        let labels = makeImageLabelText(
+            preparedMarkers: preparedMarkers,
+            imageLabelFields: imageLabelFields,
+            imageLabelCopyright: imageLabelCopyright,
+            includeHeaders: imageLabelIncludeHeaders
+        )
+        
+        guard markers.count == labels.count else {
+            throw MarkersExtractorError.extraction(
+                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+            )
+        }
         
         var descriptors = zip(zip(markerTimecodes, imageFileNames), labels)
             .map {
@@ -130,17 +145,11 @@ extension ExportProfile {
         imageLabelCopyright: String?,
         includeHeaders: Bool
     ) -> [String] {
-        var imageLabels: [String] = []
-        
-        if !imageLabelFields.isEmpty {
-            imageLabels.append(
-                contentsOf: makeLabels(
-                    headers: imageLabelFields,
-                    includeHeaders: includeHeaders,
-                    preparedMarkers: preparedMarkers
-                )
-            )
-        }
+        var imageLabels: [String] = makeLabels(
+            headers: imageLabelFields,
+            includeHeaders: includeHeaders,
+            preparedMarkers: preparedMarkers
+        )
         
         // add copyright
         if let imageLabelCopyright {

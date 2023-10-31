@@ -89,6 +89,7 @@ extension MarkersExtractorError {
         case filePermission(_ message: String)
         case outputFolderAlreadyExists(_ message: String)
         case image(_ imageGenerationError: ImageGenerationError)
+        case internalInconsistency(_ message: String)
         
         public var errorDescription: String? {
             switch self {
@@ -108,6 +109,8 @@ extension MarkersExtractorError {
                 return message
             case let .image(imageGenerationError):
                 return imageGenerationError.errorDescription
+            case let .internalInconsistency(message):
+                return message
             }
         }
         
