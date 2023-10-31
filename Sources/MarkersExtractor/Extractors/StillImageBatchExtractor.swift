@@ -150,9 +150,9 @@ extension StillImageBatchExtractor {
 
 extension StillImageBatchExtractor {
     struct ConversionSettings {
+        let descriptors: [ImageDescriptor]
         let sourceMediaFile: URL
         let outputFolder: URL
-        let descriptors: [ImageDescriptor]
         let frameFormat: MarkerImageFormat.Still
         
         /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`

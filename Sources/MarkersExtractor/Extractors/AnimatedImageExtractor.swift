@@ -301,9 +301,9 @@ extension AnimatedImageExtractor {
 
 extension AnimatedImageExtractor {
     struct ConversionSettings {
+        var timecodeRange: ClosedRange<Timecode>?
         let sourceMediaFile: URL
         let outputFile: URL
-        var timecodeRange: ClosedRange<Timecode>?
         var dimensions: CGSize?
         var outputFPS: Double
         let imageFilter: ((CGImage) async -> CGImage)?

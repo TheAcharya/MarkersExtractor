@@ -21,11 +21,10 @@ protocol ImageWriterProtocol: ProgressReporting {
 }
 
 /// Generate animated images on disk.
-/// For the time being, the only format supported is Animated GIF.
 class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
-    let videoPath: URL
-    let outputURL: URL
+    let sourceMediaFile: URL
+    let outputFolder: URL
     let gifFPS: Double
     let gifSpan: TimeInterval
     let gifDimensions: CGSize?
@@ -38,8 +37,8 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     
     init(
         descriptors: [ImageDescriptor],
-        videoPath: URL,
-        outputURL: URL,
+        sourceMediaFile: URL,
+        outputFolder: URL,
         gifFPS: Double,
         gifSpan: TimeInterval,
         gifDimensions: CGSize?,
@@ -48,8 +47,8 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         logger: Logger? = nil
     ) {
         self.descriptors = descriptors
-        self.videoPath = videoPath
-        self.outputURL = outputURL
+        self.sourceMediaFile = sourceMediaFile
+        self.outputFolder = outputFolder
         self.gifFPS = gifFPS
         self.gifSpan = gifSpan
         self.gifDimensions = gifDimensions
@@ -66,15 +65,15 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         await withThrowingTaskGroup(of: Void.self) { taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [self] in
-                    try await process(descriptor: descriptor)
+                    try await write(descriptor: descriptor)
                     progress.completedUnitCount += 1
                 }
             }
         }
     }
     
-    private func process(descriptor: ImageDescriptor) async throws {
-        let outputFile = outputURL.appendingPathComponent(descriptor.filename)
+    private func write(descriptor: ImageDescriptor) async throws {
+        let outputFile = outputFolder.appendingPathComponent(descriptor.filename)
         
         var delta = descriptor.timecode
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
@@ -84,9 +83,9 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         let timeRange = timeIn ... timeOut
         
         let conversion = AnimatedImageExtractor.ConversionSettings(
-            sourceMediaFile: videoPath,
-            outputFile: outputFile,
             timecodeRange: timeRange,
+            sourceMediaFile: sourceMediaFile,
+            outputFile: outputFile,
             dimensions: gifDimensions,
             outputFPS: gifFPS,
             imageFilter: { [weak self] inputImage in
@@ -114,9 +113,10 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         } catch let err as AnimatedImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
         } catch {
+            let filename = descriptor.filename.quoted
+            let err = error.localizedDescription
             throw MarkersExtractorError.extraction(.image(.generic(
-                "Error while generating animated thumbnail \(outputURL.lastPathComponent.quoted):"
-                + " \(error.localizedDescription)"
+                "Error while generating animated thumbnail \(filename): \(err)"
             )))
         }
     }
@@ -125,9 +125,10 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
 /// Generate still images on disk.
 class ImagesWriter: NSObject, ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
-    let videoPath: URL
-    let outputURL: URL
+    let sourceMediaFile: URL
+    let outputFolder: URL
     let imageFormat: MarkerImageFormat.Still
+    /// Quality for compressed image formats (0.0 ... 1.0)
     let imageJPGQuality: Double
     let imageDimensions: CGSize?
     let imageLabelProperties: MarkerLabelProperties
@@ -140,8 +141,8 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
     
     init(
         descriptors: [ImageDescriptor],
-        videoPath: URL,
-        outputURL: URL,
+        sourceMediaFile: URL,
+        outputFolder: URL,
         imageFormat: MarkerImageFormat.Still,
         imageJPGQuality: Double,
         imageDimensions: CGSize?,
@@ -149,8 +150,8 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
         logger: Logger? = nil
     ) {
         self.descriptors = descriptors
-        self.videoPath = videoPath
-        self.outputURL = outputURL
+        self.sourceMediaFile = sourceMediaFile
+        self.outputFolder = outputFolder
         self.imageFormat = imageFormat
         self.imageJPGQuality = imageJPGQuality
         self.imageDimensions = imageDimensions
@@ -158,9 +159,9 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         
         let conversion = StillImageBatchExtractor.ConversionSettings(
-            sourceMediaFile: videoPath,
-            outputFolder: outputURL,
             descriptors: descriptors,
+            sourceMediaFile: sourceMediaFile,
+            outputFolder: outputFolder,
             frameFormat: imageFormat,
             jpgQuality: imageJPGQuality,
             dimensions: imageDimensions,

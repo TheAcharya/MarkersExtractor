@@ -64,7 +64,7 @@ extension ExportProfile {
                 isVideoPresent: isVideoPresent,
                 isSingleFrame: isSingleFrame,
                 media: media,
-                outputURL: outputURL,
+                outputFolder: outputURL,
                 logger: &logger,
                 parentProgress: ParentProgress(progress: progress, unitCount: thumbnailsProgressUnitCount)
             )

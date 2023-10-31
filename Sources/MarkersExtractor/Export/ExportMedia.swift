@@ -25,7 +25,7 @@ extension ExportProfile {
         isVideoPresent: Bool,
         isSingleFrame: Bool,
         media: ExportMedia,
-        outputURL: URL,
+        outputFolder: URL,
         logger: inout Logger,
         parentProgress: ParentProgress?
     ) async throws {
@@ -62,8 +62,8 @@ extension ExportProfile {
         case let .still(stillImageFormat):
             writer = ImagesWriter(
                 descriptors: imageDescriptors,
-                videoPath: videoURL,
-                outputURL: outputURL,
+                sourceMediaFile: videoURL,
+                outputFolder: outputFolder,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: media.imageSettings.quality,
                 imageDimensions: media.imageSettings.dimensions,
@@ -72,8 +72,8 @@ extension ExportProfile {
         case let .animated(animatedImageFormat):
             writer = AnimatedImagesWriter(
                 descriptors: imageDescriptors,
-                videoPath: videoURL,
-                outputURL: outputURL,
+                sourceMediaFile: videoURL,
+                outputFolder: outputFolder,
                 gifFPS: media.imageSettings.gifFPS,
                 gifSpan: media.imageSettings.gifSpan,
                 gifDimensions: media.imageSettings.dimensions,
