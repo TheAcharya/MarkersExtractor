@@ -120,7 +120,9 @@ extension AnimatedImageExtractor {
         
         let gifDestination = try initGIF(framesCount: times.count)
 
-        var result: Result<Void, AnimatedImageExtractorError> = .failure(.invalidSettings)
+        var result: Result<Void, AnimatedImageExtractorError> = .failure(
+            .internalInconsistency("Image generation could not start.")
+        )
 
         let group = DispatchGroup()
         group.enter()
@@ -129,7 +131,7 @@ extension AnimatedImageExtractor {
             defer { group.leave() }
             
             guard let self = self else {
-                result = .failure(.invalidSettings)
+                result = .failure(.internalInconsistency("No reference to image extractor."))
                 return
             }
 
@@ -259,7 +261,7 @@ extension AnimatedImageExtractor {
 
 /// Animated image extraction error.
 public enum AnimatedImageExtractorError: LocalizedError {
-    case invalidSettings
+    case internalInconsistency(_ verboseError: String)
     case unreadableFile
     case noVideoTracks
     case couldNotDetermineFrameRate(Error)
@@ -273,8 +275,8 @@ public enum AnimatedImageExtractorError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .invalidSettings:
-            return "Invalid settings."
+        case let .internalInconsistency(verboseError):
+            return "Internal error occurred: \(verboseError)"
         case .unreadableFile:
             return "The selected file is no longer readable."
         case .noVideoTracks:
