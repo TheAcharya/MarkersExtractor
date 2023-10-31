@@ -16,9 +16,13 @@ public struct ImageDescriptor: Sendable {
     let label: String?
 }
 
+protocol ImageWriterProtocol: ProgressReporting {
+    func write() async throws
+}
+
 /// Generate animated images on disk.
 /// For the time being, the only format supported is Animated GIF.
-class AnimatedImagesWriter {
+class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
     let videoPath: URL
     let outputURL: URL
@@ -128,7 +132,7 @@ class AnimatedImagesWriter {
 }
 
 /// Generate still images on disk.
-class ImagesWriter {
+class ImagesWriter: NSObject, ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
     let videoPath: URL
     let outputURL: URL

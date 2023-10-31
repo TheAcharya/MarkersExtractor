@@ -57,9 +57,10 @@ extension ExportProfile {
             isSingleFrame: isSingleFrame
         )
         
+        let writer: ImageWriterProtocol
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try await ImagesWriter(
+            writer = ImagesWriter(
                 descriptors: imageDescriptors,
                 videoPath: videoURL,
                 outputURL: outputURL,
@@ -70,9 +71,8 @@ extension ExportProfile {
                 exportProfileProgress: progress,
                 progressUnitCount: progressUnitCount
             )
-            .write()
         case let .animated(animatedImageFormat):
-            try await AnimatedImagesWriter(
+            writer = AnimatedImagesWriter(
                 descriptors: imageDescriptors,
                 videoPath: videoURL,
                 outputURL: outputURL,
@@ -84,8 +84,9 @@ extension ExportProfile {
                 exportProfileProgress: progress,
                 progressUnitCount: progressUnitCount
             )
-            .write()
         }
+        
+        try await writer.write()
     }
     
     /// - Returns: An array of marker image descriptors.
