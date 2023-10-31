@@ -54,7 +54,7 @@ extension StillImageBatchExtractor {
         generator.generateCGImagesAsynchronously(
             forTimePoints: times,
             updating: progress
-        ) { [weak self] imageResult in
+        ) { [weak self] time, imageResult in
             defer { group.leave() }
             
             guard let self = self else {

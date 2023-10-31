@@ -129,7 +129,7 @@ extension AnimatedImageExtractor {
         let proposedImageCount = times.count
         for _ in 0 ..< proposedImageCount { group.enter() }
 
-        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
+        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] time, imageResult in
             defer { group.leave() }
             
             guard let self = self else {

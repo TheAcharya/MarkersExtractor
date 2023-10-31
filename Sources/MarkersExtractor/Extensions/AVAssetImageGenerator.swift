@@ -64,7 +64,7 @@ extension AVAssetImageGenerator {
     func generateCGImagesAsynchronously(
         forTimePoints timePoints: [CMTime],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (Swift.Result<CompletionHandlerResult, Error>) -> Void
+        completionHandler: @escaping (_ time: CMTime, _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
     ) {
         let times = timePoints.map { NSValue(time: $0) }
         
@@ -90,12 +90,14 @@ extension AVAssetImageGenerator {
                         errorMsg += " \(error.localizedDescription)"
                     }
                     completionHandler(
+                        requestedTime,
                         .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
                     )
                     return
                 }
                 
                 completionHandler(
+                    requestedTime,
                     .success(
                         CompletionHandlerResult(
                             image: image,
@@ -122,12 +124,14 @@ extension AVAssetImageGenerator {
                         guard let emptyImage: CGImage = .empty else {
                             let errorMsg = "\(baseErrorMessage) \(error.localizedDescription)"
                             completionHandler(
+                                requestedTime,
                                 .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
                             )
                             return
                         }
                         
                         completionHandler(
+                            requestedTime,
                             .success(
                                 CompletionHandlerResult(
                                     image: emptyImage,
@@ -163,15 +167,14 @@ extension AVAssetImageGenerator {
                 }
                 
                 if let error = error {
-                    completionHandler(.failure(error))
+                    completionHandler(requestedTime, .failure(error))
                 } else {
-                    completionHandler(.failure(
-                        MarkersExtractorError.extraction(.image(.generic(baseErrorMessage)))
-                    ))
+                    let error = MarkersExtractorError.extraction(.image(.generic(baseErrorMessage)))
+                    completionHandler(requestedTime, .failure(error))
                 }
                 
             case .cancelled:
-                completionHandler(.failure(CancellationError()))
+                completionHandler(requestedTime, .failure(CancellationError()))
                 
             @unknown default:
                 assertionFailure(
