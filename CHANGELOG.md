@@ -6,9 +6,16 @@
 
 - Updated README and added new icon thanks to [Bor Jen Goh](https://www.artstation.com/borjengoh)
 
-### Refinements
+### New Features
 
-- Now produces more granular errors (#46)
+- Thumbnail image generation is now multithreaded to improve performance (#49)
+- CLI now outputs progress percentage to the console (#31)
+
+### Library Refinements
+
+- Now throws more granular errors (#46)
+- Most concrete types now conform to `Sendable`
+- `MarkersExtractor` now conforms to `ProgressReporting` (#31)
 - Internal refactors and improvements
 
 ## [0.2.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.0) (2023-04-28)
