@@ -10,7 +10,7 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-struct ImageDescriptor {
+public struct ImageDescriptor: Sendable {
     let timecode: Timecode
     let name: String
     let label: String?
@@ -196,12 +196,10 @@ class ImagesWriter {
             let result = try await extractor.convert()
             // post errors to console if operation partially completed
             for error in result.errors {
-                // TODO: fix this after refactoring async image generation method to use ImageDescriptor instead of CMTime
-                // let tc = descriptor.timecode.stringValue()
-                // let markerName = descriptor.name.quoted
+                let tc = error.descriptor.timecode.stringValue()
+                let markerName = error.descriptor.name.quoted
                 let err = error.error.localizedDescription
-                // logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
-                logger.warning("Error while generating image for marker at \(error.time): \(err)")
+                logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
             }
         } catch let err as StillImageBatchExtractorError {
             throw MarkersExtractorError.extraction(.image(.stillImage(err)))

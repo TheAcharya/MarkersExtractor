@@ -38,38 +38,18 @@ extension StillImageBatchExtractor {
     func convert() async throws -> StillImageBatchExtractorResult {
         let generator = imageGenerator()
         
-        // TODO: these iterators need to go. it's super brittle. refactor to process all variables together in a single descriptor.
-        let times = conversion.descriptors.map(\.timecode).map(\.cmTimeValue)
-        var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
-        var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
-        
         var batchResult = StillImageBatchExtractorResult()
         var isBatchFinished: Bool = false
         
-        let group = DispatchGroup()
-        let proposedImageCount = times.count
-        for _ in 0 ..< proposedImageCount { group.enter() }
-
-        generator.generateCGImagesAsynchronously(
-            forTimePoints: times,
-            updating: progress
-        ) { [weak self] time, imageResult in
-            defer { group.leave() }
-            
+        try await generator.images(forTimesIn: conversion.descriptors, updating: progress) 
+        { [weak self] descriptor, imageResult in
             guard let self = self else {
-                batchResult.addError(at: time, .internalInconsistency("No reference to image extractor."))
+                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
-            guard let frameName = frameNamesIterator.next() else {
-                batchResult.addError(at: time, .internalInconsistency("Image extractor depleted names."))
-                return
-            }
-            
-            guard let label = labelsIterator.next() else {
-                batchResult.addError(at: time, .internalInconsistency("Image extractor depleted labels."))
-                return
-            }
+            let frameName = descriptor.name
+            let label = descriptor.label
             
             let frameResult = self.processAndWriteFrameToDisk(
                 for: imageResult,
@@ -83,18 +63,14 @@ extension StillImageBatchExtractor {
                     isBatchFinished = true
                 }
             case let .failure(error):
-                batchResult.addError(at: time, error)
+                batchResult.addError(for: descriptor, error)
             }
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            group.notify(queue: .main) {
-                // TODO: throw error if `isBatchFinished == false`?
-                _ = isBatchFinished
-                
-                continuation.resume(with: .success(batchResult))
-            }
-        }
+        // TODO: throw error if `isBatchFinished == false`?
+        _ = isBatchFinished
+        
+        return batchResult
     }
 
     private func imageGenerator() -> AVAssetImageGenerator {
@@ -210,13 +186,13 @@ public enum StillImageBatchExtractorError: LocalizedError {
 }
 
 public struct StillImageBatchExtractorResult: Sendable {
-    public var errors: [(time: CMTime, error: StillImageBatchExtractorError)] = []
+    public var errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []
     
-    init(errors: [(time: CMTime, error: StillImageBatchExtractorError)] = []) {
+    init(errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []) {
         self.errors = errors
     }
     
-    mutating func addError(at time: CMTime, _ error: StillImageBatchExtractorError) {
-        errors.append((time: time, error: error))
+    mutating func addError(for descriptor: ImageDescriptor, _ error: StillImageBatchExtractorError) {
+        errors.append((descriptor: descriptor, error: error))
     }
 }

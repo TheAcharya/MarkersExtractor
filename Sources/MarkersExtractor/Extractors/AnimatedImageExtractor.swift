@@ -110,9 +110,13 @@ extension AnimatedImageExtractor {
             by: frameDuration
         )
         
-        let times = frameStride
+        let timecodes = frameStride
             .map { Timecode(.realTime(seconds: $0), at: frameRate, by: .clamping) }
-            .map(\.cmTimeValue)
+        
+        // map to ImageDescriptor for richer error reporting
+        let descriptors: [ImageDescriptor] = timecodes.map {
+            ImageDescriptor(timecode: $0, name: "Animation Frame", label: nil)
+        }
         
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
@@ -120,20 +124,14 @@ extension AnimatedImageExtractor {
             ]
         ]
         
-        let gifDestination = try initGIF(framesCount: times.count)
+        let gifDestination = try initGIF(framesCount: descriptors.count)
 
         var batchResult = AnimatedImageExtractorResult()
         var isBatchFinished: Bool = false
         
-        let group = DispatchGroup()
-        let proposedImageCount = times.count
-        for _ in 0 ..< proposedImageCount { group.enter() }
-
-        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] time, imageResult in
-            defer { group.leave() }
-            
+        try await generator.images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
             guard let self = self else {
-                batchResult.addError(at: time, .internalInconsistency("No reference to image extractor."))
+                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
@@ -148,26 +146,20 @@ extension AnimatedImageExtractor {
                     isBatchFinished = true
                 }
             } catch let error as AnimatedImageExtractorError {
-                batchResult.addError(at: time, error)
+                batchResult.addError(for: descriptor, error)
             } catch {
-                batchResult.addError(at: time, .generateFrameFailed(error))
+                batchResult.addError(for: descriptor, .generateFrameFailed(error))
             }
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            group.notify(queue: .main) {
-                // TODO: throw error if `isBatchFinished == false`?
-                _ = isBatchFinished
-                
-                if !CGImageDestinationFinalize(gifDestination) {
-                    continuation.resume(
-                        throwing: AnimatedImageExtractorError.gifFinalizationFailed
-                    )
-                }
-                
-                continuation.resume(with: .success(batchResult))
-            }
+        // TODO: throw error if `isBatchFinished == false`?
+        _ = isBatchFinished
+        
+        if !CGImageDestinationFinalize(gifDestination) {
+            throw AnimatedImageExtractorError.gifFinalizationFailed
         }
+        
+        return batchResult
     }
 
     private func initGIF(framesCount: Int) throws -> CGImageDestination {
@@ -307,13 +299,13 @@ public enum AnimatedImageExtractorError: LocalizedError {
 }
 
 public struct AnimatedImageExtractorResult: Sendable {
-    public var errors: [(time: CMTime, error: AnimatedImageExtractorError)] = []
+    public var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
     
-    init(errors: [(time: CMTime, error: AnimatedImageExtractorError)] = []) {
+    init(errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []) {
         self.errors = errors
     }
     
-    mutating func addError(at time: CMTime, _ error: AnimatedImageExtractorError) {
-        errors.append((time: time, error: error))
+    mutating func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
+        errors.append((descriptor: descriptor, error: error))
     }
 }
