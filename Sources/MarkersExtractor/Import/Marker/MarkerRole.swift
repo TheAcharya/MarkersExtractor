@@ -51,7 +51,7 @@ extension Array where Element == MarkerRole {
 
 // MARK: MarkerRoles
 
-public struct MarkerRoles: Equatable, Hashable {
+public struct MarkerRoles: Equatable, Hashable, Sendable {
     public var video: String?
     public var isVideoDefault: Bool
     public var audio: String?
