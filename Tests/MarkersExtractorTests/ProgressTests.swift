@@ -52,7 +52,7 @@ final class ProgressTests: XCTestCase {
         XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
     }
     
-    func testStillImageBatchExtractor() throws {
+    func testStillImageBatchExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = try Timecode(.zero, at: .fps24) ... Timecode(.components(f: 10), at: .fps24)
@@ -72,6 +72,12 @@ final class ProgressTests: XCTestCase {
                 imageFilter: nil
             )
         )
+        
+        XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
+        
+        let _ = try await extractor.convert()
+        
+        XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
     }
 }
 
