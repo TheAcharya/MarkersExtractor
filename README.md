@@ -75,7 +75,7 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 ```plain
 $ markers-extractor-cli --help
-OVERVIEW: Tool to extract markers from Final Cut Pro FCPXML(D).
+OVERVIEW: Tool to extract markers from Final Cut Pro FCPXML/FCPXMLD.
 
 https://github.com/TheAcharya/MarkersExtractor
 
