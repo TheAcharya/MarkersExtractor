@@ -32,10 +32,9 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     let imageFormat: MarkerImageFormat.Animated
     let imageLabelProperties: MarkerLabelProperties
     let logger: Logger
-    let exportProfileProgress: Progress?
-    let progressUnitCount: Int64
     
-    private var filesProgress: Progress? = nil
+    // ProgressReporting
+    let progress: Progress = Progress()
     
     init(
         descriptors: [ImageDescriptor],
@@ -46,9 +45,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         gifDimensions: CGSize?,
         imageFormat: MarkerImageFormat.Animated,
         imageLabelProperties: MarkerLabelProperties,
-        logger: Logger? = nil,
-        exportProfileProgress: Progress? = nil,
-        progressUnitCount: Int64 = 0
+        logger: Logger? = nil
     ) {
         self.descriptors = descriptors
         self.videoPath = videoPath
@@ -59,24 +56,18 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         self.imageFormat = imageFormat
         self.imageLabelProperties = imageLabelProperties
         self.logger = logger ?? Logger(label: "\(Self.self)")
-        self.exportProfileProgress = exportProfileProgress
-        self.progressUnitCount = progressUnitCount
     }
     
     /// Write all images concurrently (in parallel) by multithreading.
     func write() async throws {
-        if let exportProfileProgress {
-            filesProgress = Progress(
-                totalUnitCount: Int64(descriptors.count),
-                parent: exportProfileProgress,
-                pendingUnitCount: progressUnitCount
-            )
-        }
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = Int64(descriptors.count)
         
         await withThrowingTaskGroup(of: Void.self) { taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [self] in
                     try await process(descriptor: descriptor)
+                    progress.completedUnitCount += 1
                 }
             }
         }
@@ -110,7 +101,9 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         )
         
         do {
-            let result = try await AnimatedImageExtractor(conversion, logger: logger).convert()
+            let extractor = try AnimatedImageExtractor(conversion, logger: logger)
+            let result = try await extractor.convert()
+            
             // post errors to console if operation partially completed
             for error in result.errors {
                 let tc = descriptor.timecode.stringValue()
@@ -126,8 +119,6 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
                 + " \(error.localizedDescription)"
             )))
         }
-        
-        filesProgress?.completedUnitCount += 1
     }
 }
 
@@ -141,8 +132,11 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
     let imageDimensions: CGSize?
     let imageLabelProperties: MarkerLabelProperties
     let logger: Logger
-    let exportProfileProgress: Progress?
-    let progressUnitCount: Int64
+    
+    let extractor: StillImageBatchExtractor
+    
+    // ProgressReporting
+    let progress: Progress
     
     init(
         descriptors: [ImageDescriptor],
@@ -152,9 +146,7 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
         imageJPGQuality: Double,
         imageDimensions: CGSize?,
         imageLabelProperties: MarkerLabelProperties,
-        logger: Logger? = nil,
-        exportProfileProgress: Progress? = nil,
-        progressUnitCount: Int64 = 0
+        logger: Logger? = nil
     ) {
         self.descriptors = descriptors
         self.videoPath = videoPath
@@ -164,11 +156,7 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
         self.imageDimensions = imageDimensions
         self.imageLabelProperties = imageLabelProperties
         self.logger = logger ?? Logger(label: "\(Self.self)")
-        self.exportProfileProgress = exportProfileProgress
-        self.progressUnitCount = progressUnitCount
-    }
-    
-    func write() async throws {
+        
         let conversion = StillImageBatchExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
             outputFolder: outputURL,
@@ -176,9 +164,9 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             frameFormat: imageFormat,
             jpgQuality: imageJPGQuality,
             dimensions: imageDimensions,
-            imageFilter: { [weak self] inputImage, label in
-                if let self, let label {
-                    var labeler = ImageLabeler(labelProperties: self.imageLabelProperties, logger: self.logger)
+            imageFilter: { inputImage, label in
+                if let label {
+                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
                     return await labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
@@ -186,9 +174,11 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             }
         )
         
-        let extractor = StillImageBatchExtractor(conversion, logger: logger)
-        exportProfileProgress?.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
-        
+        extractor = StillImageBatchExtractor(conversion, logger: logger)
+        progress = extractor.progress
+    }
+    
+    func write() async throws {
         do {
             let result = try await extractor.convert()
             // post errors to console if operation partially completed

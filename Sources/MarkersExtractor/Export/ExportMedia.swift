@@ -27,7 +27,7 @@ extension ExportProfile {
         media: ExportMedia,
         outputURL: URL,
         logger: inout Logger,
-        progressUnitCount: Int64 = 0
+        parentProgress: ParentProgress?
     ) async throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
@@ -67,9 +67,7 @@ extension ExportProfile {
                 imageFormat: stillImageFormat,
                 imageJPGQuality: media.imageSettings.quality,
                 imageDimensions: media.imageSettings.dimensions,
-                imageLabelProperties: media.imageSettings.labelProperties,
-                exportProfileProgress: progress,
-                progressUnitCount: progressUnitCount
+                imageLabelProperties: media.imageSettings.labelProperties
             )
         case let .animated(animatedImageFormat):
             writer = AnimatedImagesWriter(
@@ -80,11 +78,12 @@ extension ExportProfile {
                 gifSpan: media.imageSettings.gifSpan,
                 gifDimensions: media.imageSettings.dimensions,
                 imageFormat: animatedImageFormat,
-                imageLabelProperties: media.imageSettings.labelProperties,
-                exportProfileProgress: progress,
-                progressUnitCount: progressUnitCount
+                imageLabelProperties: media.imageSettings.labelProperties
             )
         }
+        
+        // attach local progress to parent
+        parentProgress?.addChild(writer.progress)
         
         try await writer.write()
     }

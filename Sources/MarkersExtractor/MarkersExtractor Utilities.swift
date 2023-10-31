@@ -43,3 +43,26 @@ extension MarkersExtractor {
         return origDimensions * ratio
     }
 }
+
+public struct ParentProgress {
+    let progress: Progress
+    let pendingUnitCount: Int64
+    
+    init(progress: Progress, unitCount: Int64) {
+        self.progress = progress
+        self.pendingUnitCount = unitCount
+    }
+    
+    @_disfavoredOverload
+    init(progress: Progress, unitCount: Int) {
+        self.progress = progress
+        self.pendingUnitCount = Int64(unitCount)
+    }
+    
+    func addChild(_ child: Progress) {
+        progress.addChild(
+            child,
+            withPendingUnitCount: pendingUnitCount
+        )
+    }
+}

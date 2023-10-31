@@ -38,9 +38,12 @@ extension MarkersExtractor {
         logger.info("Using \(s.exportFormat.name) export profile.")
         logger.info("Extracting markers from \(s.fcpxml).")
         
-        var markers = try extractMarkers(progressUnitCount: 1) // increments progress by 1
+        // increments progress by 5%
+        var markers = try extractMarkers(
+            parentProgress: ParentProgress(progress: progress, unitCount: 5)
+        )
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
         markers = uniquingMarkerIDs(in: markers)
         
@@ -50,7 +53,7 @@ extension MarkersExtractor {
             return
         }
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
         if !EmbeddedResource.validateAll() {
             logger.warning(
@@ -83,17 +86,17 @@ extension MarkersExtractor {
             logger.info("Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted).")
         }
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
+        // increments progress by 80%
         try await export(
             projectName: projectName,
             projectStartTimecode: projectStartTimecode,
             media: media,
             markers: markers,
-            outputURL: outputURL
+            outputURL: outputURL,
+            parentProgress: ParentProgress(progress: progress, unitCount: 80)
         )
-        
-        progress.completedUnitCount += 1
         
         logger.info("Done")
     }

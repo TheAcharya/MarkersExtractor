@@ -20,12 +20,17 @@ extension ExportProfile {
         payload: Payload,
         createDoneFile: Bool,
         doneFilename: String,
-        logger: Logger? = nil
+        logger: Logger? = nil,
+        parentProgress: ParentProgress? = nil
     ) async throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
+        // export profile ProgressReporting
         progress.completedUnitCount = 0
-        progress.totalUnitCount = 100
+        progress.totalUnitCount = Self.defaultProgressTotalUnitCount
+        
+        // attach local progress to parent
+        parentProgress?.addChild(progress)
         
         // gather media info
         
@@ -61,7 +66,7 @@ extension ExportProfile {
                 media: media,
                 outputURL: outputURL,
                 logger: &logger,
-                progressUnitCount: thumbnailsProgressUnitCount
+                parentProgress: ParentProgress(progress: progress, unitCount: thumbnailsProgressUnitCount)
             )
         } else {
             progress.completedUnitCount += thumbnailsProgressUnitCount

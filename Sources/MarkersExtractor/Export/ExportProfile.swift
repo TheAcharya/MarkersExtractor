@@ -25,7 +25,8 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         payload: Payload,
         createDoneFile: Bool,
         doneFilename: String,
-        logger: Logger?
+        logger: Logger?,
+        parentProgress: ParentProgress?
     ) async throws
     
     /// Converts raw FCP markers to the native format needed for export.
@@ -63,5 +64,10 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
 }
 
 extension ExportProfile {
-    static var defaultProgress: Progress { Progress() }
+    static var defaultProgress: Progress {
+        Progress(totalUnitCount: defaultProgressTotalUnitCount)
+    }
+    
+    /// Arbitrary overall progress for export profile
+    static var defaultProgressTotalUnitCount: Int64 { 100 }
 }
