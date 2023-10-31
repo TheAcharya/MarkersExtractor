@@ -79,8 +79,8 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         var delta = descriptor.timecode
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
         
-        let timeIn = descriptor.timecode - delta
-        let timeOut = descriptor.timecode + delta
+        let timeIn = try descriptor.timecode.subtracting(delta, by: .clamping)
+        let timeOut = try descriptor.timecode.adding(delta, by: .clamping)
         let timeRange = timeIn ... timeOut
         
         let conversion = AnimatedImageExtractor.ConversionSettings(
