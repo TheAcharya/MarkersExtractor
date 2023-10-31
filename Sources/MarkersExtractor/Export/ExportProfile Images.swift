@@ -96,7 +96,7 @@ class AnimatedImagesWriter {
             outputFPS: gifFPS,
             imageFilter: { [weak self] inputImage in
                 if let self, let label = descriptor.label {
-                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
+                    var labeler = ImageLabeler(labelProperties: self.imageLabelProperties, logger: self.logger)
                     return await labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
@@ -174,7 +174,7 @@ class ImagesWriter {
             dimensions: imageDimensions,
             imageFilter: { [weak self] inputImage, label in
                 if let self, let label {
-                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
+                    var labeler = ImageLabeler(labelProperties: self.imageLabelProperties, logger: self.logger)
                     return await labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
