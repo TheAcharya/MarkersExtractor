@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum MarkerRole: Hashable, Equatable {
+public enum MarkerRole: Hashable, Equatable, Sendable {
     case video(String)
     case audio(String)
 }
@@ -171,7 +171,7 @@ extension MarkerRoles {
 
 // MARK: - MarkerRoleType
 
-public enum MarkerRoleType: String, CaseIterable {
+public enum MarkerRoleType: String, CaseIterable, Sendable {
     case video
     case audio
 }
