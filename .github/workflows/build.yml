@@ -25,15 +25,15 @@ on:
     - cron: '30 10 * * *'   # once a day @ 10:30am UTC (3:30am PST)
     
 jobs:
-  macOS-12:
+  macOS:
     name: macOS
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@main
     - name: Build
-      run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "generic/platform=macOS,name=Any Mac"
+      run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "generic/platform=macOS,name=Any Mac" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS"
+      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
 
 # xcodebuild test reference:
 # https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/08-automation.html

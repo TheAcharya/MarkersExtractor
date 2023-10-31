@@ -89,6 +89,7 @@ extension MarkersExtractorError {
         case filePermission(_ message: String)
         case outputFolderAlreadyExists(_ message: String)
         case image(_ imageGenerationError: ImageGenerationError)
+        case internalInconsistency(_ message: String)
         
         public var errorDescription: String? {
             switch self {
@@ -108,19 +109,21 @@ extension MarkersExtractorError {
                 return message
             case let .image(imageGenerationError):
                 return imageGenerationError.errorDescription
+            case let .internalInconsistency(message):
+                return message
             }
         }
         
         /// Wrapper for image extraction errors.
         /// Do not construct directly -- wrap in a ``MarkersExtractorError`` case instead.
         public enum ImageGenerationError: LocalizedError {
-            case staticImage(_ error: ImageExtractorError)
+            case stillImage(_ error: StillImageBatchExtractorError)
             case animatedImage(_ error: AnimatedImageExtractorError)
             case generic(_ message: String)
             
             public var errorDescription: String? {
                 switch self {
-                case let .staticImage(error):
+                case let .stillImage(error):
                     return error.errorDescription
                 case let .animatedImage(error):
                     return error.errorDescription

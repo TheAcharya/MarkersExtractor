@@ -21,23 +21,15 @@ extension ExportProfile {
         createDoneFile: Bool,
         doneFilename: String,
         logger: Logger? = nil
-    ) throws {
+    ) async throws {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
-        var isVideoPresent = false
-        var isSingleFrame: Bool?
-        var mediaInfo: ExportMarkerMediaInfo?
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = 100
         
-        if let media {
-            isVideoPresent = self.isVideoPresent(in: media.videoURL)
-            isSingleFrame = !isVideoPresent
-                && media.imageSettings.labelFields.isEmpty
-                && media.imageSettings.labelCopyright == nil
-            mediaInfo = .init(
-                imageFormat: media.imageSettings.format,
-                isSingleFrame: isSingleFrame!
-            )
-        }
+        // gather media info
+        
+        let (isVideoPresent, isSingleFrame, mediaInfo) = gatherMediaInfo(media: media)
         
         // prepare markers
         
@@ -55,18 +47,24 @@ extension ExportProfile {
         
         try exportIcons(from: markers, to: outputURL)
         
+        progress.completedUnitCount += 5
+        
         // thumbnail images
         
+        let thumbnailsProgressUnitCount: Int64 = 90
         if let media {
-            try exportThumbnails(
+            try await exportThumbnails(
                 markers: markers,
                 preparedMarkers: preparedMarkers,
                 isVideoPresent: isVideoPresent,
-                isSingleFrame: isSingleFrame ?? true,
+                isSingleFrame: isSingleFrame,
                 media: media,
                 outputURL: outputURL,
-                logger: &logger
+                logger: &logger,
+                progressUnitCount: thumbnailsProgressUnitCount
             )
+        } else {
+            progress.completedUnitCount += thumbnailsProgressUnitCount
         }
         
         // metadata manifest file
@@ -80,9 +78,32 @@ extension ExportProfile {
             let doneFileData = try doneFileContent(payload: payload)
             try saveDoneFile(at: outputURL, fileName: doneFilename, data: doneFileData)
         }
+        
+        progress.completedUnitCount += 5
     }
-    
-    // MARK: Helpers
+}
+
+// MARK: - Helpers
+
+extension ExportProfile {
+    private func gatherMediaInfo(
+        media: ExportMedia?
+    ) -> (isVideoPresent: Bool, isSingleFrame: Bool, mediaInfo: ExportMarkerMediaInfo?) {
+        guard let media else {
+            return (isVideoPresent: false, isSingleFrame: true, mediaInfo: nil)
+        }
+        
+        let isVideoPresent = self.isVideoPresent(in: media.videoURL)
+        let isSingleFrame = !isVideoPresent
+            && media.imageSettings.labelFields.isEmpty
+            && media.imageSettings.labelCopyright == nil
+        let mediaInfo = ExportMarkerMediaInfo(
+            imageFormat: media.imageSettings.format,
+            isSingleFrame: isSingleFrame
+        )
+        
+        return (isVideoPresent: isVideoPresent, isSingleFrame: isSingleFrame, mediaInfo: mediaInfo)
+    }
     
     private func exportIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })

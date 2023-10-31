@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum MarkerRole: Hashable, Equatable {
+public enum MarkerRole: Hashable, Equatable, Sendable {
     case video(String)
     case audio(String)
 }
@@ -51,7 +51,7 @@ extension Array where Element == MarkerRole {
 
 // MARK: MarkerRoles
 
-public struct MarkerRoles: Equatable, Hashable {
+public struct MarkerRoles: Equatable, Hashable, Sendable {
     public var video: String?
     public var isVideoDefault: Bool
     public var audio: String?
@@ -171,7 +171,7 @@ extension MarkerRoles {
 
 // MARK: - MarkerRoleType
 
-public enum MarkerRoleType: String, CaseIterable {
+public enum MarkerRoleType: String, CaseIterable, Sendable {
     case video
     case audio
 }

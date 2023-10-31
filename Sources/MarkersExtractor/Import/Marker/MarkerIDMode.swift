@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum MarkerIDMode: String, CaseIterable {
+public enum MarkerIDMode: String, CaseIterable, Sendable {
     case projectTimecode
     case name
     case notes

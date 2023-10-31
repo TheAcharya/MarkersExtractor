@@ -6,14 +6,14 @@
 
 import AppKit
 
-public struct MarkerLabelProperties {
-    public enum AlignHorizontal: String, CaseIterable {
+public struct MarkerLabelProperties: Sendable {
+    public enum AlignHorizontal: String, CaseIterable, Sendable {
         case left
         case center
         case right
     }
 
-    public enum AlignVertical: String, CaseIterable {
+    public enum AlignVertical: String, CaseIterable, Sendable {
         case top
         case center
         case bottom

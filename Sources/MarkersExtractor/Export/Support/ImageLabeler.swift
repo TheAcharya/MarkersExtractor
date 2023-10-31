@@ -9,27 +9,18 @@ import CoreText
 import Foundation
 import Logging
 
-class ImageLabeler {
-    private let logger: Logger
-
-    private var fontSizeCache: [[String]: CGFloat] = [:]
-    private var curText: String?
-
+struct ImageLabeler {
     let properties: MarkerLabelProperties
-    var textIter: IndexingIterator<[String]>
 
-    init(labelText: [String], labelProperties: MarkerLabelProperties, logger: Logger? = nil) {
+    private let logger: Logger
+    private var fontSizeCache: [[String]: CGFloat] = [:]
+
+    init(labelProperties: MarkerLabelProperties, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(ImageLabeler.self)")
         properties = labelProperties
-        textIter = labelText.makeIterator()
     }
 
-    func labelImage(image: CGImage) -> CGImage {
-        guard let textToDraw = curText else {
-            logger.warning("No label to mark image. Bypassing original image.")
-            return image
-        }
-
+    mutating func labelImage(image: CGImage, text: String) async -> CGImage {
         guard let context = initImageContext(for: image) else {
             logger.warning("Failed to initialize new image context. Bypassing original image.")
             return image
@@ -43,7 +34,7 @@ class ImageLabeler {
             in: CGRect(x: 0, y: 0, width: image.width, height: image.height)
         )
 
-        drawText(text: textToDraw, context: context, textRect: textRect)
+        await drawText(text: text, context: context, textRect: textRect)
 
         guard let newImage = context.makeImage() else {
             logger.warning("Failed to create labeled image. Bypassing original image.")
@@ -51,18 +42,6 @@ class ImageLabeler {
         }
 
         return newImage
-    }
-
-    func labelImageNextText(image: CGImage) -> CGImage {
-        nextText()
-        return labelImage(image: image)
-    }
-
-    func nextText() {
-        curText = textIter.next()
-        if curText == nil {
-            logger.warning("No more labels for marking images.")
-        }
     }
 
     private func initImageContext(for image: CGImage) -> CGContext? {
@@ -93,7 +72,7 @@ class ImageLabeler {
         )
     }
 
-    private func drawText(text: String, context: CGContext, textRect: CGRect) {
+    private mutating func drawText(text: String, context: CGContext, textRect: CGRect) async {
         let paragraphStyle = NSMutableParagraphStyle()
 
         switch properties.alignHorizontal {
@@ -111,7 +90,7 @@ class ImageLabeler {
             .paragraphStyle: paragraphStyle
         ]
 
-        let fontSize = calcFontSize(
+        let fontSize = await calcFontSize(
             for: text,
             attributes: stringAttributes,
             restraint: textRect.size
@@ -224,11 +203,11 @@ class ImageLabeler {
         context.restoreGState()
     }
 
-    private func calcFontSize(
+    private mutating func calcFontSize(
         for string: String,
         attributes: [NSAttributedString.Key: Any],
         restraint: CGSize
-    ) -> CGFloat {
+    ) async -> CGFloat {
         let sizeHash = [
             string,
             String(Int(restraint.height)),

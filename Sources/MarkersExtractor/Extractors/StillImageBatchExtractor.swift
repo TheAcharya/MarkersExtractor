@@ -1,5 +1,5 @@
 //
-//  ImageExtractor.swift
+//  StillImageBatchExtractor.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -12,79 +12,65 @@ import OrderedCollections
 import TimecodeKit
 
 /// Extract one or more images from a video asset.
-final class ImageExtractor {
+final class StillImageBatchExtractor: NSObject, ProgressReporting {
     // MARK: - Properties
     
     private let logger: Logger
     private let conversion: ConversionSettings
+    
+    // ProgressReporting
+    let progress: Progress
     
     // MARK: - Init
     
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
+        progress = Progress(totalUnitCount: Int64(conversion.descriptors.count))
     }
 }
 
 // MARK: - Convert
 
-extension ImageExtractor {
-    /// - Throws: ``ImageExtractorError``
-    func convert() throws {
-        try generateImages()
-    }
-    
-    // MARK: - Helpers
-    
-    /// - Throws: ``ImageExtractorError``
-    private func generateImages() throws {
+extension StillImageBatchExtractor {
+    /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully or partially.
+    func convert() async throws -> StillImageBatchExtractorResult {
         let generator = imageGenerator()
-        let times = conversion.timecodes.values.map(\.cmTimeValue)
-        var frameNamesIterator = conversion.timecodes.keys.makeIterator()
-
-        var result: Result<Void, ImageExtractorError> = .failure(.invalidSettings)
-
-        let group = DispatchGroup()
-        group.enter()
-
-        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
+        
+        var batchResult = StillImageBatchExtractorResult()
+        var isBatchFinished: Bool = false
+        
+        try await generator.images(forTimesIn: conversion.descriptors, updating: progress) 
+        { [weak self] descriptor, imageResult in
             guard let self = self else {
-                result = .failure(.invalidSettings)
-                group.leave()
+                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
-            guard let frameName = frameNamesIterator.next() else {
-                result = .failure(.labelsDepleted)
-                group.leave()
-                return
-            }
-
-            let frameResult = self.processAndWriteFrameToDisk(
+            let frameName = descriptor.name
+            let label = descriptor.label
+            
+            let frameResult = await self.processAndWriteFrameToDisk(
                 for: imageResult,
-                frameName: frameName
+                frameName: frameName,
+                label: label
             )
-
+            
             switch frameResult {
-            case let .success(finished):
-                if finished {
-                    result = .success(())
-                    group.leave()
+            case let .success(isFinished):
+                if isFinished {
+                    isBatchFinished = true
                 }
             case let .failure(error):
-                result = .failure(error)
-                group.leave()
+                batchResult.addError(for: descriptor, error)
             }
         }
-
-        group.wait()
-
-        switch result {
-        case let .failure(error):
-            throw error
-        case .success:
-            return
-        }
+        
+        // TODO: throw error if `isBatchFinished == false`?
+        _ = isBatchFinished
+        
+        return batchResult
     }
 
     private func imageGenerator() -> AVAssetImageGenerator {
@@ -105,11 +91,12 @@ extension ImageExtractor {
 
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
-        frameName: String
-    ) -> Result<Bool, ImageExtractorError> {
+        frameName: String,
+        label: String?
+    ) async -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
-            let image = conversion.imageFilter?(result.image) ?? result.image
+            let image = await conversion.imageFilter?(result.image, label) ?? result.image
 
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)
@@ -156,41 +143,38 @@ extension ImageExtractor {
 
 // MARK: - Types
 
-extension ImageExtractor {
+extension StillImageBatchExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
         let outputFolder: URL
-        let timecodes: OrderedDictionary<String, Timecode>
+        let descriptors: [ImageDescriptor]
         let frameFormat: MarkerImageFormat.Still
         
         /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`
         let jpgQuality: Double?
         
         let dimensions: CGSize?
-        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFilter: ((_ image: CGImage, _ label: String?) async -> CGImage)?
     }
 }
 
-/// Static image extraction error.
-public enum ImageExtractorError: LocalizedError {
-    case invalidSettings
+/// Still image extraction error.
+public enum StillImageBatchExtractorError: LocalizedError {
+    case internalInconsistency(_ verboseError: String)
     case unreadableFile
     case unsupportedType
-    case labelsDepleted
     case generateFrameFailed(Swift.Error)
     case addFrameFailed(Swift.Error)
     case writeFailed(Swift.Error)
     
     public var errorDescription: String? {
         switch self {
-        case .invalidSettings:
-            return "Invalid settings."
+        case let .internalInconsistency(verboseError):
+            return "Internal error occurred: \(verboseError)"
         case .unreadableFile:
             return "The selected file is no longer readable."
         case .unsupportedType:
             return "Image type is not supported."
-        case .labelsDepleted:
-            return "Image labels depleted before images."
         case let .generateFrameFailed(error):
             return "Failed to generate frame: \(error.localizedDescription)"
         case let .addFrameFailed(error):
@@ -198,5 +182,17 @@ public enum ImageExtractorError: LocalizedError {
         case let .writeFailed(error):
             return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
+    }
+}
+
+public struct StillImageBatchExtractorResult: Sendable {
+    public var errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []
+    
+    init(errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []) {
+        self.errors = errors
+    }
+    
+    mutating func addError(for descriptor: ImageDescriptor, _ error: StillImageBatchExtractorError) {
+        errors.append((descriptor: descriptor, error: error))
     }
 }

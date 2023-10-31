@@ -4,30 +4,6 @@
 //  Licensed under MIT License
 //
 
-// Code in this file is derived from:
-// https://github.com/sindresorhus/Gifski/blob/main/Gifski/Utilities.swift
-//
-// MIT License
-//
-// © 2019 Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-// © 2019 Kornel Lesiński <kornel@pngquant.org> (gif.ski)
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-// associated documentation files (the "Software"), to deal in the Software without restriction,
-// including without limitation the rights to use, copy, modify, merge, publish, distribute,
-// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or
-// substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT
-// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 import AppKit
 import AVFoundation
 
@@ -41,120 +17,126 @@ extension AVAssetImageGenerator {
         let isFinished: Bool
         let isFinishedIgnoreImage: Bool
     }
-
-    /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its
-    /// usage in each
-    /// `completionHandler` call as it can change if frames are skipped, for example, blank frames.
-    func generateCGImagesAsynchronously(
-        forTimePoints timePoints: [CMTime],
-        completionHandler: @escaping (Swift.Result<CompletionHandlerResult, Error>) -> Void
-    ) {
-        let times = timePoints.map { NSValue(time: $0) }
-        var totalCount = times.count
-        var completedCount = 0
-        var decodeFailureFrameCount = 0
+    
+    private class Counter {
+        private(set) var count: Int
+        private let onUpdate: ((_ count: Int) -> Void)?
         
-        let baseErrorMessage = "Internal error while generating image."
+        init(count: Int, onUpdate: ((_ count: Int) -> Void)? = nil) {
+            self.count = count
+            self.onUpdate = onUpdate
+        }
         
-        // TODO: When minimum OS requirements can bump to macOS 13, this can be refactored to use `images(for:)` which is recommended as per Apple docs.
-        generateCGImagesAsynchronously(forTimes: times) { requestedTime, image, actualTime, result, error in
-            switch result {
-            case .succeeded:
-                completedCount += 1
-                
-                guard let image = image else {
-                    var errorMsg = baseErrorMessage
-                    if let error {
-                        errorMsg += " \(error.localizedDescription)"
-                    }
-                    completionHandler(
-                        .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
-                    )
-                    return
-                }
-                
-                completionHandler(
-                    .success(
-                        CompletionHandlerResult(
-                            image: image,
-                            requestedTime: requestedTime,
-                            actualTime: actualTime,
-                            completedCount: completedCount,
-                            totalCount: totalCount,
-                            isFinished: completedCount == totalCount,
-                            isFinishedIgnoreImage: false
-                        )
+        func increment() { setCount(count + 1) }
+        func decrement() { setCount(count - 1) }
+        func setCount(_ count: Int) {
+            self.count = count
+            onUpdate?(count)
+        }
+    }
+    
+    func images(
+        forTimesIn descriptors: [ImageDescriptor],
+        updating progress: Progress? = nil,
+        completionHandler: @escaping (_ descriptor: ImageDescriptor,
+                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) async -> Void
+    ) async throws {
+        let totalCount = Counter(count: descriptors.count) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        let completedCount = Counter(count: 0) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        
+        for descriptor in descriptors {
+            let requestedTime = descriptor.timecode.cmTimeValue
+            let result = try await imageCompat(at: requestedTime)
+            
+            completedCount.increment()
+            
+            await completionHandler(
+                descriptor,
+                .success(
+                    CompletionHandlerResult(
+                        image: result.image,
+                        requestedTime: requestedTime,
+                        actualTime: result.actualTime,
+                        completedCount: completedCount.count,
+                        totalCount: totalCount.count,
+                        isFinished: completedCount.count == totalCount.count,
+                        isFinishedIgnoreImage: false
                     )
                 )
-                
-            case .failed:
-                // Handles blank frames in the middle of the video.
-                // TODO: Report the `xcrun` bug to Apple if it's still an issue in macOS 11.
-                if let error = error as? AVError {
-                    // Ugly workaround for when the last frame is a failure.
-                    func finishWithoutImageIfNeeded() {
-                        guard completedCount == totalCount else {
-                            return
-                        }
-                        
-                        guard let emptyImage: CGImage = .empty else {
-                            let errorMsg = "\(baseErrorMessage) \(error.localizedDescription)"
-                            completionHandler(
-                                .failure(MarkersExtractorError.extraction(.image(.generic(errorMsg))))
-                            )
-                            return
-                        }
-                        
-                        completionHandler(
-                            .success(
-                                CompletionHandlerResult(
-                                    image: emptyImage,
-                                    requestedTime: requestedTime,
-                                    actualTime: actualTime,
-                                    completedCount: completedCount,
-                                    totalCount: totalCount,
-                                    isFinished: true,
-                                    isFinishedIgnoreImage: true
-                                )
-                            )
-                        )
-                    }
-                    
-                    // We ignore blank frames.
-                    if error.code == .noImageAtTime {
-                        totalCount -= 1
-                        print("No image at time. Completed: \(completedCount) Total: \(totalCount)")
-                        finishWithoutImageIfNeeded()
-                        break
-                    }
-                    
-                    // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed”
-                    // error for some frames in screen recordings.
-                    // As a workaround, we ignore these as the GIF seems fine still.
-                    if error.code == .decodeFailed {
-                        decodeFailureFrameCount += 1
-                        totalCount -= 1
-                        print("Decode failure. Completed: \(completedCount) Total: \(totalCount)")
-                        finishWithoutImageIfNeeded()
-                        break
-                    }
-                }
-                
-                if let error = error {
-                    completionHandler(.failure(error))
+            )
+        }
+    }
+    
+    func images(
+        forTimes times: [CMTime],
+        updating progress: Progress? = nil,
+        completionHandler: @escaping (_ time: CMTime,
+                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
+    ) async throws {
+        let totalCount = Counter(count: times.count) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        let completedCount = Counter(count: 0) { count in
+            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+        }
+        
+        for requestedTime in times {
+            let result = try await imageCompat(at: requestedTime)
+            
+            completedCount.increment()
+            
+            completionHandler(
+                requestedTime,
+                .success(
+                    CompletionHandlerResult(
+                        image: result.image,
+                        requestedTime: requestedTime,
+                        actualTime: result.actualTime,
+                        completedCount: completedCount.count,
+                        totalCount: totalCount.count,
+                        isFinished: completedCount.count == totalCount.count,
+                        isFinishedIgnoreImage: false
+                    )
+                )
+            )
+        }
+    }
+                                  
+    /// Backward-compatible implementation of Apple's `image(at time: CMTime)`.
+    func imageCompat(at time: CMTime) async throws -> (image: CGImage, actualTime: CMTime) {
+        if #available(macOS 13.0, *) {
+            return try await image(at: time)
+        }
+        
+        var resultImage: CGImage? = nil
+        var resultError: Error? = nil
+        var resultActualTime: CMTime? = nil
+        
+        let group = DispatchGroup()
+        group.enter()
+        
+        let nsValue = NSValue(time: time)
+        generateCGImagesAsynchronously(forTimes: [nsValue])
+        { /*requestedTime*/ _, image, actualTime, /*result*/ _, error in
+            resultImage = image
+            resultError = error
+            resultActualTime = actualTime
+        }
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            group.notify(queue: .main) {
+                if let resultError {
+                    continuation.resume(throwing: resultError)
+                } else if let resultImage, let resultActualTime {
+                    let tuple = (image: resultImage, actualTime: resultActualTime)
+                    continuation.resume(with: .success(tuple))
                 } else {
-                    completionHandler(.failure(
-                        MarkersExtractorError.extraction(.image(.generic(baseErrorMessage)))
-                    ))
+                    continuation.resume(throwing: MarkersExtractorError.extraction(.image(.generic("Unknown error."))))
                 }
-                
-            case .cancelled:
-                completionHandler(.failure(CancellationError()))
-                
-            @unknown default:
-                assertionFailure(
-                    "AVAssetImageGenerator.generateCGImagesAsynchronously() received a new enum case. Please handle it."
-                )
             }
         }
     }

@@ -10,9 +10,10 @@ import Logging
 import Pipeline
 import TimecodeKit
 
-class FCPXMLMarkerExtractor {
+class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private let logger: Logger
-
+    public let progress: Progress
+    
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
     let includeOutsideClipBoundaries: Bool
@@ -30,6 +31,7 @@ class FCPXMLMarkerExtractor {
         logger: Logger? = nil
     ) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
+        progress = Progress()
         
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
@@ -79,6 +81,11 @@ class FCPXMLMarkerExtractor {
     // MARK: - Public Instance Methods
 
     public func extractMarkers() -> [Marker] {
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = 1
+        
+        defer { progress.completedUnitCount = 1 }
+        
         var fcpxmlMarkers: [Marker] = []
 
         // TODO: Shouldn't there be only one project?

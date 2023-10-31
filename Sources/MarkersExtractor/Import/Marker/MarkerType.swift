@@ -6,7 +6,7 @@
 
 // https://support.apple.com/en-sg/guide/final-cut-pro/ver397279dd/mac
 
-public enum MarkerType: Equatable, Hashable {
+public enum MarkerType: Equatable, Hashable, Sendable {
     case standard
     case chapter
     case todo(completed: Bool)

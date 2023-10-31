@@ -7,15 +7,18 @@
 import Foundation
 import Logging
 
-public struct NotionExportProfile: ExportProfile {
+public class NotionExportProfile: NSObject, ProgressReporting, ExportProfile {
+    // ExportProfile
     public typealias Payload = CSVExportPayload
     public typealias PreparedMarker = StandardExportMarker
-    
     public static let isMediaCapable: Bool = true
-    
     public var logger: Logger?
     
-    public init(logger: Logger? = nil) {
+    // ProgressReporting
+    public let progress: Progress
+    
+    public required init(logger: Logger? = nil) {
         self.logger = logger
+        progress = Self.defaultProgress
     }
 }

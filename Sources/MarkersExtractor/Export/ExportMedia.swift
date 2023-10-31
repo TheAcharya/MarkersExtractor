@@ -7,7 +7,6 @@
 import Foundation
 import Logging
 import TimecodeKit
-import OrderedCollections
 
 // MARK: - Export media information packet
 
@@ -27,8 +26,9 @@ extension ExportProfile {
         isSingleFrame: Bool,
         media: ExportMedia,
         outputURL: URL,
-        logger: inout Logger
-    ) throws {
+        logger: inout Logger,
+        progressUnitCount: Int64 = 0
+    ) async throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
         
@@ -44,79 +44,126 @@ extension ExportProfile {
         }
         
         logger.info(
-            "Generating \(media.imageSettings.format.rawValue.uppercased()) images for markers."
+            "Generating \(media.imageSettings.format.name) images for markers."
         )
         
-        let imageLabelText = makeImageLabelText(
+        let imageDescriptors = try makeImageDescriptors(
+            markers: markers,
             preparedMarkers: preparedMarkers,
             imageLabelFields: media.imageSettings.labelFields,
             imageLabelCopyright: media.imageSettings.labelCopyright,
-            includeHeaders: !media.imageSettings.imageLabelHideNames
-        )
-        
-        let timecodes = makeTimecodes(
-            markers: markers,
-            preparedMarkers: preparedMarkers,
+            imageLabelIncludeHeaders: !media.imageSettings.imageLabelHideNames,
             isVideoPresent: isVideoPresent,
             isSingleFrame: isSingleFrame
         )
         
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try Self.writeStillImages(
-                timecodes: timecodes,
-                video: videoURL,
+            try await ImagesWriter(
+                descriptors: imageDescriptors,
+                videoPath: videoURL,
                 outputURL: outputURL,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: media.imageSettings.quality,
                 imageDimensions: media.imageSettings.dimensions,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: media.imageSettings.labelProperties
+                imageLabelProperties: media.imageSettings.labelProperties,
+                exportProfileProgress: progress,
+                progressUnitCount: progressUnitCount
             )
+            .write()
         case let .animated(animatedImageFormat):
-            try Self.writeAnimatedImages(
-                timecodes: timecodes,
-                video: videoURL,
+            try await AnimatedImagesWriter(
+                descriptors: imageDescriptors,
+                videoPath: videoURL,
                 outputURL: outputURL,
                 gifFPS: media.imageSettings.gifFPS,
                 gifSpan: media.imageSettings.gifSpan,
                 gifDimensions: media.imageSettings.dimensions,
                 imageFormat: animatedImageFormat,
-                imageLabelText: imageLabelText,
-                imageLabelProperties: media.imageSettings.labelProperties
+                imageLabelProperties: media.imageSettings.labelProperties,
+                exportProfileProgress: progress,
+                progressUnitCount: progressUnitCount
             )
+            .write()
         }
     }
     
+    /// - Returns: An array of marker image descriptors.
+    private func makeImageDescriptors(
+        markers: [Marker],
+        preparedMarkers: [PreparedMarker],
+        imageLabelFields: [ExportField],
+        imageLabelCopyright: String?,
+        imageLabelIncludeHeaders: Bool,
+        isVideoPresent: Bool,
+        isSingleFrame: Bool
+    ) throws -> [ImageDescriptor] {
+        // TODO: factor out this validation, we shouldn't need both [Marker] and [PreparedMarker]
+        guard markers.count == preparedMarkers.count else {
+            throw MarkersExtractorError.extraction(
+                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+            )
+        }
+        
+        let imageFileNames = preparedMarkers.map { $0.imageFileName }
+        
+        // if no video - grabbing first frame from video placeholder
+        let markerTimecodes = markers.map {
+            isVideoPresent ? $0.position : .init(.zero, at: $0.frameRate())
+        }
+        
+        let labels = makeImageLabelText(
+            preparedMarkers: preparedMarkers,
+            imageLabelFields: imageLabelFields,
+            imageLabelCopyright: imageLabelCopyright,
+            includeHeaders: imageLabelIncludeHeaders
+        )
+        
+        guard markers.count == labels.count else {
+            throw MarkersExtractorError.extraction(
+                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+            )
+        }
+        
+        var descriptors = zip(zip(markerTimecodes, imageFileNames), labels)
+            .map {
+                ImageDescriptor(timecode: $0.0, name: $0.1, label: $1)
+            }
+        
+        // if no video and no labels - only one frame needed for all markers
+        if isSingleFrame, let firstDescriptor = descriptors.first {
+            descriptors = [firstDescriptor]
+        }
+        
+        return descriptors
+    }
+    
+    /// - Returns: String array, each element corresponding to a marker.
     private func makeImageLabelText(
         preparedMarkers: [PreparedMarker],
         imageLabelFields: [ExportField],
         imageLabelCopyright: String?,
         includeHeaders: Bool
     ) -> [String] {
-        var imageLabelText: [String] = []
+        var imageLabels: [String] = makeLabels(
+            headers: imageLabelFields,
+            includeHeaders: includeHeaders,
+            preparedMarkers: preparedMarkers
+        )
         
-        if !imageLabelFields.isEmpty {
-            imageLabelText.append(
-                contentsOf: makeLabels(
-                    headers: imageLabelFields,
-                    includeHeaders: includeHeaders,
-                    preparedMarkers: preparedMarkers
-                )
-            )
-        }
-        
-        if let copyrightText = imageLabelCopyright {
-            if imageLabelText.isEmpty {
-                imageLabelText = preparedMarkers.map { _ in copyrightText }
+        // add copyright
+        if let imageLabelCopyright {
+            if imageLabels.isEmpty {
+                imageLabels = preparedMarkers.map { _ in imageLabelCopyright }
             } else {
-                imageLabelText = imageLabelText.map { "\($0)\n\(copyrightText)" }
+                imageLabels = imageLabels.map { "\($0)\n\(imageLabelCopyright)" }
             }
         }
         
-        return imageLabelText
+        return imageLabels
     }
     
+    /// - Returns: String array, each element corresponding to a marker.
     private func makeLabels(
         headers: [ExportField],
         includeHeaders: Bool,
@@ -132,30 +179,5 @@ extension ExportProfile {
                     }
                     .joined(separator: "\n")
             }
-    }
-    
-    /// Returns an ordered dictionary keyed by marker image filename with a value of timecode
-    /// position.
-    private func makeTimecodes(
-        markers: [Marker],
-        preparedMarkers: [PreparedMarker],
-        isVideoPresent: Bool,
-        isSingleFrame: Bool
-    ) -> OrderedDictionary<String, Timecode> {
-        let imageFileNames = preparedMarkers.map { $0.imageFileName }
-        
-        // if no video - grabbing first frame from video placeholder
-        let markerTimecodes = markers.map {
-            isVideoPresent ? $0.position : .init(.zero, at: $0.frameRate())
-        }
-        
-        var markerPairs = zip(imageFileNames, markerTimecodes).map { ($0, $1) }
-        
-        // if no video and no labels - only one frame needed for all markers
-        if isSingleFrame {
-            markerPairs = [markerPairs[0]]
-        }
-        
-        return OrderedDictionary(uniqueKeysWithValues: markerPairs)
     }
 }

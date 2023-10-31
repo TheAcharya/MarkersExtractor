@@ -11,7 +11,7 @@ import TimecodeKit
 ///
 /// - Note: This struct should mainly be an agnostic data repository and not assume anything about
 /// its ultimate intended destination(s).
-public struct Marker: Equatable, Hashable {
+public struct Marker: Equatable, Hashable, Sendable {
     struct ParentInfo: Equatable, Hashable {
         var clipName: String
         var clipFilename: String

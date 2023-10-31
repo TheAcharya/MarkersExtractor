@@ -9,7 +9,8 @@ import Foundation
 import Logging
 import MarkersExtractor
 
-struct MarkersExtractorCLI: ParsableCommand {
+@main
+struct MarkersExtractorCLI: AsyncParsableCommand {
     // MARK: - Config
     
     static var configuration = CommandConfiguration(
@@ -224,12 +225,6 @@ struct MarkersExtractorCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
-    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
-    var fcpxmlPath: URL
-    
-    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
-    var outputDir: URL
-    
     @Flag(
         name: [.customLong("no-media")],
         help: "Bypass media. No thumbnails will be generated."
@@ -244,6 +239,12 @@ struct MarkersExtractorCLI: ParsableCommand {
         transform: URL.init(fileURLWithPath:)
     )
     var mediaSearchPaths: [URL] = []
+    
+    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
+    var fcpxmlPath: URL
+    
+    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
+    var outputDir: URL
     
     // MARK: - Protocol Method Implementations
     
@@ -267,7 +268,7 @@ struct MarkersExtractorCLI: ParsableCommand {
         }
     }
     
-    mutating func run() throws {
+    mutating func run() async throws {
         initLogging(logLevel: logQuiet ? nil : logLevel, logFile: log)
         
         let settings: MarkersExtractor.Settings
@@ -314,7 +315,9 @@ struct MarkersExtractorCLI: ParsableCommand {
             throw ValidationError(err.localizedDescription)
         }
         
-        try MarkersExtractor(settings).extract()
+        let extractor = MarkersExtractor(settings)
+        let o = ConsoleProgressOutput(progress: extractor.progress); _ = o
+        try await extractor.extract()
     }
 }
 
@@ -345,6 +348,19 @@ extension MarkersExtractorCLI {
             logHandlers.indices.forEach { logHandlers[$0].logLevel = logLevel }
 
             return MultiplexLogHandler(logHandlers)
+        }
+    }
+    
+    private final class ConsoleProgressOutput: NSObject {
+        var progress: Progress?
+        var observation: NSKeyValueObservation
+        
+        init(progress: Progress) {
+            self.progress = progress
+            self.observation = progress.observe(\.fractionCompleted, options: [.new]) { _, _ in
+                let formattedPercentage = String(format: "%.0f", progress.fractionCompleted * 100)
+                print(formattedPercentage + "%")
+            }
         }
     }
 }

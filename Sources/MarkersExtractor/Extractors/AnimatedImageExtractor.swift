@@ -10,8 +10,7 @@ import Foundation
 import Logging
 import TimecodeKit
 
-/// Extract a sequence of frames from a video asset and produce an animated image (such as animated
-/// GIF).
+/// Extract a sequence of frames from a video asset and produce an animated image (such as animated GIF).
 final class AnimatedImageExtractor {
     // MARK: - Properties
     
@@ -69,14 +68,15 @@ final class AnimatedImageExtractor {
 // MARK: - Convert
 
 extension AnimatedImageExtractor {
-    /// - Throws: ``AnimatedImageExtractorError``
-    func convert() throws {
+    /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    func convert() async throws -> AnimatedImageExtractorResult {
         validate()
         
         // only gif is supported for now, but more formats could be added in future
         switch conversion.imageFormat {
         case .gif:
-            try generateGIF()
+            return try await generateGIF()
         }
     }
     
@@ -89,8 +89,9 @@ extension AnimatedImageExtractor {
             .clamped(to: MarkersExtractor.Settings.Validation.outputFPS)
     }
     
-    /// - Throws: ``AnimatedImageExtractorError``
-    private func generateGIF() throws {
+    /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    private func generateGIF() async throws -> AnimatedImageExtractorResult {
         let generator = imageGenerator()
         
         // TODO: this is potentially very inefficient in the event that a LOT of frames are requested (such as an entire video length)
@@ -109,9 +110,13 @@ extension AnimatedImageExtractor {
             by: frameDuration
         )
         
-        let times = frameStride
+        let timecodes = frameStride
             .map { Timecode(.realTime(seconds: $0), at: frameRate, by: .clamping) }
-            .map(\.cmTimeValue)
+        
+        // map to ImageDescriptor for richer error reporting
+        let descriptors: [ImageDescriptor] = timecodes.map {
+            ImageDescriptor(timecode: $0, name: "Animation Frame", label: nil)
+        }
         
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
@@ -119,52 +124,42 @@ extension AnimatedImageExtractor {
             ]
         ]
         
-        let gifDestination = try initGIF(framesCount: times.count)
+        let gifDestination = try initGIF(framesCount: descriptors.count)
 
-        var result: Result<Void, AnimatedImageExtractorError> = .failure(.invalidSettings)
-
-        let group = DispatchGroup()
-        group.enter()
-
-        generator.generateCGImagesAsynchronously(forTimePoints: times) { [weak self] imageResult in
+        var batchResult = AnimatedImageExtractorResult()
+        var isBatchFinished: Bool = false
+        
+        try await generator.images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
             guard let self = self else {
-                result = .failure(.invalidSettings)
-                group.leave()
+                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
             do {
-                let isFinished = try self.processFrame(
+                let isFinished = try await self.processFrame(
                     for: imageResult,
                     at: startTime,
                     destination: gifDestination,
                     frameProperties: frameProperties as CFDictionary
                 )
                 if isFinished {
-                    result = .success(())
-                    group.leave()
+                    isBatchFinished = true
                 }
             } catch let error as AnimatedImageExtractorError {
-                result = .failure(error)
-                group.leave()
+                batchResult.addError(for: descriptor, error)
             } catch {
-                result = .failure(.generateFrameFailed(error))
-                group.leave()
+                batchResult.addError(for: descriptor, .generateFrameFailed(error))
             }
         }
-
-        group.wait()
-
+        
+        // TODO: throw error if `isBatchFinished == false`?
+        _ = isBatchFinished
+        
         if !CGImageDestinationFinalize(gifDestination) {
             throw AnimatedImageExtractorError.gifFinalizationFailed
         }
-
-        switch result {
-        case let .failure(error):
-            throw error
-        case .success():
-            return
-        }
+        
+        return batchResult
     }
 
     private func initGIF(framesCount: Int) throws -> CGImageDestination {
@@ -212,7 +207,7 @@ extension AnimatedImageExtractor {
         at startTime: TimeInterval,
         destination: CGImageDestination,
         frameProperties: CFDictionary
-    ) throws -> Bool {
+    ) async throws -> Bool {
         switch result {
         case let .success(result):
             // This happens if the last frame in the video failed to be generated.
@@ -231,7 +226,7 @@ extension AnimatedImageExtractor {
                 return false
             }
 
-            let image = conversion.imageFilter?(result.image) ?? result.image
+            let image = await conversion.imageFilter?(result.image) ?? result.image
 
             let frameNumber = result.completedCount - 1
             assert(result.actualTime.seconds > 0 || frameNumber == 0)
@@ -255,14 +250,14 @@ extension AnimatedImageExtractor {
         var timecodeRange: ClosedRange<Timecode>?
         var dimensions: CGSize?
         var outputFPS: Double
-        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFilter: ((CGImage) async -> CGImage)?
         let imageFormat: MarkerImageFormat.Animated
     }
 }
 
 /// Animated image extraction error.
 public enum AnimatedImageExtractorError: LocalizedError {
-    case invalidSettings
+    case internalInconsistency(_ verboseError: String)
     case unreadableFile
     case noVideoTracks
     case couldNotDetermineFrameRate(Error)
@@ -276,8 +271,8 @@ public enum AnimatedImageExtractorError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .invalidSettings:
-            return "Invalid settings."
+        case let .internalInconsistency(verboseError):
+            return "Internal error occurred: \(verboseError)"
         case .unreadableFile:
             return "The selected file is no longer readable."
         case .noVideoTracks:
@@ -300,5 +295,17 @@ public enum AnimatedImageExtractorError: LocalizedError {
         case let .writeFailed(error):
             return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
+    }
+}
+
+public struct AnimatedImageExtractorResult: Sendable {
+    public var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
+    
+    init(errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []) {
+        self.errors = errors
+    }
+    
+    mutating func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
+        errors.append((descriptor: descriptor, error: error))
     }
 }

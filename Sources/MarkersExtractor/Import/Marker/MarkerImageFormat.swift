@@ -4,17 +4,20 @@
 //  Licensed under MIT License
 //
 
-public enum MarkerImageFormat: Equatable, Hashable {
+// MARK: - MarkerImageFormat
+
+public enum MarkerImageFormat: Equatable, Hashable, Sendable {
     case still(Still)
     case animated(Animated)
     
-    public enum Still: String, CaseIterable {
-        case png
-        case jpg
-    }
-    
-    public enum Animated: String, CaseIterable {
-        case gif
+    /// Descriptive name for UI.
+    public var name: String {
+        switch self {
+        case let .still(format):
+            return format.name
+        case let .animated(format):
+            return format.name
+        }
     }
 }
 
@@ -33,10 +36,21 @@ extension MarkerImageFormat: RawRepresentable {
     
     public var rawValue: String {
         switch self {
-        case let .still(fmt):
-            return fmt.rawValue
-        case let .animated(fmt):
-            return fmt.rawValue
+        case let .still(format):
+            return format.rawValue
+        case let .animated(format):
+            return format.rawValue
+        }
+    }
+}
+
+extension MarkerImageFormat: Identifiable {
+    public var id: RawValue {
+        switch self {
+        case let .still(format):
+            return "still-\(format.id)"
+        case let .animated(format):
+            return "animated-\(format.id)"
         }
     }
 }
@@ -51,4 +65,47 @@ extension MarkerImageFormat: CaseIterable {
     public static let allCases: [MarkerImageFormat] =
         Still.allCases.map { .still($0) }
             + Animated.allCases.map { .animated($0) }
+}
+
+// MARK: - MarkerImageFormat: Still
+
+extension MarkerImageFormat {
+    public enum Still: String, CaseIterable, Sendable {
+        case png
+        case jpg
+        
+        /// Descriptive name for UI.
+        public var name: String {
+            switch self {
+            case .png:
+                return "PNG"
+            case .jpg:
+                return "JPEG"
+            }
+        }
+    }
+}
+
+extension MarkerImageFormat.Still: Identifiable {
+    public var id: RawValue { rawValue }
+}
+
+// MARK: - MarkerImageFormat: Animated
+
+extension MarkerImageFormat {
+    public enum Animated: String, CaseIterable, Sendable {
+        case gif
+        
+        /// Descriptive name for UI.
+        public var name: String {
+            switch self {
+            case .gif:
+                return "Animated GIF"
+            }
+        }
+    }
+}
+
+extension MarkerImageFormat.Animated: Identifiable {
+    public var id: RawValue { rawValue }
 }

@@ -9,7 +9,7 @@ import Logging
 import OrderedCollections
 import TimecodeKit
 
-public protocol ExportProfile {
+public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
@@ -26,7 +26,7 @@ public protocol ExportProfile {
         createDoneFile: Bool,
         doneFilename: String,
         logger: Logger?
-    ) throws
+    ) async throws
     
     /// Converts raw FCP markers to the native format needed for export.
     /// If media is not present, pass `nil` to `mediaInfo` to bypass thumbnail generation.
@@ -45,6 +45,7 @@ public protocol ExportProfile {
         noMedia: Bool
     ) throws
     
+    /// Provides the done file content.
     func doneFileContent(payload: Payload) throws -> Data
     
     func manifestFields(
@@ -59,4 +60,8 @@ public protocol ExportProfile {
     var logger: Logger? { get set }
     
     init(logger: Logger?)
+}
+
+extension ExportProfile {
+    static var defaultProgress: Progress { Progress() }
 }
