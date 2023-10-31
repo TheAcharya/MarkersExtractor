@@ -59,12 +59,16 @@ extension AVAssetImageGenerator {
         }
     }
 
+    // TODO: refactor as async/await encapsulating generateCGImageAsynchronously instead of using generateCGImagesAsynchronously
+    // which will allow us to pass in an ImageDescriptor instance instead of being limited to CMTime in the completion handler
+    
     /// - Note: If you use ``CompletionHandlerResult/completedCount``, don't forget to update its
     /// usage in each `completionHandler` call as it can change if frames are skipped, for example, blank frames.
     func generateCGImagesAsynchronously(
         forTimePoints timePoints: [CMTime],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (_ time: CMTime, _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
+        completionHandler: @escaping (_ time: CMTime, 
+                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
     ) {
         let times = timePoints.map { NSValue(time: $0) }
         

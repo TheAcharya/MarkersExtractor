@@ -33,8 +33,9 @@ final class StillImageBatchExtractor: NSObject, ProgressReporting {
 // MARK: - Convert
 
 extension StillImageBatchExtractor {
-    /// - Throws: ``StillImageBatchExtractorError``
-    func convert() async throws {
+    /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully or partially.
+    func convert() async throws -> StillImageBatchExtractorResult {
         let generator = imageGenerator()
         
         // TODO: these iterators need to go. it's super brittle. refactor to process all variables together in a single descriptor.
@@ -42,12 +43,10 @@ extension StillImageBatchExtractor {
         var frameNamesIterator = conversion.descriptors.map(\.name).makeIterator()
         var labelsIterator = conversion.descriptors.map(\.label).makeIterator()
         
-        var result: Result<Void, StillImageBatchExtractorError> = .failure(
-            .internalInconsistency("Image generation could not start.")
-        )
-
-        let group = DispatchGroup()
+        var batchResult = StillImageBatchExtractorResult()
+        var isBatchFinished: Bool = false
         
+        let group = DispatchGroup()
         let proposedImageCount = times.count
         for _ in 0 ..< proposedImageCount { group.enter() }
 
@@ -58,40 +57,42 @@ extension StillImageBatchExtractor {
             defer { group.leave() }
             
             guard let self = self else {
-                result = .failure(.internalInconsistency("No reference to image extractor."))
+                batchResult.addError(at: time, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
             guard let frameName = frameNamesIterator.next() else {
-                result = .failure(.internalInconsistency("Image extractor depleted names."))
+                batchResult.addError(at: time, .internalInconsistency("Image extractor depleted names."))
                 return
             }
             
             guard let label = labelsIterator.next() else {
-                result = .failure(.internalInconsistency("Image extractor depleted labels."))
+                batchResult.addError(at: time, .internalInconsistency("Image extractor depleted labels."))
                 return
             }
-
+            
             let frameResult = self.processAndWriteFrameToDisk(
                 for: imageResult,
                 frameName: frameName,
                 label: label
             )
-
-            // TODO: Throw on first error, don't just update with the last error and then check at the end of the batch
+            
             switch frameResult {
             case let .success(isFinished):
                 if isFinished {
-                    result = .success(())
+                    isBatchFinished = true
                 }
             case let .failure(error):
-                result = .failure(error)
+                batchResult.addError(at: time, error)
             }
         }
         
-        try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             group.notify(queue: .main) {
-                continuation.resume(with: result)
+                // TODO: throw error if `isBatchFinished == false`?
+                _ = isBatchFinished
+                
+                continuation.resume(with: .success(batchResult))
             }
         }
     }
@@ -205,5 +206,17 @@ public enum StillImageBatchExtractorError: LocalizedError {
         case let .writeFailed(error):
             return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
+    }
+}
+
+public struct StillImageBatchExtractorResult: Sendable {
+    public var errors: [(time: CMTime, error: StillImageBatchExtractorError)] = []
+    
+    init(errors: [(time: CMTime, error: StillImageBatchExtractorError)] = []) {
+        self.errors = errors
+    }
+    
+    mutating func addError(at time: CMTime, _ error: StillImageBatchExtractorError) {
+        errors.append((time: time, error: error))
     }
 }

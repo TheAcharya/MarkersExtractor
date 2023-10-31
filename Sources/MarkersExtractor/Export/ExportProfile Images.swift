@@ -65,6 +65,7 @@ class AnimatedImagesWriter {
         )
     }
     
+    /// Write all images concurrently (in parallel) by multithreading.
     func write() async throws {
         if let exportProfileProgress {
             filesProgress = Progress(
@@ -108,7 +109,14 @@ class AnimatedImagesWriter {
         )
         
         do {
-            try await AnimatedImageExtractor(conversion, logger: logger).convert()
+            let result = try await AnimatedImageExtractor(conversion, logger: logger).convert()
+            // post errors to console if operation partially completed
+            for error in result.errors {
+                let tc = descriptor.timecode.stringValue()
+                let markerName = descriptor.name.quoted
+                let err = error.error.localizedDescription
+                logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
+            }
         } catch let err as AnimatedImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
         } catch {
@@ -131,7 +139,7 @@ class ImagesWriter {
     let imageJPGQuality: Double
     let imageDimensions: CGSize?
     let imageLabelProperties: MarkerLabelProperties
-    let logger: Logger?
+    let logger: Logger
     let exportProfileProgress: Progress?
     let progressUnitCount: Int64
     
@@ -185,7 +193,16 @@ class ImagesWriter {
         exportProfileProgress?.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
         
         do {
-            try await extractor.convert()
+            let result = try await extractor.convert()
+            // post errors to console if operation partially completed
+            for error in result.errors {
+                // TODO: fix this after refactoring async image generation method to use ImageDescriptor instead of CMTime
+                // let tc = descriptor.timecode.stringValue()
+                // let markerName = descriptor.name.quoted
+                let err = error.error.localizedDescription
+                // logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
+                logger.warning("Error while generating image for marker at \(error.time): \(err)")
+            }
         } catch let err as StillImageBatchExtractorError {
             throw MarkersExtractorError.extraction(.image(.stillImage(err)))
         } catch {

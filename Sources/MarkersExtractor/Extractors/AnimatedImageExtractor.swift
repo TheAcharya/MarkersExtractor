@@ -68,14 +68,15 @@ final class AnimatedImageExtractor {
 // MARK: - Convert
 
 extension AnimatedImageExtractor {
-    /// - Throws: ``AnimatedImageExtractorError``
-    func convert() async throws {
+    /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    func convert() async throws -> AnimatedImageExtractorResult {
         validate()
         
         // only gif is supported for now, but more formats could be added in future
         switch conversion.imageFormat {
         case .gif:
-            try await generateGIF()
+            return try await generateGIF()
         }
     }
     
@@ -88,8 +89,9 @@ extension AnimatedImageExtractor {
             .clamped(to: MarkersExtractor.Settings.Validation.outputFPS)
     }
     
-    /// - Throws: ``AnimatedImageExtractorError``
-    private func generateGIF() async throws {
+    /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    private func generateGIF() async throws -> AnimatedImageExtractorResult {
         let generator = imageGenerator()
         
         // TODO: this is potentially very inefficient in the event that a LOT of frames are requested (such as an entire video length)
@@ -120,12 +122,10 @@ extension AnimatedImageExtractor {
         
         let gifDestination = try initGIF(framesCount: times.count)
 
-        var result: Result<Void, AnimatedImageExtractorError> = .failure(
-            .internalInconsistency("Image generation could not start.")
-        )
-
-        let group = DispatchGroup()
+        var batchResult = AnimatedImageExtractorResult()
+        var isBatchFinished: Bool = false
         
+        let group = DispatchGroup()
         let proposedImageCount = times.count
         for _ in 0 ..< proposedImageCount { group.enter() }
 
@@ -133,7 +133,7 @@ extension AnimatedImageExtractor {
             defer { group.leave() }
             
             guard let self = self else {
-                result = .failure(.internalInconsistency("No reference to image extractor."))
+                batchResult.addError(at: time, .internalInconsistency("No reference to image extractor."))
                 return
             }
 
@@ -145,23 +145,27 @@ extension AnimatedImageExtractor {
                     frameProperties: frameProperties as CFDictionary
                 )
                 if isFinished {
-                    result = .success(())
+                    isBatchFinished = true
                 }
             } catch let error as AnimatedImageExtractorError {
-                result = .failure(error)
+                batchResult.addError(at: time, error)
             } catch {
-                result = .failure(.generateFrameFailed(error))
+                batchResult.addError(at: time, .generateFrameFailed(error))
             }
         }
         
         return try await withCheckedThrowingContinuation { continuation in
             group.notify(queue: .main) {
+                // TODO: throw error if `isBatchFinished == false`?
+                _ = isBatchFinished
+                
                 if !CGImageDestinationFinalize(gifDestination) {
                     continuation.resume(
                         throwing: AnimatedImageExtractorError.gifFinalizationFailed
                     )
                 }
-                continuation.resume(with: result)
+                
+                continuation.resume(with: .success(batchResult))
             }
         }
     }
@@ -299,5 +303,17 @@ public enum AnimatedImageExtractorError: LocalizedError {
         case let .writeFailed(error):
             return "Failed to write, with underlying error: \(error.localizedDescription)"
         }
+    }
+}
+
+public struct AnimatedImageExtractorResult: Sendable {
+    public var errors: [(time: CMTime, error: AnimatedImageExtractorError)] = []
+    
+    init(errors: [(time: CMTime, error: AnimatedImageExtractorError)] = []) {
+        self.errors = errors
+    }
+    
+    mutating func addError(at time: CMTime, _ error: AnimatedImageExtractorError) {
+        errors.append((time: time, error: error))
     }
 }
