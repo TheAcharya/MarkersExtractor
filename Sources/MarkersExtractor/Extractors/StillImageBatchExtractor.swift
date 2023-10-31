@@ -48,12 +48,12 @@ extension StillImageBatchExtractor {
                 return
             }
 
-            let frameName = descriptor.name
+            let fileName = descriptor.filename
             let label = descriptor.label
             
             let frameResult = await self.processAndWriteFrameToDisk(
                 for: imageResult,
-                frameName: frameName,
+                fileName: fileName,
                 label: label
             )
             
@@ -91,25 +91,25 @@ extension StillImageBatchExtractor {
 
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
-        frameName: String,
+        fileName: String,
         label: String?
     ) async -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
             let image = await conversion.imageFilter?(result.image, label) ?? result.image
-
+            
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)
-
-            let url = conversion.outputFolder.appendingPathComponent(frameName)
-
+            
+            let fileURL = conversion.outputFolder.appendingPathComponent(fileName)
+            
             do {
                 switch conversion.frameFormat {
                 case .png:
                     // PNG does not offer 'compression' or 'quality' options
                     try ciContext.writePNGRepresentation(
                         of: ciImage,
-                        to: url,
+                        to: fileURL,
                         format: .RGBA8,
                         colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
                     )
@@ -125,7 +125,7 @@ extension StillImageBatchExtractor {
                     
                     try ciContext.writeJPEGRepresentation(
                         of: ciImage,
-                        to: url,
+                        to: fileURL,
                         colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
                         options: options
                     )

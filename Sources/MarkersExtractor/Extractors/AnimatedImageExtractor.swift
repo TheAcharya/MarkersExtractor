@@ -171,7 +171,7 @@ extension AnimatedImageExtractor {
         ] as [String: Any]
         
         guard let destination = CGImageDestinationCreateWithURL(
-            conversion.outputFileWithoutExtension as CFURL,
+            conversion.outputFile as CFURL,
             kUTTypeGIF,
             framesCount,
             nil
@@ -246,7 +246,7 @@ extension AnimatedImageExtractor {
 extension AnimatedImageExtractor {
     struct ConversionSettings {
         let sourceMediaFile: URL
-        let outputFileWithoutExtension: URL
+        let outputFile: URL
         var timecodeRange: ClosedRange<Timecode>?
         var dimensions: CGSize?
         var outputFPS: Double

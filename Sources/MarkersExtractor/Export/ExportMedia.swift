@@ -127,7 +127,7 @@ extension ExportProfile {
         
         var descriptors = zip(zip(markerTimecodes, imageFileNames), labels)
             .map {
-                ImageDescriptor(timecode: $0.0, name: $0.1, label: $1)
+                ImageDescriptor(timecode: $0.0, filename: $0.1, label: $1)
             }
         
         // if no video and no labels - only one frame needed for all markers

@@ -12,7 +12,7 @@ import TimecodeKit
 
 public struct ImageDescriptor: Sendable {
     let timecode: Timecode
-    let name: String
+    let filename: String
     let label: String?
 }
 
@@ -74,7 +74,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     }
     
     private func process(descriptor: ImageDescriptor) async throws {
-        let outputFileWithoutExtension = outputURL.appendingPathComponent(descriptor.name)
+        let outputFile = outputURL.appendingPathComponent(descriptor.filename)
         
         var delta = descriptor.timecode
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
@@ -85,7 +85,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         
         let conversion = AnimatedImageExtractor.ConversionSettings(
             sourceMediaFile: videoPath,
-            outputFileWithoutExtension: outputFileWithoutExtension,
+            outputFile: outputFile,
             timecodeRange: timeRange,
             dimensions: gifDimensions,
             outputFPS: gifFPS,
@@ -107,9 +107,9 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             // post errors to console if operation partially completed
             for error in result.errors {
                 let tc = descriptor.timecode.stringValue()
-                let markerName = descriptor.name.quoted
+                let filename = descriptor.filename.quoted
                 let err = error.error.localizedDescription
-                logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
+                logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")
             }
         } catch let err as AnimatedImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
@@ -184,9 +184,9 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             // post errors to console if operation partially completed
             for error in result.errors {
                 let tc = error.descriptor.timecode.stringValue()
-                let markerName = error.descriptor.name.quoted
+                let filename = error.descriptor.filename.quoted
                 let err = error.error.localizedDescription
-                logger.warning("Error while generating image for marker at \(tc) \(markerName): \(err)")
+                logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")
             }
         } catch let err as StillImageBatchExtractorError {
             throw MarkersExtractorError.extraction(.image(.stillImage(err)))
