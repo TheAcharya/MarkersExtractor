@@ -21,9 +21,7 @@ final class ProgressTests: XCTestCase {
         )
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        
         _ = extractor.extractMarkers()
-        
         XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
     }
     
@@ -31,13 +29,44 @@ final class ProgressTests: XCTestCase {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = try Timecode(.zero, at: .fps24) ... Timecode(.components(f: 10), at: .fps24)
-        let outputFile = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".gif")
+        let descriptors: [ImageDescriptor] = range.map {
+            ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
+        }
+        let outputFolder = URL.temporaryDirectory
+        let outputFile = outputFolder.appendingPathComponent(UUID().uuidString + ".gif")
+        
+        // MARK: - AnimatedImagesWriter
+        
+        let writer = AnimatedImagesWriter(
+            descriptors: descriptors,
+            sourceMediaFile: videoPlaceholder.url,
+            outputFolder: outputFolder,
+            gifFPS: 29.97,
+            gifSpan: 0.25,
+            gifDimensions: nil,
+            imageFormat: .gif,
+            imageLabelProperties: MarkerLabelProperties(
+                fontName: "Arial",
+                fontMaxSize: 48,
+                fontColor: .black,
+                fontStrokeColor: .white,
+                fontStrokeWidth: nil,
+                alignHorizontal: .left,
+                alignVertical: .top
+            )
+        )
+        
+        XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
+        try await writer.write()
+        XCTAssertEqual(writer.progress.fractionCompleted, 1.0)
+        
+        // MARK: - AnimatedImageExtractor
         
         let extractor = try AnimatedImageExtractor(
             AnimatedImageExtractor.ConversionSettings(
+                timecodeRange: range,
                 sourceMediaFile: videoPlaceholder.url,
                 outputFile: outputFile,
-                timecodeRange: range,
                 dimensions: nil,
                 outputFPS: 29.97,
                 imageFilter: nil,
@@ -46,9 +75,7 @@ final class ProgressTests: XCTestCase {
         )
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        
         let _ = try await extractor.convert()
-        
         XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
     }
     
@@ -61,11 +88,29 @@ final class ProgressTests: XCTestCase {
         }
         let outputFolder = URL.temporaryDirectory
         
+        // ImagesWriter
+        
+        let writer = ImagesWriter(
+            descriptors: descriptors,
+            sourceMediaFile: videoPlaceholder.url,
+            outputFolder: outputFolder,
+            imageFormat: .png,
+            imageJPGQuality: Double(MarkersExtractor.Settings.Defaults.imageQuality) / 100,
+            imageDimensions: nil,
+            imageLabelProperties: .default()
+        )
+        
+        XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
+        try await writer.write()
+        XCTAssertEqual(writer.progress.fractionCompleted, 1.0)
+        
+        // MARK: - StillImageBatchExtractor
+        
         let extractor = StillImageBatchExtractor(
             StillImageBatchExtractor.ConversionSettings(
+                descriptors: descriptors,
                 sourceMediaFile: videoPlaceholder.url,
                 outputFolder: outputFolder,
-                descriptors: descriptors,
                 frameFormat: .png,
                 jpgQuality: nil,
                 dimensions: nil,
@@ -74,9 +119,7 @@ final class ProgressTests: XCTestCase {
         )
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        
         let _ = try await extractor.convert()
-        
         XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
     }
 }
