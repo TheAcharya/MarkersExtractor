@@ -359,9 +359,7 @@ extension MarkersExtractorCLI {
             self.progress = progress
             self.observation = progress.observe(\.fractionCompleted, options: [.new]) { _, _ in
                 let formattedPercentage = String(format: "%.0f", progress.fractionCompleted * 100)
-                DispatchQueue.main.async {
-                    print(formattedPercentage + "%")
-                }
+                print(formattedPercentage + "%")
             }
         }
     }
