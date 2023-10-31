@@ -194,7 +194,7 @@ extension AnimatedImageExtractor {
             do {
                 let isFinished = try await self.processFrame(
                     for: imageResult,
-                    at: startTime,
+                    at: self.startTime,
                     destination: gifDestination,
                     frameProperties: frameProperties as CFDictionary
                 )
