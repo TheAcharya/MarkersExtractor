@@ -209,7 +209,7 @@ extension AnimatedImageExtractor {
         }
         
         // TODO: throw error if `isBatchFinished == false`?
-        _ = isBatchFinished
+        assert(isBatchFinished)
         
         if !CGImageDestinationFinalize(gifDestination) {
             throw AnimatedImageExtractorError.gifFinalizationFailed

@@ -73,7 +73,7 @@ extension StillImageBatchExtractor {
         }
         
         // TODO: throw error if `isBatchFinished == false`?
-        _ = isBatchFinished
+        assert(isBatchFinished)
         
         assert(progress.fractionCompleted == 1.0)
         
