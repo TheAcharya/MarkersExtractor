@@ -261,7 +261,7 @@ let package = Package(
 )
 ```
 
-Check out [MarkersExtractorCLI.swift](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the main extractor class.
+Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the [`MarkersExtractor`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/MarkersExtractor/MarkersExtractor.swift) class.
 
 ## Featured
 
@@ -283,7 +283,9 @@ Licensed under the MIT license. See [LICENSE](https://github.com/TheAcharya/Mark
 
 ## Reporting Bugs
 
-For bug reports, feature requests and other suggestions you can create [a new issue](https://github.com/TheAcharya/MarkersExtractor/issues) to discuss.
+For questions or suggestions about usage, you are welcome to open a [discussions](https://github.com/TheAcharya/MarkersExtractor/discussions) thread.
+
+For reproducible bug reports, please file [an issue](https://github.com/TheAcharya/MarkersExtractor/issues).
 
 ## Contributing
 
