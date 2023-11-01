@@ -4,7 +4,7 @@
 
 ### Refinements
 
-- Progress reporting is now more relevant and reliable
+- Progress reporting is now more relevant and reliable (#31)
 
 ### Bug Fixes
 
