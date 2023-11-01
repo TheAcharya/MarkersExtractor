@@ -1,6 +1,17 @@
 # MarkersExtractor Change Log
 
-## [0.2.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.1) (2023-10-31)
+## [0.2.2](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.2) (2023-10-31)
+
+### Refinements
+
+- Progress reporting is now more relevant and reliable
+
+### Bug Fixes
+
+- Fixed hang during thumbnail image generation on Intel systems (#53)
+- Fixed potential crash when media contains fewer frames than required to produce an animated GIF
+
+## [0.2.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.1) (2023-10-30)
 
 ### General
 
