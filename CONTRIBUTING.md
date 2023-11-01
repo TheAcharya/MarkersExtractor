@@ -34,31 +34,19 @@ Publishing releases and tags should be left to code owners/maintainers.
 For code owners/maintainers, the following release spec is used:
 
 1. Unit tests must pass
-
 2. Perform the following steps, then commit the changes using the new version number as the commit message, and push to main
-
-   1. Update the version number string literal near the top of MarkersExtractor-CLI.swift
-
-   2. Update root CHANGELOG.md
-
-      - with a condensed bullet-point list of changes/fixes/improvements according to its established format
-      - where possible, reference the Issue number(s), PR(s) or commit(s) where each change was made
-   3. Update root README.md with any pertinent revisions:
-
-        - Updated version number of CLI tool, updated link to CLI binary zip download URL. (Change `0.2.0` here to the new version number)
-
-           `https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip`
-
-
-        - New help block output of the CLI tool
-
-
-   4. Compile the CLI tool as a binary executable and zip it using the filename `markers-extractor-cli-<ver>.zip`
-
+   - Update the version number string literal in `Sources/markers-extractor-cli/Version.swift`
+   - Update root `CHANGELOG.md`
+     - with a condensed bullet-point list of changes/fixes/improvements according to its established format
+     - where possible, reference the Issue/PR number(s) or commit(s) where each change was made
+   - Update root `README.md` with any pertinent revisions:
+     - Updated version number of CLI tool, updated link to CLI binary zip download URL.
+       (Change `0.2.0` here to the new version number)
+       `https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip`
+     - New help block output of the CLI tool
+3. Compile the CLI tool as a binary executable and zip it using the filename `markers-extractor-cli-<ver>.zip`
    ie: `markers-extractor-cli-0.2.0.zip`
-
-3. Make GitHub Release using:
-
+4. Make GitHub Release using:
    - the new version number as its new tag and release name
-   - the added CHANGELOG.md block as the release notes
+   - the added `CHANGELOG.md` block as the release notes
    - attach the CLI binary zip file

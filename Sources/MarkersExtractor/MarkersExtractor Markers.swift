@@ -17,7 +17,7 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     func extractMarkers(
         sort: Bool = true,
-        progressUnitCount: Int64 = 0
+        parentProgress: ParentProgress? = nil
     ) throws -> [Marker] {
         var markers: [Marker]
         
@@ -30,7 +30,10 @@ extension MarkersExtractor {
                 enableSubframes: s.enableSubframes,
                 logger: logger
             )
-            progress.addChild(extractor.progress, withPendingUnitCount: progressUnitCount)
+            
+            // attach local progress to parent
+            parentProgress?.addChild(extractor.progress)
+            
             markers = extractor.extractMarkers()
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(

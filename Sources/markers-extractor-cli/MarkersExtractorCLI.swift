@@ -316,7 +316,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         }
         
         let extractor = MarkersExtractor(settings)
-        let o = ConsoleProgressOutput(progress: extractor.progress); _ = o
+        let o = ProgressLogging(to: extractor.logger, progress: extractor.progress); _ = o
         try await extractor.extract()
     }
 }
@@ -351,15 +351,25 @@ extension MarkersExtractorCLI {
         }
     }
     
-    private final class ConsoleProgressOutput: NSObject {
+    /// Observes changes in a `Progress` instance and logs updates to the console.
+    private final class ProgressLogging: NSObject {
+        var logger: Logger
         var progress: Progress?
-        var observation: NSKeyValueObservation
+        var observation: NSKeyValueObservation?
         
-        init(progress: Progress) {
+        var lastOutput: String?
+        
+        init(to logger: Logger, progress: Progress) {
+            self.logger = logger
+            
+            super.init()
+            
             self.progress = progress
-            self.observation = progress.observe(\.fractionCompleted, options: [.new]) { _, _ in
-                let formattedPercentage = String(format: "%.0f", progress.fractionCompleted * 100)
-                print(formattedPercentage + "%")
+            self.observation = progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, _ in
+                let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
+                guard self?.lastOutput != output else { return } // suppress redundant output
+                self?.logger.info("\(output)")
+                self?.lastOutput = output
             }
         }
     }

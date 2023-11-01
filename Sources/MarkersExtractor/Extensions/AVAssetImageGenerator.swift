@@ -18,23 +18,6 @@ extension AVAssetImageGenerator {
         let isFinishedIgnoreImage: Bool
     }
     
-    private class Counter {
-        private(set) var count: Int
-        private let onUpdate: ((_ count: Int) -> Void)?
-        
-        init(count: Int, onUpdate: ((_ count: Int) -> Void)? = nil) {
-            self.count = count
-            self.onUpdate = onUpdate
-        }
-        
-        func increment() { setCount(count + 1) }
-        func decrement() { setCount(count - 1) }
-        func setCount(_ count: Int) {
-            self.count = count
-            onUpdate?(count)
-        }
-    }
-    
     func images(
         forTimesIn descriptors: [ImageDescriptor],
         updating progress: Progress? = nil,
@@ -45,7 +28,7 @@ extension AVAssetImageGenerator {
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
         let completedCount = Counter(count: 0) { count in
-            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+            progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
         for descriptor in descriptors {
@@ -81,7 +64,7 @@ extension AVAssetImageGenerator {
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
         let completedCount = Counter(count: 0) { count in
-            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+            progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
         for requestedTime in times {
@@ -125,6 +108,7 @@ extension AVAssetImageGenerator {
             resultImage = image
             resultError = error
             resultActualTime = actualTime
+            group.leave()
         }
         
         return try await withCheckedThrowingContinuation { continuation in

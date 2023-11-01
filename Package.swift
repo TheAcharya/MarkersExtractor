@@ -42,7 +42,8 @@ let package = Package(
         ),
         .testTarget(
             name: "MarkersExtractorTests",
-            dependencies: ["MarkersExtractor"]
+            dependencies: ["MarkersExtractor"],
+            resources: [.copy("TestResource/Media Files")]
         ),
         .executableTarget(
             name: "markers-extractor-cli",

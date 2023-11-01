@@ -25,9 +25,9 @@ extension ExportProfile {
         isVideoPresent: Bool,
         isSingleFrame: Bool,
         media: ExportMedia,
-        outputURL: URL,
+        outputFolder: URL,
         logger: inout Logger,
-        progressUnitCount: Int64 = 0
+        parentProgress: ParentProgress?
     ) async throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
@@ -44,7 +44,7 @@ extension ExportProfile {
         }
         
         logger.info(
-            "Generating \(media.imageSettings.format.name) images for markers."
+            "Generating \(media.imageSettings.format.name) images for markers..."
         )
         
         let imageDescriptors = try makeImageDescriptors(
@@ -57,35 +57,35 @@ extension ExportProfile {
             isSingleFrame: isSingleFrame
         )
         
+        let writer: ImageWriterProtocol
         switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            try await ImagesWriter(
+            writer = ImagesWriter(
                 descriptors: imageDescriptors,
-                videoPath: videoURL,
-                outputURL: outputURL,
+                sourceMediaFile: videoURL,
+                outputFolder: outputFolder,
                 imageFormat: stillImageFormat,
                 imageJPGQuality: media.imageSettings.quality,
                 imageDimensions: media.imageSettings.dimensions,
-                imageLabelProperties: media.imageSettings.labelProperties,
-                exportProfileProgress: progress,
-                progressUnitCount: progressUnitCount
+                imageLabelProperties: media.imageSettings.labelProperties
             )
-            .write()
         case let .animated(animatedImageFormat):
-            try await AnimatedImagesWriter(
+            writer = AnimatedImagesWriter(
                 descriptors: imageDescriptors,
-                videoPath: videoURL,
-                outputURL: outputURL,
+                sourceMediaFile: videoURL,
+                outputFolder: outputFolder,
                 gifFPS: media.imageSettings.gifFPS,
                 gifSpan: media.imageSettings.gifSpan,
                 gifDimensions: media.imageSettings.dimensions,
                 imageFormat: animatedImageFormat,
-                imageLabelProperties: media.imageSettings.labelProperties,
-                exportProfileProgress: progress,
-                progressUnitCount: progressUnitCount
+                imageLabelProperties: media.imageSettings.labelProperties
             )
-            .write()
         }
+        
+        // attach local progress to parent
+        parentProgress?.addChild(writer.progress)
+        
+        try await writer.write()
     }
     
     /// - Returns: An array of marker image descriptors.
@@ -127,7 +127,7 @@ extension ExportProfile {
         
         var descriptors = zip(zip(markerTimecodes, imageFileNames), labels)
             .map {
-                ImageDescriptor(timecode: $0.0, name: $0.1, label: $1)
+                ImageDescriptor(timecode: $0.0, filename: $0.1, label: $1)
             }
         
         // if no video and no labels - only one frame needed for all markers

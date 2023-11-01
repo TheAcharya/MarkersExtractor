@@ -26,7 +26,7 @@ final class StillImageBatchExtractor: NSObject, ProgressReporting {
     init(_ conversion: ConversionSettings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
         self.conversion = conversion
-        progress = Progress(totalUnitCount: Int64(conversion.descriptors.count))
+        progress = Progress()
     }
 }
 
@@ -36,6 +36,9 @@ extension StillImageBatchExtractor {
     /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
     /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully or partially.
     func convert() async throws -> StillImageBatchExtractorResult {
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = Int64(conversion.descriptors.count)
+        
         let generator = imageGenerator()
         
         var batchResult = StillImageBatchExtractorResult()
@@ -48,12 +51,12 @@ extension StillImageBatchExtractor {
                 return
             }
 
-            let frameName = descriptor.name
+            let fileName = descriptor.filename
             let label = descriptor.label
             
             let frameResult = await self.processAndWriteFrameToDisk(
                 for: imageResult,
-                frameName: frameName,
+                fileName: fileName,
                 label: label
             )
             
@@ -68,7 +71,9 @@ extension StillImageBatchExtractor {
         }
         
         // TODO: throw error if `isBatchFinished == false`?
-        _ = isBatchFinished
+        assert(isBatchFinished)
+        
+        assert(progress.fractionCompleted == 1.0)
         
         return batchResult
     }
@@ -91,25 +96,25 @@ extension StillImageBatchExtractor {
 
     private func processAndWriteFrameToDisk(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
-        frameName: String,
+        fileName: String,
         label: String?
     ) async -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
             let image = await conversion.imageFilter?(result.image, label) ?? result.image
-
+            
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)
-
-            let url = conversion.outputFolder.appendingPathComponent(frameName)
-
+            
+            let fileURL = conversion.outputFolder.appendingPathComponent(fileName)
+            
             do {
                 switch conversion.frameFormat {
                 case .png:
                     // PNG does not offer 'compression' or 'quality' options
                     try ciContext.writePNGRepresentation(
                         of: ciImage,
-                        to: url,
+                        to: fileURL,
                         format: .RGBA8,
                         colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
                     )
@@ -125,7 +130,7 @@ extension StillImageBatchExtractor {
                     
                     try ciContext.writeJPEGRepresentation(
                         of: ciImage,
-                        to: url,
+                        to: fileURL,
                         colorSpace: ciImage.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
                         options: options
                     )
@@ -145,9 +150,9 @@ extension StillImageBatchExtractor {
 
 extension StillImageBatchExtractor {
     struct ConversionSettings {
+        let descriptors: [ImageDescriptor]
         let sourceMediaFile: URL
         let outputFolder: URL
-        let descriptors: [ImageDescriptor]
         let frameFormat: MarkerImageFormat.Still
         
         /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`

@@ -13,7 +13,8 @@ extension MarkersExtractor {
         projectStartTimecode: Timecode,
         media: ExportMedia?,
         markers: [Marker],
-        outputURL: URL
+        outputURL: URL,
+        parentProgress: ParentProgress? = nil
     ) async throws {
         switch s.exportFormat {
         case .airtable:
@@ -22,7 +23,8 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL)
+                payload: .init(projectName: projectName, outputURL: outputURL),
+                parentProgress: parentProgress
             )
         case .midi:
             try await export(
@@ -32,7 +34,8 @@ extension MarkersExtractor {
                 outputURL: outputURL,
                 payload: .init(projectName: projectName,
                                outputURL: outputURL,
-                               sessionStartTimecode: projectStartTimecode)
+                               sessionStartTimecode: projectStartTimecode),
+                parentProgress: parentProgress
             )
         case .notion:
             try await export(
@@ -40,7 +43,8 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL)
+                payload: .init(projectName: projectName, outputURL: outputURL),
+                parentProgress: parentProgress
             )
         }
     }
@@ -50,7 +54,8 @@ extension MarkersExtractor {
         media: ExportMedia?,
         markers: [Marker],
         outputURL: URL,
-        payload: P.Payload
+        payload: P.Payload,
+        parentProgress: ParentProgress?
     ) async throws {
         try await P(logger: logger).export(
             markers: markers,
@@ -61,7 +66,8 @@ extension MarkersExtractor {
             payload: payload,
             createDoneFile: s.createDoneFile,
             doneFilename: s.doneFilename,
-            logger: logger
+            logger: logger,
+            parentProgress: parentProgress
         )
     }
 }

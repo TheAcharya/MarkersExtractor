@@ -12,7 +12,7 @@ import DAWFileKit
 import TimecodeKit
 
 public final class MarkersExtractor: NSObject, ProgressReporting {
-    internal let logger: Logger
+    public let logger: Logger
     internal var s: Settings
     public let progress: Progress
     
@@ -32,17 +32,17 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     public func extract() async throws {
         progress.completedUnitCount = 0
-        progress.totalUnitCount = 5
+        progress.totalUnitCount = 100
         
-        let imageFormatEXT = s.imageFormat.rawValue.uppercased()
-        
-        logger.info("Starting")
         logger.info("Using \(s.exportFormat.name) export profile.")
-        logger.info("Extracting markers from \(s.fcpxml).")
+        logger.info("Extracting markers from \(s.fcpxml)...")
         
-        var markers = try extractMarkers(progressUnitCount: 1) // increments progress by 1
+        // increments progress by 5%
+        var markers = try extractMarkers(
+            parentProgress: ParentProgress(progress: progress, unitCount: 5)
+        )
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
         markers = uniquingMarkerIDs(in: markers)
         
@@ -52,7 +52,7 @@ extension MarkersExtractor {
             return
         }
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
         if !EmbeddedResource.validateAll() {
             logger.warning(
@@ -82,20 +82,20 @@ extension MarkersExtractor {
             let exportMedia = try formExportMedia(projectName: projectName)
             media = exportMedia
             logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
-            logger.info("Generating metadata file(s) with \(imageFormatEXT) thumbnail images into \(outputURL.path.quoted).")
+            logger.info("Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted).")
         }
         
-        progress.completedUnitCount += 1
+        progress.completedUnitCount += 5
         
+        // increments progress by 80%
         try await export(
             projectName: projectName,
             projectStartTimecode: projectStartTimecode,
             media: media,
             markers: markers,
-            outputURL: outputURL
+            outputURL: outputURL,
+            parentProgress: ParentProgress(progress: progress, unitCount: 80)
         )
-        
-        progress.completedUnitCount += 1
         
         logger.info("Done")
     }

@@ -206,6 +206,18 @@ extension MarkersExtractor.Settings {
     }
 }
 
+// MARK: - Conversions
+
+extension MarkersExtractor.Settings {
+    public var imageQualityDouble: Double {
+        Double(imageQuality) / 100
+    }
+    
+    public var imageLabelFontOpacityDouble: Double {
+        Double(imageLabelFontOpacity) / 100
+    }
+}
+
 // MARK: - Defaults
 
 extension MarkersExtractor.Settings {
