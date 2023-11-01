@@ -93,7 +93,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             imageFilter: { [weak self] inputImage in
                 if let self, let label = descriptor.label {
                     var labeler = ImageLabeler(labelProperties: self.imageLabelProperties, logger: self.logger)
-                    return await labeler.labelImage(image: inputImage, text: label)
+                    return labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
                 }
@@ -170,7 +170,7 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             imageFilter: { inputImage, label in
                 if let label {
                     var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
-                    return await labeler.labelImage(image: inputImage, text: label)
+                    return labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
                 }

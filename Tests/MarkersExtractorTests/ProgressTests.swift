@@ -45,15 +45,7 @@ final class ProgressTests: XCTestCase {
             gifSpan: 0.25,
             gifDimensions: nil,
             imageFormat: .gif,
-            imageLabelProperties: MarkerLabelProperties(
-                fontName: "Arial",
-                fontMaxSize: 48,
-                fontColor: .black,
-                fontStrokeColor: .white,
-                fontStrokeWidth: nil,
-                alignHorizontal: .left,
-                alignVertical: .top
-            )
+            imageLabelProperties: .default()
         )
         
         XCTAssertEqual(writer.progress.fractionCompleted, 0.0)

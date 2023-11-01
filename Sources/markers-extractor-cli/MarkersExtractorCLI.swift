@@ -225,6 +225,9 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
+    @Flag(name: [.customLong("no-progress")], help: "Disable progress logging.")
+    var noProgressLogging = false
+    
     @Flag(
         name: [.customLong("no-media")],
         help: "Bypass media. No thumbnails will be generated."
@@ -316,9 +319,16 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         }
         
         let extractor = MarkersExtractor(settings)
-        let o = ProgressLogging(to: extractor.logger, progress: extractor.progress); _ = o
+        
+        if !noProgressLogging {
+            let progressLogger = Logger(label: "Progress")
+            _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
+        }
+        
         try await extractor.extract()
     }
+    
+    private var _progressLogging: ProgressLogging?
 }
 
 // MARK: Helpers
@@ -352,7 +362,9 @@ extension MarkersExtractorCLI {
     }
     
     /// Observes changes in a `Progress` instance and logs updates to the console.
-    private final class ProgressLogging: NSObject {
+    /// Codable conformance is a workaround to satisfy the compiler so we can store an
+    /// instance of this class in the AsyncParsableCommand struct.
+    private final class ProgressLogging: NSObject, Codable {
         var logger: Logger
         var progress: Progress?
         var observation: NSKeyValueObservation?
@@ -366,11 +378,18 @@ extension MarkersExtractorCLI {
             
             self.progress = progress
             self.observation = progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, _ in
+                guard let self else { return }
                 let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
-                guard self?.lastOutput != output else { return } // suppress redundant output
-                self?.logger.info("\(output)")
-                self?.lastOutput = output
+                guard self.lastOutput != output else { return } // suppress redundant output
+                self.logger.info("\(output)")
+                self.lastOutput = output
             }
+        }
+        
+        func encode(to encoder: Encoder) throws { }
+        
+        init(from decoder: Decoder) throws {
+            logger = Logger(label: "Dummy")
         }
     }
 }

@@ -1,5 +1,16 @@
 # MarkersExtractor Change Log
 
+## [0.2.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.3) (2023-10-31)
+
+### New Features
+
+- Added `--no-progress` CLI flag to suppress progress output to console (#31)
+
+### Bug Fixes
+
+- Resolved issue where CLI was not outputting progress to the console in a release build (#31)
+- Performance and reliability improvements for thumbnail image generation (#49)
+
 ## [0.2.2](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.2) (2023-10-31)
 
 ### Refinements
