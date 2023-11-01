@@ -374,12 +374,10 @@ extension MarkersExtractorCLI {
             self.progress = progress
             self.observation = progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, _ in
                 guard let self else { return }
-                DispatchQueue.global().async {
-                    let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
-                    guard self.lastOutput != output else { return } // suppress redundant output
-                    self.logger.info("\(output)")
-                    self.lastOutput = output
-                }
+                let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
+                guard self.lastOutput != output else { return } // suppress redundant output
+                self.logger.info("\(output)")
+                self.lastOutput = output
             }
         }
         
