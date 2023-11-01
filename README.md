@@ -145,6 +145,7 @@ OPTIONS:
   --log-level <trace, debug, info, notice, warning, error, critical>
                           Log level. (default: info)
   --quiet                 Disable log.
+  --no-progress           Disable progress logging.
   --no-media              Bypass media. No thumbnails will be generated.
   --media-search-path <media-search-path>
                           Media search path. This argument can be supplied more
