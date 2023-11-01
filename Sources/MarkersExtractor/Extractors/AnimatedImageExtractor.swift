@@ -185,6 +185,10 @@ extension AnimatedImageExtractor {
         
         let generator = imageGenerator()
         
+        // important: frame images generation is ok to do concurrently, but
+        // the creation of the GIF (CGImageDestinationAddImage) must happen serially
+        
+        var images: [Fraction: CGImage] = [:]
         try await generator.images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
             guard let self = self else {
                 batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
@@ -192,15 +196,15 @@ extension AnimatedImageExtractor {
             }
 
             do {
-                let isFinished = try await self.processFrame(
+                let (image, isFinished) = try self.processFrame(
                     for: imageResult,
-                    at: self.startTime,
-                    destination: gifDestination,
-                    frameProperties: frameProperties as CFDictionary
+                    at: self.startTime
                 )
-                if isFinished {
-                    isBatchFinished = true
+                if let image {
+                    // we have to use Fraction as dictionary key since CMTime is not hashable on older macOS versions
+                    images[descriptor.timecode.cmTimeValue.fractionValue] = image
                 }
+                if isFinished { isBatchFinished = true }
             } catch let error as AnimatedImageExtractorError {
                 batchResult.addError(for: descriptor, error)
             } catch {
@@ -210,6 +214,13 @@ extension AnimatedImageExtractor {
         
         // TODO: throw error if `isBatchFinished == false`?
         assert(isBatchFinished)
+        
+        // assemble GIF
+        // we have to sort since images were generated concurrently and may be out of order
+        // TODO: perform this as images are generated to improve performance
+        for (_, image) in images.sorted(by: { $0.key.cmTimeValue < $1.key.cmTimeValue }) {
+            CGImageDestinationAddImage(gifDestination, image, frameProperties as CFDictionary)
+        }
         
         if !CGImageDestinationFinalize(gifDestination) {
             throw AnimatedImageExtractorError.gifFinalizationFailed
@@ -256,19 +267,17 @@ extension AnimatedImageExtractor {
         return generator
     }
 
-    /// - Returns: `true` if finished.
+    /// - Returns: CGImage, or `nil` if
     /// - Throws: ``AnimatedImageExtractorError``
     private func processFrame(
         for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
-        at startTime: TimeInterval,
-        destination: CGImageDestination,
-        frameProperties: CFDictionary
-    ) async throws -> Bool {
+        at startTime: TimeInterval
+    ) throws -> (image: CGImage?, isFinished: Bool) {
         switch result {
         case let .success(result):
             // This happens if the last frame in the video failed to be generated.
             if result.isFinishedIgnoreImage {
-                return true
+                return (nil, true)
             }
 
             if result.completedCount == 1 {
@@ -279,17 +288,14 @@ extension AnimatedImageExtractor {
             // https://github.com/sindresorhus/Gifski/pull/262
             // Skip incorrect out-of-range frames.
             if result.actualTime.seconds < startTime {
-                return false
+                return (nil, result.isFinished)
             }
 
-            let image = await conversion.imageFilter?(result.image) ?? result.image
+            let image = conversion.imageFilter?(result.image) ?? result.image
 
-            let frameNumber = result.completedCount - 1
-            assert(result.actualTime.seconds > 0 || frameNumber == 0)
-
-            CGImageDestinationAddImage(destination, image, frameProperties)
-
-            return result.isFinished
+            assert(result.actualTime.seconds >= 0)
+            
+            return (image, result.isFinished)
             
         case let .failure(error):
             throw AnimatedImageExtractorError.generateFrameFailed(error)
@@ -306,7 +312,7 @@ extension AnimatedImageExtractor {
         let outputFile: URL
         var dimensions: CGSize?
         var outputFPS: Double
-        let imageFilter: ((CGImage) async -> CGImage)?
+        let imageFilter: ((CGImage) -> CGImage)?
         let imageFormat: MarkerImageFormat.Animated
     }
 }

@@ -20,7 +20,7 @@ struct ImageLabeler {
         properties = labelProperties
     }
 
-    mutating func labelImage(image: CGImage, text: String) async -> CGImage {
+    mutating func labelImage(image: CGImage, text: String) -> CGImage {
         guard let context = initImageContext(for: image) else {
             logger.warning("Failed to initialize new image context. Bypassing original image.")
             return image
@@ -34,7 +34,7 @@ struct ImageLabeler {
             in: CGRect(x: 0, y: 0, width: image.width, height: image.height)
         )
 
-        await drawText(text: text, context: context, textRect: textRect)
+        drawText(text: text, context: context, textRect: textRect)
 
         guard let newImage = context.makeImage() else {
             logger.warning("Failed to create labeled image. Bypassing original image.")
@@ -72,7 +72,7 @@ struct ImageLabeler {
         )
     }
 
-    private mutating func drawText(text: String, context: CGContext, textRect: CGRect) async {
+    private mutating func drawText(text: String, context: CGContext, textRect: CGRect) {
         let paragraphStyle = NSMutableParagraphStyle()
 
         switch properties.alignHorizontal {
@@ -90,7 +90,7 @@ struct ImageLabeler {
             .paragraphStyle: paragraphStyle
         ]
 
-        let fontSize = await calcFontSize(
+        let fontSize = calcFontSize(
             for: text,
             attributes: stringAttributes,
             restraint: textRect.size
@@ -207,7 +207,7 @@ struct ImageLabeler {
         for string: String,
         attributes: [NSAttributedString.Key: Any],
         restraint: CGSize
-    ) async -> CGFloat {
+    ) -> CGFloat {
         let sizeHash = [
             string,
             String(Int(restraint.height)),
