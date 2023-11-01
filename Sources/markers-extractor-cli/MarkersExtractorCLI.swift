@@ -225,6 +225,9 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
+    @Flag(name: [.customLong("no-progress")], help: "Disable progress logging.")
+    var noProgressLogging = false
+    
     @Flag(
         name: [.customLong("no-media")],
         help: "Bypass media. No thumbnails will be generated."
@@ -317,8 +320,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         
         let extractor = MarkersExtractor(settings)
         
-        let progressLogger = Logger(label: "Progress")
-        _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
+        if !noProgressLogging {
+            let progressLogger = Logger(label: "Progress")
+            _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
+        }
         
         try await extractor.extract()
     }
