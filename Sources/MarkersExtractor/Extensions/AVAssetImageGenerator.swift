@@ -108,6 +108,7 @@ extension AVAssetImageGenerator {
             resultImage = image
             resultError = error
             resultActualTime = actualTime
+            group.leave()
         }
         
         return try await withCheckedThrowingContinuation { continuation in
