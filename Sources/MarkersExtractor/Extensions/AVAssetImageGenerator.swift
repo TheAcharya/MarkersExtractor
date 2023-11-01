@@ -38,7 +38,7 @@ extension AVAssetImageGenerator {
                     
                     let requestedTime = descriptor.timecode.cmTimeValue
                     
-                    let result = try await imageCompat(at: requestedTime)
+                    let result = try await self.imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     let imageForHandlerResult = result.image ?? CGImage.empty!
                     
@@ -87,7 +87,7 @@ extension AVAssetImageGenerator {
                 taskGroup.addTask { [weak self] in
                     guard let self else { return }
                     
-                    let result = try await imageCompat(at: requestedTime)
+                    let result = try await self.imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     let imageForHandlerResult = result.image ?? CGImage.empty!
                     
