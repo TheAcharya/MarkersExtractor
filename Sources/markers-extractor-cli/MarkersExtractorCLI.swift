@@ -323,7 +323,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         try await extractor.extract()
     }
     
-//    @ArgumentParser.
     private var _progressLogging: ProgressLogging?
 }
 

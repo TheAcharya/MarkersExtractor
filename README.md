@@ -55,12 +55,12 @@
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.2/markers-extractor-cli-0.2.2.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.3/markers-extractor-cli-0.2.3.zip).
 
 ### From Source
 
 ```shell
-VERSION=0.2.2  # replace this with the git tag of the version you need
+VERSION=0.2.3 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -71,7 +71,7 @@ Once the build has finished, the `markers-extractor-cli` executable will be loca
 
 ## Usage
 
-### CLI 0.2.2
+### CLI 0.2.3
 
 ```plain
 $ markers-extractor-cli --help
