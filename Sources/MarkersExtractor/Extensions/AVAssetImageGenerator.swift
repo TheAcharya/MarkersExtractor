@@ -28,7 +28,7 @@ extension AVAssetImageGenerator {
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
         let completedCount = Counter(count: 0) { count in
-            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+            progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
         for descriptor in descriptors {
@@ -64,7 +64,7 @@ extension AVAssetImageGenerator {
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
         let completedCount = Counter(count: 0) { count in
-            progress?.totalUnitCount = Int64(exactly: count) ?? 0
+            progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
         for requestedTime in times {

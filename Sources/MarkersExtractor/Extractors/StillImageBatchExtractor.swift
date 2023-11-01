@@ -68,8 +68,6 @@ extension StillImageBatchExtractor {
             case let .failure(error):
                 batchResult.addError(for: descriptor, error)
             }
-            
-            self.progress.completedUnitCount += 1
         }
         
         // TODO: throw error if `isBatchFinished == false`?
