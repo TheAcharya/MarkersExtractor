@@ -48,7 +48,7 @@ extension ExportProfile {
         
         // icons
         
-        logger.info("Exporting marker icons.")
+        logger.info("Exporting marker icons...")
         
         try exportIcons(from: markers, to: outputURL)
         

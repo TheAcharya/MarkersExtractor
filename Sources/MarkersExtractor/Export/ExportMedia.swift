@@ -44,7 +44,7 @@ extension ExportProfile {
         }
         
         logger.info(
-            "Generating \(media.imageSettings.format.name) images for markers."
+            "Generating \(media.imageSettings.format.name) images for markers..."
         )
         
         let imageDescriptors = try makeImageDescriptors(

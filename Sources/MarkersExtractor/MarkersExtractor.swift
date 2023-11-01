@@ -34,9 +34,8 @@ extension MarkersExtractor {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 100
         
-        logger.info("Starting")
         logger.info("Using \(s.exportFormat.name) export profile.")
-        logger.info("Extracting markers from \(s.fcpxml).")
+        logger.info("Extracting markers from \(s.fcpxml)...")
         
         // increments progress by 5%
         var markers = try extractMarkers(
