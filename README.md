@@ -173,7 +173,7 @@ For ease of use, usage and creation of `.sh` files is **recommended**.
 2. Place the latest pre-compiled binary with the folder. 
 3. Within that folder, create two more additional folders, **Render** and **Output**.
 4. **Render** is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename. **Output** is where your **Marker Data Set** will be generated.
-5. Create a file using any text editor. Name script file with extension `.sh`
+5. Create a file using any text editor. Name the script file with extension `.sh`
 6. Copy and paste this syntax into the file, where **xxx** is the name of of your user directory and **zzz** is the name of your `.fcpxmld` file.
 
 ```bash
