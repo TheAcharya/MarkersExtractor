@@ -18,18 +18,18 @@ final class MarkersExtractorTests: XCTestCase {
         
         let extractor = MarkersExtractor(settings)
         
-        func makeMarker(_ name: String, position: Timecode.Components) throws -> Marker {
-            try Marker(
+        func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
+            Marker(
                 type: .standard,
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
-                position: Timecode(.components(position), at: .fps24),
+                position: tc(position, at: .fps24),
                 parentInfo: .init(
                     clipName: "Some Clip",
                     clipFilename: "",
-                    clipInTime: Timecode(.zero, at: .fps24),
-                    clipOutTime: Timecode(.components(h: 1), at: .fps24),
+                    clipInTime: tc("00:00:00:00", at: .fps24),
+                    clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"
@@ -37,8 +37,8 @@ final class MarkersExtractorTests: XCTestCase {
             )
         }
         
-        let marker1 = try makeMarker("marker1", position: .init(f: 1))
-        let marker2 = try makeMarker("marker2", position: .init(f: 2))
+        let marker1 = makeMarker("marker1", position: .init(f: 1))
+        let marker2 = makeMarker("marker2", position: .init(f: 2))
         
         XCTAssertEqual(
             extractor.findDuplicateIDs(in: []), []
@@ -53,7 +53,8 @@ final class MarkersExtractorTests: XCTestCase {
         )
         
         XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker1, marker1]), [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
+            extractor.findDuplicateIDs(in: [marker1, marker1]), 
+            [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
         
         XCTAssertEqual(
@@ -71,18 +72,18 @@ final class MarkersExtractorTests: XCTestCase {
         
         let extractor = MarkersExtractor(settings)
         
-        func makeMarker(_ name: String, position: Timecode.Components) throws -> Marker {
-            try Marker(
+        func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
+            Marker(
                 type: .standard,
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
-                position: Timecode(.components(position), at: .fps24),
+                position: tc(position, at: .fps24),
                 parentInfo: .init(
                     clipName: "Some Clip",
                     clipFilename: "",
-                    clipInTime: Timecode(.zero, at: .fps24),
-                    clipOutTime: Timecode(.components(h: 1), at: .fps24),
+                    clipInTime: tc("00:00:00:00", at: .fps24),
+                    clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
                     projectName: "MyProject",
                     libraryName: "MyLibrary"
@@ -90,8 +91,8 @@ final class MarkersExtractorTests: XCTestCase {
             )
         }
         
-        let marker1 = try makeMarker("marker1", position: .init(f: 1))
-        let marker2 = try makeMarker("", position: .init(f: 2))
+        let marker1 = makeMarker("marker1", position: .init(f: 1))
+        let marker2 = makeMarker("", position: .init(f: 2))
         
         XCTAssertTrue(
             extractor.isAllUniqueIDNonEmpty(in: [])

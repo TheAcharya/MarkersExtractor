@@ -5,20 +5,21 @@
 //
 
 import Foundation
+import DAWFileKit
 
 extension NotionExportProfile {
     public enum Icon: ExportIcon {
         case chapter
         case completed
-        case todo
+        case toDo
         case standard
         
-        public init(_ type: MarkerType) {
+        public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
             switch type {
             case .standard:
                 self = .standard
-            case let .todo(completed):
-                self = completed ? .completed : .todo
+            case let .toDo(completed):
+                self = completed ? .completed : .toDo
             case .chapter:
                 self = .chapter
             }
@@ -28,7 +29,7 @@ extension NotionExportProfile {
             switch self {
             case .chapter: return .notion_marker_chapter_png
             case .completed: return .notion_marker_completed_png
-            case .todo: return .notion_marker_to_do_png
+            case .toDo: return .notion_marker_to_do_png
             case .standard: return .notion_marker_png
             }
         }

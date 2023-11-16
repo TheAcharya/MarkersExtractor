@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import DAWFileKit
 
 extension NotionExportProfile {
     enum Status: String, CaseIterable {
@@ -12,14 +13,14 @@ extension NotionExportProfile {
         case inProgress = "In Progress"
         case done = "Done"
         
-        init(_ type: MarkerType) {
+        init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
             switch type {
             case .standard:
                 self = .notStarted
-            case let .todo(completed):
-                self = completed ? .done : .inProgress
             case .chapter:
                 self = .notStarted
+            case let .toDo(completed):
+                self = completed ? .done : .inProgress
             }
         }
     }

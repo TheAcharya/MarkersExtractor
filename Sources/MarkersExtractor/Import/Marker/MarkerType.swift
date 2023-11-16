@@ -4,20 +4,26 @@
 //  Licensed under MIT License
 //
 
+import DAWFileKit
+
 // https://support.apple.com/en-sg/guide/final-cut-pro/ver397279dd/mac
 
-public enum MarkerType: Equatable, Hashable, Sendable {
-    case standard
-    case chapter
-    case todo(completed: Bool)
-}
-
-extension MarkerType {
+extension FinalCutPro.FCPXML.Marker.MarkerType {
     public var name: String {
         switch self {
         case .standard: return "Standard"
         case .chapter: return "Chapter"
-        case .todo: return "To Do"
+        case .toDo: return "To Do"
+        }
+    }
+}
+
+extension FinalCutPro.FCPXML.Marker.MarkerMetaData {
+    public var name: String {
+        switch self {
+        case .standard: return "Standard"
+        case .chapter: return "Chapter"
+        case .toDo: return "To Do"
         }
     }
 }

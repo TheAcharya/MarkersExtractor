@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import DAWFileKit
 
 /// `ExportIcon` prototype that can be used when a profile does not use marker icons.
 public struct EmptyExportIcon: ExportIcon {
@@ -14,5 +15,5 @@ public struct EmptyExportIcon: ExportIcon {
     
     public let data: Data = .init()
     
-    public init(_ type: MarkerType) { }
+    public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) { }
 }

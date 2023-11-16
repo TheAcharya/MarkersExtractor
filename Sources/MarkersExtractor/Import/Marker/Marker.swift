@@ -5,6 +5,7 @@
 //
 
 import CoreMedia
+import DAWFileKit
 import TimecodeKit
 
 /// Raw FCP Marker data extracted from FCPXML.
@@ -27,7 +28,7 @@ public struct Marker: Equatable, Hashable, Sendable {
     }
     
     // raw metadata-related
-    var type: MarkerType
+    var type: FinalCutPro.FCPXML.Marker.MarkerMetaData
     var name: String
     var notes: String
     var roles: MarkerRoles
@@ -83,7 +84,7 @@ extension Marker {
     
     func isChecked() -> Bool {
         switch type {
-        case let .todo(completed):
+        case let .toDo(completed):
             return completed
         default:
             return false

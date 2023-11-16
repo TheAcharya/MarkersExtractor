@@ -28,7 +28,7 @@ final class ProgressTests: XCTestCase {
     func testAnimatedImageExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
-        let range = try Timecode(.zero, at: .fps24) ... Timecode(.components(f: 10), at: .fps24)
+        let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
         let descriptors: [ImageDescriptor] = range.map {
             ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
         }
@@ -74,7 +74,7 @@ final class ProgressTests: XCTestCase {
     func testStillImageBatchExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
-        let range = try Timecode(.zero, at: .fps24) ... Timecode(.components(f: 10), at: .fps24)
+        let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
         let descriptors: [ImageDescriptor] = range.map {
             ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
         }

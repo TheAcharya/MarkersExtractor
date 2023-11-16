@@ -30,11 +30,11 @@ final class BasicMarkersTests: XCTestCase {
         
         let fr: TimecodeFrameRate = .fps29_97
         
-        let parentInfo = try Marker.ParentInfo(
+        let parentInfo = Marker.ParentInfo(
             clipName: "Basic Title",
             clipFilename: "",
-            clipInTime: Timecode(.zero, at: fr),
-            clipOutTime: Timecode(.components(h: 00, m: 01, s: 03, f: 29), at: fr),
+            clipInTime: tc("00:00:00:00", at: fr),
+            clipOutTime: tc("00:01:03:29", at: fr),
             eventName: "Test Event",
             projectName: "Test Project",
             libraryName: "MyLibrary"
@@ -48,40 +48,40 @@ final class BasicMarkersTests: XCTestCase {
             marker0.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker0.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 14), at: fr))
+        XCTAssertEqual(marker0.position, tc("00:00:29:14", at: fr))
         XCTAssertEqual(marker0.parentInfo, parentInfo)
         
         let marker1 = markers[1]
-        XCTAssertEqual(marker1.type, .todo(completed: false))
+        XCTAssertEqual(marker1.type, .toDo(completed: false))
         XCTAssertEqual(marker1.name, "Marker 1")
         XCTAssertEqual(marker1.notes, "more notes here")
         XCTAssertEqual(
             marker1.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker1.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 15), at: fr))
+        XCTAssertEqual(marker1.position, tc("00:00:29:15", at: fr))
         XCTAssertEqual(marker1.parentInfo, parentInfo)
         
         let marker2 = markers[2]
-        XCTAssertEqual(marker2.type, .todo(completed: true))
+        XCTAssertEqual(marker2.type, .toDo(completed: true))
         XCTAssertEqual(marker2.name, "Marker 2")
         XCTAssertEqual(marker2.notes, "notes yay")
         XCTAssertEqual(
             marker2.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker2.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 15), at: fr))
+        XCTAssertEqual(marker2.position, tc("00:00:29:15", at: fr))
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
         let marker3 = markers[3]
-        XCTAssertEqual(marker3.type, .chapter)
+        XCTAssertEqual(marker3.type, .chapter(posterOffset: +tc("00:00:00:10.79", at: fr)))
         XCTAssertEqual(marker3.name, "Marker 3")
         XCTAssertEqual(marker3.notes, "more notes here")
         XCTAssertEqual(
             marker3.roles,
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker3.position, try Timecode(.components(h: 00, m: 00, s: 29, f: 17), at: fr))
+        XCTAssertEqual(marker3.position, tc("00:00:29:17", at: fr))
         XCTAssertEqual(marker3.parentInfo, parentInfo)
     }
     
