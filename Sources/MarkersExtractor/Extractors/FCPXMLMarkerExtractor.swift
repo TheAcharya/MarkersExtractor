@@ -150,7 +150,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         in event: FinalCutPro.FCPXML.Event,
         library: FinalCutPro.FCPXML.Library?
     ) -> [Marker] {
-        let settings = FCPXMLMarkersExtractionSettings(
+        let settings = FinalCutPro.FCPXML.ExtractionSettings(
             // deep: true,
             excludeTypes: [],
             auditionMask: .activeAudition
@@ -173,9 +173,9 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     ) -> Marker? {
         // let roles = getClipRoles(parentClip)
         
-        guard let position = extractedMarker.absoluteStart,
-              let clipInTime = extractedMarker.parentAbsoluteStart,
-              let clipDuration = extractedMarker.parentDuration,
+        guard let position = extractedMarker.context.absoluteStart,
+              let clipInTime = extractedMarker.context.parentAbsoluteStart,
+              let clipDuration = extractedMarker.context.parentDuration,
               let clipOutTime = try? clipInTime.adding(clipDuration, by: .wrapping)
         else {
             logger.error("Error converting marker: \(extractedMarker.marker.name.quoted).")
@@ -189,12 +189,12 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             roles: MarkerRoles(video: "NOT YET IMPLEMENTED"), // TODO: implement
             position: position,
             parentInfo: Marker.ParentInfo(
-                clipName: extractedMarker.parentName ?? "",
+                clipName: extractedMarker.context.parentName ?? "",
                 clipFilename: "NOT YET IMPLEMENTED", // TODO: implement
                 clipInTime: clipInTime,
                 clipOutTime: clipOutTime,
-                eventName: extractedMarker.ancestorEventName ?? "",
-                projectName: extractedMarker.ancestorProjectName ?? "",
+                eventName: extractedMarker.context.ancestorEventName ?? "",
+                projectName: extractedMarker.context.ancestorProjectName ?? "",
                 libraryName: parentLibrary?.name ?? ""
             )
         )
