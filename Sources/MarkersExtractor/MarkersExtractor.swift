@@ -63,7 +63,7 @@ extension MarkersExtractor {
         let projectName = markers[0].parentInfo.projectName
         
         let dawFile = try s.fcpxml.dawFile()
-        guard let project = dawFile.projects().first else {
+        guard let project = dawFile.allProjects().first else {
             throw MarkersExtractorError.extraction(.projectMissing(
                 "Could not find a project in the XML file."
             ))

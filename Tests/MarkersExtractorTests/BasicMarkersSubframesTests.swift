@@ -18,7 +18,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
         settings.enableSubframes = true
         
         let extractor = MarkersExtractor(settings)
-        let markers = try extractor.extractMarkers()
+        let markers = try extractor.extractMarkers().sorted()
         
         let lastMarker = try XCTUnwrap(markers.last)
         XCTAssertEqual(lastMarker.positionTimecodeString(format: [.showSubFrames]), "00:00:28:19.25")

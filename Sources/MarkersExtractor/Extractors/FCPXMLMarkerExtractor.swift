@@ -92,7 +92,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let library = parsedFCPXML.library()
         
-        for event in parsedFCPXML.events() {
+        for event in parsedFCPXML.allEvents() {
             fcpxmlMarkers += markers(in: event, library: library)
         }
 
@@ -167,7 +167,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     }
     
     private func convertMarker(
-        _ extractedMarker: FinalCutPro.FCPXML.ExtractedMarker,
+        _ extractedMarker: FinalCutPro.FCPXML.Marker,
         // parentEvent: FinalCutPro.FCPXML.Event,
         parentLibrary: FinalCutPro.FCPXML.Library?
     ) -> Marker? {
@@ -178,14 +178,14 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
               let clipDuration = extractedMarker.context.parentDuration,
               let clipOutTime = try? clipInTime.adding(clipDuration, by: .wrapping)
         else {
-            logger.error("Error converting marker: \(extractedMarker.marker.name.quoted).")
+            logger.error("Error converting marker: \(extractedMarker.name.quoted).")
             return nil
         }
         
         return Marker(
-            type: extractedMarker.marker.metaData,
-            name: extractedMarker.marker.name,
-            notes: extractedMarker.marker.note ?? "",
+            type: extractedMarker.metaData,
+            name: extractedMarker.name,
+            notes: extractedMarker.note ?? "",
             roles: MarkerRoles(video: "NOT YET IMPLEMENTED"), // TODO: implement
             position: position,
             parentInfo: Marker.ParentInfo(
