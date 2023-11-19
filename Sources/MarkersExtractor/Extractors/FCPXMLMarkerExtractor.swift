@@ -9,6 +9,7 @@ import Foundation
 import Logging
 import DAWFileKit
 import TimecodeKit
+import OTCore
 
 class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private let logger: Logger
@@ -90,9 +91,9 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
 
         let parsedFCPXML = FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
         
-        let library = parsedFCPXML.library()
+        let library = parsedFCPXML.library(context: MarkersExtractor.elementContext)
         
-        for event in parsedFCPXML.allEvents() {
+        for event in parsedFCPXML.allEvents(context: MarkersExtractor.elementContext) {
             fcpxmlMarkers += markers(in: event, library: library)
         }
 
@@ -190,7 +191,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             position: position,
             parentInfo: Marker.ParentInfo(
                 clipName: extractedMarker.context[.parentName] ?? "",
-                clipFilename: "NOT YET IMPLEMENTED", // TODO: implement
+                clipFilename: extractedMarker.context[.mediaFilename] ?? "",
                 clipInTime: clipInTime,
                 clipOutTime: clipOutTime,
                 eventName: extractedMarker.context[.ancestorEventName] ?? "",
