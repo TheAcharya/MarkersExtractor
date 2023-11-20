@@ -20,6 +20,10 @@ final class BasicMarkersSubframesTests: XCTestCase {
         let extractor = MarkersExtractor(settings)
         let markers = try extractor.extractMarkers().sorted()
         
+        // 24 includes all markers, including out of bounds and hidden from the timeline.
+        // this may change in future.
+        XCTAssertEqual(markers.count, 24)
+        
         let lastMarker = try XCTUnwrap(markers.last)
         XCTAssertEqual(lastMarker.positionTimecodeString(format: [.showSubFrames]), "00:00:28:19.25")
     }

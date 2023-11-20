@@ -43,7 +43,7 @@ extension MarkersExtractor {
         init() { }
         
         var contextBuilder: FinalCutPro.FCPXML.ElementContextClosure {
-            { xmlLeaf, resources, tools in
+            { xmlLeaf, breadcrumbs, resources, tools in
                 var dict: FinalCutPro.FCPXML.ElementContext = [:]
                 
                 dict[.resource] = tools.resource
