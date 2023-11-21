@@ -9,7 +9,6 @@ import Foundation
 import Logging
 import DAWFileKit
 import TimecodeKit
-import OTCore
 
 class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private let logger: Logger
@@ -136,8 +135,13 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             
             // emit log messages for out-of-bounds markers
             omitted.forEach { marker in
+                let mn = marker.name.quoted
+                let pos = marker.position
+                let clipName = marker.parentInfo.clipName.quoted
+                let inTime = marker.parentInfo.clipInTime
+                let outTime = marker.parentInfo.clipOutTime
                 logger.notice(
-                    "Marker \(marker.name.quoted) at \(marker.position) is out of bounds of its parent clip \(marker.parentInfo.clipName.quoted) (\(marker.parentInfo.clipInTime) - \(marker.parentInfo.clipOutTime)) and will be omitted."
+                    "Marker \(mn) at \(pos) is out of bounds of its parent clip \(clipName) (\(inTime) - \(outTime)) and will be omitted."
                 )
             }
         }
@@ -200,77 +204,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             )
         )
     }
-
-//    private func calcMarkerPosition(
-//        _ marker: XMLElement,
-//        parentFPS: TimecodeFrameRate,
-//        parentInTime: Timecode,
-//        parentOutTime: Timecode
-//    ) -> Timecode {
-//        let markerName = marker.fcpxValue ?? ""
-//        
-//        guard let parentClip = marker.parentElement else {
-//            logger.warning(
-//                "Could not find parent element while attempting to form position timecode for marker \(markerName.quoted)."
-//            )
-//            return Timecode(.zero, at: parentFPS)
-//        }
-//        
-//        // FYI: clips can be resized from either side so it's possible for out-of-boundary
-//        // markers to exist prior to the clip's start time or after the clip's end time,
-//        // as FCP still exports them to the XML even though they are not visible in the FCP timeline
-//        
-//        let localInPoint: CMTime = parentClip.fcpxStartValue.seconds > 0
-//            ? marker.fcpxLocalInPoint - parentClip.fcpxStartValue
-//            : marker.fcpxLocalInPoint
-//
-//        let markerCMTime = CMTimeAdd(parentClip.fcpxTimelineInPoint!, localInPoint)
-//        let clipName = getClipName(parentClip)
-//        let markerTimecode: Timecode = {
-//            guard let tc = try? formTimecodeInterval(markerCMTime, at: parentFPS).flattened()
-//            else {
-//                logger.warning(
-//                    "Could not form position timecode for marker \(markerName.quoted) in clip \(clipName.quoted)."
-//                )
-//                return Timecode(.zero, at: parentFPS)
-//            }
-//            return tc
-//        }()
-//
-//        return markerTimecode
-//    }
-
-//    private func findParentByType(
-//        _ element: XMLElement,
-//        _ type: FCPXMLElementType
-//    ) -> XMLElement? {
-//        guard let parent = element.parentElement else {
-//            return nil
-//        }
-//
-//        return parent.fcpxType == type ? parent : findParentByType(parent, type)
-//    }
-
-//    private func getClipName(_ clip: XMLElement) -> String {
-//        clip.fcpxName ?? ""
-//    }
     
-//    private func getClipFilename(_ clip: XMLElement) -> String? {
-//        clip.fcpxResource?.subElement(named: "media-rep")?.fcpxSrc?.lastPathComponent ?? ""
-//    }
-
-//    private func getLibraryName(_ library: FinalCutPro.FCPXML.Library) -> String? {
-//        // will be a file URL that is URL encoded
-//        let libName = library.location
-//            .deletingPathExtension()
-//            .lastPathComponent
-//        
-//        // decode URL encoding
-//        let libNameDecoded = libName.removingPercentEncoding ?? libName
-//        
-//        return libNameDecoded
-//    }
-
+    // TODO: delete commented code after refactoring roles parsing in DAWFileKit
 //    internal func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
 //        // handle special case of audio-channel-source XML element
 //        if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
@@ -336,41 +271,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
 //            audio: audioRole,
 //            isAudioDefault: isAudioDefault,
 //            collapseSubroles: true
-//        )
-//    }
-    
-//    private func formTimecode(
-//        at frameRate: TimecodeFrameRate
-//    ) -> Timecode {
-//        Timecode(
-//            .zero,
-//            at: frameRate,
-//            base: .max80SubFrames,
-//            limit: .max24Hours
-//        )
-//    }
-    
-//    private func formTimecode(
-//        _ cmTime: CMTime,
-//        at frameRate: TimecodeFrameRate
-//    ) throws -> Timecode {
-//        try Timecode(
-//            .cmTime(cmTime),
-//            at: frameRate,
-//            base: .max80SubFrames,
-//            limit: .max24Hours
-//        )
-//    }
-    
-//    private func formTimecodeInterval(
-//        _ cmTime: CMTime,
-//        at frameRate: TimecodeFrameRate
-//    ) throws -> TimecodeInterval {
-//        try TimecodeInterval(
-//            cmTime,
-//            at: frameRate,
-//            base: .max80SubFrames,
-//            limit: .max24Hours
 //        )
 //    }
     
