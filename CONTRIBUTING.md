@@ -34,7 +34,7 @@ Publishing releases and tags should be left to code owners/maintainers.
 For code owners/maintainers, the following release spec is used:
 
 1. Unit tests must pass
-2. Perform the following steps, then commit the changes using the new version number as the commit message, and push to main
+2. Perform the following file modifications:
    - Update the version number string literal in `Sources/markers-extractor-cli/Version.swift`
    - Update root `CHANGELOG.md`
      - with a condensed bullet-point list of changes/fixes/improvements according to its established format
@@ -44,9 +44,10 @@ For code owners/maintainers, the following release spec is used:
        (Change `0.2.0` here to the new version number)
        `https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip`
      - New help block output of the CLI tool
-3. Compile the CLI tool as a binary executable and zip it using the filename `markers-extractor-cli-<ver>.zip`
+3. Commit the changes made in Step 2 using the new version number (ie: `0.2.0`) as the commit message, and push to main.
+4. Compile the CLI tool as a binary executable and zip it using the filename `markers-extractor-cli-<ver>.zip`
    ie: `markers-extractor-cli-0.2.0.zip`
-4. Make GitHub Release using:
+5. Make GitHub Release using:
    - the new version number as its new tag and release name
    - the added `CHANGELOG.md` block as the release notes
    - attach the CLI binary zip file
