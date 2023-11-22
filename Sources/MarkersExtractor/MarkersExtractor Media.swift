@@ -66,10 +66,11 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
         do {
-            return try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
+            return try FileManager.default
+                .contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
                 .filter {
                     $0.lastPathComponent.starts(with: name)
-                    && exts.contains($0.fileExtension)
+                        && exts.contains($0.fileExtension ?? "")
                 }
         } catch {
             throw MarkersExtractorError.extraction(

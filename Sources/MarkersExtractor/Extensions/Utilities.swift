@@ -127,16 +127,48 @@ extension FileManager {
             )
         }
     }
+    
+    /// Returns input if the proposed path does not exist.
+    /// Uniques the file or folder name if it already exists by incrementing a trailing integer.
+    /// ie: "File.png", "File (1).png", "File (2).png", etc.
+    func uniqueFileURL(proposedPath url: URL) -> URL {
+        var url = url
+        var counter = 1
+        
+        let parentFolder = url.deletingLastPathComponent()
+        let filenameWithoutExtension = url.deletingPathExtension().lastPathComponent
+        let fileExtension = url.fileExtension
+        
+        while fileExists(atPath: url.path) {
+            counter += 1
+            
+            let newFileName = "\(filenameWithoutExtension) (\(counter))"
+            url = parentFolder.appendingPathComponent(newFileName)
+            if let fileExtension {
+                url.appendPathExtension("\(fileExtension)")
+            }
+        }
+        
+        return url
+    }
 }
 
 // MARK: - URL
 
 extension URL {
-    var fileExtension: String {
-        get { pathExtension }
+    var fileExtension: String? {
+        get {
+            // edge case for when filename ends with "." and no extension following
+            if pathExtension.isEmpty, !lastPathComponent.contains(".") {
+                return nil
+            }
+            return pathExtension
+        }
         set {
             deletePathExtension()
-            appendPathExtension(newValue)
+            if let newValue = newValue {
+                appendPathExtension(newValue)
+            }
         }
     }
     

@@ -12,7 +12,8 @@ import AVFoundation
 extension MarkersExtractor {
     func makeOutputPath(for projectName: String) throws -> URL {
         let folderName = s.exportFolderFormat.folderName(projectName: projectName, profile: s.exportFormat)
-        let outputURL = s.outputDir.appendingPathComponent(folderName)
+        let proposedOutputURL = s.outputDir.appendingPathComponent(folderName)
+        let outputURL = FileManager.default.uniqueFileURL(proposedPath: proposedOutputURL)
         try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
         
         return outputURL
