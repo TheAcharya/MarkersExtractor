@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.2.5
+
+### Changes
+
+- Markers within compound clips are now discarded (#7)
+
 ## [0.2.4](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.4) (2023-11-21)
 
 ### Changes
