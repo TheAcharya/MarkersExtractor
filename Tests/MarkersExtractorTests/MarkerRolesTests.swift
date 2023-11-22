@@ -22,8 +22,6 @@ final class MarkerRolesTests: XCTestCase {
     }
     
     func testIsDefault() {
-        XCTAssertEqual(MarkerRoles(defaultForClipType: "title")?.isVideoDefault, true)
-        
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault, true)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
         

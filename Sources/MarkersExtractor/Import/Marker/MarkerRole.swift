@@ -70,28 +70,6 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
         self.isAudioDefault = isAudioDefault
         if collapseSubroles { self.collapseSubroles() }
     }
-    
-    // TODO: could remove once refactored into DAWFileKit
-    
-    /// Returns FCP's default role(s) for each clip type.
-    /// FCP does not write the role to the XML when it does not have a custom role set and is using
-    /// a default role.
-    ///
-    /// - Note: This does not cover all cases as clip type is not the only identifier
-    ///   that can be used to determine clip role.
-    ///
-    /// - Parameter clipType: XML element name. ie: "title" for XML `<title ...>`
-    /// - Returns: Role name string. Returns `nil` for unhandled/unrecognized clip types.
-    public init?(defaultForClipType clipType: String) {
-        switch clipType {
-        case "asset-clip":
-            self.init(video: "Video", isVideoDefault: true)
-        case "title":
-            self.init(video: "Titles", isVideoDefault: true)
-        default:
-            return nil
-        }
-    }
 }
 
 // MARK: - Methods

@@ -214,11 +214,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 switch role {
                 case let .audio(roleString):
                     markerRoles.isAudioDefault = isRoleDefault
-                    markerRoles.audio = roleString
+                    if !roleString.isEmpty { markerRoles.audio = roleString }
                     
                 case let .video(roleString):
                     markerRoles.isVideoDefault = isRoleDefault
-                    markerRoles.video = roleString
+                    if !roleString.isEmpty { markerRoles.video = roleString }
                     
                 case .caption(_):
                     // TODO: assign to video role may not be right?

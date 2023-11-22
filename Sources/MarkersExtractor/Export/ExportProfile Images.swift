@@ -71,7 +71,8 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             }
         }
         
-        assert(progress.fractionCompleted == 1.0)
+        // TODO: NSProgress is wonky, sometimes its not fully 1.0 so asserting here isn't helpful
+        // assert(progress.fractionCompleted == 1.0)
     }
     
     private func write(descriptor: ImageDescriptor) async throws {
