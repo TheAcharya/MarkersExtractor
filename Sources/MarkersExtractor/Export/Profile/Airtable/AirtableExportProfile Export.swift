@@ -38,11 +38,13 @@ extension AirtableExportProfile {
             noMedia: noMedia,
             preparedMarkers
         )
-        try jsonWriteManifest(
-            jsonPath: payload.jsonPayload.jsonPath,
-            noMedia: noMedia,
-            preparedMarkers
-        )
+        
+        // skip exporting JSON because we don't need it for Airlift (3rd-party library)
+        // try jsonWriteManifest(
+        //     jsonPath: payload.jsonPayload.jsonPath,
+        //     noMedia: noMedia,
+        //     preparedMarkers
+        // )
     }
     
     public func doneFileContent(payload: Payload) throws -> Data {
