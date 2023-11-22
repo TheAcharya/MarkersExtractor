@@ -5,6 +5,7 @@
 ### Changes
 
 - Markers exactly on clip boundaries are now considered within clip bounds (#56)
+- Output folder name is now uniqued if it already exists instead of aborting process (#35)
 - Substantial internal refactors to FCPXML parser
 
 ## [0.2.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.3) (2023-10-31)
