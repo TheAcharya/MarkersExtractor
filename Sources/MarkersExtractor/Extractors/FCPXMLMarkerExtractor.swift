@@ -156,7 +156,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?
     ) -> [Marker] {
         let settings = FinalCutPro.FCPXML.ExtractionSettings(
-            // deep: true,
             excludeTypes: [],
             auditionMask: .activeAudition
         )
@@ -165,7 +164,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         return extractedMarkers.compactMap {
             convertMarker(
                 $0,
-                // parentEvent: event,
                 parentLibrary: library
             )
         }
@@ -173,10 +171,9 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     
     private func convertMarker(
         _ extractedMarker: FinalCutPro.FCPXML.Marker,
-        // parentEvent: FinalCutPro.FCPXML.Event,
         parentLibrary: FinalCutPro.FCPXML.Library?
     ) -> Marker? {
-        // let roles = getClipRoles(parentClip)
+        let roles = getClipRoles(extractedMarker)
         
         guard let position = extractedMarker.context[.absoluteStart],
               let clipInTime = extractedMarker.context[.parentAbsoluteStart],
@@ -191,7 +188,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             type: extractedMarker.metaData,
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
-            roles: MarkerRoles(video: "NOT YET IMPLEMENTED"), // TODO: implement
+            roles: roles,
             position: position,
             parentInfo: Marker.ParentInfo(
                 clipName: extractedMarker.context[.parentName] ?? "",
@@ -205,74 +202,49 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         )
     }
     
-    // TODO: delete commented code after refactoring roles parsing in DAWFileKit
-//    internal func getClipRoles(_ clip: XMLElement) -> MarkerRoles {
-//        // handle special case of audio-channel-source XML element
-//        if let acSourceRole = clip.subElement(named: "audio-channel-source")?.fcpxRole {
-//            return MarkerRoles(
-//                video: nil,
-//                isVideoDefault: false,
-//                audio: acSourceRole.localizedCapitalized,
-//                isAudioDefault: false,
-//                collapseSubroles: true
-//            )
-//        }
-//        
-//        var isVideoDefault = false
-//        var isAudioDefault = false
-//        
-//        // gather
-//        
-//        var videoRolesPool = [
-//            clip.getElementAttribute("videoRole"),
-//            clip.subElement(named: "video")?.fcpxRole,
-//            clip.fcpxRole
-//        ]
-//            .compactMap { $0?.localizedCapitalized }
-//            .filter { !$0.isEmpty }
-//        
-//        var audioRolesPool = [
-//            clip.getElementAttribute("audioRole"),
-//            clip.subElement(named: "video")?.subElement(named: "audio")?.fcpxRole, // TODO: ??
-//            clip.subElement(named: "audio")?.fcpxRole
-//        ]
-//            .compactMap { $0?.localizedCapitalized }
-//            .filter { !$0.isEmpty }
-//        
-//        // assign defaults if needed
-//        if let clipType = clip.name,
-//           let defaultRoles = MarkerRoles(defaultForClipType: clipType)
-//        {
-//            if videoRolesPool.isEmpty, let r = defaultRoles.video {
-//                isVideoDefault = true
-//                videoRolesPool.append(r)
-//            }
-//            if audioRolesPool.isEmpty, let r = defaultRoles.audio {
-//                isAudioDefault = true
-//                audioRolesPool.append(r)
-//            }
-//        }
-//        
-//        // sort
-//        let videoRole: String? = videoRolesPool
-//            .filter { !$0.isEmpty }
-//            .sorted()
-//            .first
-//        let audioRole: String? = audioRolesPool
-//            .filter { !$0.isEmpty }
-//            .sorted()
-//            .first
-//        
-//        // return
-//        
-//        return MarkerRoles(
-//            video: videoRole,
-//            isVideoDefault: isVideoDefault,
-//            audio: audioRole,
-//            isAudioDefault: isAudioDefault,
-//            collapseSubroles: true
-//        )
-//    }
+    internal func getClipRoles(_ marker: FinalCutPro.FCPXML.Marker) -> MarkerRoles {
+        var markerRoles = MarkerRoles()
+        
+        // marker doesn't contain role(s) so look to ancestors
+        let roles = marker.context[.inheritedRoles] ?? []
+        roles.forEach { interpolatedRole in
+            var isRoleDefault: Bool = false
+            
+            func handle(role: FinalCutPro.FCPXML.Role) {
+                switch role {
+                case let .audio(roleString):
+                    markerRoles.isAudioDefault = isRoleDefault
+                    markerRoles.audio = roleString
+                    
+                case let .video(roleString):
+                    markerRoles.isVideoDefault = isRoleDefault
+                    markerRoles.video = roleString
+                    
+                case .caption(_):
+                    // TODO: assign to video role may not be right?
+                    // technically captions use their own auto-generated roles that users won't care
+                    // about. and it doesn't seem right to inherit the role from the clip the caption is
+                    // anchored to. if we convert captions to markers maybe it then makes sense to
+                    // inherit role from the clip where the caption is anchored.
+                    
+                    break
+                    // markerRoles.video = roleString
+                }
+            }
+            
+            switch interpolatedRole {
+            case let .assigned(role):
+                isRoleDefault = false
+                handle(role: role)
+                
+            case let .defaulted(role):
+                isRoleDefault = true
+                handle(role: role)
+            }
+        }
+        
+        return markerRoles.collapsedSubroles()
+    }
     
     private func timecodeStringFormat() -> Timecode.StringFormat {
         enableSubframes ? [.showSubFrames] : .default()

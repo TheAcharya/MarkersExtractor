@@ -71,6 +71,8 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
         if collapseSubroles { self.collapseSubroles() }
     }
     
+    // TODO: could remove once refactored into DAWFileKit
+    
     /// Returns FCP's default role(s) for each clip type.
     /// FCP does not write the role to the XML when it does not have a custom role set and is using
     /// a default role.
