@@ -95,7 +95,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         for event in parsedFCPXML.allEvents(context: MarkersExtractor.elementContext) {
             fcpxmlMarkers += markers(in: event, library: library)
         }
-
+        
         // apply role filter
         if let excludeRoleType = excludeRoleType {
             logger.info("Excluding all roles of \(excludeRoleType.rawValue) type.")
@@ -159,7 +159,18 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             excludeTypes: [],
             auditionMask: .activeAudition
         )
-        let extractedMarkers = event.extractMarkers(settings: settings, ancestorsOfParent: [])
+        var extractedMarkers = event.extractMarkers(settings: settings, ancestorsOfParent: [])
+        
+        // filter out any markers within compound clips, but preserve markers placed on
+        // on compound clips in the main timeline
+        extractedMarkers = extractedMarkers.filter {
+            guard var ancestorTypesOfClip = $0.context[.ancestorElementTypes] else {
+                return true
+            }
+            // remove clip that the marker is directly attached to
+            _ = ancestorTypesOfClip.popLast()
+            return !ancestorTypesOfClip.contains(.story(.anyClip(.refClip)))
+        }
         
         return extractedMarkers.compactMap {
             convertMarker(

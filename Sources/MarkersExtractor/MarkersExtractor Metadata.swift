@@ -46,6 +46,10 @@ extension MarkersExtractor {
             { xmlLeaf, breadcrumbs, resources, tools in
                 var dict: FinalCutPro.FCPXML.ElementContext = [:]
                 
+                dict[.ancestorElementTypes] = breadcrumbs.compactMap {
+                    FinalCutPro.FCPXML.ElementType(from: $0)
+                }
+                
                 dict[.resource] = tools.resource
                 dict[.mediaFilename] = tools.mediaURL?.lastPathComponent
                 
@@ -58,8 +62,14 @@ extension MarkersExtractor {
 
 extension FinalCutPro.FCPXML.ContextKey {
     fileprivate enum Key: String {
+        case ancestors
         case resource
         case mediaFilename
+    }
+    
+    /// Types of the element's ancestors.
+    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<[FinalCutPro.FCPXML.ElementType]> {
+        .init(key: Key.ancestors)
     }
     
     /// The absolute start timecode of the element.
