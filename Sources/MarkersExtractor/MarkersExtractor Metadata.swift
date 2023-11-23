@@ -52,7 +52,8 @@ extension MarkersExtractor {
                     FinalCutPro.FCPXML.ElementType(from: $0)
                 }
                 
-                dict[.resource] = tools.resource
+                // not storing this for now, because we don't need it yet
+                // dict[.resource] = tools.resource
                 
                 // we're not using this, as it's not consistent.
                 // basic clips like asset clips only have one media file used,
@@ -81,8 +82,9 @@ extension FinalCutPro.FCPXML.ContextKey {
         .init(key: Key.ancestors)
     }
     
-    /// The absolute start timecode of the element.
-    public static var resource: FinalCutPro.FCPXML.ContextKey<FinalCutPro.FCPXML.AnyResource> {
-        .init(key: Key.resource)
-    }
+    // not storing this for now, because we don't need it yet
+    // /// The absolute start timecode of the element.
+    // public static var resource: FinalCutPro.FCPXML.ContextKey<FinalCutPro.FCPXML.AnyResource> {
+    //     .init(key: Key.resource)
+    // }
 }
