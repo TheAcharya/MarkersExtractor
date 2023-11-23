@@ -55,12 +55,12 @@
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.4/markers-extractor-cli-0.2.4.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.5/markers-extractor-cli-0.2.5.zip).
 
 ### From Source
 
 ```shell
-VERSION=0.2.4 # replace this with the git tag of the version you need
+VERSION=0.2.5 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -111,7 +111,7 @@ OPTIONS:
   --exclude-exclusive-roles <video, audio>
                           Exclude markers that have specified role type but
                           only if the opposite role type is absent.
-  --label <id, name, type, checked, status, notes, position, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
+  --label <id, name, type, checked, status, notes, position, clipType, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
