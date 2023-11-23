@@ -202,7 +202,15 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 30 --label-font-color E6ffff00 --label-stroke-color 003366 --label-stroke-width 3 --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format png \
+  --label name --label type --label notes --label position \
+  --label-copyright "Road Runner & Coyote Productions" \
+  --label-font Menlo-Regular --label-align-horizontal left \
+  --label-font-size 30 --label-font-color E6ffff00 \
+  --label-stroke-color 003366 --label-stroke-width 3 \
+  --create-done-file \
+  --log-level debug --log $ERROR_LOG
 ```
 
 **GIF Mode with Labels**
@@ -215,7 +223,16 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --image-size-percent 50 --create-done-file --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font Menlo-Regular --label-align-horizontal left --label-font-size 20 --label-font-color ffff00 --label-stroke-color 003366 --label-stroke-width 4 --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format gif \
+  --image-size-percent 50 \
+  --label name --label type --label notes --label position \
+  --label-copyright "Road Runner & Coyote Productions" \
+  --label-font Menlo-Regular --label-align-horizontal left \
+  --label-font-size 20 --label-font-color ffff00 \
+  --label-stroke-color 003366 --label-stroke-width 4 \
+  --create-done-file \
+  --log-level debug --log $ERROR_LOG
 ```
 
 **PNG Mode + Name Mode with Labels**
@@ -228,7 +245,13 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --id-naming-mode name --label "name" --label "type" --label "notes" --label "position" --label-font-color ffff00 --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format png \
+  --id-naming-mode name \
+  --label name --label type --label notes --label position \
+  --label-font-color ffff00 \
+  --create-done-file \
+  --log-level debug --log $ERROR_LOG
 ```
 
 ### Intended Behaviour & Logic
@@ -239,25 +262,19 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format pn
 To use this package in a SwiftPM project, you need to set it up as a package dependency:
 
 ```swift
-// swift-tools-version: 5.6
-import PackageDescription
-
 let package = Package(
-  name: "MyPackage",
-  dependencies: [
-    .package(
-        url: "https://github.com/TheAcharya/MarkersExtractor.git",
-        from: "0.2.0"
-    )
-  ],
-  targets: [
-    .target(
-      name: "MyTarget",
-      dependencies: [
-        .product(name: "MarkersExtractor", package: "MarkersExtractor")
-      ]
-    )
-  ]
+    name: "MyPackage",
+    dependencies: [
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.5")
+    ],
+    targets: [
+        .target(
+            name: "MyTarget",
+            dependencies: [
+                .product(name: "MarkersExtractor", package: "MarkersExtractor")
+            ]
+        )
+    ]
 )
 ```
 
