@@ -75,8 +75,9 @@ extension FinalCutPro.FCPXML.ContextKey {
     }
     
     /// Types of the element's ancestors.
-    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<[FinalCutPro.FCPXML.ElementType]>
-    {
+    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<
+        [FinalCutPro.FCPXML.ElementType]
+    > {
         .init(key: Key.ancestors)
     }
     
