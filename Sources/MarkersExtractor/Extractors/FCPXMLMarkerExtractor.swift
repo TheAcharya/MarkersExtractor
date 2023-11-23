@@ -106,6 +106,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             )
         }
         
+        // TODO: refactor into DAWFileKit
         // apply role filter
         if let excludeRoleType = excludeRoleType {
             logger.info("Excluding all roles of \(excludeRoleType.rawValue) type.")
@@ -131,6 +132,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             }
         }
         
+        // TODO: refactor into DAWFileKit
         // apply out-of-bounds filter
         if !includeOutsideClipBoundaries {
             let (kept, omitted): ([Marker], [Marker]) = fcpxmlMarkers
@@ -166,22 +168,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> [Marker] {
-        let settings = FinalCutPro.FCPXML.ExtractionSettings(
-            excludeTypes: [],
-            auditionMask: .activeAudition
-        )
-        var extractedMarkers = project.extractMarkers(settings: settings, ancestorsOfParent: [])
-        
-        // filter out any markers within compound clips, but preserve markers placed on
-        // on compound clips in the main timeline
-        extractedMarkers = extractedMarkers.filter {
-            guard var ancestorTypesOfClip = $0.context[.ancestorElementTypes] else {
-                return true
-            }
-            // remove clip that the marker is directly attached to
-            _ = ancestorTypesOfClip.popLast()
-            return !ancestorTypesOfClip.contains(.story(.anyClip(.refClip)))
-        }
+        let extractedMarkers = project.extractElements(preset: .markers, settings: .mainTimeline)
         
         return extractedMarkers.compactMap {
             convertMarker(

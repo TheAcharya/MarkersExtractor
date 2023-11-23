@@ -47,10 +47,7 @@ extension MarkersExtractor {
         var contextBuilder: FinalCutPro.FCPXML.ElementContextClosure {
             { xmlLeaf, breadcrumbs, resources, tools in
                 var dict: FinalCutPro.FCPXML.ElementContext = [:]
-                
-                dict[.ancestorElementTypes] = breadcrumbs.compactMap {
-                    FinalCutPro.FCPXML.ElementType(from: $0)
-                }
+                dict = [:] // silence build warning since we commented out stuff below
                 
                 // not storing this for now, because we don't need it yet
                 // dict[.resource] = tools.resource
@@ -71,15 +68,7 @@ extension MarkersExtractor {
 
 extension FinalCutPro.FCPXML.ContextKey {
     fileprivate enum Key: String {
-        case ancestors
         case resource
-    }
-    
-    /// Types of the element's ancestors.
-    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<
-        [FinalCutPro.FCPXML.ElementType]
-    > {
-        .init(key: Key.ancestors)
     }
     
     // not storing this for now, because we don't need it yet
