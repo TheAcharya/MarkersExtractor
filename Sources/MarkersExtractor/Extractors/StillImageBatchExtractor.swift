@@ -44,7 +44,7 @@ extension StillImageBatchExtractor {
         var batchResult = StillImageBatchExtractorResult()
         var isBatchFinished: Bool = false
         
-        try await generator.images(forTimesIn: conversion.descriptors, updating: progress) 
+        try await generator.images(forTimesIn: conversion.descriptors, updating: progress)
         { [weak self] descriptor, imageResult in
             guard let self = self else {
                 batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
@@ -73,7 +73,8 @@ extension StillImageBatchExtractor {
         // TODO: throw error if `isBatchFinished == false`?
         assert(isBatchFinished)
         
-        assert(progress.fractionCompleted == 1.0)
+        // sometimes NSProgress doesn't fully reach 1.0 so this assert is not reliable
+//        assert(progress.fractionCompleted == 1.0)
         
         return batchResult
     }

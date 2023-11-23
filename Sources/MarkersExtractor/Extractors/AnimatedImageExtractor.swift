@@ -106,7 +106,7 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
         // map to ImageDescriptor for richer error reporting
         let descriptors: [ImageDescriptor] = timecodes.map {
             // name and label are not used, just need to pack the timecode in
-            ImageDescriptor(timecode: $0, filename: "Animation Frame", label: nil)
+            ImageDescriptor(absoluteTimecode: $0, offsetFromVideoStart: $0, filename: "Animation Frame", label: nil)
         }
         
         return descriptors
@@ -202,7 +202,7 @@ extension AnimatedImageExtractor {
                 )
                 if let image {
                     // we have to use Fraction as dictionary key since CMTime is not hashable on older macOS versions
-                    images[descriptor.timecode.cmTimeValue.fractionValue] = image
+                    images[descriptor.absoluteTimecode.cmTimeValue.fractionValue] = image
                 }
                 if isFinished { isBatchFinished = true }
             } catch let error as AnimatedImageExtractorError {

@@ -11,7 +11,8 @@ import OrderedCollections
 import TimecodeKit
 
 public struct ImageDescriptor: Sendable {
-    let timecode: Timecode
+    let absoluteTimecode: Timecode
+    let offsetFromVideoStart: Timecode
     let filename: String
     let label: String?
 }
@@ -78,11 +79,11 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     private func write(descriptor: ImageDescriptor) async throws {
         let outputFile = outputFolder.appendingPathComponent(descriptor.filename)
         
-        var delta = descriptor.timecode
+        var delta = descriptor.offsetFromVideoStart
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
         
-        let timeIn = try descriptor.timecode.subtracting(delta, by: .clamping)
-        let timeOut = try descriptor.timecode.adding(delta, by: .clamping)
+        let timeIn = try descriptor.offsetFromVideoStart.subtracting(delta, by: .clamping)
+        let timeOut = try descriptor.offsetFromVideoStart.adding(delta, by: .clamping)
         let timeRange = timeIn ... timeOut
         
         let conversion = AnimatedImageExtractor.ConversionSettings(
@@ -108,7 +109,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             
             // post errors to console if operation partially completed
             for error in result.errors {
-                let tc = descriptor.timecode.stringValue()
+                let tc = descriptor.absoluteTimecode.stringValue()
                 let filename = descriptor.filename.quoted
                 let err = error.error.localizedDescription
                 logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")
@@ -187,7 +188,7 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             let result = try await extractor.convert()
             // post errors to console if operation partially completed
             for error in result.errors {
-                let tc = error.descriptor.timecode.stringValue()
+                let tc = error.descriptor.absoluteTimecode.stringValue()
                 let filename = error.descriptor.filename.quoted
                 let err = error.error.localizedDescription
                 logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")

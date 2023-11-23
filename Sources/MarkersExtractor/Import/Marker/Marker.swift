@@ -20,6 +20,7 @@ public struct Marker: Equatable, Hashable, Sendable {
         var clipOutTime: Timecode
         var eventName: String
         var projectName: String
+        var projectStartTime: Timecode
         var libraryName: String
         
         func clipDurationTimecodeString(format: Timecode.StringFormat) -> String {
@@ -80,6 +81,14 @@ extension Marker {
     
     func subFramesBase() -> Timecode.SubFramesBase {
         position.subFramesBase
+    }
+    
+    func upperLimit() -> Timecode.UpperLimit {
+        position.upperLimit
+    }
+    
+    func offsetFromProjectStart() -> Timecode {
+        position - parentInfo.projectStartTime
     }
     
     func isChecked() -> Bool {

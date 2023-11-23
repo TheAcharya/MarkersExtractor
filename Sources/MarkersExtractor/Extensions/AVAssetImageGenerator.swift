@@ -6,6 +6,7 @@
 
 import AppKit
 import AVFoundation
+import TimecodeKit
 
 extension AVAssetImageGenerator {
     struct CompletionHandlerResult {
@@ -36,7 +37,7 @@ extension AVAssetImageGenerator {
                 taskGroup.addTask { [weak self] in
                     guard let self else { return }
                     
-                    let requestedTime = descriptor.timecode.cmTimeValue
+                    let requestedTime = descriptor.offsetFromVideoStart.cmTimeValue
                     
                     let result = try await self.imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
@@ -134,7 +135,7 @@ extension AVAssetImageGenerator {
         
         let nsValue = NSValue(time: time)
         generateCGImagesAsynchronously(forTimes: [nsValue])
-        { /*requestedTime*/ _, image, actualTime, result, error in
+        { /*requestedTime*/ requestedTime, image, actualTime, result, error in
             defer { group.leave() }
             
             resultImage = image
@@ -159,11 +160,13 @@ extension AVAssetImageGenerator {
                     switch avError.code {
                     case .noImageAtTime:
                         // We ignore blank frames.
+                        print("No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))")
                         isNoFrame = true
                     case .decodeFailed:
                         // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed”
                         // error for some frames in screen recordings.
                         // As a workaround, we ignore these as the GIF seems fine still.
+                        print("Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))")
                         isNoFrame = true
                     default:
                         break

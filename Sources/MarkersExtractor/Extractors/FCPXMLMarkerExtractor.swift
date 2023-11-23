@@ -92,8 +92,12 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let library = parsedFCPXML.library(context: MarkersExtractor.elementContext)
         
-        for event in parsedFCPXML.allEvents(context: MarkersExtractor.elementContext) {
-            fcpxmlMarkers += markers(in: event, library: library)
+        for project in parsedFCPXML.allProjects(context: MarkersExtractor.elementContext) {
+            guard let projectStartTime = project.startTimecode else {
+                logger.error("Could not determine start time for project \((project.name ?? "").quoted).")
+                return []
+            }
+            fcpxmlMarkers += markers(in: project, library: library, projectStartTime: projectStartTime)
         }
         
         // apply role filter
@@ -152,14 +156,15 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     // MARK: - Private Methods
 
     private func markers(
-        in event: FinalCutPro.FCPXML.Event,
-        library: FinalCutPro.FCPXML.Library?
+        in project: FinalCutPro.FCPXML.Project,
+        library: FinalCutPro.FCPXML.Library?,
+        projectStartTime: Timecode
     ) -> [Marker] {
         let settings = FinalCutPro.FCPXML.ExtractionSettings(
             excludeTypes: [],
             auditionMask: .activeAudition
         )
-        var extractedMarkers = event.extractMarkers(settings: settings, ancestorsOfParent: [])
+        var extractedMarkers = project.extractMarkers(settings: settings, ancestorsOfParent: [])
         
         // filter out any markers within compound clips, but preserve markers placed on
         // on compound clips in the main timeline
@@ -175,14 +180,16 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         return extractedMarkers.compactMap {
             convertMarker(
                 $0,
-                parentLibrary: library
+                parentLibrary: library, 
+                projectStartTime: projectStartTime
             )
         }
     }
     
     private func convertMarker(
         _ extractedMarker: FinalCutPro.FCPXML.Marker,
-        parentLibrary: FinalCutPro.FCPXML.Library?
+        parentLibrary: FinalCutPro.FCPXML.Library?,
+        projectStartTime: Timecode
     ) -> Marker? {
         let roles = getClipRoles(extractedMarker)
         
@@ -208,6 +215,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 clipOutTime: clipOutTime,
                 eventName: extractedMarker.context[.ancestorEventName] ?? "",
                 projectName: extractedMarker.context[.ancestorProjectName] ?? "",
+                projectStartTime: projectStartTime,
                 libraryName: parentLibrary?.name ?? ""
             )
         )

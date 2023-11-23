@@ -7,6 +7,7 @@
 import Foundation
 import Logging
 import TimecodeKit
+import OTCore
 
 // MARK: - Export media information packet
 
@@ -107,9 +108,11 @@ extension ExportProfile {
         
         let imageFileNames = preparedMarkers.map { $0.imageFileName }
         
-        // if no video - grabbing first frame from video placeholder
-        let markerTimecodes = markers.map {
-            isVideoPresent ? $0.position : .init(.zero, at: $0.frameRate())
+        // if no video - grabbing first frame from video placeholder using zero timecode
+        let offsets: [Timecode] = markers.map {
+            isVideoPresent
+                ? $0.offsetFromProjectStart()
+                : Timecode(.zero, at: $0.frameRate(), base: $0.subFramesBase(), limit: $0.upperLimit())
         }
         
         let labels = makeImageLabelText(
@@ -119,15 +122,23 @@ extension ExportProfile {
             includeHeaders: imageLabelIncludeHeaders
         )
         
-        guard markers.count == labels.count else {
+        guard [markers.count, preparedMarkers.count, imageFileNames.count, offsets.count, labels.count]
+            .allElementsAreEqual
+        else {
             throw MarkersExtractorError.extraction(
                 .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
             )
         }
         
-        var descriptors = zip(zip(markerTimecodes, imageFileNames), labels)
-            .map {
-                ImageDescriptor(timecode: $0.0, filename: $0.1, label: $1)
+        // stitch everything together
+        var descriptors = (0 ..< markers.count)
+            .map { index in
+                ImageDescriptor(
+                    absoluteTimecode: markers[index].position,
+                    offsetFromVideoStart: offsets[position: index],
+                    filename: imageFileNames[position: index],
+                    label: labels[position: index]
+                )
             }
         
         // if no video and no labels - only one frame needed for all markers
