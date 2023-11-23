@@ -6,6 +6,7 @@
 
 import XCTest
 @testable import MarkersExtractor
+import DAWFileKit
 import TimecodeKit
 
 final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
@@ -25,22 +26,26 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let fr: TimecodeFrameRate = .fps25
         
         let clip1ParentInfo = Marker.ParentInfo(
+            clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
             clipName: "Marker Test",
             clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:00:20:20", at: fr),
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
+            projectStartTime: tc("00:00:00:00", at: fr),
             libraryName: "MyLibrary"
         )
         
         let clip2ParentInfo = Marker.ParentInfo(
+            clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
             clipName: "Marker Test",
             clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:20:20", at: fr),
             clipOutTime: tc("00:00:41:15", at: fr),
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
+            projectStartTime: tc("00:00:00:00", at: fr),
             libraryName: "MyLibrary"
         )
         

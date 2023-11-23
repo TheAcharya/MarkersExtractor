@@ -6,6 +6,7 @@
 
 import XCTest
 @testable import MarkersExtractor
+import DAWFileKit
 import TimecodeKit
 
 final class BasicMarkersTests: XCTestCase {
@@ -31,12 +32,14 @@ final class BasicMarkersTests: XCTestCase {
         let fr: TimecodeFrameRate = .fps29_97
         
         let parentInfo = Marker.ParentInfo(
+            clipType: FinalCutPro.FCPXML.ClipType.title.name,
             clipName: "Basic Title",
             clipFilename: "",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),
             eventName: "Test Event",
             projectName: "Test Project",
+            projectStartTime: tc("00:00:00:00", at: fr),
             libraryName: "MyLibrary"
         )
         

@@ -30,7 +30,12 @@ final class ProgressTests: XCTestCase {
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
         let descriptors: [ImageDescriptor] = range.map {
-            ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
+            ImageDescriptor(
+                absoluteTimecode: $0,
+                offsetFromVideoStart: $0,
+                filename: UUID().uuidString,
+                label: nil
+            )
         }
         let outputFolder = FileManager.default.temporaryDirectory
         let outputFile = outputFolder.appendingPathComponent(UUID().uuidString + ".gif")
@@ -76,7 +81,12 @@ final class ProgressTests: XCTestCase {
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
         let descriptors: [ImageDescriptor] = range.map {
-            ImageDescriptor(timecode: $0, filename: UUID().uuidString, label: nil)
+            ImageDescriptor(
+                absoluteTimecode: $0,
+                offsetFromVideoStart: $0,
+                filename: UUID().uuidString,
+                label: nil
+            )
         }
         let outputFolder = FileManager.default.temporaryDirectory
         

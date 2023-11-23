@@ -6,6 +6,7 @@
 
 import XCTest
 @testable import MarkersExtractor
+import DAWFileKit
 import TimecodeKit
 
 final class MarkersExtractorTests: XCTestCase {
@@ -26,12 +27,14 @@ final class MarkersExtractorTests: XCTestCase {
                 roles: .init(video: "Video", audio: ""),
                 position: tc(position, at: .fps24),
                 parentInfo: .init(
+                    clipType: FinalCutPro.FCPXML.ClipType.video.name,
                     clipName: "Some Clip",
                     clipFilename: "",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
-                    projectName: "MyProject",
+                    projectName: "MyProject", 
+                    projectStartTime: tc("01:00:00:00", at: .fps24),
                     libraryName: "MyLibrary"
                 )
             )
@@ -80,12 +83,14 @@ final class MarkersExtractorTests: XCTestCase {
                 roles: .init(video: "Video", audio: ""),
                 position: tc(position, at: .fps24),
                 parentInfo: .init(
+                    clipType: FinalCutPro.FCPXML.ClipType.video.name,
                     clipName: "Some Clip",
                     clipFilename: "",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
                     projectName: "MyProject",
+                    projectStartTime: tc("01:00:00:00", at: .fps24),
                     libraryName: "MyLibrary"
                 )
             )
