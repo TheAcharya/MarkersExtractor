@@ -5,8 +5,9 @@
 ### Changes
 
 - Markers within compound clips are now discarded (#7)
-- Renamed "Type" field to "Marker Type" in manifest file (#63)
-- Added "Clip Type" field to manifest file (#62)
+- Renamed "Type" manifest field to "Marker Type" (#63)
+- Added "Clip Type" manifest field (#62)
+- Removed "Clip Filename" manifest field (#65)
 
 ### Bug Fixes
 
