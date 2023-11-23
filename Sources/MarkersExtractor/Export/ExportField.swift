@@ -33,7 +33,7 @@ extension ExportField {
         switch self {
         case .id: return "Marker ID"
         case .name: return "Marker Name"
-        case .type: return "Type"
+        case .type: return "Marker Type"
         case .checked: return "Checked"
         case .status: return "Status"
         case .notes: return "Notes"
