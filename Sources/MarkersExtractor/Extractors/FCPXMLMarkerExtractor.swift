@@ -209,6 +209,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             roles: roles,
             position: position,
             parentInfo: Marker.ParentInfo(
+                clipType: extractedMarker.context[.parentType]?.name ?? "",
                 clipName: extractedMarker.context[.parentName] ?? "",
                 clipFilename: extractedMarker.context[.mediaFilename] ?? "",
                 clipInTime: clipInTime,

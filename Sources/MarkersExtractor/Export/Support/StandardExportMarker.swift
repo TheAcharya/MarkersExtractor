@@ -20,6 +20,7 @@ public struct StandardExportMarker: ExportMarker {
     public let status: String
     public let notes: String
     public let position: String
+    public let clipType: String
     public let clipName: String
     public let clipFilename: String
     public let clipDuration: String
@@ -46,6 +47,7 @@ public struct StandardExportMarker: ExportMarker {
         status = NotionExportProfile.Status(marker.type).rawValue
         notes = marker.notes
         position = marker.positionTimecodeString(format: tcStringFormat)
+        clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
         clipFilename = marker.parentInfo.clipFilename
         clipDuration = marker.parentInfo.clipDurationTimecodeString(format: tcStringFormat)
