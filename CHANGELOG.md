@@ -6,6 +6,10 @@
 
 - Markers within compound clips are now discarded (#7)
 
+### Bug Fixes
+
+- Fixed bug where image generation could fail when project start time was later than 00:00:00:00 (#37)
+
 ## [0.2.4](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.4) (2023-11-21)
 
 ### Changes
