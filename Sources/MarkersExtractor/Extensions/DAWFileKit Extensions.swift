@@ -70,15 +70,15 @@ extension FinalCutPro.FCPXML.AnnotationType {
 extension FinalCutPro.FCPXML.ClipType {
     var name: String {
         switch self {
-        case .assetClip: return "Asset Clip"
+        case .assetClip: return "Asset"
         case .audio: return "Audio"
         case .audition: return "Audition"
         case .clip: return "Clip"
         case .gap: return "Gap"
         case .liveDrawing: return "Live Drawing"
-        case .mcClip: return "Multicam Clip"
-        case .refClip: return "Compound Clip"
-        case .syncClip: return "Sync Clip"
+        case .mcClip: return "Multicam"
+        case .refClip: return "Compound"
+        case .syncClip: return "Sync"
         case .title: return "Title"
         case .video: return "Video"
         }
