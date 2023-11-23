@@ -44,7 +44,7 @@ extension MarkerRole {
 
 extension Array where Element == MarkerRole {
     func flattenedString() -> String {
-        map { $0.stringValue }
+        map(\.stringValue)
             .joined(separator: ", ")
     }
 }
