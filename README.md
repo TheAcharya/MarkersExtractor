@@ -111,7 +111,7 @@ OPTIONS:
   --exclude-exclusive-roles <video, audio>
                           Exclude markers that have specified role type but
                           only if the opposite role type is absent.
-  --label <id, name, type, checked, status, notes, position, clipName, clipFilename, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
+  --label <id, name, type, checked, status, notes, position, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>

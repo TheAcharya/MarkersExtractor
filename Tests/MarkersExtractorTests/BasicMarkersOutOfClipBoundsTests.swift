@@ -28,7 +28,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let clip1ParentInfo = Marker.ParentInfo(
             clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
             clipName: "Marker Test",
-            clipFilename: "Marker Test.m4v",
+            // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:00:20:20", at: fr),
             eventName: "Test Event",
@@ -40,7 +40,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let clip2ParentInfo = Marker.ParentInfo(
             clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
             clipName: "Marker Test",
-            clipFilename: "Marker Test.m4v",
+            // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:20:20", at: fr),
             clipOutTime: tc("00:00:41:15", at: fr),
             eventName: "Test Event",

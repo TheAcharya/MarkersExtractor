@@ -29,7 +29,6 @@ final class MarkersExtractorTests: XCTestCase {
                 parentInfo: .init(
                     clipType: FinalCutPro.FCPXML.ClipType.video.name,
                     clipName: "Some Clip",
-                    clipFilename: "",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
@@ -85,7 +84,6 @@ final class MarkersExtractorTests: XCTestCase {
                 parentInfo: .init(
                     clipType: FinalCutPro.FCPXML.ClipType.video.name,
                     clipName: "Some Clip",
-                    clipFilename: "",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",

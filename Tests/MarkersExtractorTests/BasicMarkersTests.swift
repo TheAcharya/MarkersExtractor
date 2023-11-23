@@ -34,7 +34,6 @@ final class BasicMarkersTests: XCTestCase {
         let parentInfo = Marker.ParentInfo(
             clipType: FinalCutPro.FCPXML.ClipType.title.name,
             clipName: "Basic Title",
-            clipFilename: "",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),
             eventName: "Test Event",

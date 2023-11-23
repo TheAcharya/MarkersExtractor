@@ -51,7 +51,12 @@ extension MarkersExtractor {
                 }
                 
                 dict[.resource] = tools.resource
-                dict[.mediaFilename] = tools.mediaURL?.lastPathComponent
+                
+                // we're not using this, as it's not consistent.
+                // basic clips like asset clips only have one media file used,
+                // but sync clips, multicam, and compount clips (ref-clip) can
+                // have multiple clips with multiple media files so it would be ambiguous.
+                // dict[.mediaFilename] = tools.mediaURL?.lastPathComponent
                 
                 return dict
             }
@@ -64,7 +69,6 @@ extension FinalCutPro.FCPXML.ContextKey {
     fileprivate enum Key: String {
         case ancestors
         case resource
-        case mediaFilename
     }
     
     /// Types of the element's ancestors.
@@ -75,9 +79,5 @@ extension FinalCutPro.FCPXML.ContextKey {
     /// The absolute start timecode of the element.
     public static var resource: FinalCutPro.FCPXML.ContextKey<FinalCutPro.FCPXML.AnyResource> {
         .init(key: Key.resource)
-    }
-    
-    public static var mediaFilename: FinalCutPro.FCPXML.ContextKey<String> {
-        .init(key: Key.mediaFilename)
     }
 }

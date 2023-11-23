@@ -22,7 +22,6 @@ public struct StandardExportMarker: ExportMarker {
     public let position: String
     public let clipType: String
     public let clipName: String
-    public let clipFilename: String
     public let clipDuration: String
     public let audioRole: String
     public let videoRole: String
@@ -49,7 +48,6 @@ public struct StandardExportMarker: ExportMarker {
         position = marker.positionTimecodeString(format: tcStringFormat)
         clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
-        clipFilename = marker.parentInfo.clipFilename
         clipDuration = marker.parentInfo.clipDurationTimecodeString(format: tcStringFormat)
         videoRole = marker.roles.videoFormatted()
         audioRole = marker.roles.audioFormatted()

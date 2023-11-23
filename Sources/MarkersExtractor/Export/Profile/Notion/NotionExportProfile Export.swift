@@ -55,7 +55,6 @@ extension NotionExportProfile {
             .position: marker.position,
             .clipType: marker.clipType,
             .clipName: marker.clipName,
-            .clipFilename: marker.clipFilename,
             .clipDuration: marker.clipDuration,
             .videoRole: marker.videoRole,
             .audioRole: marker.audioRole,

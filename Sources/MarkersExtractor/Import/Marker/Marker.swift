@@ -16,7 +16,6 @@ public struct Marker: Equatable, Hashable, Sendable {
     struct ParentInfo: Equatable, Hashable {
         var clipType: String
         var clipName: String
-        var clipFilename: String
         var clipInTime: Timecode
         var clipOutTime: Timecode
         var eventName: String
