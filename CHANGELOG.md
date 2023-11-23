@@ -5,6 +5,7 @@
 ### Changes
 
 - Markers within compound clips are now discarded (#7)
+- Renamed "Type" output manifest marker field to "Marker Type" (#63)
 
 ### Bug Fixes
 
