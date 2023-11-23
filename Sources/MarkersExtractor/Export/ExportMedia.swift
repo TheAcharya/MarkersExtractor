@@ -6,8 +6,8 @@
 
 import Foundation
 import Logging
-import TimecodeKit
 import OTCore
+import TimecodeKit
 
 // MARK: - Export media information packet
 
@@ -102,7 +102,9 @@ extension ExportProfile {
         // TODO: factor out this validation, we shouldn't need both [Marker] and [PreparedMarker]
         guard markers.count == preparedMarkers.count else {
             throw MarkersExtractorError.extraction(
-                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+                .internalInconsistency(
+                    "Markers array sizes were not equal while attempting to prepare image descriptors."
+                )
             )
         }
         
@@ -112,7 +114,12 @@ extension ExportProfile {
         let offsets: [Timecode] = markers.map {
             isVideoPresent
                 ? $0.offsetFromProjectStart()
-                : Timecode(.zero, at: $0.frameRate(), base: $0.subFramesBase(), limit: $0.upperLimit())
+                : Timecode(
+                    .zero,
+                    at: $0.frameRate(),
+                    base: $0.subFramesBase(),
+                    limit: $0.upperLimit()
+                )
         }
         
         let labels = makeImageLabelText(
@@ -122,11 +129,19 @@ extension ExportProfile {
             includeHeaders: imageLabelIncludeHeaders
         )
         
-        guard [markers.count, preparedMarkers.count, imageFileNames.count, offsets.count, labels.count]
+        guard [
+            markers.count,
+            preparedMarkers.count,
+            imageFileNames.count,
+            offsets.count,
+            labels.count
+        ]
             .allElementsAreEqual
         else {
             throw MarkersExtractorError.extraction(
-                .internalInconsistency("Markers array sizes were not equal while attempting to prepare image descriptors.")
+                .internalInconsistency(
+                    "Markers array sizes were not equal while attempting to prepare image descriptors."
+                )
             )
         }
         

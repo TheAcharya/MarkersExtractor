@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 /// Final Cut Pro XML file/bundle abstract file reference and content reader.
 public struct FCPXMLFile {
@@ -80,9 +80,9 @@ extension FCPXMLFile {
         /// For an `dcpxmld` bundle, the bundle's path is returned.
         public var basePath: URL {
             switch self {
-            case .fcpxml(let xmlURL):
+            case let .fcpxml(xmlURL):
                 return xmlURL
-            case .fcpxmld(let bundleURL):
+            case let .fcpxmld(bundleURL):
                 return bundleURL
             }
         }
@@ -90,9 +90,9 @@ extension FCPXMLFile {
         /// Resolves the location of the actual XML file.
         public var xmlPath: URL {
             switch self {
-            case .fcpxml(let xmlURL):
+            case let .fcpxml(xmlURL):
                 return xmlURL
-            case .fcpxmld(let bundleURL):
+            case let .fcpxmld(bundleURL):
                 return bundleURL.appendingPathComponent("Info.fcpxml")
             }
         }

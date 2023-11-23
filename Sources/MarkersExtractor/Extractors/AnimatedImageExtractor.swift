@@ -5,12 +5,13 @@
 //
 
 import AVFoundation
-import ImageIO
 import Foundation
+import ImageIO
 import Logging
 import TimecodeKit
 
-/// Extract a sequence of frames from a video asset and produce an animated image (such as animated GIF).
+/// Extract a sequence of frames from a video asset and produce an animated image (such as animated
+/// GIF).
 final class AnimatedImageExtractor: NSObject, ProgressReporting {
     // MARK: - Properties
     
@@ -106,7 +107,12 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
         // map to ImageDescriptor for richer error reporting
         let descriptors: [ImageDescriptor] = timecodes.map {
             // name and label are not used, just need to pack the timecode in
-            ImageDescriptor(absoluteTimecode: $0, offsetFromVideoStart: $0, filename: "Animation Frame", label: nil)
+            ImageDescriptor(
+                absoluteTimecode: $0,
+                offsetFromVideoStart: $0,
+                filename: "Animation Frame",
+                label: nil
+            )
         }
         
         return descriptors
@@ -136,7 +142,8 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
 
 extension AnimatedImageExtractor {
     /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
-    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or
+    /// partially.
     func convert() async throws -> AnimatedImageExtractorResult {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 1
@@ -170,7 +177,8 @@ extension AnimatedImageExtractor {
     }
     
     /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
-    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or partially.
+    /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or
+    /// partially.
     private func generateGIF() async throws -> AnimatedImageExtractorResult {
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
@@ -181,7 +189,7 @@ extension AnimatedImageExtractor {
         let gifDestination = try initGIF(framesCount: descriptors.count)
 
         var batchResult = AnimatedImageExtractorResult()
-        var isBatchFinished: Bool = false
+        var isBatchFinished = false
         
         let generator = imageGenerator()
         
@@ -189,28 +197,33 @@ extension AnimatedImageExtractor {
         // the creation of the GIF (CGImageDestinationAddImage) must happen serially
         
         var images: [Fraction: CGImage] = [:]
-        try await generator.images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
-            guard let self = self else {
-                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
-                return
-            }
-
-            do {
-                let (image, isFinished) = try self.processFrame(
-                    for: imageResult,
-                    at: self.startTime
-                )
-                if let image {
-                    // we have to use Fraction as dictionary key since CMTime is not hashable on older macOS versions
-                    images[descriptor.absoluteTimecode.cmTimeValue.fractionValue] = image
+        try await generator
+            .images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
+                guard let self = self else {
+                    batchResult.addError(
+                        for: descriptor,
+                        .internalInconsistency("No reference to image extractor.")
+                    )
+                    return
                 }
-                if isFinished { isBatchFinished = true }
-            } catch let error as AnimatedImageExtractorError {
-                batchResult.addError(for: descriptor, error)
-            } catch {
-                batchResult.addError(for: descriptor, .generateFrameFailed(error))
+
+                do {
+                    let (image, isFinished) = try self.processFrame(
+                        for: imageResult,
+                        at: self.startTime
+                    )
+                    if let image {
+                        // we have to use Fraction as dictionary key since CMTime is not hashable on
+                        // older macOS versions
+                        images[descriptor.absoluteTimecode.cmTimeValue.fractionValue] = image
+                    }
+                    if isFinished { isBatchFinished = true }
+                } catch let error as AnimatedImageExtractorError {
+                    batchResult.addError(for: descriptor, error)
+                } catch {
+                    batchResult.addError(for: descriptor, .generateFrameFailed(error))
+                }
             }
-        }
         
         // TODO: throw error if `isBatchFinished == false`?
         assert(isBatchFinished)

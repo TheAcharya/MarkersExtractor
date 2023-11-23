@@ -35,7 +35,7 @@ let package = Package(
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "CodableCSV", package: "CodableCSV"),
                 .product(name: "TimecodeKit", package: "TimecodeKit"),
-                .product(name: "DAWFileKit", package: "DAWFileKit"),
+                .product(name: "DAWFileKit", package: "DAWFileKit")
             ]
         ),
         .testTarget(

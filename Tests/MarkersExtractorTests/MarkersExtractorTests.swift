@@ -4,10 +4,10 @@
 //  Licensed under MIT License
 //
 
-import XCTest
-@testable import MarkersExtractor
 import DAWFileKit
+@testable import MarkersExtractor
 import TimecodeKit
+import XCTest
 
 final class MarkersExtractorTests: XCTestCase {
     func testFindDuplicateIDs_inMarkers() throws {
@@ -32,7 +32,7 @@ final class MarkersExtractorTests: XCTestCase {
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     eventName: "Some Event",
-                    projectName: "MyProject", 
+                    projectName: "MyProject",
                     projectStartTime: tc("01:00:00:00", at: .fps24),
                     libraryName: "MyLibrary"
                 )
@@ -55,7 +55,7 @@ final class MarkersExtractorTests: XCTestCase {
         )
         
         XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker1, marker1]), 
+            extractor.findDuplicateIDs(in: [marker1, marker1]),
             [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
         

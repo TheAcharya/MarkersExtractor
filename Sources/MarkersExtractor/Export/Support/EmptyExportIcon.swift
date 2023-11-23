@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 /// `ExportIcon` prototype that can be used when a profile does not use marker icons.
 public struct EmptyExportIcon: ExportIcon {

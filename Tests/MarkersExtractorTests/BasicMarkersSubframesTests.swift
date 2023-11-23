@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import XCTest
 @testable import MarkersExtractor
 import TimecodeKit
+import XCTest
 
 final class BasicMarkersSubframesTests: XCTestCase {
     /// Test that fraction time values that have subframes correctly convert to Timecode.
@@ -21,11 +21,15 @@ final class BasicMarkersSubframesTests: XCTestCase {
         let markers = try extractor.extractMarkers().sorted()
         
         // 24 total markers.
-        // 6 markers are ignored because they are within compound clips (the 2 instances of the `ref-clip` which contains 3 markers).
+        // 6 markers are ignored because they are within compound clips (the 2 instances of the
+        // `ref-clip` which contains 3 markers).
         XCTAssertEqual(markers.count, 18)
         
         let lastMarker = try XCTUnwrap(markers.last)
-        XCTAssertEqual(lastMarker.positionTimecodeString(format: [.showSubFrames]), "00:00:28:19.25")
+        XCTAssertEqual(
+            lastMarker.positionTimecodeString(format: [.showSubFrames]),
+            "00:00:28:19.25"
+        )
     }
 }
 

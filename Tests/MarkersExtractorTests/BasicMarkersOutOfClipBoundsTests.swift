@@ -4,10 +4,10 @@
 //  Licensed under MIT License
 //
 
-import XCTest
-@testable import MarkersExtractor
 import DAWFileKit
+@testable import MarkersExtractor
 import TimecodeKit
+import XCTest
 
 final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.

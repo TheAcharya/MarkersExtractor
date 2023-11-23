@@ -5,8 +5,8 @@
 //
 
 @testable import MarkersExtractor
-import XCTest
 import TimecodeKit
+import XCTest
 
 final class ProgressTests: XCTestCase {
     func testFCPXMLMarkerExtractor() throws {

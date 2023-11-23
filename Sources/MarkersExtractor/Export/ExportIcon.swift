@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 public protocol ExportIcon: Equatable, Hashable {
     var resource: EmbeddedResource { get }

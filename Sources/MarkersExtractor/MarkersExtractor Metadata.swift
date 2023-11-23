@@ -4,14 +4,16 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 import TimecodeKit
 
 extension MarkersExtractor {
     func startTimecode(forProject project: FinalCutPro.FCPXML.Project) -> Timecode {
         if let tc = project.startTimecode {
-            logger.info("Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose).")
+            logger.info(
+                "Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
+            )
             return tc
         } else if let frameRate = project.frameRate {
             let tc = Timecode(.zero, at: frameRate, base: .max100SubFrames)
@@ -63,6 +65,7 @@ extension MarkersExtractor {
         }
     }
 }
+
 // MARK: - Dictionary Keys
 
 extension FinalCutPro.FCPXML.ContextKey {
@@ -72,7 +75,8 @@ extension FinalCutPro.FCPXML.ContextKey {
     }
     
     /// Types of the element's ancestors.
-    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<[FinalCutPro.FCPXML.ElementType]> {
+    public static var ancestorElementTypes: FinalCutPro.FCPXML.ContextKey<[FinalCutPro.FCPXML.ElementType]>
+    {
         .init(key: Key.ancestors)
     }
     

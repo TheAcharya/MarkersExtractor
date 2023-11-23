@@ -32,7 +32,10 @@ public struct MarkerLabelProperties: Sendable {
 
 extension MarkerLabelProperties {
     public static func `default`() -> Self {
-        let imageLabelFontOpacityDouble = Double(MarkersExtractor.Settings.Defaults.imageLabelFontOpacity) / 100
+        let imageLabelFontOpacityDouble = Double(
+            MarkersExtractor.Settings.Defaults
+                .imageLabelFontOpacity
+        ) / 100
         
         let fontColor = NSColor(
             hexString: MarkersExtractor.Settings.Defaults.imageLabelFontColor,

@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
+import CodableCSV
 import Foundation
 import OrderedCollections
-import CodableCSV
 
 extension ExportProfile {
     public func csvDoneFileContent(csvPath: URL) -> [String: String] {

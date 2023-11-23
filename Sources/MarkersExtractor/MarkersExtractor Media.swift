@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import AppKit
 import AVFoundation
+import Foundation
 import OrderedCollections
 
 extension MarkersExtractor {

@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
+import CodableCSV
 import Foundation
 import OrderedCollections
-import CodableCSV
 
 extension ExportProfile {
     func jsonWriteManifest(
@@ -50,7 +50,7 @@ extension ExportProfile {
         return try encoder.encode(dict)
     }
     
-    func orderedDictToDict<K, V>(_ orderedDict: OrderedDictionary<K, V>) -> Dictionary<K, V> {
+    func orderedDictToDict<K, V>(_ orderedDict: OrderedDictionary<K, V>) -> [K: V] {
         orderedDict.reduce(into: [K: V]()) {
             $0[$1.key] = $1.value
         }

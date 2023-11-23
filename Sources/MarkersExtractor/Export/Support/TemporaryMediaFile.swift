@@ -25,7 +25,7 @@ class TemporaryMediaFile {
     }
 
     var avAsset: AVAsset? {
-        return AVAsset(url: url)
+        AVAsset(url: url)
     }
 
     private func deleteFile() {

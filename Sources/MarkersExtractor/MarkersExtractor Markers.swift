@@ -88,11 +88,14 @@ extension MarkersExtractor {
     }
     
     func findDuplicateIDs(in markers: [Marker]) -> [String] {
-        Dictionary(grouping: markers, by: { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) })
-            .filter { $1.count > 1 }
-            .compactMap { $0.1.first }
-            .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
-            .sorted()
+        Dictionary(
+            grouping: markers,
+            by: { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+        )
+        .filter { $1.count > 1 }
+        .compactMap { $0.1.first }
+        .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+        .sorted()
     }
     
     func isAllUniqueIDNonEmpty(in markers: [Marker]) -> Bool {

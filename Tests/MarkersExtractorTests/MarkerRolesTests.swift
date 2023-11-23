@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import XCTest
 @testable import MarkersExtractor
+import XCTest
 
 final class MarkerRolesTests: XCTestCase {
     func testCollapseClipSubrole() throws {

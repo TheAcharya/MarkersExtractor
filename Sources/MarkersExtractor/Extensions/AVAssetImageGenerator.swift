@@ -22,8 +22,11 @@ extension AVAssetImageGenerator {
     func images(
         forTimesIn descriptors: [ImageDescriptor],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (_ descriptor: ImageDescriptor,
-                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) async -> Void
+        completionHandler: @escaping (
+            _ descriptor: ImageDescriptor,
+            _ imageResult: Swift
+                .Result<CompletionHandlerResult, Error>
+        ) async -> Void
     ) async throws {
         let totalCount = Counter(count: descriptors.count) { count in
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
@@ -73,8 +76,11 @@ extension AVAssetImageGenerator {
     func images(
         forTimes times: [CMTime],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (_ time: CMTime,
-                                      _ imageResult: Swift.Result<CompletionHandlerResult, Error>) -> Void
+        completionHandler: @escaping (
+            _ time: CMTime,
+            _ imageResult: Swift.Result<CompletionHandlerResult, Error>
+        )
+            -> Void
     ) async throws {
         let totalCount = Counter(count: times.count) { count in
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
@@ -125,63 +131,73 @@ extension AVAssetImageGenerator {
             return try await image(at: time)
         }
         
-        var resultImage: CGImage? = nil
-        var resultError: Error? = nil
-        var resultActualTime: CMTime? = nil
-        var isNoFrame: Bool = false
+        var resultImage: CGImage?
+        var resultError: Error?
+        var resultActualTime: CMTime?
+        var isNoFrame = false
         
         let group = DispatchGroup()
         group.enter()
         
         let nsValue = NSValue(time: time)
         generateCGImagesAsynchronously(forTimes: [nsValue])
-        { /*requestedTime*/ requestedTime, image, actualTime, result, error in
-            defer { group.leave() }
+            { /* requestedTime */ requestedTime, image, actualTime, result, error in
+                defer { group.leave() }
             
-            resultImage = image
-            resultError = error
-            resultActualTime = actualTime
+                resultImage = image
+                resultError = error
+                resultActualTime = actualTime
             
-            switch result {
-            case .succeeded:
-                break
+                switch result {
+                case .succeeded:
+                    break
                 
-            case .failed:
-                guard let error else {
-                    resultError = MarkersExtractorError.extraction(.image(.generic(
-                        "Image generator failed but no additional error information is available."
-                    )))
-                    return
-                }
+                case .failed:
+                    guard let error else {
+                        resultError = MarkersExtractorError.extraction(.image(.generic(
+                            "Image generator failed but no additional error information is available."
+                        )))
+                        return
+                    }
                 
-                // Handle blank frames
-                switch error {
-                case let avError as AVError:
-                    switch avError.code {
-                    case .noImageAtTime:
-                        // We ignore blank frames.
-                        print("No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))")
-                        isNoFrame = true
-                    case .decodeFailed:
-                        // macOS 11 (still an issue in macOS 11.2) started throwing “decode failed”
-                        // error for some frames in screen recordings.
-                        // As a workaround, we ignore these as the GIF seems fine still.
-                        print("Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))")
-                        isNoFrame = true
+                    // Handle blank frames
+                    switch error {
+                    case let avError as AVError:
+                        switch avError.code {
+                        case .noImageAtTime:
+                            // We ignore blank frames.
+                            #if DEBUG
+                            print(
+                                "No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                            )
+                            #endif
+                            isNoFrame = true
+                        case .decodeFailed:
+                            // macOS 11 (still an issue in macOS 11.2) started throwing “decode
+                            // failed”
+                            // error for some frames in screen recordings.
+                            // As a workaround, we ignore these as the GIF seems fine still.
+                            #if DEBUG
+                            print(
+                                "Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                            )
+                            #endif
+                            isNoFrame = true
+                        default:
+                            break
+                        }
+                    
                     default:
                         break
                     }
-                    
-                default:
-                    break
-                }
-            case .cancelled:
-                resultError = CancellationError()
+                case .cancelled:
+                    resultError = CancellationError()
                 
-            @unknown default:
-                resultError = MarkersExtractorError.extraction(.image(.generic("Unhandled image result case.")))
+                @unknown default:
+                    resultError = MarkersExtractorError
+                        .extraction(.image(.generic("Unhandled image result case.")))
+                }
             }
-        }
         
         return try await withCheckedThrowingContinuation { continuation in
             group.notify(queue: .main) {
@@ -194,7 +210,11 @@ extension AVAssetImageGenerator {
                     let tuple = (image: resultImage, actualTime: resultActualTime)
                     continuation.resume(with: .success(tuple))
                 } else {
-                    continuation.resume(throwing: MarkersExtractorError.extraction(.image(.generic("Unknown error."))))
+                    continuation
+                        .resume(
+                            throwing: MarkersExtractorError
+                                .extraction(.image(.generic("Unknown error.")))
+                        )
                 }
             }
         }

@@ -4,14 +4,17 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 // MARK: - Output Path
 
 extension MarkersExtractor {
     func makeOutputPath(for projectName: String) throws -> URL {
-        let folderName = s.exportFolderFormat.folderName(projectName: projectName, profile: s.exportFormat)
+        let folderName = s.exportFolderFormat.folderName(
+            projectName: projectName,
+            profile: s.exportFormat
+        )
         let proposedOutputURL = s.outputDir.appendingPathComponent(folderName)
         let outputURL = FileManager.default.uniqueFileURL(proposedPath: proposedOutputURL)
         try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
@@ -51,13 +54,13 @@ public struct ParentProgress {
     
     init(progress: Progress, unitCount: Int64) {
         self.progress = progress
-        self.pendingUnitCount = unitCount
+        pendingUnitCount = unitCount
     }
     
     @_disfavoredOverload
     init(progress: Progress, unitCount: Int) {
         self.progress = progress
-        self.pendingUnitCount = Int64(unitCount)
+        pendingUnitCount = Int64(unitCount)
     }
     
     func addChild(_ child: Progress) {

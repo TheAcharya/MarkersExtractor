@@ -32,9 +32,11 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName,
-                               outputURL: outputURL,
-                               sessionStartTimecode: projectStartTimecode),
+                payload: .init(
+                    projectName: projectName,
+                    outputURL: outputURL,
+                    sessionStartTimecode: projectStartTimecode
+                ),
                 parentProgress: parentProgress
             )
         case .notion:

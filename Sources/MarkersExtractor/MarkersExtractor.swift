@@ -4,16 +4,16 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import AppKit
 import AVFoundation
-import Logging
 import DAWFileKit
+import Foundation
+import Logging
 import TimecodeKit
 
 public final class MarkersExtractor: NSObject, ProgressReporting {
     public let logger: Logger
-    internal var s: Settings
+    var s: Settings
     public let progress: Progress
     
     public init(_ settings: Settings, logger: Logger? = nil) {
@@ -63,7 +63,8 @@ extension MarkersExtractor {
         let projectName = markers[0].parentInfo.projectName
         
         let dawFile = try s.fcpxml.dawFile()
-        guard let project = dawFile.allProjects(context: MarkersExtractor.elementContext).first else {
+        guard let project = dawFile.allProjects(context: MarkersExtractor.elementContext).first
+        else {
             throw MarkersExtractorError.extraction(.projectMissing(
                 "Could not find a project in the XML file."
             ))
@@ -82,7 +83,9 @@ extension MarkersExtractor {
             let exportMedia = try formExportMedia(projectName: projectName)
             media = exportMedia
             logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
-            logger.info("Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted).")
+            logger.info(
+                "Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
+            )
         }
         
         progress.completedUnitCount += 5

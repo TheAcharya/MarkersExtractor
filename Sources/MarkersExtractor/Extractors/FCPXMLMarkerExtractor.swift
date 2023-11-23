@@ -5,9 +5,9 @@
 //
 
 import CoreMedia
+import DAWFileKit
 import Foundation
 import Logging
-import DAWFileKit
 import TimecodeKit
 
 class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
@@ -94,10 +94,16 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         for project in parsedFCPXML.allProjects(context: MarkersExtractor.elementContext) {
             guard let projectStartTime = project.startTimecode else {
-                logger.error("Could not determine start time for project \((project.name ?? "").quoted).")
+                logger.error(
+                    "Could not determine start time for project \((project.name ?? "").quoted)."
+                )
                 return []
             }
-            fcpxmlMarkers += markers(in: project, library: library, projectStartTime: projectStartTime)
+            fcpxmlMarkers += markers(
+                in: project,
+                library: library,
+                projectStartTime: projectStartTime
+            )
         }
         
         // apply role filter
@@ -180,7 +186,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         return extractedMarkers.compactMap {
             convertMarker(
                 $0,
-                parentLibrary: library, 
+                parentLibrary: library,
                 projectStartTime: projectStartTime
             )
         }
@@ -221,13 +227,13 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         )
     }
     
-    internal func getClipRoles(_ marker: FinalCutPro.FCPXML.Marker) -> MarkerRoles {
+    func getClipRoles(_ marker: FinalCutPro.FCPXML.Marker) -> MarkerRoles {
         var markerRoles = MarkerRoles()
         
         // marker doesn't contain role(s) so look to ancestors
         let roles = marker.context[.inheritedRoles] ?? []
         roles.forEach { interpolatedRole in
-            var isRoleDefault: Bool = false
+            var isRoleDefault = false
             
             func handle(role: FinalCutPro.FCPXML.Role) {
                 switch role {
@@ -239,10 +245,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                     markerRoles.isVideoDefault = isRoleDefault
                     if !roleString.isEmpty { markerRoles.video = roleString }
                     
-                case .caption(_):
+                case .caption:
                     // TODO: assign to video role may not be right?
                     // technically captions use their own auto-generated roles that users won't care
-                    // about. and it doesn't seem right to inherit the role from the clip the caption is
+                    // about. and it doesn't seem right to inherit the role from the clip the
+                    // caption is
                     // anchored to. if we convert captions to markers maybe it then makes sense to
                     // inherit role from the clip where the caption is anchored.
                     

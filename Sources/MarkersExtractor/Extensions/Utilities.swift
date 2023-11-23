@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import AppKit
 import CoreGraphics
+import Foundation
 
 // MARK: - Standard Lib
 
@@ -121,7 +121,8 @@ extension FileManager {
                 attributes: nil
             )
         } catch {
-            // we're just assuming this fails because of a permission issue, but it could be something else
+            // we're just assuming this fails because of a permission issue, but it could be
+            // something else
             throw MarkersExtractorError.extraction(
                 .filePermission(error.localizedDescription)
             )

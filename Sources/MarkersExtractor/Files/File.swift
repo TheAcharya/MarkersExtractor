@@ -9,7 +9,7 @@ import Foundation
 /// Represents a file's contents, either from a file stored on disk or directly from raw data.
 /// In either case, the file content is cached in memory to improve performance and reduce
 /// unnecessary disk activity.
-internal struct File {
+struct File {
     public private(set) var contents: FileContents
 }
 
@@ -54,7 +54,7 @@ extension File {
         switch contents {
         case let .fileOnDisk(_, cache):
             return cache != nil
-        case .rawFileContents(_):
+        case .rawFileContents:
             return true
         }
     }
@@ -65,7 +65,7 @@ extension File {
         switch contents {
         case let .fileOnDisk(url, _):
             return url
-        case .rawFileContents(_):
+        case .rawFileContents:
             return nil
         }
     }
@@ -77,7 +77,8 @@ extension File {
     /// the file's contents will also fill the cache if needed.
     ///
     /// - Parameters:
-    ///   - resetCache: Re-read the file's contents from disk and update the cache regardless of cache state.
+    ///   - resetCache: Re-read the file's contents from disk and update the cache regardless of
+    /// cache state.
     mutating func fetch(resetCache: Bool = false) throws {
         switch contents {
         case let .fileOnDisk(url, cache):
@@ -88,7 +89,7 @@ extension File {
             } catch {
                 throw MarkersExtractorError.extraction(.fileRead(error.localizedDescription))
             }
-        case .rawFileContents(_):
+        case .rawFileContents:
             // nothing to fetch and resetting cache is meaningless
             return
         }

@@ -66,7 +66,10 @@ extension ExportProfile {
                 media: media,
                 outputFolder: outputURL,
                 logger: &logger,
-                parentProgress: ParentProgress(progress: progress, unitCount: thumbnailsProgressUnitCount)
+                parentProgress: ParentProgress(
+                    progress: progress,
+                    unitCount: thumbnailsProgressUnitCount
+                )
             )
         } else {
             progress.completedUnitCount += thumbnailsProgressUnitCount
@@ -98,7 +101,7 @@ extension ExportProfile {
             return (isVideoPresent: false, isSingleFrame: true, mediaInfo: nil)
         }
         
-        let isVideoPresent = self.isVideoPresent(in: media.videoURL)
+        let isVideoPresent = isVideoPresent(in: media.videoURL)
         let isSingleFrame = !isVideoPresent
             && media.imageSettings.labelFields.isEmpty
             && media.imageSettings.labelCopyright == nil

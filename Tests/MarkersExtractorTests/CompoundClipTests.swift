@@ -4,10 +4,10 @@
 //  Licensed under MIT License
 //
 
-import XCTest
 @testable import MarkersExtractor
-import TimecodeKit
 import OTCore
+import TimecodeKit
+import XCTest
 
 final class CompoundClipTests: XCTestCase {
     /// Ensure that markers directly attached to compound clips (`ref-clip`s) on the main timeline

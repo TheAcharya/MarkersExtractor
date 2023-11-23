@@ -34,7 +34,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     let logger: Logger
     
     // ProgressReporting
-    let progress: Progress = Progress()
+    let progress: Progress = .init()
     
     init(
         descriptors: [ImageDescriptor],
@@ -94,7 +94,10 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             outputFPS: gifFPS,
             imageFilter: { [weak self] inputImage in
                 if let self, let label = descriptor.label {
-                    var labeler = ImageLabeler(labelProperties: self.imageLabelProperties, logger: self.logger)
+                    var labeler = ImageLabeler(
+                        labelProperties: self.imageLabelProperties,
+                        logger: self.logger
+                    )
                     return labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
@@ -112,7 +115,9 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
                 let tc = descriptor.absoluteTimecode.stringValue()
                 let filename = descriptor.filename.quoted
                 let err = error.error.localizedDescription
-                logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")
+                logger.warning(
+                    "Error while generating image \(filename) for marker at \(tc): \(err)"
+                )
             }
         } catch let err as AnimatedImageExtractorError {
             throw MarkersExtractorError.extraction(.image(.animatedImage(err)))
@@ -171,7 +176,10 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
             dimensions: imageDimensions,
             imageFilter: { inputImage, label in
                 if let label {
-                    var labeler = ImageLabeler(labelProperties: imageLabelProperties, logger: logger)
+                    var labeler = ImageLabeler(
+                        labelProperties: imageLabelProperties,
+                        logger: logger
+                    )
                     return labeler.labelImage(image: inputImage, text: label)
                 } else {
                     return inputImage
@@ -191,7 +199,9 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
                 let tc = error.descriptor.absoluteTimecode.stringValue()
                 let filename = error.descriptor.filename.quoted
                 let err = error.error.localizedDescription
-                logger.warning("Error while generating image \(filename) for marker at \(tc): \(err)")
+                logger.warning(
+                    "Error while generating image \(filename) for marker at \(tc): \(err)"
+                )
             }
         } catch let err as StillImageBatchExtractorError {
             throw MarkersExtractorError.extraction(.image(.stillImage(err)))

@@ -5,8 +5,8 @@
 //
 
 import AVFoundation
-import Foundation
 import CoreImage
+import Foundation
 import Logging
 import OrderedCollections
 import TimecodeKit
@@ -34,7 +34,8 @@ final class StillImageBatchExtractor: NSObject, ProgressReporting {
 
 extension StillImageBatchExtractor {
     /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
-    /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully or partially.
+    /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully
+    /// or partially.
     func convert() async throws -> StillImageBatchExtractorResult {
         progress.completedUnitCount = 0
         progress.totalUnitCount = Int64(conversion.descriptors.count)
@@ -42,39 +43,42 @@ extension StillImageBatchExtractor {
         let generator = imageGenerator()
         
         var batchResult = StillImageBatchExtractorResult()
-        var isBatchFinished: Bool = false
+        var isBatchFinished = false
         
         try await generator.images(forTimesIn: conversion.descriptors, updating: progress)
-        { [weak self] descriptor, imageResult in
-            guard let self = self else {
-                batchResult.addError(for: descriptor, .internalInconsistency("No reference to image extractor."))
-                return
-            }
-
-            let fileName = descriptor.filename
-            let label = descriptor.label
-            
-            let frameResult = await self.processAndWriteFrameToDisk(
-                for: imageResult,
-                fileName: fileName,
-                label: label
-            )
-            
-            switch frameResult {
-            case let .success(isFinished):
-                if isFinished {
-                    isBatchFinished = true
+            { [weak self] descriptor, imageResult in
+                guard let self = self else {
+                    batchResult.addError(
+                        for: descriptor,
+                        .internalInconsistency("No reference to image extractor.")
+                    )
+                    return
                 }
-            case let .failure(error):
-                batchResult.addError(for: descriptor, error)
+
+                let fileName = descriptor.filename
+                let label = descriptor.label
+            
+                let frameResult = await self.processAndWriteFrameToDisk(
+                    for: imageResult,
+                    fileName: fileName,
+                    label: label
+                )
+            
+                switch frameResult {
+                case let .success(isFinished):
+                    if isFinished {
+                        isBatchFinished = true
+                    }
+                case let .failure(error):
+                    batchResult.addError(for: descriptor, error)
+                }
             }
-        }
         
         // TODO: throw error if `isBatchFinished == false`?
         assert(isBatchFinished)
         
         // sometimes NSProgress doesn't fully reach 1.0 so this assert is not reliable
-//        assert(progress.fractionCompleted == 1.0)
+        // assert(progress.fractionCompleted == 1.0)
         
         return batchResult
     }
@@ -198,7 +202,10 @@ public struct StillImageBatchExtractorResult: Sendable {
         self.errors = errors
     }
     
-    mutating func addError(for descriptor: ImageDescriptor, _ error: StillImageBatchExtractorError) {
+    mutating func addError(
+        for descriptor: ImageDescriptor,
+        _ error: StillImageBatchExtractorError
+    ) {
         errors.append((descriptor: descriptor, error: error))
     }
 }

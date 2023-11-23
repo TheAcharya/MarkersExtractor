@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 extension NotionExportProfile {
     enum Status: String, CaseIterable {

@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 extension FinalCutPro.FCPXML.ElementType {
     var name: String {
@@ -37,7 +37,6 @@ extension FinalCutPro.FCPXML.StoryElementType {
     }
 }
 
-
 extension FinalCutPro.FCPXML.StructureElementType {
     var name: String {
         switch self {
@@ -65,7 +64,6 @@ extension FinalCutPro.FCPXML.AnnotationType {
         }
     }
 }
-
 
 extension FinalCutPro.FCPXML.ClipType {
     var name: String {

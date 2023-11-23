@@ -4,10 +4,10 @@
 //  Licensed under MIT License
 //
 
-import XCTest
-@testable import MarkersExtractor
 import DAWFileKit
+@testable import MarkersExtractor
 import TimecodeKit
+import XCTest
 
 final class BasicMarkersTests: XCTestCase {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
@@ -106,20 +106,92 @@ final class BasicMarkersTests: XCTestCase {
             // verify correct IDs
             switch idMode {
             case .projectTimecode:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:14")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:15-1")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:15-2")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Test Project_00:00:29:17")
+                XCTAssertEqual(
+                    markers[0].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Test Project_00:00:29:14"
+                )
+                XCTAssertEqual(
+                    markers[1].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Test Project_00:00:29:15-1"
+                )
+                XCTAssertEqual(
+                    markers[2].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Test Project_00:00:29:15-2"
+                )
+                XCTAssertEqual(
+                    markers[3].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Test Project_00:00:29:17"
+                )
             case .name:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 1-1")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 1-2")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 2")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "Marker 3")
+                XCTAssertEqual(
+                    markers[0].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Marker 1-1"
+                )
+                XCTAssertEqual(
+                    markers[1].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Marker 1-2"
+                )
+                XCTAssertEqual(
+                    markers[2].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Marker 2"
+                )
+                XCTAssertEqual(
+                    markers[3].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "Marker 3"
+                )
             case .notes:
-                XCTAssertEqual(markers[0].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "some notes here")
-                XCTAssertEqual(markers[1].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "more notes here-1")
-                XCTAssertEqual(markers[2].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "notes yay")
-                XCTAssertEqual(markers[3].id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat), "more notes here-2")
+                XCTAssertEqual(
+                    markers[0].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "some notes here"
+                )
+                XCTAssertEqual(
+                    markers[1].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "more notes here-1"
+                )
+                XCTAssertEqual(
+                    markers[2].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "notes yay"
+                )
+                XCTAssertEqual(
+                    markers[3].id(
+                        settings.idNamingMode,
+                        tcStringFormat: extractor.timecodeStringFormat
+                    ),
+                    "more notes here-2"
+                )
             }
         }
     }

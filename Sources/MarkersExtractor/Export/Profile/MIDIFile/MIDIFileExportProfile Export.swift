@@ -6,11 +6,11 @@
 
 import AVFoundation
 import CodableCSV
+import DAWFileKit
 import Foundation
 import Logging
-import OrderedCollections
-import DAWFileKit
 import MIDIKitSMF
+import OrderedCollections
 
 extension MIDIFileExportProfile {
     public func prepareMarkers(
