@@ -81,7 +81,7 @@ extension ExportProfile {
         // done file
         
         if let doneFilePath {
-            logger.info("Creating done file at \(doneFilePath.path.quoted).")
+            logger.info("Creating Done File at \(doneFilePath.path.quoted).")
             let doneFileData = try doneFileContent(payload: payload)
             try saveDoneFile(to: doneFilePath, data: doneFileData)
         }
@@ -134,7 +134,7 @@ extension ExportProfile {
             try data.write(to: outputURL)
         } catch {
             throw MarkersExtractorError.extraction(.fileWrite(
-                "Failed to create done file \(outputURL.path.quoted): \(error.localizedDescription)"
+                "Failed to create Done File \(outputURL.path.quoted): \(error.localizedDescription)"
             ))
         }
     }

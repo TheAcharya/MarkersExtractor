@@ -190,7 +190,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Option(
         help: ArgumentHelp(
-            "Done file path including filename. If this option is not passed, no done file will be created."
+            "Done File path including filename. If this option is not passed, no Done File will be created."
         ),
         transform: URL.init(fileURLWithPath:)
     )

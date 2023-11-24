@@ -45,7 +45,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         noMedia: Bool
     ) throws
     
-    /// Provides the done file content.
+    /// Provides the Done File content.
     func doneFileContent(payload: Payload) throws -> Data
     
     func manifestFields(
