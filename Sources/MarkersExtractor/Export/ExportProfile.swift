@@ -23,7 +23,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
-        doneFilePath: URL?,
+        resultFilePath: URL?,
         logger: Logger?,
         parentProgress: ParentProgress?
     ) async throws
@@ -45,8 +45,8 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         noMedia: Bool
     ) throws
     
-    /// Provides the Done File content.
-    func doneFileContent(payload: Payload) throws -> Data
+    /// Provides the profile-specific result file content.
+    func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary
     
     func manifestFields(
         for marker: PreparedMarker,

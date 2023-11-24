@@ -48,7 +48,7 @@ extension MarkersExtractor {
         
         guard !markers.isEmpty else {
             logger.info("No markers found.")
-            // TODO: should we output Done File still?
+            // TODO: should we output result file still?
             return
         }
         

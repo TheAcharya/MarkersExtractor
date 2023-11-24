@@ -18,7 +18,7 @@ extension ExportProfile {
         tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
-        doneFilePath: URL?,
+        resultFilePath: URL?,
         logger: Logger? = nil,
         parentProgress: ParentProgress? = nil
     ) async throws {
@@ -78,7 +78,7 @@ extension ExportProfile {
         
         try writeManifest(preparedMarkers, payload: payload, noMedia: media == nil)
         
-        // done file
+        // result file
         
         if let doneFilePath {
             logger.info("Creating Done File at \(doneFilePath.path.quoted).")
@@ -126,7 +126,7 @@ extension ExportProfile {
         }
     }
     
-    private func saveDoneFile(
+    private func saveResultFile(
         to outputURL: URL,
         data: Data
     ) throws {
@@ -134,7 +134,7 @@ extension ExportProfile {
             try data.write(to: outputURL)
         } catch {
             throw MarkersExtractorError.extraction(.fileWrite(
-                "Failed to create Done File \(outputURL.path.quoted): \(error.localizedDescription)"
+                "Failed to create result file \(outputURL.path.quoted): \(error.localizedDescription)"
             ))
         }
     }
