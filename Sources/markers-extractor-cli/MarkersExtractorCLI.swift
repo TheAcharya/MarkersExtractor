@@ -190,7 +190,8 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Option(
         help: ArgumentHelp(
-            "Result JSON file path including filename. If this option is not passed, it won't be created."
+            "Path including filename to create a JSON result file. If this option is not passed, it won't be created.",
+            valueName: "path"
         ),
         transform: URL.init(fileURLWithPath:)
     )
@@ -232,7 +233,8 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         name: [.customLong("media-search-path")],
         help: ArgumentHelp(
-            "Media search path. This argument can be supplied more than once to use multiple paths. (default: same folder as fcpxml(d))"
+            "Media search path. This argument can be supplied more than once to use multiple paths. (default: same folder as fcpxml(d))",
+            valueName: "path"
         ),
         transform: URL.init(fileURLWithPath:)
     )
