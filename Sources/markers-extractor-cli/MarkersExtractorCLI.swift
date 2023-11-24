@@ -188,11 +188,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     )
     var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
     
-    @Flag(
-        help: "Create a file in output directory on successful export. The filename can be customized using --done-filename."
-    )
-    var createDoneFile = MarkersExtractor.Settings.Defaults.createDoneFile
-    
     @Option(
         help: ArgumentHelp(
             "Done file path including filename. If this option is not passed, no done file will be created."
@@ -310,7 +305,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 imageLabelAlignHorizontal: imageLabelAlignHorizontal,
                 imageLabelAlignVertical: imageLabelAlignVertical,
                 imageLabelHideNames: imageLabelHideNames,
-                createDoneFile: createDoneFile,
                 doneFilePath: doneFilePath,
                 exportFolderFormat: exportFolderFormat
             )

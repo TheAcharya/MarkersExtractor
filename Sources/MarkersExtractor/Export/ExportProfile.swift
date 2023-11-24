@@ -23,7 +23,6 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
-        createDoneFile: Bool,
         doneFilePath: URL?,
         logger: Logger?,
         parentProgress: ParentProgress?

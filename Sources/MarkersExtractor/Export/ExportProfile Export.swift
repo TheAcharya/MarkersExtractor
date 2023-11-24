@@ -18,7 +18,6 @@ extension ExportProfile {
         tcStringFormat: Timecode.StringFormat,
         outputURL: URL,
         payload: Payload,
-        createDoneFile: Bool,
         doneFilePath: URL?,
         logger: Logger? = nil,
         parentProgress: ParentProgress? = nil

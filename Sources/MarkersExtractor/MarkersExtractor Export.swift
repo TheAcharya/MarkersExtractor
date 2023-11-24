@@ -66,7 +66,6 @@ extension MarkersExtractor {
             tcStringFormat: timecodeStringFormat,
             outputURL: outputURL,
             payload: payload,
-            createDoneFile: s.createDoneFile,
             doneFilePath: s.doneFilePath,
             logger: logger,
             parentProgress: parentProgress

@@ -32,7 +32,6 @@ extension MarkersExtractor {
         public var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
         public var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
         public var imageLabelHideNames: Bool
-        public var createDoneFile: Bool
         public var fcpxml: FCPXMLFile
         public var noMedia: Bool
         public var mediaSearchPaths: [URL]
@@ -68,7 +67,6 @@ extension MarkersExtractor {
             imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = Defaults.imageLabelAlignHorizontal,
             imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = Defaults.imageLabelAlignVertical,
             imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
-            createDoneFile: Bool = Defaults.createDoneFile,
             doneFilePath: URL? = Defaults.doneFilePath,
             exportFolderFormat: ExportFolderFormat = Defaults.exportFolderFormat
         ) throws {
@@ -102,7 +100,6 @@ extension MarkersExtractor {
             self.imageLabelAlignHorizontal = imageLabelAlignHorizontal
             self.imageLabelAlignVertical = imageLabelAlignVertical
             self.imageLabelHideNames = imageLabelHideNames
-            self.createDoneFile = createDoneFile
             self.doneFilePath = doneFilePath
             self.exportFolderFormat = exportFolderFormat
             
@@ -246,7 +243,6 @@ extension MarkersExtractor.Settings {
         public static let imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = .left
         public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
         public static let imageLabelHideNames = false
-        public static let createDoneFile = false
         public static let doneFilePath: URL? = nil
         public static let exportFolderFormat: ExportFolderFormat = .medium
         public static let noMedia: Bool = false
