@@ -49,10 +49,10 @@ extension AirtableExportProfile {
     
     public func doneFileContent(payload: Payload) throws -> Data {
         let csv = csvDoneFileContent(csvPath: payload.csvPayload.csvPath)
-        let json = jsonDoneFileContent(jsonPath: payload.jsonPayload.jsonPath)
+        // let json = jsonDoneFileContent(jsonPath: payload.jsonPayload.jsonPath)
         
-        let dict = csv.merging(json) { a, b in a }
-        let data = try dictToJSON(dict)
+        // let dict = csv.merging(json) { a, b in a }
+        let data = try dictToJSON(csv)
         return data
     }
     
