@@ -64,10 +64,11 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
 }
 
 extension ExportProfile {
+    /// Progress instance factory.
     static var defaultProgress: Progress {
         Progress(totalUnitCount: defaultProgressTotalUnitCount)
     }
     
-    /// Arbitrary overall progress for export profile
+    /// Arbitrary overall progress total for export profile.
     static var defaultProgressTotalUnitCount: Int64 { 100 }
 }
