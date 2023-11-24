@@ -195,11 +195,11 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Option(
         help: ArgumentHelp(
-            "Done file filename. Has no effect unless --create-done-file flag is also supplied.",
-            valueName: "done.json"
-        )
+            "Done file path including filename. If this option is not passed, no done file will be created."
+        ),
+        transform: URL.init(fileURLWithPath:)
     )
-    var doneFilename: String = MarkersExtractor.Settings.Defaults.doneFilename
+    var doneFilePath: URL? = MarkersExtractor.Settings.Defaults.doneFilePath
     
     @Option(
         name: [.customLong("folder-format")],
@@ -311,7 +311,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 imageLabelAlignVertical: imageLabelAlignVertical,
                 imageLabelHideNames: imageLabelHideNames,
                 createDoneFile: createDoneFile,
-                doneFilename: doneFilename,
+                doneFilePath: doneFilePath,
                 exportFolderFormat: exportFolderFormat
             )
         } catch let err as MarkersExtractorError {

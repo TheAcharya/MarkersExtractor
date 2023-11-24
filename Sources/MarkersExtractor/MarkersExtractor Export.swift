@@ -67,7 +67,7 @@ extension MarkersExtractor {
             outputURL: outputURL,
             payload: payload,
             createDoneFile: s.createDoneFile,
-            doneFilename: s.doneFilename,
+            doneFilePath: s.doneFilePath,
             logger: logger,
             parentProgress: parentProgress
         )

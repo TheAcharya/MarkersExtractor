@@ -37,7 +37,7 @@ extension MarkersExtractor {
         public var noMedia: Bool
         public var mediaSearchPaths: [URL]
         public var outputDir: URL
-        public var doneFilename: String
+        public var doneFilePath: URL?
         public var exportFolderFormat: ExportFolderFormat
         
         public init(
@@ -69,7 +69,7 @@ extension MarkersExtractor {
             imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = Defaults.imageLabelAlignVertical,
             imageLabelHideNames: Bool = Defaults.imageLabelHideNames,
             createDoneFile: Bool = Defaults.createDoneFile,
-            doneFilename: String = Defaults.doneFilename,
+            doneFilePath: URL? = Defaults.doneFilePath,
             exportFolderFormat: ExportFolderFormat = Defaults.exportFolderFormat
         ) throws {
             // mandatory parameters
@@ -103,7 +103,7 @@ extension MarkersExtractor {
             self.imageLabelAlignVertical = imageLabelAlignVertical
             self.imageLabelHideNames = imageLabelHideNames
             self.createDoneFile = createDoneFile
-            self.doneFilename = doneFilename
+            self.doneFilePath = doneFilePath
             self.exportFolderFormat = exportFolderFormat
             
             // validation
@@ -247,12 +247,12 @@ extension MarkersExtractor.Settings {
         public static let imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = .top
         public static let imageLabelHideNames = false
         public static let createDoneFile = false
+        public static let doneFilePath: URL? = nil
         public static let exportFolderFormat: ExportFolderFormat = .medium
         public static let noMedia: Bool = false
         public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
             [fcpxml.defaultMediaSearchPath].compactMap { $0 }
         }
         
-        public static let doneFilename = "done.json"
     }
 }

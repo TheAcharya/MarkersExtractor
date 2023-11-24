@@ -24,7 +24,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
-        doneFilename: String,
+        doneFilePath: URL?,
         logger: Logger?,
         parentProgress: ParentProgress?
     ) async throws

@@ -19,7 +19,7 @@ extension ExportProfile {
         outputURL: URL,
         payload: Payload,
         createDoneFile: Bool,
-        doneFilename: String,
+        doneFilePath: URL?,
         logger: Logger? = nil,
         parentProgress: ParentProgress? = nil
     ) async throws {
@@ -81,10 +81,10 @@ extension ExportProfile {
         
         // done file
         
-        if createDoneFile {
-            logger.info("Creating \(doneFilename.quoted) done file at \(outputURL.path.quoted).")
+        if let doneFilePath {
+            logger.info("Creating done file at \(doneFilePath.path.quoted).")
             let doneFileData = try doneFileContent(payload: payload)
-            try saveDoneFile(at: outputURL, fileName: doneFilename, data: doneFileData)
+            try saveDoneFile(to: doneFilePath, data: doneFileData)
         }
         
         progress.completedUnitCount += 5
@@ -128,17 +128,14 @@ extension ExportProfile {
     }
     
     private func saveDoneFile(
-        at outputURL: URL,
-        fileName: String,
+        to outputURL: URL,
         data: Data
     ) throws {
-        let doneFile = outputURL.appendingPathComponent(fileName)
-        
         do {
-            try data.write(to: doneFile)
+            try data.write(to: outputURL)
         } catch {
             throw MarkersExtractorError.extraction(.fileWrite(
-                "Failed to create done file \(doneFile.path.quoted): \(error.localizedDescription)"
+                "Failed to create done file \(outputURL.path.quoted): \(error.localizedDescription)"
             ))
         }
     }
