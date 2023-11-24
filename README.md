@@ -132,13 +132,9 @@ OPTIONS:
   --label-align-vertical <top, center, bottom>
                           Vertical alignment of image labels. (default: top)
   --label-hide-names      Hide names of image labels.
-  --create-done-file      Create a file in output directory on successful
-                          export. The filename can be customized using
-                          --done-filename.
-  --done-filename <done.json>
-                          Done file filename. Has no effect unless
-                          --create-done-file flag is also supplied. (default:
-                          done.json)
+  --result-file-path <path>
+                          Path including filename to create a JSON result file.
+                          If this option is not passed, it won't be created.
   --folder-format <short, medium, long>
                           Output folder name format. (default: medium)
   --log <log>             Log file path.
