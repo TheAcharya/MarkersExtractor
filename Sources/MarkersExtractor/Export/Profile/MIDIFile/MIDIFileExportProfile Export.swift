@@ -52,10 +52,8 @@ extension MIDIFileExportProfile {
         try data.write(to: payload.midiFilePath)
     }
     
-    public func doneFileContent(payload: Payload) throws -> Data {
-        let dict = ["midiFilePath": payload.midiFilePath.path]
-        let data = try dictToJSON(dict)
-        return data
+    public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
+        [.midiFilePath: .url(payload.midiFilePath)]
     }
     
     public func manifestFields(

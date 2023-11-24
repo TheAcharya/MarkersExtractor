@@ -80,10 +80,22 @@ extension ExportProfile {
         
         // result file
         
-        if let doneFilePath {
-            logger.info("Creating Done File at \(doneFilePath.path.quoted).")
-            let doneFileData = try doneFileContent(payload: payload)
-            try saveDoneFile(to: doneFilePath, data: doneFileData)
+        if let resultFilePath {
+            logger.info("Creating result file \(resultFilePath.path.quoted).")
+            
+            // add baseline data that applies to all profiles
+            var exportResult = ExportResult(
+                profile: Self.profile,
+                exportFolder: outputURL
+            )
+            
+            // add profile-specific data
+            var profileResult = try resultFileContent(payload: payload)
+            exportResult.update(with: profileResult)
+            
+            let data = try exportResult.jsonData()
+            
+            try saveResultFile(to: resultFilePath, data: data)
         }
         
         progress.completedUnitCount += 5

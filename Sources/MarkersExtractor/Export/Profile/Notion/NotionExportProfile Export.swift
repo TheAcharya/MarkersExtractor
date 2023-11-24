@@ -37,8 +37,8 @@ extension NotionExportProfile {
         try csvWriteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
     }
     
-    public func doneFileContent(payload: Payload) throws -> Data {
-        try csvDoneFileData(csvPath: payload.csvPath)
+    public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
+        [.csvManifestPath: .url(payload.csvPath)]
     }
     
     public func manifestFields(

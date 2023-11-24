@@ -14,6 +14,8 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
     
+    static var profile: ExportProfileFormat { get }
+    
     /// Exports markers to disk.
     /// Writes metadata files, images, and any other resources necessary.
     func export(
@@ -48,6 +50,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     /// Provides the profile-specific result file content.
     func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary
     
+    /// Provides the manifest fields to use.
     func manifestFields(
         for marker: PreparedMarker,
         noMedia: Bool

@@ -11,6 +11,7 @@ public class NotionExportProfile: NSObject, ProgressReporting, ExportProfile {
     // ExportProfile
     public typealias Payload = CSVExportPayload
     public typealias PreparedMarker = StandardExportMarker
+    public static let profile: ExportProfileFormat = .notion
     public static let isMediaCapable: Bool = true
     public var logger: Logger?
     

@@ -12,6 +12,7 @@ public class AirtableExportProfile: NSObject, ProgressReporting, ExportProfile {
     public typealias Payload = CSVJSONExportPayload
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = StandardExportMarker
+    public static let profile: ExportProfileFormat = .airtable
     public static let isMediaCapable: Bool = true
     public var logger: Logger?
     

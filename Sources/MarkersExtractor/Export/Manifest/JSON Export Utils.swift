@@ -17,8 +17,6 @@ extension ExportProfile {
         let orderedDicts = jsonDicts(preparedMarkers, noMedia: noMedia)
         let dicts = orderedDicts.map { orderedDictToDict($0) }
         let data = try dictsToJSON(dicts)
-//        let encoder = JSONEncoder()
-//        let data = try encoder.encode(dicts)
         try data.write(to: jsonPath)
     }
     
@@ -37,22 +35,20 @@ extension ExportProfile {
     }
 }
 
-extension ExportProfile {
-    func dictToJSON(_ dict: [String: String]) throws -> Data {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted]
-        return try encoder.encode(dict)
-    }
-    
-    func dictsToJSON(_ dict: [[String: String]]) throws -> Data {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted]
-        return try encoder.encode(dict)
-    }
-    
-    func orderedDictToDict<K, V>(_ orderedDict: OrderedDictionary<K, V>) -> [K: V] {
-        orderedDict.reduce(into: [K: V]()) {
-            $0[$1.key] = $1.value
-        }
+func dictToJSON(_ dict: [String: String]) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted]
+    return try encoder.encode(dict)
+}
+
+func dictsToJSON(_ dict: [[String: String]]) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted]
+    return try encoder.encode(dict)
+}
+
+func orderedDictToDict<K, V>(_ orderedDict: OrderedDictionary<K, V>) -> [K: V] {
+    orderedDict.reduce(into: [K: V]()) {
+        $0[$1.key] = $1.value
     }
 }

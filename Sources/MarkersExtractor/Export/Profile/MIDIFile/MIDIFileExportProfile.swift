@@ -12,6 +12,7 @@ public class MIDIFileExportProfile: NSObject, ProgressReporting, ExportProfile {
     public typealias Payload = MIDIFileExportPayload
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = MIDIFileExportMarker
+    public static let profile: ExportProfileFormat = .midi
     public static let isMediaCapable: Bool = false
     public var logger: Logger?
     

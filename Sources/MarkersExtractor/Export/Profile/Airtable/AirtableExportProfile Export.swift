@@ -47,13 +47,12 @@ extension AirtableExportProfile {
         // )
     }
     
-    public func doneFileContent(payload: Payload) throws -> Data {
-        let csv = csvDoneFileContent(csvPath: payload.csvPayload.csvPath)
-        // let json = jsonDoneFileContent(jsonPath: payload.jsonPayload.jsonPath)
-        
-        // let dict = csv.merging(json) { a, b in a }
-        let data = try dictToJSON(csv)
-        return data
+    public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
+        [
+            .csvManifestPath: .url(payload.csvPayload.csvPath)
+            // skip exporting JSON because we don't need it for Airlift (3rd-party library)
+            // .jsonManifestPath: .url(payload.jsonPayload.jsonPath)
+        ]
     }
     
     public func manifestFields(
