@@ -1,5 +1,13 @@
 # MarkersExtractor Change Log
 
+## 0.2.6
+
+### Changes
+
+- Changed `--done-filename` to `--done-file-path` (#67)
+- Removed `--create-done-file` flag as it is now redundant. (#67)
+  If `--done-file-path` is specified, a done file will be written to disk and if not specified, no done file will be written.
+
 ## 0.2.5(https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.5) (2023-11-22)
 
 ### Changes
