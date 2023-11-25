@@ -8,6 +8,7 @@ import ArgumentParser
 import Foundation
 import Logging
 import MarkersExtractor
+import DAWFileKit
 
 @main
 struct MarkersExtractorCLI: AsyncParsableCommand {
@@ -103,10 +104,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         name: [.customLong("exclude-exclusive-roles")],
         help: ArgumentHelp(
             "Exclude markers that have specified role type but only if the opposite role type is absent.",
-            valueName: "\(MarkerRoleType.allCases.map { $0.rawValue }.joined(separator: ", "))"
+            valueName: "\(FinalCutPro.FCPXML.RoleType.allCases.map { $0.rawValue }.joined(separator: ", "))"
         )
     )
-    var excludeRoleType: MarkerRoleType?
+    var excludeRoleType: FinalCutPro.FCPXML.RoleType?
     
     @Option(
         name: [.customLong("label")],

@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 
 /// Single Marker Role.
 ///
@@ -23,7 +23,7 @@ extension MarkerRole: CustomStringConvertible {
         stringValue
     }
     
-    var stringValue: String {
+    public var stringValue: String {
         switch self {
         case let .video(string):
             return string
@@ -36,25 +36,38 @@ extension MarkerRole: CustomStringConvertible {
 }
 
 extension MarkerRole {
-    var isVideo: Bool {
+    public var isVideo: Bool {
         guard case .video = self else {
             return false
         }
         return true
     }
     
-    var isAudio: Bool {
+    public var isAudio: Bool {
         guard case .audio = self else {
             return false
         }
         return true
     }
     
-    var isCaption: Bool {
+    public var isCaption: Bool {
         guard case .caption = self else {
             return false
         }
         return true
+    }
+}
+
+extension MarkerRole {
+    public var roleType: FinalCutPro.FCPXML.RoleType {
+        switch self {
+        case .video:
+            return .video
+        case .audio:
+            return .audio
+        case .caption:
+            return .caption
+        }
     }
 }
 
@@ -63,12 +76,4 @@ extension Array where Element == MarkerRole {
         map(\.stringValue)
             .joined(separator: ", ")
     }
-}
-
-// MARK: - MarkerRoleType
-
-public enum MarkerRoleType: String, CaseIterable, Equatable, Hashable, Sendable {
-    case video
-    case audio
-    case caption
 }

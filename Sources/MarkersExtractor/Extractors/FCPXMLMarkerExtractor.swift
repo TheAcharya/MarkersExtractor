@@ -17,7 +17,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
     let includeOutsideClipBoundaries: Bool
-    let excludeRoleType: MarkerRoleType?
+    let excludeRoleType: FinalCutPro.FCPXML.RoleType?
     let enableSubframes: Bool
     let markersSource: MarkersSource
     
@@ -27,7 +27,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: XMLDocument,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: MarkerRoleType?,
+        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -47,7 +47,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: MarkerRoleType?,
+        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -68,7 +68,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: inout FCPXMLFile,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: MarkerRoleType?,
+        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -115,7 +115,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 )
             }
             
-            if markersSource.includesMarkers {
+            if markersSource.includesCaptions {
                 fcpxmlMarkers += captions(
                     in: project,
                     library: library,
@@ -158,10 +158,18 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         // apply out-of-bounds filter
         if !includeOutsideClipBoundaries {
             let (kept, omitted): ([Marker], [Marker]) = fcpxmlMarkers
-                .reduce(into: ([], [])) { base, marker in
-                    marker.isOutOfClipBounds()
-                        ? base.1.append(marker)
-                        : base.0.append(marker)
+                .reduce(into: ([], [])) { base, markerOrCaption in
+                    switch markerOrCaption.type {
+                    case .marker:
+                        markerOrCaption.isOutOfClipBounds()
+                        ? base.1.append(markerOrCaption)
+                        : base.0.append(markerOrCaption)
+                    case .caption:
+                        // always allow captions since they are not attached to clips,
+                        // but are timeline-global elements
+                        base.0.append(markerOrCaption)
+                    }
+                    
                 }
             
             // remove out-of-bounds markers from output
@@ -315,21 +323,14 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                     markerRoles.isVideoDefault = isRoleDefault
                     if !videoRole.rawValue.isEmpty { markerRoles.video = videoRole }
                     
-                case .caption:
-                    // TODO: assign to video role may not be right?
-                    // technically captions use their own auto-generated roles that users won't care
-                    // about. and it doesn't seem right to inherit the role from the clip the
-                    // caption is
-                    // anchored to. if we convert captions to markers maybe it then makes sense to
-                    // inherit role from the clip where the caption is anchored.
-                    
-                    break
-                    // markerRoles.video = roleString
+                case let .caption(captionRole):
+                    markerRoles.isCaptionDefault = isRoleDefault
+                    if !captionRole.rawValue.isEmpty { markerRoles.caption = captionRole }
                 }
             }
             
             switch interpolatedRole {
-            case let .assigned(role):
+            case let .assigned(role), let .inherited(role):
                 isRoleDefault = false
                 handle(role: role)
                 
@@ -339,7 +340,20 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             }
         }
         
-        return markerRoles.collapsedSubroles()
+        markerRoles = markerRoles.collapsedSubroles()
+        
+        // remove any roles with empty strings
+        if markerRoles.audio?.rawValue.trimmed.isEmpty == true {
+            markerRoles.audio = nil
+        }
+        if markerRoles.video?.rawValue.trimmed.isEmpty == true {
+            markerRoles.video = nil
+        }
+        if markerRoles.caption?.rawValue.trimmed.isEmpty == true {
+            markerRoles.caption = nil
+        }
+        
+        return markerRoles
     }
     
     private func timecodeStringFormat() -> Timecode.StringFormat {
