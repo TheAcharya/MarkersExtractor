@@ -41,10 +41,13 @@
   - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
   - [From Source](#from-source)
 - [Usage](#usage)
+  - [CLI](#cli)
   - [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
   - [Examples](#examples)
+  - [Result File Contents](#result-file-contents)
   - [Intended Behaviour & Logic](#intended-behaviour--logic)
   - [Developer Library](#developer-library)
+  
 - [Featured](#featured)
 - [Credits](#Credits)
 - [License](#License)
@@ -143,7 +146,7 @@ OPTIONS:
   --quiet                 Disable log.
   --no-progress           Disable progress logging.
   --no-media              Bypass media. No thumbnails will be generated.
-  --media-search-path <media-search-path>
+  --media-search-path <path>
                           Media search path. This argument can be supplied more
                           than once to use multiple paths. (default: same
                           folder as fcpxml(d))
@@ -170,7 +173,7 @@ For ease of use, usage and creation of shell scripts (`.sh` files) is **recommen
 2. Place the latest pre-compiled binary with the folder. 
 3. Within that folder, create two more additional folders, **Render** and **Output**.
 4. **Render** is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename. **Output** is where your **Marker Data Set** will be generated.
-5. Create a file using any text editor. Name the script file with extension `.sh`
+5. Create a file using any text editor. Name the script file with extension `.sh`.
 6. Copy and paste this syntax into the file, where **xxx** is the name of of your user directory and **zzz** is the name of your `.fcpxmld` file.
    ```bash
    #!/bin/sh
@@ -257,12 +260,12 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
 
 If the `--result-file-path` option is supplied with a path including filename (ie: `./result.json`), the tool will create a JSON file at that path once the export is complete.
 
-It contains key pieces of information regarding the final output folder, which may be needed if the tool is used in a shell script that requires chaining additional actions after the export completes.
+It contains key pieces of information including the final output folder path, which may be needed if the tool is used in a shell script that requires chaining additional actions after the export completes.
 
 The format is a dictionary using the following key names:
 
-- `profile`: The profile identifier supplied to the CLI using the `--export-format` option, or the default if not specified.
-- `exportFolder`: The path to the folder that the tool created, where all exported files reside.
+- `profile`: The profile identifier passed to the CLI using the `--export-format` command line argument.
+- `exportFolder`: The path to the output folder that the tool created where all exported files reside.
 - `csvManifestPath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
 - `jsonManifestPath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
 - `midiFilePath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
