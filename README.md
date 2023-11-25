@@ -157,13 +157,14 @@ After trying to run `markers-extractor-cli` for the first time, the process will
 
 > "markers-extractor-cli" can't be opened because the developer cannot be verified...
 
-- To approve the process and allow `markers-extractor-cli` to run, go to System Preferences, Security & Privacy, General, and look in the bottom right corner for a button to click.
+- To approve the process and allow `markers-extractor-cli` to run, go to:
+  _System Preferences → Security & Privacy → General_, and look in the bottom right corner for a button to click.
 - After approving `markers-extractor-cli`, it should run successfully. 
 - For more information, visit https://support.apple.com/en-us/HT202491.
 
 ### Examples
 
-For ease of use, usage and creation of `.sh` files is **recommended**. 
+For ease of use, usage and creation of shell scripts (`.sh` files) is **recommended**. 
 
 1. Create a folder called **MarkersExtractor** on your Desktop.
 2. Place the latest pre-compiled binary with the folder. 
@@ -171,27 +172,26 @@ For ease of use, usage and creation of `.sh` files is **recommended**.
 4. **Render** is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename. **Output** is where your **Marker Data Set** will be generated.
 5. Create a file using any text editor. Name the script file with extension `.sh`
 6. Copy and paste this syntax into the file, where **xxx** is the name of of your user directory and **zzz** is the name of your `.fcpxmld` file.
-
-```bash
-#!/bin/sh
-
-TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
-FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
-OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
-ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
-
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
-  --export-format notion --image-format png \
-  --result-file-path ./result.json \
-  --log-level debug --log $ERROR_LOG
-```
-
+   ```bash
+   #!/bin/sh
+   
+   TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+   FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
+   OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
+   ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
+   
+   $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+     --export-format notion --image-format png \
+     --result-file-path ./result.json \
+     --log-level debug --log $ERROR_LOG
+   ```
 7. Save the script file as `myscript.sh` within your **MarkersExtractor** folder.
 8. To give execute permission to your script, open Terminal, `chmod +x /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
 9. To execute your script, open Terminal, `sh /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
 10. You can create and save multiple `.sh` files for different modes and configurations.
+11. If the `--result-file-path` option is supplied with a path including filename (ie: `./result.json`), the tool will create a JSON file at that path once the export is complete. See [Result File Contents](#result-file-contents) for details.
 
-**PNG Mode with Labels**
+#### PNG Mode with Labels
 
 ```bash
 #!/bin/sh
@@ -212,7 +212,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --log-level debug --log $ERROR_LOG
 ```
 
-**GIF Mode with Labels**
+#### GIF Mode with Labels
 
 ```bash
 #!/bin/sh
@@ -234,7 +234,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --log-level debug --log $ERROR_LOG
 ```
 
-**PNG Mode + Name Mode with Labels**
+#### PNG Mode + Name Mode with Labels
 
 ```bash
 #!/bin/sh
@@ -253,8 +253,26 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --log-level debug --log $ERROR_LOG
 ```
 
+### Result File Contents
+
+If the `--result-file-path` option is supplied with a path including filename (ie: `./result.json`), the tool will create a JSON file at that path once the export is complete.
+
+It contains key pieces of information regarding the final output folder, which may be needed if the tool is used in a shell script that requires chaining additional actions after the export completes.
+
+The format is a dictionary using the following key names:
+
+- `profile`: The profile identifier supplied to the CLI using the `--export-format` option, or the default if not specified.
+- `exportFolder`: The path to the folder that the tool created, where all exported files reside.
+- `csvManifestPath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
+- `jsonManifestPath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
+- `midiFilePath`: The path to the CSV manifest file, if one was created. This is determined by the profile used.
+
+It is recommended to read this file with a JSON parser to obtain the values for keys. If using a shell script, it may be possible to grep the information.
+
 ### Intended Behaviour & Logic
-- The tool will only parse Markers of your main timeline. Markers nested deep within compound, multicam or synchronized Clips will be ignored.
+
+The tool will only parse Markers of your project's main timeline.
+Markers nested deep within compound, multicam or synchronized Clips will be ignored.
 
 ### Developer Library
 
