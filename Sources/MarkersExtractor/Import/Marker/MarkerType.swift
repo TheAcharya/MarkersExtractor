@@ -27,3 +27,29 @@ extension FinalCutPro.FCPXML.Marker.MarkerMetaData {
         }
     }
 }
+
+/// Encapsulates marker types and non-marker types that are convertible to markers.
+public enum InterpretedMarkerType: Equatable, Hashable, Sendable {
+    case marker(_ markerMetaData: FinalCutPro.FCPXML.Marker.MarkerMetaData)
+    case caption
+}
+
+extension InterpretedMarkerType {
+    public var name: String {
+        switch self {
+        case .marker(let markerMetaData):
+            return markerMetaData.name
+        case .caption:
+            return "Caption"
+        }
+    }
+    
+    public var fullName: String {
+        switch self {
+        case .marker(let markerMetaData):
+            return "\(markerMetaData.name) Marker"
+        case .caption:
+            return "Caption"
+        }
+    }
+}

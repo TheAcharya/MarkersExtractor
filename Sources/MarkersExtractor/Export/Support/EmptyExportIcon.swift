@@ -11,9 +11,11 @@ import Foundation
 public struct EmptyExportIcon: ExportIcon {
     public var resource: EmbeddedResource = .notion_marker_png // ignore
     
-    public var fileName: String = "empty.png"
+    public var fileName: String = ""
     
     public let data: Data = .init()
     
     public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) { }
+    
+    public init(_ type: InterpretedMarkerType) { }
 }

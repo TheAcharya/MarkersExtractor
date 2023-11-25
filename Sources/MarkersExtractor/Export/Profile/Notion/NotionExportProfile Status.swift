@@ -23,5 +23,14 @@ extension NotionExportProfile {
                 self = completed ? .done : .inProgress
             }
         }
+        
+        init(_ type: InterpretedMarkerType) {
+            switch type {
+            case let .marker(markerMetaData):
+                self.init(markerMetaData)
+            case .caption:
+                self = .notStarted
+            }
+        }
     }
 }

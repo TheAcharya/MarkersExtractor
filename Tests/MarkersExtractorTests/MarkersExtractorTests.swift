@@ -21,7 +21,7 @@ final class MarkersExtractorTests: XCTestCase {
         
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(
-                type: .standard,
+                type: .marker(.standard),
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),
@@ -76,7 +76,7 @@ final class MarkersExtractorTests: XCTestCase {
         
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(
-                type: .standard,
+                type: .marker(.standard),
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: ""),

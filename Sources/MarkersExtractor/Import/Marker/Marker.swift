@@ -29,7 +29,7 @@ public struct Marker: Equatable, Hashable, Sendable {
     }
     
     // raw metadata-related
-    var type: FinalCutPro.FCPXML.Marker.MarkerMetaData
+    var type: InterpretedMarkerType
     var name: String
     var notes: String
     var roles: MarkerRoles
@@ -93,7 +93,7 @@ extension Marker {
     
     func isChecked() -> Bool {
         switch type {
-        case let .toDo(completed):
+        case let .marker(.toDo(completed)):
             return completed
         default:
             return false

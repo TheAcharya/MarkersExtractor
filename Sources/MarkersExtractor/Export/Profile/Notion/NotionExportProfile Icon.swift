@@ -13,6 +13,7 @@ extension NotionExportProfile {
         case completed
         case toDo
         case standard
+        case caption
         
         public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
             switch type {
@@ -25,12 +26,22 @@ extension NotionExportProfile {
             }
         }
         
+        public init(_ type: InterpretedMarkerType) {
+            switch type {
+            case let .marker(markerMetaData):
+                self.init(markerMetaData)
+            case .caption:
+                self = .caption
+            }
+        }
+        
         public var resource: EmbeddedResource {
             switch self {
             case .chapter: return .notion_marker_chapter_png
             case .completed: return .notion_marker_completed_png
             case .toDo: return .notion_marker_to_do_png
             case .standard: return .notion_marker_png
+            case .caption: return Self.standard.resource // TODO: could add custom icon?
             }
         }
         

@@ -27,7 +27,8 @@ extension MarkersExtractor {
                 idNamingMode: s.idNamingMode,
                 includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
                 excludeRoleType: s.excludeRoleType,
-                enableSubframes: s.enableSubframes,
+                enableSubframes: s.enableSubframes, 
+                markersSource: s.markersSource,
                 logger: logger
             )
             

@@ -19,6 +19,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     let includeOutsideClipBoundaries: Bool
     let excludeRoleType: MarkerRoleType?
     let enableSubframes: Bool
+    let markersSource: MarkersSource
     
     // MARK: - Init
     
@@ -28,6 +29,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool,
+        markersSource: MarkersSource,
         logger: Logger? = nil
     ) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
@@ -38,6 +40,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
         self.excludeRoleType = excludeRoleType
         self.enableSubframes = enableSubframes
+        self.markersSource = markersSource
     }
     
     required convenience init(
@@ -46,6 +49,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool,
+        markersSource: MarkersSource,
         logger: Logger? = nil
     ) throws {
         let xml = try XMLDocument(contentsOf: fcpxml)
@@ -55,6 +59,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes,
+            markersSource: markersSource,
             logger: logger
         )
     }
@@ -65,6 +70,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         includeOutsideClipBoundaries: Bool,
         excludeRoleType: MarkerRoleType?,
         enableSubframes: Bool,
+        markersSource: MarkersSource,
         logger: Logger? = nil
     ) throws {
         let xml = try fcpxml.xmlDocument()
@@ -74,6 +80,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes,
+            markersSource: markersSource,
             logger: logger
         )
     }
@@ -99,11 +106,22 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 )
                 return []
             }
-            fcpxmlMarkers += markers(
-                in: project,
-                library: library,
-                projectStartTime: projectStartTime
-            )
+            
+            if markersSource.includesMarkers {
+                fcpxmlMarkers += markers(
+                    in: project,
+                    library: library,
+                    projectStartTime: projectStartTime
+                )
+            }
+            
+            if markersSource.includesMarkers {
+                fcpxmlMarkers += captions(
+                    in: project,
+                    library: library,
+                    projectStartTime: projectStartTime
+                )
+            }
         }
         
         // TODO: refactor into DAWFileKit
@@ -132,7 +150,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             
             let countDiff = beforeMarkerCount - fcpxmlMarkers.count
             if countDiff > 0 {
-                logger.info("Omitted \(countDiff) markers with \(excludeRoleType.rawValue) type.")
+                logger.info("Omitted \(countDiff) markers/captions with \(excludeRoleType.rawValue) type.")
             }
         }
         
@@ -157,7 +175,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 let inTime = marker.parentInfo.clipInTime
                 let outTime = marker.parentInfo.clipOutTime
                 logger.notice(
-                    "Marker \(mn) at \(pos) is out of bounds of its parent clip \(clipName) (\(inTime) - \(outTime)) and will be omitted."
+                    "\(marker.type.fullName) \(mn) at \(pos) is out of bounds of its parent clip \(clipName) (\(inTime) - \(outTime)) and will be omitted."
                 )
             }
         }
@@ -183,46 +201,107 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         }
     }
     
+    private func captions(
+        in project: FinalCutPro.FCPXML.Project,
+        library: FinalCutPro.FCPXML.Library?,
+        projectStartTime: Timecode
+    ) -> [Marker] {
+        let extractedCaptions = project.extractElements(preset: .captions, settings: .mainTimeline)
+        
+        return extractedCaptions.compactMap {
+            convertCaption(
+                $0,
+                parentLibrary: library,
+                projectStartTime: projectStartTime
+            )
+        }
+    }
+    
     private func convertMarker(
         _ extractedMarker: FinalCutPro.FCPXML.Marker,
         parentLibrary: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> Marker? {
-        let roles = getClipRoles(extractedMarker)
+        let roles = getClipRoles(extractedMarker.asAnyStoryElement())
         
         guard let position = extractedMarker.context[.absoluteStart],
-              let clipInTime = extractedMarker.context[.parentAbsoluteStart],
-              let clipDuration = extractedMarker.context[.parentDuration],
-              let clipOutTime = try? clipInTime.adding(clipDuration, by: .wrapping)
+              let parentInfo = parentInfo(
+                  from: extractedMarker,
+                  parentLibrary: parentLibrary,
+                  projectStartTime: projectStartTime
+              )
         else {
             logger.error("Error converting marker: \(extractedMarker.name.quoted).")
             return nil
         }
         
         return Marker(
-            type: extractedMarker.metaData,
+            type: .marker(extractedMarker.metaData),
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
             roles: roles,
             position: position,
-            parentInfo: Marker.ParentInfo(
-                clipType: extractedMarker.context[.parentType]?.name ?? "",
-                clipName: extractedMarker.context[.parentName] ?? "",
-                clipInTime: clipInTime,
-                clipOutTime: clipOutTime,
-                eventName: extractedMarker.context[.ancestorEventName] ?? "",
-                projectName: extractedMarker.context[.ancestorProjectName] ?? "",
-                projectStartTime: projectStartTime,
-                libraryName: parentLibrary?.name ?? ""
-            )
+            parentInfo: parentInfo
         )
     }
     
-    func getClipRoles(_ marker: FinalCutPro.FCPXML.Marker) -> MarkerRoles {
+    private func convertCaption(
+        _ extractedCaption: FinalCutPro.FCPXML.Caption,
+        parentLibrary: FinalCutPro.FCPXML.Library?,
+        projectStartTime: Timecode
+    ) -> Marker? {
+        let roles = getClipRoles(extractedCaption.asAnyStoryElement())
+        
+        let name = extractedCaption.name ?? ""
+        
+        guard let position = extractedCaption.context[.absoluteStart],
+              let parentInfo = parentInfo(
+                  from: extractedCaption, 
+                  parentLibrary: parentLibrary,
+                  projectStartTime: projectStartTime
+              )
+        else {
+            logger.error("Error converting caption: \(name.quoted).")
+            return nil
+        }
+        
+        return Marker(
+            type: .caption,
+            name: name,
+            notes: extractedCaption.note ?? "",
+            roles: roles,
+            position: position,
+            parentInfo: parentInfo
+        )
+    }
+    
+    private func parentInfo(
+        from element: some FCPXMLElement,
+        parentLibrary: FinalCutPro.FCPXML.Library?,
+        projectStartTime: Timecode
+    ) -> Marker.ParentInfo? {
+        guard let clipInTime = element.context[.parentAbsoluteStart],
+              let clipDuration = element.context[.parentDuration],
+              let clipOutTime = try? clipInTime.adding(clipDuration, by: .wrapping)
+        else { return nil }
+        
+        return Marker.ParentInfo(
+            clipType: element.context[.parentType]?.name ?? "",
+            clipName: element.context[.parentName] ?? "",
+            clipInTime: clipInTime,
+            clipOutTime: clipOutTime,
+            eventName: element.context[.ancestorEventName] ?? "",
+            projectName: element.context[.ancestorProjectName] ?? "",
+            projectStartTime: projectStartTime,
+            libraryName: parentLibrary?.name ?? ""
+        )
+    }
+    
+    func getClipRoles(_ element: FinalCutPro.FCPXML.AnyStoryElement) -> MarkerRoles {
         var markerRoles = MarkerRoles()
         
         // marker doesn't contain role(s) so look to ancestors
-        let roles = marker.context[.inheritedRoles] ?? []
+        let roles = element.context[.inheritedRoles] ?? []
         roles.forEach { interpolatedRole in
             var isRoleDefault = false
             

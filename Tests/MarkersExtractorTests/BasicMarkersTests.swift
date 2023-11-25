@@ -42,8 +42,8 @@ final class BasicMarkersTests: XCTestCase {
             libraryName: "MyLibrary"
         )
         
-        let marker0 = markers[0]
-        XCTAssertEqual(marker0.type, .standard)
+        let marker0 = try XCTUnwrap(markers[safe: 0])
+        XCTAssertEqual(marker0.type, .marker(.standard))
         XCTAssertEqual(marker0.name, "Marker 1")
         XCTAssertEqual(marker0.notes, "some notes here")
         XCTAssertEqual(
@@ -53,8 +53,8 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker0.position, tc("00:00:29:14", at: fr))
         XCTAssertEqual(marker0.parentInfo, parentInfo)
         
-        let marker1 = markers[1]
-        XCTAssertEqual(marker1.type, .toDo(completed: false))
+        let marker1 = try XCTUnwrap(markers[safe: 1])
+        XCTAssertEqual(marker1.type, .marker(.toDo(completed: false)))
         XCTAssertEqual(marker1.name, "Marker 1")
         XCTAssertEqual(marker1.notes, "more notes here")
         XCTAssertEqual(
@@ -64,8 +64,8 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker1.position, tc("00:00:29:15", at: fr))
         XCTAssertEqual(marker1.parentInfo, parentInfo)
         
-        let marker2 = markers[2]
-        XCTAssertEqual(marker2.type, .toDo(completed: true))
+        let marker2 = try XCTUnwrap(markers[safe: 2])
+        XCTAssertEqual(marker2.type, .marker(.toDo(completed: true)))
         XCTAssertEqual(marker2.name, "Marker 2")
         XCTAssertEqual(marker2.notes, "notes yay")
         XCTAssertEqual(
@@ -75,8 +75,8 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker2.position, tc("00:00:29:15", at: fr))
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
-        let marker3 = markers[3]
-        XCTAssertEqual(marker3.type, .chapter(posterOffset: +tc("00:00:00:10.79", at: fr)))
+        let marker3 = try XCTUnwrap(markers[safe: 3])
+        XCTAssertEqual(marker3.type, .marker(.chapter(posterOffset: +tc("00:00:00:10.79", at: fr))))
         XCTAssertEqual(marker3.name, "Marker 3")
         XCTAssertEqual(marker3.notes, "more notes here")
         XCTAssertEqual(
@@ -107,28 +107,28 @@ final class BasicMarkersTests: XCTestCase {
             switch idMode {
             case .projectTimecode:
                 XCTAssertEqual(
-                    markers[0].id(
+                    markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Test Project_00:00:29:14"
                 )
                 XCTAssertEqual(
-                    markers[1].id(
+                    markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Test Project_00:00:29:15-1"
                 )
                 XCTAssertEqual(
-                    markers[2].id(
+                    markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Test Project_00:00:29:15-2"
                 )
                 XCTAssertEqual(
-                    markers[3].id(
+                    markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
@@ -136,28 +136,28 @@ final class BasicMarkersTests: XCTestCase {
                 )
             case .name:
                 XCTAssertEqual(
-                    markers[0].id(
+                    markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Marker 1-1"
                 )
                 XCTAssertEqual(
-                    markers[1].id(
+                    markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Marker 1-2"
                 )
                 XCTAssertEqual(
-                    markers[2].id(
+                    markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "Marker 2"
                 )
                 XCTAssertEqual(
-                    markers[3].id(
+                    markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
@@ -165,28 +165,28 @@ final class BasicMarkersTests: XCTestCase {
                 )
             case .notes:
                 XCTAssertEqual(
-                    markers[0].id(
+                    markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "some notes here"
                 )
                 XCTAssertEqual(
-                    markers[1].id(
+                    markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "more notes here-1"
                 )
                 XCTAssertEqual(
-                    markers[2].id(
+                    markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),
                     "notes yay"
                 )
                 XCTAssertEqual(
-                    markers[3].id(
+                    markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ),

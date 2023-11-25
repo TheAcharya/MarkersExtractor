@@ -12,4 +12,5 @@ public protocol ExportIcon: Equatable, Hashable {
     var fileName: String { get }
     var data: Data { get }
     init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData)
+    init(_ type: InterpretedMarkerType)
 }

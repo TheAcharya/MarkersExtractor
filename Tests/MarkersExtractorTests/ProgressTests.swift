@@ -16,7 +16,8 @@ final class ProgressTests: XCTestCase {
             idNamingMode: .projectTimecode,
             includeOutsideClipBoundaries: false,
             excludeRoleType: nil,
-            enableSubframes: false,
+            enableSubframes: false, 
+            markersSource: .markers,
             logger: nil
         )
         
