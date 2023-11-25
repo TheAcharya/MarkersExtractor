@@ -222,15 +222,15 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         roles.forEach { interpolatedRole in
             var isRoleDefault = false
             
-            func handle(role: FinalCutPro.FCPXML.Role) {
+            func handle(role: FinalCutPro.FCPXML.AnyRole) {
                 switch role {
-                case let .audio(roleString):
+                case let .audio(audioRole):
                     markerRoles.isAudioDefault = isRoleDefault
-                    if !roleString.isEmpty { markerRoles.audio = roleString }
+                    if !audioRole.rawValue.isEmpty { markerRoles.audio = audioRole }
                     
-                case let .video(roleString):
+                case let .video(videoRole):
                     markerRoles.isVideoDefault = isRoleDefault
-                    if !roleString.isEmpty { markerRoles.video = roleString }
+                    if !videoRole.rawValue.isEmpty { markerRoles.video = videoRole }
                     
                 case .caption:
                     // TODO: assign to video role may not be right?
