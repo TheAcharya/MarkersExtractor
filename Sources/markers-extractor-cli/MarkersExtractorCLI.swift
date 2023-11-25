@@ -321,7 +321,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
         }
         
-        try await extractor.extract()
+        // can ignore return data from extract(), as it merely contains result file content
+        // (same content that is written to the result file)
+        // and is mainly provided to consumers of the library to use. for the CLI we don't need it.
+        _ = try await extractor.extract()
     }
     
     private var _progressLogging: ProgressLogging?
