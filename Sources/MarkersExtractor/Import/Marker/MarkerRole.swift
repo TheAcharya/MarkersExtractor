@@ -151,7 +151,7 @@ extension MarkerRoles {
 
 // MARK: - MarkerRoleType
 
-public enum MarkerRoleType: String, CaseIterable, Sendable {
+public enum MarkerRoleType: String, CaseIterable, Equatable, Hashable, Sendable {
     case video
     case audio
 }

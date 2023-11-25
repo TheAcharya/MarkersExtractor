@@ -67,7 +67,7 @@ extension MarkersExtractor {
 // MARK: - Dictionary Keys
 
 extension FinalCutPro.FCPXML.ContextKey {
-    fileprivate enum Key: String {
+    fileprivate enum Key: String, Equatable, Hashable {
         case resource
     }
     

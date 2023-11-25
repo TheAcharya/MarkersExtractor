@@ -8,7 +8,7 @@ import DAWFileKit
 import Foundation
 
 extension NotionExportProfile {
-    enum Status: String, CaseIterable {
+    enum Status: String, CaseIterable, Equatable, Hashable {
         case notStarted = "Not Started"
         case inProgress = "In Progress"
         case done = "Done"

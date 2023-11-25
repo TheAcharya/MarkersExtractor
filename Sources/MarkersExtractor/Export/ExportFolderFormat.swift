@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum ExportFolderFormat: String, CaseIterable {
+public enum ExportFolderFormat: String, CaseIterable, Equatable, Hashable {
     case short
     case medium
     case long

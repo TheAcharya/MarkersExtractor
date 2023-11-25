@@ -7,7 +7,7 @@
 import Foundation
 
 /// Embedded resource files.
-public enum EmbeddedResource: CaseIterable {
+public enum EmbeddedResource: CaseIterable, Equatable, Hashable {
     // Images
     case notion_marker_png
     case notion_marker_chapter_png

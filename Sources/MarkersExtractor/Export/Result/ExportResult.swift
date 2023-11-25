@@ -9,7 +9,7 @@ import Foundation
 /// Standardized export results.
 /// Returned by MarkersExtractor regardless the export profile used.
 /// Properties that are not applicable to the export profile will be `nil`.
-public struct ExportResult {
+public struct ExportResult: Equatable, Hashable {
     /// Export profile used.
     public var profile: ExportProfileFormat
     
@@ -44,7 +44,7 @@ extension ExportResult {
     public typealias ResultDictionary = [Key: Value]
     
     /// Keys used in the result file JSON dictionary.
-    public enum Key: String, Equatable, Hashable, CaseIterable {
+    public enum Key: String, CaseIterable, Equatable, Hashable {
         case profile
         case exportFolder
         case csvManifestPath

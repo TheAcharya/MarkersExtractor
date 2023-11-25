@@ -6,7 +6,7 @@
 
 import AVFoundation
 
-enum AVFormat: String {
+enum AVFormat: String, Equatable, Hashable {
     case hevc
     case h264
     case av1

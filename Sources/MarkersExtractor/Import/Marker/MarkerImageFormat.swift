@@ -93,7 +93,7 @@ extension MarkerImageFormat.Still: Identifiable {
 // MARK: - MarkerImageFormat: Animated
 
 extension MarkerImageFormat {
-    public enum Animated: String, CaseIterable, Sendable {
+    public enum Animated: String, CaseIterable, Equatable, Hashable, Sendable {
         case gif
         
         /// Descriptive name for UI.

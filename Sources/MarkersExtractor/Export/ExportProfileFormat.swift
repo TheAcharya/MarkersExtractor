@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum ExportProfileFormat: String, CaseIterable {
+public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case airtable
     case midi
     case notion

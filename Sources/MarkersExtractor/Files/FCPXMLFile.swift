@@ -8,7 +8,7 @@ import DAWFileKit
 import Foundation
 
 /// Final Cut Pro XML file/bundle abstract file reference and content reader.
-public struct FCPXMLFile {
+public struct FCPXMLFile: Equatable, Hashable {
     /// Maintains an objective reference to the fcpxml file.
     private let source: FCPXMLFileSource
     
@@ -49,12 +49,12 @@ extension FCPXMLFile: CustomStringConvertible {
 }
 
 extension FCPXMLFile {
-    public enum FCPXMLFileSource {
+    public enum FCPXMLFileSource: Equatable, Hashable {
         case fileOnDisk(FCPXMLFilePath)
         case rawFileContents
     }
     
-    public enum FCPXMLFilePath {
+    public enum FCPXMLFilePath: Equatable, Hashable {
         case fcpxml(xmlURL: URL)
         case fcpxmld(bundleURL: URL)
         

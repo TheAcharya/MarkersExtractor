@@ -9,12 +9,12 @@ import Foundation
 /// Represents a file's contents, either from a file stored on disk or directly from raw data.
 /// In either case, the file content is cached in memory to improve performance and reduce
 /// unnecessary disk activity.
-struct File {
+struct File: Equatable, Hashable {
     public private(set) var contents: FileContents
 }
 
 extension File {
-    enum FileContents {
+    enum FileContents: Equatable, Hashable {
         case fileOnDisk(url: URL, cache: FileContentsCache?)
         case rawFileContents(FileContentsCache)
     }
@@ -38,7 +38,7 @@ extension File {
 
 extension File {
     /// Type-erased ``File`` contents cache.
-    enum FileContentsCache {
+    enum FileContentsCache: Equatable, Hashable {
         /// Pre-fetched file contents as `Data`.
         case data(Data)
         
