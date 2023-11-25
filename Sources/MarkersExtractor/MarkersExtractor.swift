@@ -68,7 +68,7 @@ extension MarkersExtractor {
         guard let project = dawFile.allProjects(context: MarkersExtractor.elementContext).first
         else {
             throw MarkersExtractorError.extraction(.projectMissing(
-                "Could not find a project in the XML file."
+                "Could not find a project in the FCPXML data."
             ))
         }
         
