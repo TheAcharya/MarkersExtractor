@@ -4,13 +4,14 @@
 
 ### Changes
 
-- Changed `--done-filename` to `--result-file-path` (#67)
+- Changed `--done-filename` filename to `--result-file-path` path (#67)
 - Removed `--create-done-file` flag as it is now redundant. (#67)
   If `--done-file-path` is specified, a result file will be written to disk and if not specified, none will be written.
 - Renamed manifest file JSON key `csvPath` to `csvManifestPath`
 - Renamed manifest file JSON key `jsonPath` to `jsonManifestPath`
 - Added manifest file JSON key `outputFolder` containing the final output path of the extracted files (#67)
 - Added manifest file JSON key `profile` containing the profile identifier for the profile that was used (#67)
+- `MarkersExtractor.extract()` now returns result information (#68)
 
 ## 0.2.5(https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.5) (2023-11-22)
 
