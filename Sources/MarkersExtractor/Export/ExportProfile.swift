@@ -28,7 +28,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         resultFilePath: URL?,
         logger: Logger?,
         parentProgress: ParentProgress?
-    ) async throws
+    ) async throws -> ExportResult
     
     /// Converts raw FCP markers to the native format needed for export.
     /// If media is not present, pass `nil` to `mediaInfo` to bypass thumbnail generation.

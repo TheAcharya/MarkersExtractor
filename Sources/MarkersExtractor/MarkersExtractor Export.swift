@@ -15,7 +15,7 @@ extension MarkersExtractor {
         markers: [Marker],
         outputURL: URL,
         parentProgress: ParentProgress? = nil
-    ) async throws {
+    ) async throws -> ExportResult {
         switch s.exportFormat {
         case .airtable:
             try await export(
@@ -58,7 +58,7 @@ extension MarkersExtractor {
         outputURL: URL,
         payload: P.Payload,
         parentProgress: ParentProgress?
-    ) async throws {
+    ) async throws -> ExportResult {
         try await P(logger: logger).export(
             markers: markers,
             idMode: s.idNamingMode,

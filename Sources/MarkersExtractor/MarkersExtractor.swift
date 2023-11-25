@@ -29,8 +29,9 @@ extension MarkersExtractor {
     /// Run primary batch extract process.
     /// For progress reporting, access the ``progress`` property.
     ///
+    /// - Returns: Export result containing the result file contents as strongly-typed properties.
     /// - Throws: ``MarkersExtractorError``
-    public func extract() async throws {
+    public func extract() async throws -> ExportResult {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 100
         
@@ -48,8 +49,9 @@ extension MarkersExtractor {
         
         guard !markers.isEmpty else {
             logger.info("No markers found.")
-            // TODO: should we output result file still?
-            return
+            // TODO: should we output result file still? nothing gets written to disk if there are no markers so probably not.
+            return ExportResult(profile: s.exportFormat, exportFolder: s.outputDir)
+            
         }
         
         progress.completedUnitCount += 5
@@ -91,7 +93,7 @@ extension MarkersExtractor {
         progress.completedUnitCount += 5
         
         // increments progress by 80%
-        try await export(
+        let exportResult = try await export(
             projectName: projectName,
             projectStartTimecode: projectStartTimecode,
             media: media,
@@ -101,5 +103,7 @@ extension MarkersExtractor {
         )
         
         logger.info("Done")
+        
+        return exportResult
     }
 }

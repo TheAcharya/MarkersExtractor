@@ -21,7 +21,7 @@ extension ExportProfile {
         resultFilePath: URL?,
         logger: Logger? = nil,
         parentProgress: ParentProgress? = nil
-    ) async throws {
+    ) async throws -> ExportResult {
         var logger = logger ?? Logger(label: "\(Self.self)")
         
         // export profile ProgressReporting
@@ -49,7 +49,7 @@ extension ExportProfile {
         
         logger.info("Exporting marker icons...")
         
-        try exportIcons(from: markers, to: outputURL)
+        try writeIcons(from: markers, to: outputURL)
         
         progress.completedUnitCount += 5
         
@@ -79,26 +79,17 @@ extension ExportProfile {
         try writeManifest(preparedMarkers, payload: payload, noMedia: media == nil)
         
         // result file
+        let exportResult = try generateResult(payload: payload, outputURL: outputURL)
         
         if let resultFilePath {
             logger.info("Creating result file \(resultFilePath.path.quoted).")
-            
-            // add baseline data that applies to all profiles
-            var exportResult = ExportResult(
-                profile: Self.profile,
-                exportFolder: outputURL
-            )
-            
-            // add profile-specific data
-            var profileResult = try resultFileContent(payload: payload)
-            exportResult.update(with: profileResult)
-            
             let data = try exportResult.jsonData()
-            
-            try saveResultFile(to: resultFilePath, data: data)
+            try writeResultFile(to: resultFilePath, data: data)
         }
         
         progress.completedUnitCount += 5
+        
+        return exportResult
     }
 }
 
@@ -124,7 +115,7 @@ extension ExportProfile {
         return (isVideoPresent: isVideoPresent, isSingleFrame: isSingleFrame, mediaInfo: mediaInfo)
     }
     
-    private func exportIcons(from markers: [Marker], to outputDir: URL) throws {
+    private func writeIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })
         
         for icon in icons {
@@ -138,7 +129,21 @@ extension ExportProfile {
         }
     }
     
-    private func saveResultFile(
+    private func generateResult(payload: Payload, outputURL: URL) throws -> ExportResult {
+        // add baseline data that applies to all profiles
+        var exportResult = ExportResult(
+            profile: Self.profile,
+            exportFolder: outputURL
+        )
+        
+        // add profile-specific data
+        let profileResult = try resultFileContent(payload: payload)
+        exportResult.update(with: profileResult)
+        
+        return exportResult
+    }
+    
+    private func writeResultFile(
         to outputURL: URL,
         data: Data
     ) throws {
