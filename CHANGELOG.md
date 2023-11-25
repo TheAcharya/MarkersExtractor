@@ -1,5 +1,9 @@
 # MarkersExtractor Change Log
 
+## 0.2.7
+
+- Added `--markers-source` CLI flag, allowing import of markers and/or captions (#8)
+
 ## [0.2.6](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.6) (2023-11-24)
 
 ### Changes
