@@ -53,7 +53,9 @@ extension MarkersExtractor {
             // duplicate marker IDs isn't be an error condition, we should append filename uniquing
             // string to the ID instead.
             // throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
-            logger.info("Duplicate marker IDs found which will be uniqued: \(duplicates)")
+            duplicates.forEach {
+                logger.info("Duplicate marker ID found which will be uniqued: \($0.quoted)")
+            }
         }
         
         if sort {
