@@ -147,7 +147,8 @@ extension MarkerRoles {
     /// Caption role formatted for user display.
     public func captionFormatted() -> String {
         if let caption = caption, !caption.rawValue.isEmpty {
-            return caption.rawValue
+            // never use raw `captionFormat` string for user display, only use main role
+            return caption.role
         }
         return Self.notAssignedRoleString
     }

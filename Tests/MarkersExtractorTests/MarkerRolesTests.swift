@@ -8,6 +8,38 @@
 import XCTest
 
 final class MarkerRolesTests: XCTestCase {
+    func testVerbatim() {
+        let markerRoles = MarkerRoles(
+            video: "My Video Role.My Video Role-1",
+            isVideoDefault: false,
+            audio: "My Audio Role.My Audio Role-1",
+            isAudioDefault: false,
+            caption: "My Caption Role?captionFormat=ITT.en",
+            isCaptionDefault: false,
+            collapseSubroles: false
+        )
+        
+        XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role.My Video Role-1")
+        XCTAssertEqual(markerRoles.audioFormatted(), "My Audio Role.My Audio Role-1")
+        XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
+    }
+    
+    func testCollapsedSubRole() {
+        let markerRoles = MarkerRoles(
+            video: "My Video Role.My Video Role-1",
+            isVideoDefault: false,
+            audio: "My Audio Role.My Audio Role-1",
+            isAudioDefault: false,
+            caption: "My Caption Role?captionFormat=ITT.en",
+            isCaptionDefault: false,
+            collapseSubroles: true
+        )
+        
+        XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role")
+        XCTAssertEqual(markerRoles.audioFormatted(), "My Audio Role")
+        XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
+    }
+    
     func testIsDefault() {
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault, true)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
