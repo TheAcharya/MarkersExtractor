@@ -267,9 +267,9 @@ The format is a dictionary using the following key names:
 | -------- | ----- |
 | `profile`| The profile identifier passed to the CLI using the `--export-format` command line argument. |
 | `exportFolder`| The path to the output folder that the tool created where all exported files reside. |
-| `csvManifestPath`| The path to the CSV manifest file, if one was created. (Present only if applicable to the profile.) |
-| `jsonManifestPath`| The path to the CSV manifest file, if one was created. (Present only if applicable to the profile.) |
-| `midiFilePath`| The path to the CSV manifest file, if one was created. (Present only if applicable to the profile.) |
+| `csvManifestPath`| The path to the CSV manifest file, if one was created by the profile. |
+| `jsonManifestPath`| The path to the CSV manifest file, if one was created by the profile. |
+| `midiFilePath`| The path to the CSV manifest file, if one was created by the profile. |
 
 It is recommended to read this file with a JSON parser to obtain the values for keys. If using a shell script, it may be possible to grep the information.
 
