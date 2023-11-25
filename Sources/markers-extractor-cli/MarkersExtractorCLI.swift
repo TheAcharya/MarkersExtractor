@@ -34,6 +34,15 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Option(
         help: ArgumentHelp(
+            "Annotations to import. If captions are used, their start timecode determines their position.",
+            valueName: MarkersSource.allCases
+                .map { $0.rawValue }.joined(separator: ", ")
+        )
+    )
+    var markersSource: MarkersSource = MarkersExtractor.Settings.Defaults.markersSource
+    
+    @Option(
+        help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
         )
@@ -286,6 +295,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 mediaSearchPaths: mediaSearchPaths,
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,
+                markersSource: markersSource,
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,

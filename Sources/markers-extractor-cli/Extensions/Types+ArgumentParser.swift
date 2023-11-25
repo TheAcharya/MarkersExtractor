@@ -20,3 +20,4 @@ extension MarkerImageFormat: ExpressibleByArgument { }
 extension MarkerLabelProperties.AlignHorizontal: ExpressibleByArgument { }
 extension MarkerLabelProperties.AlignVertical: ExpressibleByArgument { }
 extension MarkerRoleType: ExpressibleByArgument { }
+extension MarkersSource: ExpressibleByArgument { }
