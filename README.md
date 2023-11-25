@@ -58,12 +58,12 @@
 
 ### Pre-compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.5/markers-extractor-cli-0.2.5.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.6/markers-extractor-cli-0.2.6.zip).
 
 ### From Source
 
 ```shell
-VERSION=0.2.5 # replace this with the git tag of the version you need
+VERSION=0.2.6 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -289,7 +289,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.5")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.6")
     ],
     targets: [
         .target(

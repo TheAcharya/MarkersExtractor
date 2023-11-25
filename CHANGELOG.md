@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## 0.2.6
+## [0.2.6](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.6) (2023-11-24)
 
 ### Changes
 
@@ -13,7 +13,7 @@
 - Added manifest file JSON key `profile` containing the profile identifier for the profile that was used (#67)
 - `MarkersExtractor.extract()` now returns result information (#68)
 
-## 0.2.5(https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.5) (2023-11-22)
+## [0.2.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.5) (2023-11-22)
 
 ### Changes
 
