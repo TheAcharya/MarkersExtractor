@@ -12,8 +12,15 @@ final class MarkerRolesTests: XCTestCase {
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault, true)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
         
+        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: true).isAudioDefault, true)
+        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: false).isAudioDefault, false)
+        
+        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: true).isAudioDefault, true)
+        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: false).isAudioDefault, false)
+        
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isAudioDefault, false)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
+        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isCaptionDefault, false)
     }
     
     func testIsEmpty() {

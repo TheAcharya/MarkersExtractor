@@ -123,6 +123,10 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                     if marker.roles.isAudioEmpty { return true }
                     if marker.roles.isAudioDefault { return false }
                     return false
+                case .caption:
+                    if marker.roles.isCaptionEmpty { return true }
+                    if marker.roles.isCaptionDefault { return false }
+                    return false
                 }
             }
             
