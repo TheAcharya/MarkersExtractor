@@ -180,7 +180,10 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --create-done-file --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format png \
+  --result-file-path ./result.json \
+  --log-level debug --log $ERROR_LOG
 ```
 
 7. Save the script file as `myscript.sh` within your **MarkersExtractor** folder.
@@ -205,7 +208,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --label-font Menlo-Regular --label-align-horizontal left \
   --label-font-size 30 --label-font-color E6ffff00 \
   --label-stroke-color 003366 --label-stroke-width 3 \
-  --create-done-file \
+  --result-file-path ./result.json \
   --log-level debug --log $ERROR_LOG
 ```
 
@@ -227,7 +230,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --label-font Menlo-Regular --label-align-horizontal left \
   --label-font-size 20 --label-font-color ffff00 \
   --label-stroke-color 003366 --label-stroke-width 4 \
-  --create-done-file \
+  --result-file-path ./result.json \
   --log-level debug --log $ERROR_LOG
 ```
 
@@ -246,16 +249,20 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --id-naming-mode name \
   --label name --label type --label notes --label position \
   --label-font-color ffff00 \
-  --create-done-file \
+  --result-file-path ./result.json \
   --log-level debug --log $ERROR_LOG
 ```
 
 ### Intended Behaviour & Logic
-- If you have Markers nested deep within compound clips, multicam or Synchronize Clips, it will ignore them. The tool will only parse Markers of your main timeline.
+- The tool will only parse Markers of your main timeline. Markers nested deep within compound, multicam or synchronized Clips will be ignored.
 
 ### Developer Library
 
-To use this package in a SwiftPM project, you need to set it up as a package dependency:
+To use this package in an application project, add it as a Swift Package Manager dependency using this URL:
+
+`https://github.com/TheAcharya/MarkersExtractor.git`
+
+To use this package in a Swift Package Manager (SPM) package, add it as a dependency:
 
 ```swift
 let package = Package(
