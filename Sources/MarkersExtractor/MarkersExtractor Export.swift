@@ -18,7 +18,7 @@ extension MarkersExtractor {
     ) async throws -> ExportResult {
         switch s.exportFormat {
         case .airtable:
-            try await export(
+            return try await export(
                 for: AirtableExportProfile.self,
                 media: media,
                 markers: markers,
@@ -27,7 +27,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .midi:
-            try await export(
+            return try await export(
                 for: MIDIFileExportProfile.self,
                 media: media,
                 markers: markers,
@@ -40,7 +40,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .notion:
-            try await export(
+            return try await export(
                 for: NotionExportProfile.self,
                 media: media,
                 markers: markers,
