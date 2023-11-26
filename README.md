@@ -1,7 +1,7 @@
-<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="Assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/>
+<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="Assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/></a>
 
 <div>
-<h1>MarkersExtractor (CLI & API)</h1>
+<h1>MarkersExtractor (CLI & Library)</h1>
 <!-- license -->
 <a href="https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE">
 <img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="license"/>
@@ -16,7 +16,6 @@
 </a>
 <p>
 <p>Marker metadata extraction and conversion tool and library for Final Cut Pro.</p>
-
 <br>
 <br>
 </div>
@@ -26,20 +25,19 @@
 - Accurately extract Markers from FCP's FCPXML/FCPXMLD data export format
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
-- Fast, multithreaded operation
+- Fast, multi-threaded operation
 
-## Available Extract Profiles
+## Extract Profiles
 
 - Notion (CSV) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
-- Airtable (CSV & JSON) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
-- Pro Tools (MIDI)
-- Cubase (MIDI)
+- Airtable (CSV) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
+- Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
 
 - [Installation](#Installation)
-  - [Pre-compiled Binary (Recommended)](#pre-compiled-binary-recommended)
-  - [From Source](#from-source)
+  - [Pre-Compiled Binary (Recommended)](#pre-compiled-binary-recommended)
+  - [Compiled From Source](#compiled-from-source)
 - [Usage](#usage)
   - [CLI](#cli)
   - [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
@@ -55,11 +53,11 @@
 
 ## Installation
 
-### Pre-compiled Binary (Recommended)
+### Pre-Compiled Binary (Recommended)
 
 Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.6/markers-extractor-cli-0.2.6.zip).
 
-### From Source
+### Compiled From Source
 
 ```shell
 VERSION=0.2.6 # replace this with the git tag of the version you need
