@@ -12,6 +12,16 @@ public enum MarkersSource: String, Equatable, Hashable, CaseIterable, Sendable {
     case captions
 }
 
+extension MarkersSource: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .markers: return "Markers"
+        case .markersAndCaptions: return "Markers and Captions"
+        case .captions: return "Captions"
+        }
+    }
+}
+
 extension MarkersSource {
     public var includesMarkers: Bool {
         switch self {

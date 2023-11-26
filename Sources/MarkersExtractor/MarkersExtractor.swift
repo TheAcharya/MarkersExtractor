@@ -36,7 +36,7 @@ extension MarkersExtractor {
         progress.totalUnitCount = 100
         
         logger.info("Using \(s.exportFormat.name) export profile.")
-        logger.info("Extracting markers from \(s.fcpxml)...")
+        logger.info("Extracting \(s.markersSource) from \(s.fcpxml)...")
         
         // increments progress by 5%
         var markers = try extractMarkers(
@@ -51,7 +51,6 @@ extension MarkersExtractor {
             logger.info("No markers found.")
             // TODO: should we output result file still? nothing gets written to disk if there are no markers so probably not.
             return ExportResult(profile: s.exportFormat, exportFolder: s.outputDir)
-            
         }
         
         progress.completedUnitCount += 5
