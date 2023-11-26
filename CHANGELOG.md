@@ -1,21 +1,26 @@
 # MarkersExtractor Change Log
 
-## 0.2.7
+## [0.2.7](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.7) (2023-11-26)
+
+### New Features
 
 - Added `--markers-source` CLI flag, allowing import of markers and/or captions (#8)
 
 ## [0.2.6](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.6) (2023-11-24)
+
+### New Features
+
+- `MarkersExtractor.extract()` now returns result information (#68)
+- Added result file JSON key `outputFolder` containing the final output path of the extracted files (#67)
+- Added result file JSON key `profile` containing the profile identifier for the profile that was used (#67)
 
 ### Changes
 
 - Changed `--done-filename` filename to `--result-file-path` path (#67)
 - Removed `--create-done-file` flag as it is now redundant. (#67)
   If `--done-file-path` is specified, a result file will be written to disk and if not specified, none will be written.
-- Renamed manifest file JSON key `csvPath` to `csvManifestPath`
-- Renamed manifest file JSON key `jsonPath` to `jsonManifestPath`
-- Added manifest file JSON key `outputFolder` containing the final output path of the extracted files (#67)
-- Added manifest file JSON key `profile` containing the profile identifier for the profile that was used (#67)
-- `MarkersExtractor.extract()` now returns result information (#68)
+- Renamed result file JSON key `csvPath` to `csvManifestPath`
+- Renamed result file JSON key `jsonPath` to `jsonManifestPath`
 
 ## [0.2.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.5) (2023-11-22)
 

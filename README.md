@@ -22,7 +22,7 @@
 
 ## Core Features
 
-- Accurately extract Markers from FCP's FCPXML/FCPXMLD data export format
+- Accurately extract markers and captions from FCP's FCPXML/FCPXMLD data export format
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
 - Fast, multi-threaded operation
@@ -55,12 +55,12 @@
 
 ### Pre-Compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.6/markers-extractor-cli-0.2.6.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.7/markers-extractor-cli-0.2.7.zip).
 
 ### Compiled From Source
 
 ```shell
-VERSION=0.2.6 # replace this with the git tag of the version you need
+VERSION=0.2.7 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -89,6 +89,10 @@ OPTIONS:
   --export-format <airtable, midi, notion>
                           Metadata export format. (default: notion)
   --enable-subframes      Enable output of timecode subframes.
+  --markers-source <markers, markersAndCaptions, captions>
+                          Annotations to import. If captions are used, their
+                          start timecode determines their position. (default:
+                          markers)
   --image-format <png, jpg, gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
@@ -108,7 +112,7 @@ OPTIONS:
   --include-outside-clip-boundaries
                           Include markers that are outside the bounds of a
                           clip. Also suppresses related log messages.
-  --exclude-exclusive-roles <video, audio>
+  --exclude-exclusive-roles <audio, video, caption>
                           Exclude markers that have specified role type but
                           only if the opposite role type is absent.
   --label <id, name, type, checked, status, notes, position, clipType, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
