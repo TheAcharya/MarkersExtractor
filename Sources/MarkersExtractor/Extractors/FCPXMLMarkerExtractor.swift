@@ -158,17 +158,17 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         // TODO: refactor into DAWFileKit
         // apply out-of-bounds filter
         if !includeOutsideClipBoundaries {
-            let (kept, omitted): ([Marker], [Marker]) = fcpxmlMarkers
+            let (kept, omitted): (kept: [Marker], omitted: [Marker]) = fcpxmlMarkers
                 .reduce(into: ([], [])) { base, markerOrCaption in
                     switch markerOrCaption.type {
                     case .marker:
                         markerOrCaption.isOutOfClipBounds()
-                        ? base.1.append(markerOrCaption)
-                        : base.0.append(markerOrCaption)
+                            ? base.kept.append(markerOrCaption)
+                            : base.omitted.append(markerOrCaption)
                     case .caption:
                         // always allow captions since they are not attached to clips,
                         // but are timeline-global elements
-                        base.0.append(markerOrCaption)
+                        base.kept.append(markerOrCaption)
                     }
                     
                 }
