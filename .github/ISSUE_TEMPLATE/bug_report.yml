@@ -5,17 +5,8 @@ labels: "bug"
 body:
 - type: input
   attributes:
-    label: Airlife Version?
-    description: Which version of Airlift are you using? If unsure, run `markers-extractor-cli --version`
-  validations:
-    required: true
-- type: dropdown
-  attributes:
-    label: What OS are you using?
-    options:
-      - Windows
-      - Linux
-      - MacOS
+    label: MarkersExtractor Version?
+    description: Which version of MarkersExtractor are you using? If unsure, run `markers-extractor-cli --version`
   validations:
     required: true
 - type: input
