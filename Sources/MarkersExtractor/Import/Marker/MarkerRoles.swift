@@ -13,21 +13,24 @@ import DAWFileKit
 /// This is enforced by Final Cut Pro because they are reserved characters for encoding the string
 /// in FCPXML.
 public struct MarkerRoles: Equatable, Hashable, Sendable {
+    /// Video Role.
     public var video: FinalCutPro.FCPXML.VideoRole?
     public var isVideoDefault: Bool
     
-    public var audio: FinalCutPro.FCPXML.AudioRole?
+    /// Audio Role(s).
+    /// There can be more than one audio role for a clip.
+    /// For example, Sync Clips may have multiple audio sources.
+    public var audio: [FinalCutPro.FCPXML.AudioRole]?
     public var isAudioDefault: Bool
     
+    /// Caption role.
     public var caption: FinalCutPro.FCPXML.CaptionRole?
     public var isCaptionDefault: Bool
-    
-    // TODO: add caption role
     
     public init(
         video: FinalCutPro.FCPXML.VideoRole? = nil,
         isVideoDefault: Bool = false,
-        audio: FinalCutPro.FCPXML.AudioRole? = nil,
+        audio: [FinalCutPro.FCPXML.AudioRole]? = nil,
         isAudioDefault: Bool = false,
         caption: FinalCutPro.FCPXML.CaptionRole? = nil,
         isCaptionDefault: Bool = false,
@@ -41,7 +44,7 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
         self.isVideoDefault = isVideoDefault
         
         if collapseSubroles {
-            self.audio = audio?.collapsedSubRole()
+            self.audio = audio?.map { $0.collapsedSubRole() }
         } else {
             self.audio = audio
         }
@@ -56,7 +59,7 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
     public init(
         video rawVideoRole: String? = nil,
         isVideoDefault: Bool = false,
-        audio rawAudioRole: String? = nil,
+        audio rawAudioRoles: [String]? = nil,
         isAudioDefault: Bool = false,
         caption rawCaptionRole: String? = nil,
         isCaptionDefault: Bool = false,
@@ -67,9 +70,11 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
             videoRole = FinalCutPro.FCPXML.VideoRole(rawValue: rawVideoRole)
         }
         
-        var audioRole: FinalCutPro.FCPXML.AudioRole? = nil
-        if let rawAudioRole = rawAudioRole {
-            audioRole = FinalCutPro.FCPXML.AudioRole(rawValue: rawAudioRole)
+        var audioRoles: [FinalCutPro.FCPXML.AudioRole]? = nil
+        if let rawAudioRoles = rawAudioRoles {
+            audioRoles = rawAudioRoles.compactMap {
+                FinalCutPro.FCPXML.AudioRole(rawValue: $0)
+            }
         }
         
         var captionRole: FinalCutPro.FCPXML.CaptionRole? = nil
@@ -80,7 +85,7 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
         self.init(
             video: videoRole,
             isVideoDefault: isVideoDefault,
-            audio: audioRole,
+            audio: audioRoles,
             isAudioDefault: isAudioDefault,
             caption: captionRole,
             isCaptionDefault: isCaptionDefault,
@@ -104,7 +109,7 @@ extension MarkerRoles {
     
     /// Has a non-empty audio role.
     public var isAudioEmpty: Bool {
-        audio == nil || audio?.rawValue.isEmpty == true
+        audio == nil || (audio?.allSatisfy { $0.rawValue.isEmpty } == true)
     }
     
     /// Has a defined (non-default) audio role.
@@ -138,8 +143,21 @@ extension MarkerRoles {
     
     /// Audio role formatted for user display.
     public func audioFormatted() -> String {
-        if let audio = audio, !audio.rawValue.isEmpty {
-            return audio.rawValue
+        if let audio = audio {
+            let nonEmptyAudioRoles = audio.filter { !$0.rawValue.trimmed.isEmpty }
+            
+            switch nonEmptyAudioRoles.count {
+            case 0: 
+                return Self.notAssignedRoleString
+            case 1:
+                return nonEmptyAudioRoles.first?.rawValue ?? ""
+            default: // case 2...:
+                // FCP shows only subrole in its GUI for this joined list.
+                // as a fallback, we'll use the full raw role string if subrole is missing.
+                return nonEmptyAudioRoles
+                    .map { $0.subRole ?? $0.rawValue }
+                    .joined(separator: ", ")
+            }
         }
         return Self.notAssignedRoleString
     }
@@ -162,7 +180,7 @@ extension MarkerRoles {
     /// Only applies to audio and video roles. Has no effect on caption roles.
     public mutating func collapseSubroles() {
         video = video?.collapsedSubRole()
-        audio = audio?.collapsedSubRole()
+        audio = audio?.map { $0.collapsedSubRole() }
         // caption roles can't be collapsed
     }
     

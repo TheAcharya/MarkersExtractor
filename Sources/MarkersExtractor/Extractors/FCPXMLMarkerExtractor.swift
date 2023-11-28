@@ -9,6 +9,7 @@ import DAWFileKit
 import Foundation
 import Logging
 import TimecodeKit
+import OTCore
 
 class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private let logger: Logger
@@ -317,7 +318,10 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 switch role {
                 case let .audio(audioRole):
                     markerRoles.isAudioDefault = isRoleDefault
-                    if !audioRole.rawValue.isEmpty { markerRoles.audio = audioRole }
+                    if !audioRole.rawValue.isEmpty {
+                        if markerRoles.audio == nil { markerRoles.audio = [] }
+                        markerRoles.audio?.append(audioRole)
+                    }
                     
                 case let .video(videoRole):
                     markerRoles.isVideoDefault = isRoleDefault
@@ -343,9 +347,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         markerRoles = markerRoles.collapsedSubroles()
         
         // remove any roles with empty strings
-        if markerRoles.audio?.rawValue.trimmed.isEmpty == true {
-            markerRoles.audio = nil
-        }
+        markerRoles.audio?.removeAll(where: {
+            $0.rawValue.trimmed.isEmpty
+        })
+        if markerRoles.audio?.isEmpty == true { markerRoles.audio = nil }
+        
         if markerRoles.video?.rawValue.trimmed.isEmpty == true {
             markerRoles.video = nil
         }

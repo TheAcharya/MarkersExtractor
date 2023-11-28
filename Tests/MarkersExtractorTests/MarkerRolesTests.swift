@@ -12,7 +12,7 @@ final class MarkerRolesTests: XCTestCase {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
-            audio: "My Audio Role.My Audio Role-1",
+            audio: ["My Audio Role.My Audio Role-1"],
             isAudioDefault: false,
             caption: "My Caption Role?captionFormat=ITT.en",
             isCaptionDefault: false,
@@ -28,7 +28,7 @@ final class MarkerRolesTests: XCTestCase {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
-            audio: "My Audio Role.My Audio Role-1",
+            audio: ["My Audio Role.My Audio Role-1"],
             isAudioDefault: false,
             caption: "My Caption Role?captionFormat=ITT.en",
             isCaptionDefault: false,
@@ -44,11 +44,11 @@ final class MarkerRolesTests: XCTestCase {
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault, true)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
         
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: true).isAudioDefault, true)
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: false).isAudioDefault, false)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault, true)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault, false)
         
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: true).isAudioDefault, true)
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: false).isAudioDefault, false)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault, true)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault, false)
         
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isAudioDefault, false)
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
@@ -61,8 +61,8 @@ final class MarkerRolesTests: XCTestCase {
         XCTAssertEqual(MarkerRoles(video: "Video").isVideoEmpty, false)
         
         XCTAssertEqual(MarkerRoles(audio: nil).isAudioEmpty, true)
-        XCTAssertEqual(MarkerRoles(audio: "").isAudioEmpty, true)
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue").isAudioEmpty, false)
+        XCTAssertEqual(MarkerRoles(audio: [""]).isAudioEmpty, true)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"]).isAudioEmpty, false)
     }
     
     func testIsDefined() {
@@ -72,8 +72,12 @@ final class MarkerRolesTests: XCTestCase {
         XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefined, false)
         
         XCTAssertEqual(MarkerRoles(audio: nil).isAudioDefined, false)
-        XCTAssertEqual(MarkerRoles(audio: "").isAudioDefined, false)
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue").isAudioDefined, true)
-        XCTAssertEqual(MarkerRoles(audio: "Dialogue", isAudioDefault: true).isAudioDefined, false)
+        XCTAssertEqual(MarkerRoles(audio: [""]).isAudioDefined, false)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"]).isAudioDefined, true)
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefined, false)
+    }
+    
+    func testMultipleAudio() {
+        XCTAssertEqual(MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"]).audioFormatted(), "MixL, MixR")
     }
 }
