@@ -168,6 +168,9 @@ After trying to run `markers-extractor-cli` for the first time, the process will
 
 ### Examples
 
+<details><summary>Basic creation of folders and .sh file</summary>
+<p>
+
 For ease of use, usage and creation of shell scripts (`.sh` files) is **recommended**. 
 
 1. Create a folder called **MarkersExtractor** on your Desktop.
@@ -195,7 +198,11 @@ For ease of use, usage and creation of shell scripts (`.sh` files) is **recommen
 10. You can create and save multiple `.sh` files for different modes and configurations.
 11. If the `--result-file-path` option is supplied with a path including filename (ie: `./result.json`), the tool will create a JSON file at that path once the export is complete. See [Result File Contents](#result-file-contents) for details.
 
-#### PNG Mode with Labels
+</p>
+</details>
+
+<details><summary>PNG Mode with Labels</summary>
+<p>
 
 ```bash
 #!/bin/sh
@@ -205,16 +212,17 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
-  --export-format notion --image-format png \
-  --label name --label type --label notes --label position \
-  --label-copyright "Road Runner & Coyote Productions" \
-  --label-font Menlo-Regular --label-align-horizontal left \
-  --label-font-size 30 --label-font-color E6ffff00 \
-  --label-stroke-color 003366 --label-stroke-width 3 \
-  --result-file-path ./result.json \
-  --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --log-level debug --log $ERROR_LOG
 ```
+
+### Final Cut Pro
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/Example_01A.png?raw=true"> </p>
+
+### Output
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/Example_01B.png?raw=true"> </p>
+
+</p>
+</details>
 
 #### GIF Mode with Labels
 
