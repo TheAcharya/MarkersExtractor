@@ -247,7 +247,8 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gi
 </p>
 </details>
 
-#### PNG Mode + Name Mode with Labels
+<details><summary>GIF Mode with Labels (Notes Naming Mode)</summary>
+<p>
 
 ```bash
 #!/bin/sh
@@ -257,14 +258,20 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
-  --export-format notion --image-format png \
-  --id-naming-mode name \
-  --label name --label type --label notes --label position \
-  --label-font-color ffff00 \
-  --result-file-path ./result.json \
-  --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --id-naming-mode notes --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font-size 15 --log-level debug --log $ERROR_LOG
 ```
+
+### Final Cut Pro
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/Example_03A.png?raw=true"> </p>
+
+### Output
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/Example_03B.gif?raw=true"> </p>
+
+### Finder
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/Example_03C.png?raw=true"> </p>
+
+</p>
+</details>
 
 ### Result File Contents
 
