@@ -9,6 +9,14 @@ body:
     description: Which version of MarkersExtractor are you using? If unsure, run `markers-extractor-cli --version`
   validations:
     required: true
+- type: dropdown
+  attributes:
+    label: Architecture
+    options:
+      - Apple Silicon
+      - Intel
+  validations:
+    required: true
 - type: input
   attributes:
     label: macOS Version
