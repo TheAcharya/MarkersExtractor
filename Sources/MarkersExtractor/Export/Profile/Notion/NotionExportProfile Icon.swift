@@ -41,7 +41,7 @@ extension NotionExportProfile {
             case .completed: return .notion_marker_completed_png
             case .toDo: return .notion_marker_to_do_png
             case .standard: return .notion_marker_png
-            case .caption: return Self.standard.resource // TODO: could add custom icon?
+            case .caption: return .notion_caption_png
             }
         }
         
