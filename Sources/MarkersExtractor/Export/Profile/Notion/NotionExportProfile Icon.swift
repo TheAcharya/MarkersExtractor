@@ -9,20 +9,20 @@ import Foundation
 
 extension NotionExportProfile {
     public enum Icon: ExportIcon {
-        case chapter
-        case completed
-        case toDo
-        case standard
+        case markerChapter
+        case markerToDoComplete
+        case markerToDoIncomplete
+        case markerStandard
         case caption
         
         public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
             switch type {
             case .standard:
-                self = .standard
+                self = .markerStandard
             case let .toDo(completed):
-                self = completed ? .completed : .toDo
+                self = completed ? .markerToDoComplete : .markerToDoIncomplete
             case .chapter:
-                self = .chapter
+                self = .markerChapter
             }
         }
         
@@ -37,11 +37,11 @@ extension NotionExportProfile {
         
         public var resource: EmbeddedResource {
             switch self {
-            case .chapter: return .notion_marker_chapter_png
-            case .completed: return .notion_marker_completed_png
-            case .toDo: return .notion_marker_to_do_png
-            case .standard: return .notion_marker_png
-            case .caption: return .notion_caption_png
+            case .markerChapter: return .icon_notion_marker_chapter_png
+            case .markerToDoComplete: return .icon_notion_marker_toDo_complete_png
+            case .markerToDoIncomplete: return .icon_notion_marker_toDo_incomplete_png
+            case .markerStandard: return .icon_notion_marker_png
+            case .caption: return .icon_notion_caption_png
             }
         }
         
