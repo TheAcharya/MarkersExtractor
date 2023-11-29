@@ -14,8 +14,13 @@ public enum EmbeddedResource: CaseIterable, Equatable, Hashable {
     case icon_notion_marker_toDo_incomplete_png
     case icon_notion_marker_toDo_complete_png
     case icon_notion_caption_png
+    
     // Videos
     case marker_video_placeholder_mov
+    
+    // NoOp (Empty) PNG - used internally
+    case empty_png
+    case empty_mov
 }
 
 extension EmbeddedResource {
@@ -37,6 +42,10 @@ extension EmbeddedResource {
             return ("icon-caption", "png")
         case .marker_video_placeholder_mov:
             return ("marker-video-placeholder", "mov")
+        case .empty_png:
+            return ("empty", "png")
+        case .empty_mov:
+            return ("empty", "mov")
         }
     }
     
@@ -54,6 +63,10 @@ extension EmbeddedResource {
             return icon_notion_caption_data
         case .marker_video_placeholder_mov:
             return marker_video_placeholder_data
+        case .empty_png:
+            return Data()
+        case .empty_mov:
+            return Data()
         }
     }
     

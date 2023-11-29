@@ -9,7 +9,7 @@ import Foundation
 
 /// `ExportIcon` prototype that can be used when a profile does not use marker icons.
 public struct EmptyExportIcon: ExportIcon {
-    public var resource: EmbeddedResource = .icon_notion_marker_png // ignore
+    public var resource: EmbeddedResource = .empty_png // ignore
     
     public var fileName: String = ""
     
