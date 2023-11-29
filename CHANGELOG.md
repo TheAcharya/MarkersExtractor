@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.2.8
+
+### Changes
+
+- Improved accuracy for parsing roles from complex timelines
+
 ## [0.2.7](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.7) (2023-11-26)
 
 ### New Features
