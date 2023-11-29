@@ -9,11 +9,11 @@ import Foundation
 /// Embedded resource files.
 public enum EmbeddedResource: CaseIterable, Equatable, Hashable {
     // Images
-    case notion_marker_png
-    case notion_marker_chapter_png
-    case notion_marker_to_do_png
-    case notion_marker_completed_png
-    case notion_caption_png
+    case icon_notion_marker_png
+    case icon_notion_marker_chapter_png
+    case icon_notion_marker_toDo_incomplete_png
+    case icon_notion_marker_toDo_complete_png
+    case icon_notion_caption_png
     // Videos
     case marker_video_placeholder_mov
 }
@@ -25,16 +25,16 @@ extension EmbeddedResource {
     
     var fileNameComponents: (name: String, ext: String) {
         switch self {
-        case .notion_marker_png:
-            return ("marker", "png")
-        case .notion_marker_chapter_png:
-            return ("marker-chapter", "png")
-        case .notion_marker_to_do_png:
-            return ("marker-to-do", "png")
-        case .notion_marker_completed_png:
-            return ("marker-completed", "png")
-        case .notion_caption_png:
-            return ("caption", "png")
+        case .icon_notion_marker_png:
+            return ("icon-marker", "png")
+        case .icon_notion_marker_chapter_png:
+            return ("icon-marker-chapter", "png")
+        case .icon_notion_marker_toDo_incomplete_png:
+            return ("icon-marker-todo-incomplete", "png")
+        case .icon_notion_marker_toDo_complete_png:
+            return ("icon-marker-todo-complete", "png")
+        case .icon_notion_caption_png:
+            return ("icon-caption", "png")
         case .marker_video_placeholder_mov:
             return ("marker-video-placeholder", "mov")
         }
@@ -42,16 +42,16 @@ extension EmbeddedResource {
     
     var data: Data? {
         switch self {
-        case .notion_marker_png:
-            return notion_marker_data
-        case .notion_marker_chapter_png:
-            return notion_marker_chapter_data
-        case .notion_marker_to_do_png:
-            return notion_marker_to_do_data
-        case .notion_marker_completed_png:
-            return notion_marker_completed_data
-        case .notion_caption_png:
-            return notion_caption_data
+        case .icon_notion_marker_png:
+            return icon_notion_marker_data
+        case .icon_notion_marker_chapter_png:
+            return icon_notion_marker_chapter_data
+        case .icon_notion_marker_toDo_incomplete_png:
+            return icon_notion_marker_toDo_incomplete_data
+        case .icon_notion_marker_toDo_complete_png:
+            return icon_notion_marker_toDo_complete_data
+        case .icon_notion_caption_png:
+            return icon_notion_caption_data
         case .marker_video_placeholder_mov:
             return marker_video_placeholder_data
         }
@@ -73,8 +73,8 @@ extension EmbeddedResource {
 // in Package.swift, compiling the CLI target will produce a .bundle in addition
 // to the executable file and will not embed the resources files in the executable.
 
-private let notion_marker_data = Data(base64Encoded: notion_marker_data_string)
-private let notion_marker_data_string = [
+private let icon_notion_marker_data = Data(base64Encoded: icon_notion_marker_data_string)
+private let icon_notion_marker_data_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdz3HeRp7H4dZEwDsu2ghMRWAxgjEjsBiBxULhPNYZ",
     "hbImAr4bgZmBuBGIG4F5wZ0hbGGnXdZo9IcSyS/RwPNUuWzdZrqrgNLn/aG7AAAA",
@@ -424,8 +424,8 @@ private let notion_marker_data_string = [
 ]
     .joined()
 
-private let notion_marker_chapter_data = Data(base64Encoded: notion_marker_chapter_string)
-private let notion_marker_chapter_string = [
+private let icon_notion_marker_chapter_data = Data(base64Encoded: icon_notion_marker_chapter_string)
+private let icon_notion_marker_chapter_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdQY4d1RmA0Qor6HGPOhsoOivArABnBcAKcKSeA/OS",
     "TFZgZwWwA3dWgNMbCKMa9xKiFxXCsmxjoPn8btU5kvW6Z3ZdqaT3+b/3TgAAAAAA",
@@ -727,8 +727,8 @@ private let notion_marker_chapter_string = [
 ]
     .joined()
 
-private let notion_marker_completed_data = Data(base64Encoded: notion_marker_completed_string)
-private let notion_marker_completed_string = [
+private let icon_notion_marker_toDo_complete_data = Data(base64Encoded: icon_notion_marker_toDo_complete_string)
+private let icon_notion_marker_toDo_complete_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdz3HeRp7H4dZEwBC0EZiKwOIB5zGRgMUzDhYjGCsC",
     "aw84850EYN5xEDcCcSMwQ2AIW9hplzUa/aFE8ks08DxVLlu3me4qoPR5f+guAAAA",
@@ -1079,8 +1079,8 @@ private let notion_marker_completed_string = [
 ]
     .joined()
 
-private let notion_marker_to_do_data = Data(base64Encoded: notion_marker_to_do_string)
-private let notion_marker_to_do_string = [
+private let icon_notion_marker_toDo_incomplete_data = Data(base64Encoded: icon_notion_marker_toDo_incomplete_string)
+private let icon_notion_marker_toDo_incomplete_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdP3LeRp7H4dacgEfQJkhNBYgtpkjGPIHJE1g8wVgn",
     "sPYEeucEZoRU3BiBuCkS8wg8whZ22mWNRn8okfwSDTxPlctWNtNdBZQ+7w/dBQAA",
@@ -2268,8 +2268,8 @@ private let marker_video_placeholder_string = [
 ]
     .joined()
 
-private let notion_caption_data = Data(base64Encoded: notion_caption_string)
-private let notion_caption_string = [
+private let icon_notion_caption_data = Data(base64Encoded: icon_notion_caption_string)
+private let icon_notion_caption_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdf7Bc5XnY8QPIhksBI3D8Q0IFWwSQKyyII8UkQaQW",
     "hukEBzFxCMkfYGem0xirU0/UTgvGSVMTaMdR6k4wnnQ6AZF2TDzpAIHOFJdbO8IJ",
