@@ -9,6 +9,7 @@
 ### Changes
 
 - Improved accuracy for parsing roles from complex timelines
+- Renamed icon image filenames to improve clarity and alphabetical sorting (#72)
 
 ## [0.2.7](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.7) (2023-11-26)
 
