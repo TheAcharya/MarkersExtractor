@@ -36,6 +36,12 @@ extension MarkersExtractor {
 }
 
 extension MarkersExtractor {
+    static let extractSettings: FinalCutPro.FCPXML.ExtractionSettings = {
+        var settings: FinalCutPro.FCPXML.ExtractionSettings = .mainTimeline
+        settings.occlusions = .allCases
+        return settings
+    }()
+    
     static let elementContext: FCPXMLElementContextBuilder = .group([
         .default,
         MarkerContext()

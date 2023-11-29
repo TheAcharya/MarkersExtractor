@@ -34,6 +34,7 @@ public struct Marker: Equatable, Hashable, Sendable {
     var notes: String
     var roles: MarkerRoles
     var position: Timecode
+    var isOutOfBounds: Bool
     
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
@@ -102,12 +103,6 @@ extension Marker {
     
     func positionTimecodeString(format: Timecode.StringFormat) -> String {
         position.stringValue(format: format)
-    }
-    
-    /// A marker is considered outside of its clip's bounds if its position is
-    /// `< clip exact start` or `> clip exact end`.
-    func isOutOfClipBounds() -> Bool {
-        position < parentInfo.clipInTime || position > parentInfo.clipOutTime
     }
 }
 

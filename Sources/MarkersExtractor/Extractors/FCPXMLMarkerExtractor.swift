@@ -155,16 +155,15 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             }
         }
         
-        // TODO: refactor into DAWFileKit
         // apply out-of-bounds filter
         if !includeOutsideClipBoundaries {
             let (kept, omitted): (kept: [Marker], omitted: [Marker]) = fcpxmlMarkers
                 .reduce(into: ([], [])) { base, markerOrCaption in
                     switch markerOrCaption.type {
                     case .marker:
-                        markerOrCaption.isOutOfClipBounds()
-                            ? base.kept.append(markerOrCaption)
-                            : base.omitted.append(markerOrCaption)
+                        markerOrCaption.isOutOfBounds
+                            ? base.omitted.append(markerOrCaption)
+                            : base.kept.append(markerOrCaption)
                     case .caption:
                         // always allow captions since they are not attached to clips,
                         // but are timeline-global elements
@@ -180,11 +179,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             omitted.forEach { marker in
                 let mn = marker.name.quoted
                 let pos = marker.position
-                let clipName = marker.parentInfo.clipName.quoted
-                let inTime = marker.parentInfo.clipInTime
-                let outTime = marker.parentInfo.clipOutTime
+                // let clipName = marker.parentInfo.clipName.quoted
+                // let inTime = marker.parentInfo.clipInTime
+                // let outTime = marker.parentInfo.clipOutTime
                 logger.notice(
-                    "\(marker.type.fullName) \(mn) at \(pos) is out of bounds of its parent clip \(clipName) (\(inTime) - \(outTime)) and will be omitted."
+                    "\(marker.type.fullName) \(mn) at \(pos) is not visible on the main timeline and will be omitted."
                 )
             }
         }
@@ -199,7 +198,10 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> [Marker] {
-        let extractedMarkers = project.extractElements(preset: .markers, settings: .mainTimeline)
+        let extractedMarkers = project.extractElements(
+            preset: .markers,
+            settings: MarkersExtractor.extractSettings
+        )
         
         return extractedMarkers.compactMap {
             convertMarker(
@@ -215,7 +217,10 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> [Marker] {
-        let extractedCaptions = project.extractElements(preset: .captions, settings: .mainTimeline)
+        let extractedCaptions = project.extractElements(
+            preset: .captions,
+            settings: MarkersExtractor.extractSettings
+        )
         
         return extractedCaptions.compactMap {
             convertCaption(
@@ -249,7 +254,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
             roles: roles,
-            position: position,
+            position: position, 
+            isOutOfBounds: extractedMarker.isOutOfBounds,
             parentInfo: parentInfo
         )
     }
@@ -279,7 +285,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             name: name,
             notes: extractedCaption.note ?? "",
             roles: roles,
-            position: position,
+            position: position, 
+            isOutOfBounds: extractedCaption.isOutOfBounds,
             parentInfo: parentInfo
         )
     }

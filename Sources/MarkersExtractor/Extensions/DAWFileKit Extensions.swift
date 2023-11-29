@@ -82,3 +82,15 @@ extension FinalCutPro.FCPXML.ClipType {
         }
     }
 }
+
+extension FinalCutPro.FCPXML.Caption {
+    var isOutOfBounds: Bool {
+        context[.effectiveOcclusion] == .fullyOccluded
+    }
+}
+
+extension FinalCutPro.FCPXML.Marker {
+    var isOutOfBounds: Bool {
+        context[.effectiveOcclusion] == .fullyOccluded
+    }
+}

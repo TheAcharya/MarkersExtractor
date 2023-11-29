@@ -62,19 +62,19 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let marker0 = try XCTUnwrap(markers[safe: 5])
         XCTAssertEqual(marker0.name, "Marker 1")
         XCTAssertEqual(marker0.position, (-tc("00:00:00:22", at: fr)).flattened())
-        XCTAssertEqual(marker0.isOutOfClipBounds(), true)
+        XCTAssertEqual(marker0.isOutOfBounds, true)
         XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
         
         let marker1 = try XCTUnwrap(markers[safe: 0])
         XCTAssertEqual(marker1.name, "Marker 2")
         XCTAssertEqual(marker1.position, tc("00:00:07:23", at: fr))
-        XCTAssertEqual(marker1.isOutOfClipBounds(), false)
+        XCTAssertEqual(marker1.isOutOfBounds, false)
         XCTAssertEqual(marker1.parentInfo, clip1ParentInfo)
         
         let marker2 = try XCTUnwrap(markers[safe: 2])
         XCTAssertEqual(marker2.name, "Marker 3")
         XCTAssertEqual(marker2.position, tc("00:00:21:23", at: fr))
-        XCTAssertEqual(marker2.isOutOfClipBounds(), true)
+        XCTAssertEqual(marker2.isOutOfBounds, true)
         XCTAssertEqual(marker2.parentInfo, clip1ParentInfo)
         
         // clip 2
@@ -82,19 +82,19 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let marker3 = try XCTUnwrap(markers[safe: 1])
         XCTAssertEqual(marker3.name, "Marker 4")
         XCTAssertEqual(marker3.position, tc("00:00:19:23", at: fr))
-        XCTAssertEqual(marker3.isOutOfClipBounds(), true)
+        XCTAssertEqual(marker3.isOutOfBounds, true)
         XCTAssertEqual(marker3.parentInfo, clip2ParentInfo)
         
         let marker4 = try XCTUnwrap(markers[safe: 3])
         XCTAssertEqual(marker4.name, "Marker 5")
         XCTAssertEqual(marker4.position, tc("00:00:28:18", at: fr))
-        XCTAssertEqual(marker4.isOutOfClipBounds(), false)
+        XCTAssertEqual(marker4.isOutOfBounds, false)
         XCTAssertEqual(marker4.parentInfo, clip2ParentInfo)
         
         let marker5 = try XCTUnwrap(markers[safe: 4])
         XCTAssertEqual(marker5.name, "Marker 6")
         XCTAssertEqual(marker5.position, tc("00:00:42:18", at: fr))
-        XCTAssertEqual(marker5.isOutOfClipBounds(), true)
+        XCTAssertEqual(marker5.isOutOfBounds, true)
         XCTAssertEqual(marker5.parentInfo, clip2ParentInfo)
     }
     
@@ -119,14 +119,14 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         let marker0 = try XCTUnwrap(markers[safe: 0])
         XCTAssertEqual(marker0.name, "Marker 2")
         XCTAssertEqual(marker0.position, tc("00:00:07:23", at: fr))
-        XCTAssertEqual(marker0.isOutOfClipBounds(), false)
+        XCTAssertEqual(marker0.isOutOfBounds, false)
         
         // clip 2
         
         let marker1 = try XCTUnwrap(markers[safe: 1])
         XCTAssertEqual(marker1.name, "Marker 5")
         XCTAssertEqual(marker1.position, tc("00:00:28:18", at: fr))
-        XCTAssertEqual(marker1.isOutOfClipBounds(), false)
+        XCTAssertEqual(marker1.isOutOfBounds, false)
     }
 }
 
