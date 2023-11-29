@@ -2,6 +2,10 @@
 
 ## 0.2.8
 
+### New Features
+
+- Added unique icon image for captions (#8)
+
 ### Changes
 
 - Improved accuracy for parsing roles from complex timelines
