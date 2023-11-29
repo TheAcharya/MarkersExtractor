@@ -168,17 +168,18 @@ After trying to run `markers-extractor-cli` for the first time, the process will
 
 ### Examples
 
-<details><summary>Basic creation of folders and .sh file</summary>
+<details><summary>Basic creation of folders and shell script</summary>
 <p>
 
 For ease of use, usage and creation of shell scripts (`.sh` files) is **recommended**. 
 
-1. Create a folder called **MarkersExtractor** on your Desktop.
+1. Create a folder called `MarkersExtractor` on your Desktop.
 2. Place the latest pre-compiled binary with the folder. 
-3. Within that folder, create two more additional folders, **Render** and **Output**.
-4. **Render** is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename. **Output** is where your **Marker Data Set** will be generated.
+3. Within that folder, create two more additional folders, `Render` and `Output`.
+4. `Render` is where you place your `fcpxml(d)` and media files. Make sure your `fcpxml(d)` and media file have identical filename.
+   `Output` is where the marker data set files will be generated.
 5. Create a file using any text editor. Name the script file with extension `.sh`.
-6. Copy and paste this syntax into the file, where **xxx** is the name of of your user directory and **zzz** is the name of your `.fcpxmld` file.
+6. Copy and paste this syntax into the file, where `xxx` is the name of of your user directory and `zzz` is the name of your `.fcpxmld` file.
    ```bash
    #!/bin/sh
    
@@ -192,10 +193,10 @@ For ease of use, usage and creation of shell scripts (`.sh` files) is **recommen
      --result-file-path ./result.json \
      --log-level debug --log $ERROR_LOG
    ```
-7. Save the script file as `myscript.sh` within your **MarkersExtractor** folder.
+7. Save the script file as `myscript.sh` within your `MarkersExtractor` folder.
 8. To give execute permission to your script, open Terminal, `chmod +x /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
 9. To execute your script, open Terminal, `sh /Users/xxx/Desktop/MarkersExtractor/myscript.sh`
-10. You can create and save multiple `.sh` files for different modes and configurations.
+10. You can create and save multiple shell scripts for different modes and configurations.
 11. If the `--result-file-path` option is supplied with a path including filename (ie: `./result.json`), the tool will create a JSON file at that path once the export is complete. See [Result File Contents](#result-file-contents) for details.
 
 </p>
@@ -212,7 +213,11 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format png --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format png \
+  --label "name" --label "type" --label "notes" --label "position" \
+  --label-copyright "Road Runner & Coyote Productions" \
+  --log-level debug --log $ERROR_LOG
 ```
 
 ### Final Cut Pro
@@ -235,7 +240,12 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font-size 15 --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format gif \
+  --label "name" --label "type" --label "notes" --label "position" \
+  --label-copyright "Road Runner & Coyote Productions" \
+  --label-font-size 15 \
+  --log-level debug --log $ERROR_LOG
 ```
 
 ### Final Cut Pro
@@ -258,7 +268,12 @@ FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
-$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" --export-format notion --image-format gif --id-naming-mode notes --label "name" --label "type" --label "notes" --label "position" --label-copyright "Road Runner & Coyote Productions" --label-font-size 15 --log-level debug --log $ERROR_LOG
+$TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
+  --export-format notion --image-format gif --id-naming-mode notes \
+  --label "name" --label "type" --label "notes" --label "position" \
+  --label-copyright "Road Runner & Coyote Productions" \
+  --label-font-size 15 \
+  --log-level debug --log $ERROR_LOG
 ```
 
 ### Final Cut Pro
