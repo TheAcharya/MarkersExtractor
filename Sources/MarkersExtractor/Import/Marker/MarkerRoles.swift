@@ -195,14 +195,14 @@ extension MarkerRoles {
         if var audioRoles = audio {
             for index in audioRoles.indices {
                 if audioRoles[index].isBuiltIn == true {
-                    audioRoles[index] = audioRoles[index].titleCased()
+                    audioRoles[index] = audioRoles[index].titleCased(derivedOnly: true)
                 }
             }
             audio = audioRoles
         }
         
         if video?.isBuiltIn == true {
-            video = video?.titleCased()
+            video = video?.titleCased(derivedOnly: true)
         }
         
         // don't title-case caption roles.
