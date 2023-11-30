@@ -217,7 +217,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
             roles: roles,
-            position: position, 
+            position: position,
             isOutOfBounds: extractedMarker.isOutOfBounds,
             parentInfo: parentInfo
         )
@@ -234,7 +234,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         guard let position = extractedCaption.context[.absoluteStart],
               let parentInfo = parentInfo(
-                  from: extractedCaption, 
+                  from: extractedCaption,
                   parentLibrary: parentLibrary,
                   projectStartTime: projectStartTime
               )
@@ -248,7 +248,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             name: name,
             notes: extractedCaption.note ?? "",
             roles: roles,
-            position: position, 
+            position: position,
             isOutOfBounds: extractedCaption.isOutOfBounds,
             parentInfo: parentInfo
         )
@@ -314,20 +314,17 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             }
         }
         
-        markerRoles = markerRoles.collapsedSubroles()
+        // collapse subroles that are redundant
+        markerRoles.collapseSubroles()
         
         // remove any roles with empty strings
-        markerRoles.audio?.removeAll(where: {
-            $0.rawValue.trimmed.isEmpty
-        })
-        if markerRoles.audio?.isEmpty == true { markerRoles.audio = nil }
+        markerRoles.removeEmptyStrings()
         
-        if markerRoles.video?.rawValue.trimmed.isEmpty == true {
-            markerRoles.video = nil
-        }
-        if markerRoles.caption?.rawValue.trimmed.isEmpty == true {
-            markerRoles.caption = nil
-        }
+        // FCP often writes built-in roles as lowercase strings
+        // (ie: "dialogue" or "dialogue.dialogue-1")
+        // so we will explicitly title-case these if encountered, so as to match
+        // FCP's title-cased display of these roles (ie: "Dialogue")
+        markerRoles.titleCaseBuiltInRoles()
         
         return markerRoles
     }

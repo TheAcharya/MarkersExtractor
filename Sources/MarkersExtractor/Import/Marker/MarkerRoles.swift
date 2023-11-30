@@ -37,14 +37,14 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
         collapseSubroles: Bool = false
     ) {
         if collapseSubroles {
-            self.video = video?.collapsedSubRole()
+            self.video = video?.collapsingSubRole()
         } else {
             self.video = video
         }
         self.isVideoDefault = isVideoDefault
         
         if collapseSubroles {
-            self.audio = audio?.map { $0.collapsedSubRole() }
+            self.audio = audio?.map { $0.collapsingSubRole() }
         } else {
             self.audio = audio
         }
@@ -172,6 +172,43 @@ extension MarkerRoles {
     }
 }
 
+extension MarkerRoles {
+    public mutating func removeEmptyStrings() {
+        audio?.removeAll(where: {
+            $0.rawValue.trimmed.isEmpty
+        })
+        if audio?.isEmpty == true { audio = nil }
+        
+        if video?.rawValue.trimmed.isEmpty == true {
+            video = nil
+        }
+        
+        if caption?.rawValue.trimmed.isEmpty == true {
+            caption = nil
+        }
+    }
+    
+    /// FCP often writes built-in roles as lowercase strings
+    /// (ie: "dialogue" or "dialogue.dialogue-1").
+    /// This will title-cased these roles (ie: "Dialogue") to match FCP's display.
+    public mutating func titleCaseBuiltInRoles() {
+        if var audioRoles = audio {
+            for index in audioRoles.indices {
+                if audioRoles[index].isBuiltIn == true {
+                    audioRoles[index] = audioRoles[index].titleCased()
+                }
+            }
+            audio = audioRoles
+        }
+        
+        if video?.isBuiltIn == true {
+            video = video?.titleCased()
+        }
+        
+        // don't title-case caption roles.
+    }
+}
+
 // MARK: - Subroles
 
 extension MarkerRoles {
@@ -179,8 +216,8 @@ extension MarkerRoles {
     /// ie: A role of "Role.Role-1" would return "Role".
     /// Only applies to audio and video roles. Has no effect on caption roles.
     public mutating func collapseSubroles() {
-        video = video?.collapsedSubRole()
-        audio = audio?.map { $0.collapsedSubRole() }
+        video = video?.collapsingSubRole()
+        audio = audio?.map { $0.collapsingSubRole() }
         // caption roles can't be collapsed
     }
     
