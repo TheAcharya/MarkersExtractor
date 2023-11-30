@@ -82,7 +82,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     // MARK: - Public Instance Methods
 
     public func extractMarkers(
-        preloadedProjects projects: [FinalCutPro.FCPXML.Project]?
+        preloadedProjects projects: [FinalCutPro.FCPXML.Project]? = nil
     ) -> [Marker] {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 1

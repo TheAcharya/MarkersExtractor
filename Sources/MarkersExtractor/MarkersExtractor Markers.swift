@@ -18,7 +18,7 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     func extractMarkers(
         sort: Bool = true,
-        preloadedProjects: [FinalCutPro.FCPXML.Project]?,
+        preloadedProjects: [FinalCutPro.FCPXML.Project]? = nil,
         parentProgress: ParentProgress? = nil
     ) throws -> [Marker] {
         var markers: [Marker]

@@ -194,14 +194,14 @@ extension MarkerRoles {
     public mutating func titleCaseBuiltInRoles() {
         if var audioRoles = audio {
             for index in audioRoles.indices {
-                if audioRoles[index].isBuiltIn == true {
+                if audioRoles[index].isMainRoleBuiltIn == true {
                     audioRoles[index] = audioRoles[index].titleCased(derivedOnly: true)
                 }
             }
             audio = audioRoles
         }
         
-        if video?.isBuiltIn == true {
+        if video?.isMainRoleBuiltIn == true {
             video = video?.titleCased(derivedOnly: true)
         }
         
