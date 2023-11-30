@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import DAWFileKit
 
 // MARK: - Extract Markers
 
@@ -17,6 +18,7 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     func extractMarkers(
         sort: Bool = true,
+        preloadedProjects: [FinalCutPro.FCPXML.Project]?,
         parentProgress: ParentProgress? = nil
     ) throws -> [Marker] {
         var markers: [Marker]
@@ -34,7 +36,7 @@ extension MarkersExtractor {
             // attach local progress to parent
             parentProgress?.addChild(extractor.progress)
             
-            markers = extractor.extractMarkers()
+            markers = extractor.extractMarkers(preloadedProjects: preloadedProjects)
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"

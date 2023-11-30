@@ -36,10 +36,24 @@ extension MarkersExtractor {
         progress.totalUnitCount = 100
         
         logger.info("Using \(s.exportFormat.name) export profile.")
-        logger.info("Extracting \(s.markersSource) from \(s.fcpxml)...")
+        
+        logger.info("Parsing XML from \(s.fcpxml)...")
+        logger.info("Note that this may take a while for large projects. Please wait.")
+        
+        let dawFile = try s.fcpxml.dawFile()
+        let projects = dawFile.allProjects(context: MarkersExtractor.elementContext)
+        guard let project = projects.first
+        else {
+            throw MarkersExtractorError.extraction(.projectMissing(
+                "Could not find a project in the FCPXML data."
+            ))
+        }
+        
+        logger.info("Extracting \(s.markersSource)...")
         
         // increments progress by 5%
         var markers = try extractMarkers(
+            preloadedProjects: projects,
             parentProgress: ParentProgress(progress: progress, unitCount: 5)
         )
         
@@ -62,14 +76,6 @@ extension MarkersExtractor {
         }
         
         let projectName = markers[0].parentInfo.projectName
-        
-        let dawFile = try s.fcpxml.dawFile()
-        guard let project = dawFile.allProjects(context: MarkersExtractor.elementContext).first
-        else {
-            throw MarkersExtractorError.extraction(.projectMissing(
-                "Could not find a project in the FCPXML data."
-            ))
-        }
         
         let projectStartTimecode: Timecode = startTimecode(forProject: project)
         

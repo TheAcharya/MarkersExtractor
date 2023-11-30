@@ -81,7 +81,9 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     
     // MARK: - Public Instance Methods
 
-    public func extractMarkers() -> [Marker] {
+    public func extractMarkers(
+        preloadedProjects projects: [FinalCutPro.FCPXML.Project]?
+    ) -> [Marker] {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 1
         
@@ -93,7 +95,10 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let library = parsedFCPXML.library(context: MarkersExtractor.elementContext)
         
-        for project in parsedFCPXML.allProjects(context: MarkersExtractor.elementContext) {
+        let projects = projects ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
+            .allProjects(context: MarkersExtractor.elementContext)
+        
+        for project in projects {
             guard let projectStartTime = project.startTimecode else {
                 logger.error(
                     "Could not determine start time for project \((project.name ?? "").quoted)."
