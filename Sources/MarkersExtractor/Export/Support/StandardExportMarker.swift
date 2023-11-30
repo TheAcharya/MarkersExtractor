@@ -50,7 +50,7 @@ public struct StandardExportMarker: ExportMarker {
         clipName = marker.parentInfo.clipName
         clipDuration = marker.parentInfo.clipDurationTimecodeString(format: tcStringFormat)
         videoRole = marker.roles.videoFormatted()
-        audioRole = marker.roles.audioFormatted()
+        audioRole = marker.roles.audioFormatted(multipleRoleSeparator: ",")
         eventName = marker.parentInfo.eventName
         projectName = marker.parentInfo.projectName
         libraryName = marker.parentInfo.libraryName

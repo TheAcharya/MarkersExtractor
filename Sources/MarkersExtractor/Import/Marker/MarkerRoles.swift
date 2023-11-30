@@ -142,7 +142,7 @@ extension MarkerRoles {
     }
     
     /// Audio role formatted for user display.
-    public func audioFormatted() -> String {
+    public func audioFormatted(multipleRoleSeparator: String) -> String {
         if let audio = audio {
             let nonEmptyAudioRoles = audio.filter { !$0.rawValue.trimmed.isEmpty }
             
@@ -155,8 +155,8 @@ extension MarkerRoles {
                 // FCP shows only subrole in its GUI for this joined list.
                 // as a fallback, we'll use the full raw role string if subrole is missing.
                 return nonEmptyAudioRoles
-                    .map { $0.subRole ?? $0.rawValue }
-                    .joined(separator: ", ")
+                    .map(\.rawValue)
+                    .joined(separator: multipleRoleSeparator)
             }
         }
         return Self.notAssignedRoleString
