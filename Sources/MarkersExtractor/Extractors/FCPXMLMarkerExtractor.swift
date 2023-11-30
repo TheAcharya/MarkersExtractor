@@ -18,7 +18,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
     let includeOutsideClipBoundaries: Bool
-    let excludeRoleType: FinalCutPro.FCPXML.RoleType?
     let enableSubframes: Bool
     let markersSource: MarkersSource
     
@@ -28,7 +27,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: XMLDocument,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -39,7 +37,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
         self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
-        self.excludeRoleType = excludeRoleType
         self.enableSubframes = enableSubframes
         self.markersSource = markersSource
     }
@@ -48,7 +45,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -58,7 +54,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
-            excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             logger: logger
@@ -69,7 +64,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         fcpxml: inout FCPXMLFile,
         idNamingMode: MarkerIDMode,
         includeOutsideClipBoundaries: Bool,
-        excludeRoleType: FinalCutPro.FCPXML.RoleType?,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -79,7 +73,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             fcpxml: xml,
             idNamingMode: idNamingMode,
             includeOutsideClipBoundaries: includeOutsideClipBoundaries,
-            excludeRoleType: excludeRoleType,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             logger: logger
@@ -122,36 +115,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                     library: library,
                     projectStartTime: projectStartTime
                 )
-            }
-        }
-        
-        // TODO: refactor into DAWFileKit
-        // apply role filter
-        if let excludeRoleType = excludeRoleType {
-            logger.info("Excluding all roles of \(excludeRoleType.rawValue) type.")
-            
-            let beforeMarkerCount = fcpxmlMarkers.count
-            
-            fcpxmlMarkers = fcpxmlMarkers.filter { marker in
-                switch excludeRoleType {
-                case .video:
-                    if marker.roles.isVideoEmpty { return true }
-                    if marker.roles.isVideoDefault { return false }
-                    return false
-                case .audio:
-                    if marker.roles.isAudioEmpty { return true }
-                    if marker.roles.isAudioDefault { return false }
-                    return false
-                case .caption:
-                    if marker.roles.isCaptionEmpty { return true }
-                    if marker.roles.isCaptionDefault { return false }
-                    return false
-                }
-            }
-            
-            let countDiff = beforeMarkerCount - fcpxmlMarkers.count
-            if countDiff > 0 {
-                logger.info("Omitted \(countDiff) markers/captions with \(excludeRoleType.rawValue) type.")
             }
         }
         

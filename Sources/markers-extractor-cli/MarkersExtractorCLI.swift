@@ -101,15 +101,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         .includeOutsideClipBoundaries
     
     @Option(
-        name: [.customLong("exclude-exclusive-roles")],
-        help: ArgumentHelp(
-            "Exclude markers that have specified role type but only if the opposite role type is absent.",
-            valueName: "\(FinalCutPro.FCPXML.RoleType.allCases.map { $0.rawValue }.joined(separator: ", "))"
-        )
-    )
-    var excludeRoleType: FinalCutPro.FCPXML.RoleType?
-    
-    @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
@@ -306,7 +297,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 gifSpan: gifSpan,
                 idNamingMode: idNamingMode,
                 includeOutsideClipBoundaries: includeOutsideClipBoundaries,
-                excludeRoleType: excludeRoleType,
                 imageLabels: imageLabels,
                 imageLabelCopyright: imageLabelCopyright,
                 imageLabelFont: imageLabelFont,

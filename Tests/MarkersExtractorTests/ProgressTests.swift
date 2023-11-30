@@ -15,7 +15,6 @@ final class ProgressTests: XCTestCase {
             fcpxml: &file,
             idNamingMode: .projectTimecode,
             includeOutsideClipBoundaries: false,
-            excludeRoleType: nil,
             enableSubframes: false, 
             markersSource: .markers,
             logger: nil

@@ -22,7 +22,6 @@ extension MarkersExtractor {
         public var gifSpan: TimeInterval
         public var idNamingMode: MarkerIDMode
         public var includeOutsideClipBoundaries: Bool
-        public var excludeRoleType: FinalCutPro.FCPXML.RoleType?
         public var imageLabels: [ExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
@@ -58,7 +57,6 @@ extension MarkersExtractor {
             gifSpan: TimeInterval = Defaults.gifSpan,
             idNamingMode: MarkerIDMode = Defaults.idNamingMode,
             includeOutsideClipBoundaries: Bool = Defaults.includeOutsideClipBoundaries,
-            excludeRoleType: FinalCutPro.FCPXML.RoleType? = Defaults.excludeRoleType,
             imageLabels: [ExportField] = Defaults.imageLabels,
             imageLabelCopyright: String? = Defaults.imageLabelCopyright,
             imageLabelFont: String = Defaults.imageLabelFont,
@@ -92,7 +90,6 @@ extension MarkersExtractor {
             self.gifSpan = gifSpan
             self.idNamingMode = idNamingMode
             self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
-            self.excludeRoleType = excludeRoleType
             self.imageLabels = imageLabels
             self.imageLabelCopyright = imageLabelCopyright
             self.imageLabelFont = imageLabelFont
@@ -236,7 +233,6 @@ extension MarkersExtractor.Settings {
         public static let gifSpan: TimeInterval = 2
         public static let idNamingMode: MarkerIDMode = .projectTimecode
         public static let includeOutsideClipBoundaries = false
-        public static let excludeRoleType: FinalCutPro.FCPXML.RoleType? = nil
         public static let imageLabels: [ExportField] = []
         public static let imageLabelCopyright: String? = nil
         public static let imageLabelFont = "Menlo-Regular"
