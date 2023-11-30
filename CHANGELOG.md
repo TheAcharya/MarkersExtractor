@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## 0.2.8
+## [0.2.8](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.8) (2023-11-30)
 
 ### New Features
 
@@ -8,10 +8,13 @@
 
 ### Changes
 
-- Improved accuracy for parsing roles from complex timelines
 - Renamed icon image filenames to improve clarity and alphabetical sorting (#72)
 - Removed `--exclude-exclusive-roles` CLI flag (#5)
   As an alternative, users can sort and filter by `Clip Type` manifest field after extraction.
+
+### Refinements
+
+- Improved accuracy for parsing roles from complex timelines
 - Default roles encoded lowercase in FCPXML will now be title-cased to match FCP (#66)
 
 ## [0.2.7](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.7) (2023-11-26)

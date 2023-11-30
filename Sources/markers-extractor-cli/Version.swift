@@ -6,4 +6,4 @@
 
 /// Static CLI version number stored in its own file to allow for easier modification by automated
 /// build tools.
-let cliVersion = "0.2.7"
+let cliVersion = "0.2.8"

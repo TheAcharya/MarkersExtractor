@@ -55,12 +55,12 @@
 
 ### Pre-Compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.7/markers-extractor-cli-0.2.7.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.8/markers-extractor-cli-0.2.8.zip).
 
 ### Compiled From Source
 
 ```shell
-VERSION=0.2.7 # replace this with the git tag of the version you need
+VERSION=0.2.8 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -112,9 +112,6 @@ OPTIONS:
   --include-outside-clip-boundaries
                           Include markers that are outside the bounds of a
                           clip. Also suppresses related log messages.
-  --exclude-exclusive-roles <audio, video, caption>
-                          Exclude markers that have specified role type but
-                          only if the opposite role type is absent.
   --label <id, name, type, checked, status, notes, position, clipType, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
@@ -323,7 +320,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.6")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.8")
     ],
     targets: [
         .target(
