@@ -20,7 +20,7 @@ final class MarkerRolesTests: XCTestCase {
         )
         
         XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role.My Video Role-1")
-        XCTAssertEqual(markerRoles.audioFormatted(), "My Audio Role.My Audio Role-1")
+        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ","), "My Audio Role.My Audio Role-1")
         XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
     }
     
@@ -36,7 +36,7 @@ final class MarkerRolesTests: XCTestCase {
         )
         
         XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role")
-        XCTAssertEqual(markerRoles.audioFormatted(), "My Audio Role")
+        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ","), "My Audio Role")
         XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
     }
     
@@ -78,6 +78,10 @@ final class MarkerRolesTests: XCTestCase {
     }
     
     func testMultipleAudio() {
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"]).audioFormatted(), "MixL, MixR")
+        XCTAssertEqual(
+            MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"])
+                .audioFormatted(multipleRoleSeparator: ","),
+            "Dialogue.MixL,Dialogue.MixR"
+        )
     }
 }
