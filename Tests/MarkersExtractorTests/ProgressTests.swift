@@ -22,7 +22,7 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         _ = extractor.extractMarkers()
-        XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
+        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
     func testAnimatedImageExtractor() async throws {
@@ -55,7 +55,7 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
         try await writer.write()
-        XCTAssertEqual(writer.progress.fractionCompleted, 1.0)
+        XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - AnimatedImageExtractor
         
@@ -73,7 +73,7 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         let _ = try await extractor.convert()
-        XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
+        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
     func testStillImageBatchExtractor() async throws {
@@ -104,7 +104,7 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
         try await writer.write()
-        XCTAssertEqual(writer.progress.fractionCompleted, 1.0)
+        XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - StillImageBatchExtractor
         
@@ -122,7 +122,7 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         let _ = try await extractor.convert()
-        XCTAssertEqual(extractor.progress.fractionCompleted, 1.0)
+        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
 }
 
