@@ -37,8 +37,8 @@ extension MarkersExtractor {
         
         logger.info("Using \(s.exportFormat.name) export profile.")
         
-        logger.info("Parsing XML from \(s.fcpxml)...")
-        logger.info("Note that this may take a while for large projects. Please wait.")
+        logger.info("Parsing XML from \(s.fcpxml)")
+        logger.info("Note that this may take a while for large projects. Please wait...")
         
         let dawFile = try s.fcpxml.dawFile()
         let projects = dawFile.allProjects(context: MarkersExtractor.elementContext)
