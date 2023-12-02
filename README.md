@@ -25,6 +25,7 @@
 - Accurately extract markers and captions from FCP's FCPXML/FCPXMLD data export format
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
+- Ability to use Captions as Markers
 - Fast, multi-threaded operation
 
 ## Extract Profiles
