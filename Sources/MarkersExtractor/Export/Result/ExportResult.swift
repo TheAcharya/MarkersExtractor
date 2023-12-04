@@ -10,6 +10,9 @@ import Foundation
 /// Returned by MarkersExtractor regardless the export profile used.
 /// Properties that are not applicable to the export profile will be `nil`.
 public struct ExportResult: Equatable, Hashable {
+    /// Date of extraction operation (ISO8601 formatted).
+    public var date: Date
+    
     /// Export profile used.
     public var profile: ExportProfileFormat
     
@@ -19,19 +22,21 @@ public struct ExportResult: Equatable, Hashable {
     /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
     public var csvManifestPath: URL?
     
-    /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
+    /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
     public var jsonManifestPath: URL?
     
     /// MIDI file path, if applicable to the profile. `nil` if not applicable.
     public var midiFilePath: URL?
     
     public init(
+        date: Date,
         profile: ExportProfileFormat,
         exportFolder: URL,
         csvManifestPath: URL? = nil,
         jsonManifestPath: URL? = nil,
         midiFilePath: URL? = nil
     ) {
+        self.date = date
         self.profile = profile
         self.exportFolder = exportFolder
         self.csvManifestPath = csvManifestPath
@@ -45,24 +50,42 @@ extension ExportResult {
     
     /// Keys used in the result file JSON dictionary.
     public enum Key: String, CaseIterable, Equatable, Hashable {
+        /// Date of extraction operation (ISO8601 formatted).
+        case date
+        
+        /// Export profile used.
         case profile
+        
+        /// Output folder path used for the export.
         case exportFolder
+        
+        /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
         case csvManifestPath
+        
+        /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
         case jsonManifestPath
+        
+        /// MIDI file path, if applicable to the profile. `nil` if not applicable.
         case midiFilePath
     }
     
     /// Type-erased box to maintain type safety for the intermediate dictionary.
     public enum Value: Equatable, Hashable {
+        case date(_ date: Date)
         case string(_ string: String)
         case url(_ url: URL)
         case profile(_ profile: ExportProfileFormat)
         
         public var stringValueForJSON: String {
             switch self {
-            case let .string(string): return string
-            case let .url(url): return url.path
-            case let .profile(profile): return profile.rawValue
+            case let .date(date):
+                return date.formatted(.iso8601)
+            case let .string(string):
+                return string
+            case let .url(url): 
+                return url.path
+            case let .profile(profile):
+                return profile.rawValue
             }
         }
     }
@@ -71,6 +94,9 @@ extension ExportResult {
 extension ExportResult {
     /// Updates local properties from a dictionary's contents.
     mutating func update(with dict: [Key: Value]) {
+        if let value = dict[.date], case let .date(date) = value {
+            self.date = date
+        }
         if let value = dict[.profile], case let .profile(exportProfile) = value {
             profile = exportProfile
         }
@@ -92,6 +118,7 @@ extension ExportResult {
     func exportResultContentDict() -> [String: String] {
         var dict: [Key: String] = [:]
         
+        dict[.date] = Value.date(date).stringValueForJSON
         dict[.profile] = profile.rawValue
         dict[.exportFolder] = exportFolder.path
         dict[.csvManifestPath] = csvManifestPath?.path

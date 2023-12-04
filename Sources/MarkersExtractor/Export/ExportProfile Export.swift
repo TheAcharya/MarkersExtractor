@@ -79,7 +79,7 @@ extension ExportProfile {
         try writeManifest(preparedMarkers, payload: payload, noMedia: media == nil)
         
         // result file
-        let exportResult = try generateResult(payload: payload, outputURL: outputURL)
+        let exportResult = try generateResult(date: Date(), payload: payload, outputURL: outputURL)
         
         if let resultFilePath {
             logger.info("Creating result file \(resultFilePath.path.quoted).")
@@ -129,9 +129,10 @@ extension ExportProfile {
         }
     }
     
-    private func generateResult(payload: Payload, outputURL: URL) throws -> ExportResult {
+    private func generateResult(date: Date, payload: Payload, outputURL: URL) throws -> ExportResult {
         // add baseline data that applies to all profiles
         var exportResult = ExportResult(
+            date: date,
             profile: Self.profile,
             exportFolder: outputURL
         )

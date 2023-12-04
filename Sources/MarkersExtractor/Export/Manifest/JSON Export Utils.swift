@@ -35,13 +35,13 @@ extension ExportProfile {
     }
 }
 
-func dictToJSON(_ dict: [String: String]) throws -> Data {
+func dictToJSON<V: Codable>(_ dict: [String: V]) throws -> Data {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted]
     return try encoder.encode(dict)
 }
 
-func dictsToJSON(_ dict: [[String: String]]) throws -> Data {
+func dictsToJSON<V: Codable>(_ dict: [[String: V]]) throws -> Data {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted]
     return try encoder.encode(dict)
