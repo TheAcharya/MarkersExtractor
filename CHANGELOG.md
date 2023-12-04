@@ -4,7 +4,9 @@
 
 ### New Features
 
-- Added date to result file (#76)
+- Added extraction date to result file (#76)
+- Added CLI version number to result file (#75)
+- Now logs version number when starting extraction (#75)
 
 ## [0.2.8](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.8) (2023-11-30)
 
