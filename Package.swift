@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "MarkersExtractor",
     platforms: [
-        .macOS(.v10_15)
+        .macOS(.v12)
     ],
     products: [
         .library(
