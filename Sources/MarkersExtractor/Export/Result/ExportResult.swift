@@ -45,7 +45,7 @@ public struct ExportResult: Equatable, Hashable {
         self.csvManifestPath = csvManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
-        version = cliVersion
+        version = packageVersion
     }
 }
 

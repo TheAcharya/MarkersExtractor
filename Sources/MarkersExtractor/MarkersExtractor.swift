@@ -35,6 +35,8 @@ extension MarkersExtractor {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 100
         
+        logger.info("MarkersExtractor \(packageVersion)")
+        
         logger.info("Using \(s.exportFormat.name) export profile.")
         
         logger.info("Parsing XML from \(s.fcpxml)")
