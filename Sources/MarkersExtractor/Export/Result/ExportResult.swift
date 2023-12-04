@@ -10,7 +10,7 @@ import Foundation
 /// Returned by MarkersExtractor regardless the export profile used.
 /// Properties that are not applicable to the export profile will be `nil`.
 public struct ExportResult: Equatable, Hashable {
-    /// Date of extraction operation (ISO8601 formatted).
+    /// Date the extraction was performed (ISO8601 formatted).
     public var date: Date
     
     /// Export profile used.
@@ -28,6 +28,9 @@ public struct ExportResult: Equatable, Hashable {
     /// MIDI file path, if applicable to the profile. `nil` if not applicable.
     public var midiFilePath: URL?
     
+    /// MarkersExtractor version used to perform extraction.
+    public var version: String
+    
     public init(
         date: Date,
         profile: ExportProfileFormat,
@@ -42,6 +45,7 @@ public struct ExportResult: Equatable, Hashable {
         self.csvManifestPath = csvManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
+        version = cliVersion
     }
 }
 
@@ -67,6 +71,9 @@ extension ExportResult {
         
         /// MIDI file path, if applicable to the profile. `nil` if not applicable.
         case midiFilePath
+        
+        /// MarkersExtractor version used to perform extraction.
+        case version
     }
     
     /// Type-erased box to maintain type safety for the intermediate dictionary.
@@ -124,6 +131,7 @@ extension ExportResult {
         dict[.csvManifestPath] = csvManifestPath?.path
         dict[.jsonManifestPath] = jsonManifestPath?.path
         dict[.midiFilePath] = midiFilePath?.path
+        dict[.version] = version
         
         return dict.mapKeys(\.rawValue)
     }
