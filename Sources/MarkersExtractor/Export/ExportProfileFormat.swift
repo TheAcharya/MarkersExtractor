@@ -20,7 +20,7 @@ extension ExportProfileFormat {
         case .midi:
             return "MIDI File"
         case .notion:
-            return "Notion (csv2notion)"
+            return "Notion"
         }
     }
     
