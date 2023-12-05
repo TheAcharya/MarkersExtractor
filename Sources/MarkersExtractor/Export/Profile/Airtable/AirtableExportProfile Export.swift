@@ -39,19 +39,17 @@ extension AirtableExportProfile {
             preparedMarkers
         )
         
-        // skip exporting JSON because we don't need it for Airlift (3rd-party library)
-        // try jsonWriteManifest(
-        //     jsonPath: payload.jsonPayload.jsonPath,
-        //     noMedia: noMedia,
-        //     preparedMarkers
-        // )
+        try jsonWriteManifest(
+            jsonPath: payload.jsonPayload.jsonPath,
+            noMedia: noMedia,
+            preparedMarkers
+        )
     }
     
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
-            .csvManifestPath: .url(payload.csvPayload.csvPath)
-            // skip exporting JSON because we don't need it for Airlift (3rd-party library)
-            // .jsonManifestPath: .url(payload.jsonPayload.jsonPath)
+            .csvManifestPath: .url(payload.csvPayload.csvPath),
+            .jsonManifestPath: .url(payload.jsonPayload.jsonPath)
         ]
     }
     
@@ -76,6 +74,7 @@ extension AirtableExportProfile {
         dict[.eventName] = marker.eventName
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
+        // no iconImage
         
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
@@ -105,6 +104,7 @@ extension AirtableExportProfile {
         dict[.eventName] = .string(marker.eventName)
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)
+        // no iconImage
         
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)

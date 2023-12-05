@@ -34,11 +34,24 @@ extension NotionExportProfile {
         payload: Payload,
         noMedia: Bool
     ) throws {
-        try csvWriteManifest(csvPath: payload.csvPath, noMedia: noMedia, preparedMarkers)
+        try csvWriteManifest(
+            csvPath: payload.csvPayload.csvPath,
+            noMedia: noMedia,
+            preparedMarkers
+        )
+        
+        try jsonWriteManifest(
+            jsonPath: payload.jsonPayload.jsonPath,
+            noMedia: noMedia,
+            preparedMarkers
+        )
     }
     
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
-        [.csvManifestPath: .url(payload.csvPath)]
+        [
+            .csvManifestPath: .url(payload.csvPayload.csvPath),
+            .jsonManifestPath: .url(payload.jsonPayload.jsonPath)
+        ]
     }
     
     public func tableManifestFields(
