@@ -40,8 +40,8 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker]
     
-    /// Encode and write metadata manifest file to disk. (Such as csv file)
-    func writeManifest(
+    /// Encode and write all applicable metadata manifest file(s) to disk. (Such as csv file)
+    func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
@@ -50,11 +50,20 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     /// Provides the profile-specific result file content.
     func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary
     
-    /// Provides the manifest fields to use.
-    func manifestFields(
+    /// Provides the manifest fields to use for table-based data structure (ie: for CSV, TSV, etc.).
+    /// These values are also used for thumbnail image labels.
+    func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String>
+    
+    /// Provides the manifest fields to use for nested-based data structure (ie: for JSON, XML,
+    /// PLIST, etc.).
+    /// Defaults to using ``tableManifestFields(for:noMedia:)`` if no implementation is provided.
+    func nestedManifestFields(
+        for marker: PreparedMarker,
+        noMedia: Bool
+    ) -> OrderedDictionary<ExportField, ExportFieldValue>
     
     /// Boolean describing whether the export format is capable of using media.
     /// (ie: able to generate thumbnail image files, etc.)
@@ -73,4 +82,16 @@ extension ExportProfile {
     
     /// Arbitrary overall progress total for export profile.
     static var defaultProgressTotalUnitCount: Int64 { 100 }
+}
+
+// MARK: - Default Implementation
+
+extension ExportProfile {
+    public func nestedManifestFields(
+        for marker: PreparedMarker,
+        noMedia: Bool
+    ) -> OrderedDictionary<ExportField, ExportFieldValue> {
+        tableManifestFields(for: marker, noMedia: noMedia)
+            .mapValues { .string($0) }
+    }
 }

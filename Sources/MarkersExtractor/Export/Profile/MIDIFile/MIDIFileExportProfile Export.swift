@@ -28,7 +28,15 @@ extension MIDIFileExportProfile {
         }
     }
     
-    public func writeManifest(
+    public func writeManifests(
+        _ preparedMarkers: [PreparedMarker],
+        payload: Payload,
+        noMedia: Bool
+    ) throws {
+        try writeManifest(preparedMarkers, payload: payload, noMedia: noMedia)
+    }
+    
+    func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
@@ -56,14 +64,17 @@ extension MIDIFileExportProfile {
         [.midiFilePath: .url(payload.midiFilePath)]
     }
     
-    public func manifestFields(
+    public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
-        var dict: OrderedDictionary<ExportField, String> = [
-            .position: marker.position,
-            .name: marker.name
-        ]
+        // can ignore `structure` since MIDI File is proprietary
+        // and does not have multiple format variants
+        
+        var dict: OrderedDictionary<ExportField, String> = [:]
+        
+        dict[.position] = marker.position
+        dict[.name] = marker.name
         
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName

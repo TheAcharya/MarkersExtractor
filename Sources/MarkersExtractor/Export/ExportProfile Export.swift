@@ -74,9 +74,9 @@ extension ExportProfile {
             progress.completedUnitCount += thumbnailsProgressUnitCount
         }
         
-        // metadata manifest file
+        // metadata manifest file(s)
         
-        try writeManifest(preparedMarkers, payload: payload, noMedia: media == nil)
+        try writeManifests(preparedMarkers, payload: payload, noMedia: media == nil)
         
         // result file
         let exportResult = try generateResult(date: Date(), payload: payload, outputURL: outputURL)

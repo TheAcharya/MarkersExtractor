@@ -25,7 +25,9 @@ extension ExportProfile {
         _ preparedMarkers: [PreparedMarker],
         noMedia: Bool
     ) -> [[String]] {
-        let dicts = preparedMarkers.map { manifestFields(for: $0, noMedia: noMedia) }
+        let dicts = preparedMarkers.map {
+            tableManifestFields(for: $0, noMedia: noMedia)
+        }
         guard !dicts.isEmpty else { return [] }
         
         // header

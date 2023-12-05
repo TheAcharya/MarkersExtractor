@@ -196,7 +196,7 @@ extension ExportProfile {
         preparedMarkers: [PreparedMarker]
     ) -> [String] {
         preparedMarkers
-            .map { manifestFields(for: $0, noMedia: false) }
+            .map { tableManifestFields(for: $0, noMedia: false) }
             .map { markerDict in
                 headers
                     .map {

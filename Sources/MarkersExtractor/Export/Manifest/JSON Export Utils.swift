@@ -25,23 +25,29 @@ extension ExportProfile {
     private func jsonDicts(
         _ preparedMarkers: [PreparedMarker],
         noMedia: Bool
-    ) -> [OrderedDictionary<String, String>] {
+    ) -> [OrderedDictionary<String, ExportFieldValue>] {
         preparedMarkers.map {
-            manifestFields(for: $0, noMedia: noMedia)
-                .reduce(into: OrderedDictionary<String, String>()) {
+            nestedManifestFields(for: $0, noMedia: noMedia)
+                .reduce(into: OrderedDictionary<String, ExportFieldValue>()) {
                     $0[$1.key.name] = $1.value
                 }
         }
     }
 }
 
-func dictToJSON<V: Codable>(_ dict: [String: V]) throws -> Data {
+func dictToJSON(_ dict: [String: String]) throws -> Data {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted]
     return try encoder.encode(dict)
 }
 
-func dictsToJSON<V: Codable>(_ dict: [[String: V]]) throws -> Data {
+func dictToJSON(_ dict: [String: ExportFieldValue]) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted]
+    return try encoder.encode(dict)
+}
+
+func dictsToJSON(_ dict: [[String: ExportFieldValue]]) throws -> Data {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted]
     return try encoder.encode(dict)

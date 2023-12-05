@@ -23,7 +23,7 @@ public struct StandardExportMarker: ExportMarker {
     public let clipType: String
     public let clipName: String
     public let clipDuration: String
-    public let audioRole: String
+    public let audioRole: (flat: String, array: [String])
     public let videoRole: String
     public let eventName: String
     public let projectName: String
