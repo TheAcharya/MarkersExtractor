@@ -10,64 +10,19 @@ import Foundation
 extension FinalCutPro.FCPXML.ElementType {
     var name: String {
         switch self {
-        case let .story(storyElementType):
-            return storyElementType.name
+        // annotation
             
-        case let .structure(structureElementType):
-            return structureElementType.name
-        }
-    }
-}
-
-extension FinalCutPro.FCPXML.StoryElementType {
-    var name: String {
-        switch self {
-        case let .anyAnnotation(annotationType):
-            return annotationType.name
+        case .caption: return "Caption"
+        case .keyword: return "Keyword"
+        case .marker, .chapterMarker: return "Marker"
             
-        case let .anyClip(clipType):
-            return clipType.name
-        
-        case .sequence:
-            return "Sequence"
+        // story
             
-        case .spine:
-            return "Spine"
-        }
-    }
-}
-
-extension FinalCutPro.FCPXML.StructureElementType {
-    var name: String {
-        switch self {
-        case .library:
-            return "Library"
-        case .event:
-            return "Event"
-        case .project:
-            return "Project"
-        }
-    }
-}
-
-extension FinalCutPro.FCPXML.AnnotationType {
-    var name: String {
-        switch self {
-        case .caption:
-            return "Caption"
+        case .sequence: return "Sequence"
+        case .spine: return "Spine"
             
-        case .keyword:
-            return "Keyword"
+        // clips
             
-        case .marker, .chapterMarker:
-            return "Marker"
-        }
-    }
-}
-
-extension FinalCutPro.FCPXML.ClipType {
-    var name: String {
-        switch self {
         case .assetClip: return "Asset"
         case .audio: return "Audio"
         case .audition: return "Audition"
@@ -79,18 +34,27 @@ extension FinalCutPro.FCPXML.ClipType {
         case .syncClip: return "Sync"
         case .title: return "Title"
         case .video: return "Video"
+            
+        // structure
+            
+        case .library: return "Library"
+        case .event: return "Event"
+        case .project: return "Project"
+            
+        default:
+            return rawValue.titleCased
         }
     }
 }
 
-extension FinalCutPro.FCPXML.Caption {
+extension FinalCutPro.FCPXML.ExtractedCaption {
     var isOutOfBounds: Bool {
-        context[.effectiveOcclusion] == .fullyOccluded
+        value(forContext: .effectiveOcclusion) == .fullyOccluded
     }
 }
 
-extension FinalCutPro.FCPXML.Marker {
+extension FinalCutPro.FCPXML.ExtractedMarker {
     var isOutOfBounds: Bool {
-        context[.effectiveOcclusion] == .fullyOccluded
+        value(forContext: .effectiveOcclusion) == .fullyOccluded
     }
 }

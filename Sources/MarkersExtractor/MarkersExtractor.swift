@@ -43,7 +43,7 @@ extension MarkersExtractor {
         logger.info("Note that this may take a while for large projects. Please wait...")
         
         let dawFile = try s.fcpxml.dawFile()
-        let projects = dawFile.allProjects(context: MarkersExtractor.elementContext)
+        let projects = dawFile.allProjects()
         guard let project = projects.first
         else {
             throw MarkersExtractorError.extraction(.projectMissing(

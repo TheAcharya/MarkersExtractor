@@ -13,8 +13,8 @@ extension NotionExportProfile {
         case inProgress = "In Progress"
         case done = "Done"
         
-        init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
-            switch type {
+        init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration) {
+            switch configuration {
             case .standard:
                 self = .notStarted
             case .chapter:
@@ -26,8 +26,8 @@ extension NotionExportProfile {
         
         init(_ type: InterpretedMarkerType) {
             switch type {
-            case let .marker(markerMetaData):
-                self.init(markerMetaData)
+            case let .marker(markerConfiguration):
+                self.init(markerConfiguration)
             case .caption:
                 self = .notStarted
             }

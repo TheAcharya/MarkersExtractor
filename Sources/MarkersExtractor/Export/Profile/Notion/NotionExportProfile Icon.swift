@@ -15,8 +15,8 @@ extension NotionExportProfile {
         case markerStandard
         case caption
         
-        public init(_ type: FinalCutPro.FCPXML.Marker.MarkerMetaData) {
-            switch type {
+        public init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration) {
+            switch configuration {
             case .standard:
                 self = .markerStandard
             case let .toDo(completed):

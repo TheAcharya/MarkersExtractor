@@ -252,7 +252,7 @@ extension AnimatedImageExtractor {
         
         guard let destination = CGImageDestinationCreateWithURL(
             conversion.outputFile as CFURL,
-            kUTTypeGIF,
+            UTType.gif.identifier as CFString,
             framesCount,
             nil
         ) else {

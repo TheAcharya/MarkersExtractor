@@ -93,13 +93,13 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
 
         let parsedFCPXML = FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
         
-        let library = parsedFCPXML.library(context: MarkersExtractor.elementContext)
+        let library = parsedFCPXML.root.library
         
         let projects = projects ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
-            .allProjects(context: MarkersExtractor.elementContext)
+            .allProjects()
         
         for project in projects {
-            guard let projectStartTime = project.startTimecode else {
+            guard let projectStartTime = project.startTimecode() else {
                 logger.error(
                     "Could not determine start time for project \((project.name ?? "").quoted)."
                 )
@@ -168,7 +168,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     ) -> [Marker] {
         let extractedMarkers = project.extractElements(
             preset: .markers,
-            settings: MarkersExtractor.extractSettings
+            scope: MarkersExtractor.extractionScope
         )
         
         return extractedMarkers.compactMap {
@@ -187,7 +187,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     ) -> [Marker] {
         let extractedCaptions = project.extractElements(
             preset: .captions,
-            settings: MarkersExtractor.extractSettings
+            scope: MarkersExtractor.extractionScope
         )
         
         return extractedCaptions.compactMap {
@@ -200,13 +200,13 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     }
     
     private func convertMarker(
-        _ extractedMarker: FinalCutPro.FCPXML.Marker,
+        _ extractedMarker: FinalCutPro.FCPXML.ExtractedMarker,
         parentLibrary: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> Marker? {
-        let roles = getClipRoles(extractedMarker.asAnyStoryElement())
+        let roles = getClipRoles(extractedMarker)
         
-        guard let position = extractedMarker.context[.absoluteStart],
+        guard let position = extractedMarker.value(forContext: .absoluteStartAsTimecode()),
               let parentInfo = parentInfo(
                   from: extractedMarker,
                   parentLibrary: parentLibrary,
@@ -218,26 +218,26 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         }
         
         return Marker(
-            type: .marker(extractedMarker.metaData),
+            type: .marker(extractedMarker.configuration),
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
             roles: roles,
             position: position,
-            isOutOfBounds: extractedMarker.isOutOfBounds,
+            isOutOfBounds: extractedMarker.value(forContext: .effectiveOcclusion) == .fullyOccluded,
             parentInfo: parentInfo
         )
     }
     
     private func convertCaption(
-        _ extractedCaption: FinalCutPro.FCPXML.Caption,
+        _ extractedCaption: FinalCutPro.FCPXML.ExtractedCaption,
         parentLibrary: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> Marker? {
-        let roles = getClipRoles(extractedCaption.asAnyStoryElement())
+        let roles = getClipRoles(extractedCaption)
         
         let name = extractedCaption.name ?? ""
         
-        guard let position = extractedCaption.context[.absoluteStart],
+        guard let position = extractedCaption.timecode(),
               let parentInfo = parentInfo(
                   from: extractedCaption,
                   parentLibrary: parentLibrary,
@@ -251,41 +251,41 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         return Marker(
             type: .caption,
             name: name,
-            notes: extractedCaption.note ?? "",
+            notes: extractedCaption.element.fcpNote ?? "",
             roles: roles,
             position: position,
-            isOutOfBounds: extractedCaption.isOutOfBounds,
+            isOutOfBounds: extractedCaption.value(forContext: .effectiveOcclusion) == .fullyOccluded,
             parentInfo: parentInfo
         )
     }
     
     private func parentInfo(
-        from element: some FCPXMLElement,
+        from element: any FCPXMLExtractedModelElement,
         parentLibrary: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) -> Marker.ParentInfo? {
-        guard let clipInTime = element.context[.parentAbsoluteStart],
-              let clipDuration = element.context[.parentDuration],
-              let clipOutTime = try? clipInTime.adding(clipDuration, by: .wrapping)
+        guard let clipInTime = element.value(forContext: .parentAbsoluteStartAsTimecode()),
+              // let clipDuration = element.value(forContext: .parentDurationAsTimecode()),
+              let clipOutTime = element.value(forContext: .parentAbsoluteEndAsTimecode())
         else { return nil }
         
         return Marker.ParentInfo(
-            clipType: element.context[.parentType]?.name ?? "",
-            clipName: element.context[.parentName] ?? "",
+            clipType: element.value(forContext: .parentType)?.name ?? "",
+            clipName: element.value(forContext: .parentName) ?? "",
             clipInTime: clipInTime,
             clipOutTime: clipOutTime,
-            eventName: element.context[.ancestorEventName] ?? "",
-            projectName: element.context[.ancestorProjectName] ?? "",
+            eventName: element.value(forContext: .ancestorEventName) ?? "",
+            projectName: element.value(forContext: .ancestorProjectName) ?? "",
             projectStartTime: projectStartTime,
             libraryName: parentLibrary?.name ?? ""
         )
     }
     
-    func getClipRoles(_ element: FinalCutPro.FCPXML.AnyStoryElement) -> MarkerRoles {
+    func getClipRoles(_ element: any FCPXMLExtractedModelElement) -> MarkerRoles {
         var markerRoles = MarkerRoles()
         
         // marker doesn't contain role(s) so look to ancestors
-        let roles = element.context[.inheritedRoles] ?? []
+        let roles = element.value(forContext: .inheritedRoles)
         roles.forEach { interpolatedRole in
             var isRoleDefault = false
             
