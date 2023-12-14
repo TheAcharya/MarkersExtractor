@@ -141,7 +141,7 @@ extension AVAssetImageGenerator {
         
         let nsValue = NSValue(time: time)
         generateCGImagesAsynchronously(forTimes: [nsValue])
-            { /* requestedTime */ requestedTime, image, actualTime, result, error in
+            { requestedTime, image, actualTime, result, error in
                 defer { group.leave() }
             
                 resultImage = image
