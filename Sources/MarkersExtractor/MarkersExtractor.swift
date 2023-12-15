@@ -40,7 +40,7 @@ extension MarkersExtractor {
         logger.info("Using \(s.exportFormat.name) export profile.")
         
         logger.info("Parsing XML from \(s.fcpxml)")
-        logger.info("Note that this may take a while for large projects. Please wait...")
+        logger.info("Note that this may take several seconds for very large projects. Please wait...")
         
         let dawFile = try s.fcpxml.dawFile()
         let projects = dawFile.allProjects()
@@ -84,17 +84,19 @@ extension MarkersExtractor {
         let outputURL = try makeOutputPath(for: projectName)
         
         let media: ExportMedia?
-        if s.noMedia {
-            media = nil
-            logger.info("No media present. Skipping thumbnail generation.")
-            logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
-        } else {
+        do {
             let exportMedia = try formExportMedia(projectName: projectName)
             media = exportMedia
             logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
             logger.info(
                 "Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
             )
+        } catch {
+            // not a critical error - if no media is found, let extraction continue without media
+            media = nil
+            logger.info("\(error.localizedDescription)")
+            logger.info("Skipping thumbnail images generation.")
+            logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
         }
         
         progress.completedUnitCount += 5

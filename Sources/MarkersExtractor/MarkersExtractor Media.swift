@@ -56,7 +56,7 @@ extension MarkersExtractor {
         
         if files.count > 1 {
             logger.info(
-                "Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)"
+                "Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)."
             )
         }
         
