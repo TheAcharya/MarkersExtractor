@@ -27,7 +27,6 @@ extension MarkersExtractor {
             let extractor = try FCPXMLMarkerExtractor(
                 fcpxml: &s.fcpxml,
                 idNamingMode: s.idNamingMode,
-                includeOutsideClipBoundaries: s.includeOutsideClipBoundaries,
                 enableSubframes: s.enableSubframes, 
                 markersSource: s.markersSource,
                 logger: logger

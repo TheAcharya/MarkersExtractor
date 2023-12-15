@@ -21,7 +21,6 @@ extension MarkersExtractor {
         public var gifFPS: Double
         public var gifSpan: TimeInterval
         public var idNamingMode: MarkerIDMode
-        public var includeOutsideClipBoundaries: Bool
         public var imageLabels: [ExportField]
         public var imageLabelCopyright: String?
         public var imageLabelFont: String
@@ -54,7 +53,6 @@ extension MarkersExtractor {
             gifFPS: Double = Defaults.gifFPS,
             gifSpan: TimeInterval = Defaults.gifSpan,
             idNamingMode: MarkerIDMode = Defaults.idNamingMode,
-            includeOutsideClipBoundaries: Bool = Defaults.includeOutsideClipBoundaries,
             imageLabels: [ExportField] = Defaults.imageLabels,
             imageLabelCopyright: String? = Defaults.imageLabelCopyright,
             imageLabelFont: String = Defaults.imageLabelFont,
@@ -86,7 +84,6 @@ extension MarkersExtractor {
             self.gifFPS = gifFPS
             self.gifSpan = gifSpan
             self.idNamingMode = idNamingMode
-            self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
             self.imageLabels = imageLabels
             self.imageLabelCopyright = imageLabelCopyright
             self.imageLabelFont = imageLabelFont
@@ -226,7 +223,6 @@ extension MarkersExtractor.Settings {
         public static let gifFPS: Double = 10.0
         public static let gifSpan: TimeInterval = 2
         public static let idNamingMode: MarkerIDMode = .projectTimecode
-        public static let includeOutsideClipBoundaries = false
         public static let imageLabels: [ExportField] = []
         public static let imageLabelCopyright: String? = nil
         public static let imageLabelFont = "Menlo-Regular"

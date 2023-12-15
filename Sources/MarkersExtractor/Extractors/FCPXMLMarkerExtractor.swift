@@ -17,7 +17,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
-    let includeOutsideClipBoundaries: Bool
     let enableSubframes: Bool
     let markersSource: MarkersSource
     
@@ -26,7 +25,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     required init(
         fcpxml: XMLDocument,
         idNamingMode: MarkerIDMode,
-        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -36,7 +34,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         fcpxmlDoc = fcpxml
         self.idNamingMode = idNamingMode
-        self.includeOutsideClipBoundaries = includeOutsideClipBoundaries
         self.enableSubframes = enableSubframes
         self.markersSource = markersSource
     }
@@ -44,7 +41,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     required convenience init(
         fcpxml: URL,
         idNamingMode: MarkerIDMode,
-        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -53,7 +49,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
-            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             logger: logger
@@ -63,7 +58,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     required convenience init(
         fcpxml: inout FCPXMLFile,
         idNamingMode: MarkerIDMode,
-        includeOutsideClipBoundaries: Bool,
         enableSubframes: Bool,
         markersSource: MarkersSource,
         logger: Logger? = nil
@@ -72,7 +66,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
-            includeOutsideClipBoundaries: includeOutsideClipBoundaries,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             logger: logger
@@ -119,39 +112,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                     in: project,
                     library: library,
                     projectStartTime: projectStartTime
-                )
-            }
-        }
-        
-        // apply out-of-bounds filter
-        if !includeOutsideClipBoundaries {
-            let (kept, omitted): (kept: [Marker], omitted: [Marker]) = fcpxmlMarkers
-                .reduce(into: ([], [])) { base, markerOrCaption in
-                    switch markerOrCaption.type {
-                    case .marker:
-                        markerOrCaption.isOutOfBounds
-                            ? base.omitted.append(markerOrCaption)
-                            : base.kept.append(markerOrCaption)
-                    case .caption:
-                        // always allow captions since they are not attached to clips,
-                        // but are timeline-global elements
-                        base.kept.append(markerOrCaption)
-                    }
-                    
-                }
-            
-            // remove out-of-bounds markers from output
-            fcpxmlMarkers = kept
-            
-            // emit log messages for out-of-bounds markers
-            omitted.forEach { marker in
-                let mn = marker.name.quoted
-                let pos = marker.position
-                // let clipName = marker.parentInfo.clipName.quoted
-                // let inTime = marker.parentInfo.clipInTime
-                // let outTime = marker.parentInfo.clipOutTime
-                logger.notice(
-                    "\(marker.type.fullName) \(mn) at \(pos) is not visible on the main timeline and will be omitted."
                 )
             }
         }
@@ -223,7 +183,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             notes: extractedMarker.note ?? "",
             roles: roles,
             position: position,
-            isOutOfBounds: extractedMarker.value(forContext: .effectiveOcclusion) == .fullyOccluded,
             parentInfo: parentInfo
         )
     }
@@ -254,7 +213,6 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             notes: extractedCaption.element.fcpNote ?? "",
             roles: roles,
             position: position,
-            isOutOfBounds: extractedCaption.value(forContext: .effectiveOcclusion) == .fullyOccluded,
             parentInfo: parentInfo
         )
     }

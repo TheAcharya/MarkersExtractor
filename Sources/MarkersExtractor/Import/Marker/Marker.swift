@@ -34,7 +34,6 @@ public struct Marker: Equatable, Hashable, Sendable {
     var notes: String
     var roles: MarkerRoles
     var position: Timecode
-    var isOutOfBounds: Bool
     
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.

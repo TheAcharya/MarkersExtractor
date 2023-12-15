@@ -34,10 +34,5 @@ extension MarkersExtractor {
 }
 
 extension MarkersExtractor {
-    static let extractionScope: FinalCutPro.FCPXML.ExtractionScope = {
-        var scope: FinalCutPro.FCPXML.ExtractionScope = .mainTimeline
-        // TODO: remove, we don't care about OOB markers
-        scope.occlusions = .allCases // allows us to log out-of-bounds markers
-        return scope
-    }()
+    static let extractionScope: FinalCutPro.FCPXML.ExtractionScope = .mainTimeline
 }
