@@ -15,7 +15,7 @@ public struct EmptyExportIcon: ExportIcon {
     
     public let data: Data = .init()
     
-    public init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration) { }
+    public init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration) { }
     
     public init(_ type: InterpretedMarkerType) { }
 }

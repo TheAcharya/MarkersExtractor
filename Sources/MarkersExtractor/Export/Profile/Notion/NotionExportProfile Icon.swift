@@ -15,7 +15,7 @@ extension NotionExportProfile {
         case markerStandard
         case caption
         
-        public init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration) {
+        public init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration) {
             switch configuration {
             case .standard:
                 self = .markerStandard

@@ -18,7 +18,7 @@ extension FinalCutPro.FCPXML.Marker.MarkerKind {
     }
 }
 
-extension FinalCutPro.FCPXML.Marker.MarkerConfiguration {
+extension FinalCutPro.FCPXML.Marker.Configuration {
     public var name: String {
         switch self {
         case .standard: return "Standard"
@@ -30,7 +30,7 @@ extension FinalCutPro.FCPXML.Marker.MarkerConfiguration {
 
 /// Encapsulates marker types and non-marker types that are convertible to markers.
 public enum InterpretedMarkerType: Equatable, Hashable, Sendable {
-    case marker(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration)
+    case marker(_ configuration: FinalCutPro.FCPXML.Marker.Configuration)
     case caption
 }
 

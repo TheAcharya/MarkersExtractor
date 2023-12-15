@@ -13,7 +13,7 @@ extension NotionExportProfile {
         case inProgress = "In Progress"
         case done = "Done"
         
-        init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration) {
+        init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration) {
             switch configuration {
             case .standard:
                 self = .notStarted

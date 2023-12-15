@@ -166,7 +166,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) async -> [Marker] {
-        let extractedMarkers = await project.extractElements(
+        let extractedMarkers = await project.extract(
             preset: .markers,
             scope: MarkersExtractor.extractionScope
         )
@@ -185,7 +185,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) async -> [Marker] {
-        let extractedCaptions = await project.extractElements(
+        let extractedCaptions = await project.extract(
             preset: .captions,
             scope: MarkersExtractor.extractionScope
         )

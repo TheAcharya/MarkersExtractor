@@ -11,6 +11,6 @@ public protocol ExportIcon: Equatable, Hashable {
     var resource: EmbeddedResource { get }
     var fileName: String { get }
     var data: Data { get }
-    init(_ configuration: FinalCutPro.FCPXML.Marker.MarkerConfiguration)
+    init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration)
     init(_ type: InterpretedMarkerType)
 }
