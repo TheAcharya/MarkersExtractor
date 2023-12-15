@@ -5,6 +5,7 @@
 ### New Features
 
 - Complete rewrite of XML parser/extractor (in DAWFileKit dependency) with substantial performance improvements
+- Added `RolesExtractor` class to library to extract roles from a FCPXML file (#69)
 - Added extraction date to result file (#76)
 - Added CLI version number to result file (#75)
 - Now logs version number when starting extraction (#75)
