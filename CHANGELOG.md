@@ -4,6 +4,7 @@
 
 ### New Features
 
+- Added `-exclude-role` CLI flag (#57)
 - Added `RolesExtractor` class to library to extract roles from a FCPXML file (#69)
 - Added extraction date to result file (#76)
 - Added CLI version number to result file (#75)
