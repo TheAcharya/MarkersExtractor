@@ -10,6 +10,10 @@ import DAWFileKit
 
 extension MarkersExtractor {
     public struct Settings {
+        public var fcpxml: FCPXMLFile
+        public var outputDir: URL
+        public var noMedia: Bool
+        public var mediaSearchPaths: [URL]
         public var exportFormat: ExportProfileFormat
         public var enableSubframes: Bool
         public var markersSource: MarkersSource
@@ -33,15 +37,13 @@ extension MarkersExtractor {
         public var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal
         public var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
         public var imageLabelHideNames: Bool
-        public var fcpxml: FCPXMLFile
-        public var mediaSearchPaths: [URL]
-        public var outputDir: URL
         public var resultFilePath: URL?
         public var exportFolderFormat: ExportFolderFormat
         
         public init(
             fcpxml: FCPXMLFile,
             outputDir: URL,
+            noMedia: Bool = Defaults.noMedia,
             mediaSearchPaths: [URL]? = nil,
             exportFormat: ExportProfileFormat = Defaults.exportFormat,
             enableSubframes: Bool = Defaults.enableSubframes,
@@ -74,6 +76,7 @@ extension MarkersExtractor {
             self.outputDir = outputDir
             
             // defaulted parameters
+            self.noMedia = noMedia
             self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
@@ -214,6 +217,10 @@ extension MarkersExtractor.Settings {
 
 extension MarkersExtractor.Settings {
     public enum Defaults {
+        public static let noMedia: Bool = false
+        public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
+            [fcpxml.defaultMediaSearchPath].compactMap { $0 }
+        }
         public static let exportFormat: ExportProfileFormat = .notion
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers
@@ -240,9 +247,5 @@ extension MarkersExtractor.Settings {
         public static let imageLabelHideNames = false
         public static let resultFilePath: URL? = nil
         public static let exportFolderFormat: ExportFolderFormat = .medium
-        public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
-            [fcpxml.defaultMediaSearchPath].compactMap { $0 }
-        }
-        
     }
 }

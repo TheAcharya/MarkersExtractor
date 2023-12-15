@@ -84,20 +84,26 @@ extension MarkersExtractor {
         let outputURL = try makeOutputPath(for: projectName)
         
         let media: ExportMedia?
-        do {
-            let exportMedia = try formExportMedia(projectName: projectName)
-            media = exportMedia
-            logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
-            logger.info(
-                "Generating metadata file(s) with \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
-            )
-        } catch {
-            // not a critical error - if no media is found, let extraction continue without media
+        if s.noMedia {
             media = nil
-            logger.info("\(error.localizedDescription)")
-            logger.info("Skipping thumbnail images generation.")
-            logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
+            logger.info("Bypassing media file.")
+        } else {
+            do {
+                let exportMedia = try formExportMedia(projectName: projectName)
+                media = exportMedia
+                logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
+                logger.info(
+                    "Generating \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
+                )
+            } catch {
+                // not a critical error - if no media is found, let extraction continue without media
+                media = nil
+                logger.info("\(error.localizedDescription)")
+                logger.info("Skipping thumbnail images generation.")
+            }
         }
+        
+        logger.info("Generating metadata file(s) into \(outputURL.path.quoted).")
         
         progress.completedUnitCount += 5
         

@@ -236,6 +236,12 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     )
     var mediaSearchPaths: [URL] = []
     
+    @Flag(
+        name: [.customLong("no-media")],
+        help: "Bypass media. No thumbnails will be generated."
+    )
+    var noMedia: Bool = MarkersExtractor.Settings.Defaults.noMedia
+    
     @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
     var fcpxmlPath: URL
     
@@ -273,6 +279,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
                 outputDir: outputDir,
+                noMedia: noMedia,
                 mediaSearchPaths: mediaSearchPaths,
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,
