@@ -14,7 +14,6 @@ final class ProgressTests: XCTestCase {
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
             idNamingMode: .projectTimecode,
-            includeOutsideClipBoundaries: false,
             enableSubframes: false, 
             markersSource: .markers,
             logger: nil

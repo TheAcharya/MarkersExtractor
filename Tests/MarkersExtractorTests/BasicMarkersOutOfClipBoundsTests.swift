@@ -10,13 +10,13 @@ import TimecodeKit
 import XCTest
 
 final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
-    /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    func testOutOfClipBoundsTests_Include() async throws {
-        var settings = try MarkersExtractor.Settings(
+    /// Ensure that markers that are out of bounds of clips are not included in extraction.
+    /// Also tests to make sure marker parent clip information is correct.
+    func testOutOfClipBounds() async throws {
+        let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.includeOutsideClipBoundaries = true
         
         let extractor = MarkersExtractor(settings)
         let markers = try await extractor.extractMarkers()
@@ -51,7 +51,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // check markers
         
-        XCTAssertEqual(markers.count, 5)
+        XCTAssertEqual(markers.count, 2)
         
         // if the clip is the first clip on the timeline (it starts at 00:00:00:00) and
         // it had been resized from its left edge to result in an out-of-boundary marker prior to
@@ -59,75 +59,17 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // clip 1
         
-        // commented out - we disabled support for out-of-bounds markers
-        // let marker0 = try XCTUnwrap(markers[safe: 5])
-        // XCTAssertEqual(marker0.name, "Marker 1")
-        // XCTAssertEqual(marker0.position, (-tc("00:00:00:22", at: fr)).flattened())
-        // XCTAssertEqual(marker0.isOutOfBounds, true)
-        // XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
-        
-        let marker1 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker1.name, "Marker 2")
-        XCTAssertEqual(marker1.position, tc("00:00:07:23", at: fr))
-        XCTAssertEqual(marker1.isOutOfBounds, false)
-        XCTAssertEqual(marker1.parentInfo, clip1ParentInfo)
-        
-        let marker2 = try XCTUnwrap(markers[safe: 2])
-        XCTAssertEqual(marker2.name, "Marker 3")
-        XCTAssertEqual(marker2.position, tc("00:00:21:23", at: fr))
-        XCTAssertEqual(marker2.isOutOfBounds, true)
-        XCTAssertEqual(marker2.parentInfo, clip1ParentInfo)
-        
-        // clip 2
-        
-        let marker3 = try XCTUnwrap(markers[safe: 1])
-        XCTAssertEqual(marker3.name, "Marker 4")
-        XCTAssertEqual(marker3.position, tc("00:00:19:23", at: fr))
-        XCTAssertEqual(marker3.isOutOfBounds, true)
-        XCTAssertEqual(marker3.parentInfo, clip2ParentInfo)
-        
-        let marker4 = try XCTUnwrap(markers[safe: 3])
-        XCTAssertEqual(marker4.name, "Marker 5")
-        XCTAssertEqual(marker4.position, tc("00:00:28:18", at: fr))
-        XCTAssertEqual(marker4.isOutOfBounds, false)
-        XCTAssertEqual(marker4.parentInfo, clip2ParentInfo)
-        
-        let marker5 = try XCTUnwrap(markers[safe: 4])
-        XCTAssertEqual(marker5.name, "Marker 6")
-        XCTAssertEqual(marker5.position, tc("00:00:42:18", at: fr))
-        XCTAssertEqual(marker5.isOutOfBounds, true)
-        XCTAssertEqual(marker5.parentInfo, clip2ParentInfo)
-    }
-    
-    func testOutOfClipBoundsTests_DoNotInclude() async throws {
-        var settings = try MarkersExtractor.Settings(
-            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
-            outputDir: FileManager.default.temporaryDirectory
-        )
-        settings.includeOutsideClipBoundaries = false
-        
-        let extractor = MarkersExtractor(settings)
-        let markers = try await extractor.extractMarkers()
-        
-        let fr: TimecodeFrameRate = .fps25
-        
-        // check markers
-        
-        XCTAssertEqual(markers.count, 2)
-        
-        // clip 1
-        
         let marker0 = try XCTUnwrap(markers[safe: 0])
         XCTAssertEqual(marker0.name, "Marker 2")
         XCTAssertEqual(marker0.position, tc("00:00:07:23", at: fr))
-        XCTAssertEqual(marker0.isOutOfBounds, false)
+        XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
         
         // clip 2
         
         let marker1 = try XCTUnwrap(markers[safe: 1])
         XCTAssertEqual(marker1.name, "Marker 5")
         XCTAssertEqual(marker1.position, tc("00:00:28:18", at: fr))
-        XCTAssertEqual(marker1.isOutOfBounds, false)
+        XCTAssertEqual(marker1.parentInfo, clip2ParentInfo)
     }
 }
 
