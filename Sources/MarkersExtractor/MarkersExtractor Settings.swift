@@ -13,6 +13,7 @@ extension MarkersExtractor {
         public var exportFormat: ExportProfileFormat
         public var enableSubframes: Bool
         public var markersSource: MarkersSource
+        public var excludeRoles: Set<String>
         public var imageFormat: MarkerImageFormat
         public var imageQuality: Int
         public var imageWidth: Int?
@@ -45,6 +46,7 @@ extension MarkersExtractor {
             exportFormat: ExportProfileFormat = Defaults.exportFormat,
             enableSubframes: Bool = Defaults.enableSubframes,
             markersSource: MarkersSource = Defaults.markersSource,
+            excludeRoles: Set<String> = Defaults.excludeRoles,
             imageFormat: MarkerImageFormat = Defaults.imageFormat,
             imageQuality: Int = Defaults.imageQuality,
             imageWidth: Int? = Defaults.imageWidth,
@@ -76,6 +78,7 @@ extension MarkersExtractor {
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
             self.markersSource = markersSource
+            self.excludeRoles = excludeRoles
             self.imageFormat = imageFormat
             self.imageQuality = imageQuality
             self.imageWidth = imageWidth
@@ -214,6 +217,7 @@ extension MarkersExtractor.Settings {
         public static let exportFormat: ExportProfileFormat = .notion
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers
+        public static let excludeRoles: Set<String> = []
         public static let imageFormat: MarkerImageFormat = .still(.png)
         public static let imageQuality = 85
         public static let imageWidth: Int? = nil

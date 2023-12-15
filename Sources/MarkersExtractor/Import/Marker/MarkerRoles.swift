@@ -233,3 +233,26 @@ extension MarkerRoles {
         return copy
     }
 }
+
+// MARK: - Utilities
+
+extension MarkerRoles {
+    public func contains(roleNamed roleName: String) -> Bool {
+        if audio?.contains(where: { $0.rawValue == roleName }) == true {
+            return true
+        }
+        
+        if video?.rawValue == roleName { return true }
+        
+        if caption?.rawValue == roleName { return true }
+        
+        return false
+    }
+    
+    public func contains(roleWithAnyNameIn roleNames: some Sequence<String>) -> Bool {
+        for roleName in roleNames {
+            if contains(roleNamed: roleName) { return true }
+        }
+        return false
+    }
+}

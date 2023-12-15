@@ -43,6 +43,15 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     var markersSource: MarkersSource = MarkersExtractor.Settings.Defaults.markersSource
     
     @Option(
+        name: [.customLong("exclude-role")],
+        help: ArgumentHelp(
+            "Exclude markers with a specified role. This argument can be supplied more than once to apply multiple role exclusions.",
+            valueName: "name"
+        )
+    )
+    var excludeRoles: [String] = []
+    
+    @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
@@ -268,6 +277,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,
                 markersSource: markersSource,
+                excludeRoles: Set(excludeRoles),
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,

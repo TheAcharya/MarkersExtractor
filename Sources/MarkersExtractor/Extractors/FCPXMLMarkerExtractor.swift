@@ -19,6 +19,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     let idNamingMode: MarkerIDMode
     let enableSubframes: Bool
     let markersSource: MarkersSource
+    let excludeRoles: Set<String>
     
     // MARK: - Init
     
@@ -27,6 +28,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         idNamingMode: MarkerIDMode,
         enableSubframes: Bool,
         markersSource: MarkersSource,
+        excludeRoles: Set<String>,
         logger: Logger? = nil
     ) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
@@ -36,6 +38,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         self.idNamingMode = idNamingMode
         self.enableSubframes = enableSubframes
         self.markersSource = markersSource
+        self.excludeRoles = excludeRoles
     }
     
     required convenience init(
@@ -43,6 +46,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         idNamingMode: MarkerIDMode,
         enableSubframes: Bool,
         markersSource: MarkersSource,
+        excludeRoles: Set<String>,
         logger: Logger? = nil
     ) throws {
         let xml = try XMLDocument(contentsOf: fcpxml)
@@ -51,6 +55,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             idNamingMode: idNamingMode,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
+            excludeRoles: excludeRoles,
             logger: logger
         )
     }
@@ -60,6 +65,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         idNamingMode: MarkerIDMode,
         enableSubframes: Bool,
         markersSource: MarkersSource,
+        excludeRoles: Set<String>,
         logger: Logger? = nil
     ) throws {
         let xml = try fcpxml.xmlDocument()
@@ -68,6 +74,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             idNamingMode: idNamingMode,
             enableSubframes: enableSubframes,
             markersSource: markersSource,
+            excludeRoles: excludeRoles,
             logger: logger
         )
     }
@@ -115,6 +122,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 )
             }
         }
+        
+        // remove markers with excluded roles
+        fcpxmlMarkers.removeAll(where: {
+            $0.roles.contains(roleWithAnyNameIn: excludeRoles)
+        })
         
         return fcpxmlMarkers
     }
