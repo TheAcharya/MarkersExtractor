@@ -188,24 +188,27 @@ extension MarkerRoles {
         }
     }
     
-    /// FCP often writes built-in roles as lowercase strings
-    /// (ie: "dialogue" or "dialogue.dialogue-1").
-    /// This will title-cased these roles (ie: "Dialogue") to match FCP's display.
-    public mutating func titleCaseBuiltInRoles() {
+    /// Process markers, performing post-extraction formatting.
+    public mutating func process() {
+        removeEmptyStrings()
+        
         if var audioRoles = audio {
             for index in audioRoles.indices {
-                if audioRoles[index].isMainRoleBuiltIn == true {
-                    audioRoles[index] = audioRoles[index].titleCased(derivedOnly: true)
-                }
+                audioRoles[index] = FCPXMLMarkerExtractor
+                    .processExtractedRole(role: audioRoles[index])
             }
             audio = audioRoles
         }
         
-        if video?.isMainRoleBuiltIn == true {
-            video = video?.titleCased(derivedOnly: true)
+        if let videoRole = video {
+            video = FCPXMLMarkerExtractor
+                .processExtractedRole(role: videoRole)
         }
         
-        // don't title-case caption roles.
+        if let captionRole = caption {
+            caption = FCPXMLMarkerExtractor
+                .processExtractedRole(role: captionRole)
+        }
     }
 }
 

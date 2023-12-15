@@ -4,12 +4,15 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileKit
+import Foundation
 import OTCore
 
 /// Returns all the roles used in a FCPXML document that are relevant to the main project
 /// timeline.
+///
+/// Results will be formatted in the same manner as ``MarkersExtractor`` formats
+/// roles for output manifest files.
 ///
 /// Results will be sorted by type (video, audio, caption), then by name.
 public final class RolesExtractor {
@@ -21,6 +24,9 @@ public final class RolesExtractor {
     
     /// Returns all the roles used in the FCPXML document that are relevant to the main project
     /// timeline.
+    ///
+    /// Results will be formatted in the same manner as ``MarkersExtractor`` formats
+    /// roles for output manifest files.
     ///
     /// Results will be sorted by type (video, audio, caption), then by name.
     ///
@@ -38,6 +44,9 @@ public final class RolesExtractor {
         
         let sorted = projectsRoles
             .flatMap { $0 }
+            .map {
+                FCPXMLMarkerExtractor.processExtractedRole(role: $0)
+            }
         
         return sorted
     }

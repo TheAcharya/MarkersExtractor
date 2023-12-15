@@ -319,22 +319,27 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             }
         }
         
-        // collapse subroles that are redundant
-        markerRoles.collapseSubroles()
-        
-        // remove any roles with empty strings
-        markerRoles.removeEmptyStrings()
-        
-        // FCP often writes built-in roles as lowercase strings
-        // (ie: "dialogue" or "dialogue.dialogue-1")
-        // so we will explicitly title-case these if encountered, so as to match
-        // FCP's title-cased display of these roles (ie: "Dialogue")
-        markerRoles.titleCaseBuiltInRoles()
+        // process markers
+        markerRoles.process()
         
         return markerRoles
     }
     
     private func timecodeStringFormat() -> Timecode.StringFormat {
         enableSubframes ? [.showSubFrames] : .default()
+    }
+}
+
+extension FCPXMLMarkerExtractor {
+    static func processExtractedRole<Role: FCPXMLRole>(role: Role) -> Role {
+        role
+            // collapse subroles that are redundant
+            .collapsingSubRole()
+        
+            // FCP often writes built-in roles as lowercase strings
+            // (ie: "dialogue" or "dialogue.dialogue-1")
+            // so we will explicitly title-case these if encountered, so as to match
+            // FCP's title-cased display of these roles (ie: "Dialogue")
+            .titleCasedDefaultRole(derivedOnly: true)
     }
 }
