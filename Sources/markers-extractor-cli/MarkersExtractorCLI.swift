@@ -225,12 +225,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Flag(name: [.customLong("no-progress")], help: "Disable progress logging.")
     var noProgressLogging = false
     
-    @Flag(
-        name: [.customLong("no-media")],
-        help: "Bypass media. No thumbnails will be generated."
-    )
-    var noMedia: Bool = MarkersExtractor.Settings.Defaults.noMedia
-    
     @Option(
         name: [.customLong("media-search-path")],
         help: ArgumentHelp(
@@ -262,11 +256,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         if imageFormat == .animated(.gif), imageSizePercent == nil {
             imageSizePercent = MarkersExtractor.Settings.Defaults.imageSizePercentGIF
         }
-        
-        if !exportFormat.concreteType.isMediaCapable {
-            // force no media for profiles that are not able to use media
-            noMedia = true
-        }
     }
     
     mutating func run() async throws {
@@ -283,7 +272,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
                 outputDir: outputDir,
-                noMedia: noMedia,
                 mediaSearchPaths: mediaSearchPaths,
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,

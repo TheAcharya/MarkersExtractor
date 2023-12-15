@@ -34,7 +34,6 @@ extension MarkersExtractor {
         public var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical
         public var imageLabelHideNames: Bool
         public var fcpxml: FCPXMLFile
-        public var noMedia: Bool
         public var mediaSearchPaths: [URL]
         public var outputDir: URL
         public var resultFilePath: URL?
@@ -43,7 +42,6 @@ extension MarkersExtractor {
         public init(
             fcpxml: FCPXMLFile,
             outputDir: URL,
-            noMedia: Bool = Defaults.noMedia,
             mediaSearchPaths: [URL]? = nil,
             exportFormat: ExportProfileFormat = Defaults.exportFormat,
             enableSubframes: Bool = Defaults.enableSubframes,
@@ -76,7 +74,6 @@ extension MarkersExtractor {
             self.outputDir = outputDir
             
             // defaulted parameters
-            self.noMedia = noMedia
             self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
@@ -147,59 +144,56 @@ extension MarkersExtractor.Settings {
             }
         }
         
-        // if media is bypassed, none of the thumbnail parameters will be used.
-        if !noMedia {
-            guard NSFont(name: imageLabelFont, size: 1) != nil else {
-                throw MarkersExtractorError.validation(
-                    .fontNotUsable(imageLabelFont)
-                )
-            }
-            
-            if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
-               imageLabelFontStrokeWidth < 0
-            {
-                throw MarkersExtractorError.validation(
-                    .invalidImageLabelStrokeWidth
-                )
-            }
-            
-            guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
-                throw MarkersExtractorError.validation(
-                    .invalidImageLabelFontOpacity
-                )
-            }
-            
-            if let imageHeight = imageHeight, imageHeight <= 0 {
-                throw MarkersExtractorError.validation(
-                    .invalidImageHeight
-                )
-            }
-            
-            if let imageWidth = imageWidth, imageWidth <= 0 {
-                throw MarkersExtractorError.validation(
-                    .invalidImageWidth
-                )
-            }
-            
-            if let imageSizePercent = imageSizePercent,
-               !Validation.imageSizePercent.contains(imageSizePercent)
-            {
-                throw MarkersExtractorError.validation(
-                    .invalidImageSizePercent
-                )
-            }
-            
-            guard Validation.imageQuality.contains(imageQuality) else {
-                throw MarkersExtractorError.validation(
-                    .invalidImageQuality
-                )
-            }
-            
-            guard Validation.outputFPS.contains(gifFPS) else {
-                throw MarkersExtractorError.validation(
-                    .invalidOutputFPS
-                )
-            }
+        guard NSFont(name: imageLabelFont, size: 1) != nil else {
+            throw MarkersExtractorError.validation(
+                .fontNotUsable(imageLabelFont)
+            )
+        }
+        
+        if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
+           imageLabelFontStrokeWidth < 0
+        {
+            throw MarkersExtractorError.validation(
+                .invalidImageLabelStrokeWidth
+            )
+        }
+        
+        guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
+            throw MarkersExtractorError.validation(
+                .invalidImageLabelFontOpacity
+            )
+        }
+        
+        if let imageHeight = imageHeight, imageHeight <= 0 {
+            throw MarkersExtractorError.validation(
+                .invalidImageHeight
+            )
+        }
+        
+        if let imageWidth = imageWidth, imageWidth <= 0 {
+            throw MarkersExtractorError.validation(
+                .invalidImageWidth
+            )
+        }
+        
+        if let imageSizePercent = imageSizePercent,
+           !Validation.imageSizePercent.contains(imageSizePercent)
+        {
+            throw MarkersExtractorError.validation(
+                .invalidImageSizePercent
+            )
+        }
+        
+        guard Validation.imageQuality.contains(imageQuality) else {
+            throw MarkersExtractorError.validation(
+                .invalidImageQuality
+            )
+        }
+        
+        guard Validation.outputFPS.contains(gifFPS) else {
+            throw MarkersExtractorError.validation(
+                .invalidOutputFPS
+            )
         }
     }
 }
@@ -246,7 +240,6 @@ extension MarkersExtractor.Settings {
         public static let imageLabelHideNames = false
         public static let resultFilePath: URL? = nil
         public static let exportFolderFormat: ExportFolderFormat = .medium
-        public static let noMedia: Bool = false
         public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
             [fcpxml.defaultMediaSearchPath].compactMap { $0 }
         }
