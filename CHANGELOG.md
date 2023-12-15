@@ -12,8 +12,7 @@
 
 ### Changes
 
-- Removed `--no-media` CLI flag (#77)
-  If no media is found, extraction now continues without thumbnail image generation
+- If no media file is found, extraction now continues without thumbnail image generation (#77)
 - Removed `--include-outside-clip-boundaries` CLI flag (#78)
 
 ### Refinements
