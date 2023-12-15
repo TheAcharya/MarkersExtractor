@@ -9,7 +9,7 @@ import TimecodeKit
 import XCTest
 
 final class ProgressTests: XCTestCase {
-    func testFCPXMLMarkerExtractor() throws {
+    func testFCPXMLMarkerExtractor() async throws {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
@@ -21,7 +21,7 @@ final class ProgressTests: XCTestCase {
         )
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        _ = extractor.extractMarkers()
+        _ = await extractor.extractMarkers()
         XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     

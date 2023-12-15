@@ -11,7 +11,7 @@ import XCTest
 
 final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    func testOutOfClipBoundsTests_Include() throws {
+    func testOutOfClipBoundsTests_Include() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -19,14 +19,14 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         settings.includeOutsideClipBoundaries = true
         
         let extractor = MarkersExtractor(settings)
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         // check clips
         
         let fr: TimecodeFrameRate = .fps25
         
         let clip1ParentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
+            clipType: FinalCutPro.FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
             // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:00:00", at: fr),
@@ -38,7 +38,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         )
         
         let clip2ParentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ClipType.assetClip.name,
+            clipType: FinalCutPro.FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
             // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:20:20", at: fr),
@@ -51,7 +51,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // check markers
         
-        XCTAssertEqual(markers.count, 6)
+        XCTAssertEqual(markers.count, 5)
         
         // if the clip is the first clip on the timeline (it starts at 00:00:00:00) and
         // it had been resized from its left edge to result in an out-of-boundary marker prior to
@@ -59,11 +59,12 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // clip 1
         
-        let marker0 = try XCTUnwrap(markers[safe: 5])
-        XCTAssertEqual(marker0.name, "Marker 1")
-        XCTAssertEqual(marker0.position, (-tc("00:00:00:22", at: fr)).flattened())
-        XCTAssertEqual(marker0.isOutOfBounds, true)
-        XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
+        // commented out - we disabled support for out-of-bounds markers
+        // let marker0 = try XCTUnwrap(markers[safe: 5])
+        // XCTAssertEqual(marker0.name, "Marker 1")
+        // XCTAssertEqual(marker0.position, (-tc("00:00:00:22", at: fr)).flattened())
+        // XCTAssertEqual(marker0.isOutOfBounds, true)
+        // XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
         
         let marker1 = try XCTUnwrap(markers[safe: 0])
         XCTAssertEqual(marker1.name, "Marker 2")
@@ -98,7 +99,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         XCTAssertEqual(marker5.parentInfo, clip2ParentInfo)
     }
     
-    func testOutOfClipBoundsTests_DoNotInclude() throws {
+    func testOutOfClipBoundsTests_DoNotInclude() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -106,7 +107,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         settings.includeOutsideClipBoundaries = false
         
         let extractor = MarkersExtractor(settings)
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         let fr: TimecodeFrameRate = .fps25
         

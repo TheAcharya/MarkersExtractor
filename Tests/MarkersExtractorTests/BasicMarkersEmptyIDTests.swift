@@ -10,13 +10,13 @@ import XCTest
 
 final class BasicMarkersEmptyIDTests: XCTestCase {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs() throws {
+    func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         
-        try MarkerIDMode.allCases.forEach { idMode in
+        for idMode in MarkerIDMode.allCases {
             settings.idNamingMode = idMode
             
             let extractor = MarkersExtractor(settings)
@@ -26,13 +26,27 @@ final class BasicMarkersEmptyIDTests: XCTestCase {
             case .projectTimecode:
                 // no way case an error since timecode will always be a non-empty string.
                 // so just test that no error is thrown here.
-                XCTAssertNoThrow(try extractor.extractMarkers())
+                do {
+                    _ = try await extractor.extractMarkers()
+                } catch {
+                    XCTFail()
+                }
             case .name:
                 // expect an error here - 3rd marker has an empty Name
-                XCTAssertThrowsError(try extractor.extractMarkers())
+                do {
+                    _ = try await extractor.extractMarkers()
+                    XCTFail("Expected error to be thrown.")
+                } catch {
+                    // we want an error
+                }
             case .notes:
                 // expect an error here - 2nd marker has an empty Name
-                XCTAssertThrowsError(try extractor.extractMarkers())
+                do {
+                    _ = try await extractor.extractMarkers()
+                    XCTFail("Expected error to be thrown.")
+                } catch {
+                    // we want an error
+                }
             }
         }
     }

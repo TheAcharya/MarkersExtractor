@@ -54,7 +54,7 @@ extension MarkersExtractor {
         logger.info("Extracting \(s.markersSource)...")
         
         // increments progress by 5%
-        var markers = try extractMarkers(
+        var markers = try await extractMarkers(
             preloadedProjects: projects,
             parentProgress: ParentProgress(progress: progress, unitCount: 5)
         )

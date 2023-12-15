@@ -10,7 +10,7 @@ import XCTest
 
 final class BasicMarkersSubframesTests: XCTestCase {
     /// Test that fraction time values that have subframes correctly convert to Timecode.
-    func testBasicMarkers_extractMarkers_TimecodeSubframes() throws {
+    func testBasicMarkers_extractMarkers_TimecodeSubframes() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -18,7 +18,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
         settings.enableSubframes = true
         
         let extractor = MarkersExtractor(settings)
-        let markers = try extractor.extractMarkers().sorted()
+        let markers = try await extractor.extractMarkers().sorted()
         
         // 24 total markers.
         // 6 markers are ignored because they are within compound clips (the 2 instances of the

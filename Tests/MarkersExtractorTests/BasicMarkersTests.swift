@@ -14,7 +14,7 @@ final class BasicMarkersTests: XCTestCase {
     ///
     /// Note that two markers share the same marker ID. This test also checks the default behavior
     /// of non-unique IDs.
-    func testBasicMarkers_extractMarkers() throws {
+    func testBasicMarkers_extractMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -25,14 +25,14 @@ final class BasicMarkersTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         XCTAssertEqual(markers.count, 4)
         
         let fr: TimecodeFrameRate = .fps29_97
         
         let parentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ClipType.title.name,
+            clipType: FinalCutPro.FCPXML.ElementType.title.name,
             clipName: "Basic Title",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),
@@ -76,7 +76,7 @@ final class BasicMarkersTests: XCTestCase {
         XCTAssertEqual(marker2.parentInfo, parentInfo)
         
         let marker3 = try XCTUnwrap(markers[safe: 3])
-        XCTAssertEqual(marker3.type, .marker(.chapter(posterOffset: +tc("00:00:00:10.79", at: fr))))
+        XCTAssertEqual(marker3.type, .marker(.chapter(posterOffset: Fraction(11, 30))))
         XCTAssertEqual(marker3.name, "Marker 3")
         XCTAssertEqual(marker3.notes, "more notes here")
         XCTAssertEqual(
@@ -88,19 +88,19 @@ final class BasicMarkersTests: XCTestCase {
     }
     
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
-    func testBasicMarkers_extractMarkers_uniquing() throws {
+    func testBasicMarkers_extractMarkers_uniquing() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
         
-        try MarkerIDMode.allCases.forEach { idMode in
+        for idMode in MarkerIDMode.allCases {
             settings.idNamingMode = idMode
             
             let extractor = MarkersExtractor(settings)
             
             // extract and unique
-            var markers = try extractor.extractMarkers()
+            var markers = try await extractor.extractMarkers()
             markers = extractor.uniquingMarkerIDs(in: markers)
             
             // verify correct IDs

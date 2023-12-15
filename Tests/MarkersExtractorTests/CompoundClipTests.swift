@@ -12,7 +12,7 @@ import XCTest
 final class CompoundClipTests: XCTestCase {
     /// Ensure that markers directly attached to compound clips (`ref-clip`s) on the main timeline
     /// are preserved, while all markers within compound clips are discarded.
-    func testCompoundClips() throws {
+    func testCompoundClips() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -23,7 +23,7 @@ final class CompoundClipTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         XCTAssertEqual(markers.count, 1)
         

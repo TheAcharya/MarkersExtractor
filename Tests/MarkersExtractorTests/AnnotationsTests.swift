@@ -12,7 +12,7 @@ import XCTest
 final class AnnotationsTests: XCTestCase {
     // TODO: add test for filtering disabled captions once that's implemented
     /// Test importing captions
-    func testAnnotations_CaptionsOnly() throws {
+    func testAnnotations_CaptionsOnly() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -24,7 +24,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         XCTAssertEqual(markers.count, 2)
         
@@ -50,7 +50,7 @@ final class AnnotationsTests: XCTestCase {
     }
     
     /// Test importing captions
-    func testAnnotations_MarkersAndCaptions() throws {
+    func testAnnotations_MarkersAndCaptions() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -62,7 +62,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers()
         
         XCTAssertEqual(markers.count, 3)
         

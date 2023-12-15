@@ -28,7 +28,7 @@ final class MarkersExtractorTests: XCTestCase {
                 position: tc(position, at: .fps24), 
                 isOutOfBounds: false,
                 parentInfo: .init(
-                    clipType: FinalCutPro.FCPXML.ClipType.video.name,
+                    clipType: FinalCutPro.FCPXML.ElementType.video.name,
                     clipName: "Some Clip",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
@@ -84,7 +84,7 @@ final class MarkersExtractorTests: XCTestCase {
                 position: tc(position, at: .fps24), 
                 isOutOfBounds: false,
                 parentInfo: .init(
-                    clipType: FinalCutPro.FCPXML.ClipType.video.name,
+                    clipType: FinalCutPro.FCPXML.ElementType.video.name,
                     clipName: "Some Clip",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
