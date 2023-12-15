@@ -4,11 +4,19 @@
 
 ### New Features
 
-- Complete rewrite of XML parser/extractor (in DAWFileKit dependency) with substantial performance improvements
 - Added `RolesExtractor` class to library to extract roles from a FCPXML file (#69)
 - Added extraction date to result file (#76)
 - Added CLI version number to result file (#75)
 - Now logs version number when starting extraction (#75)
+
+### Changes
+
+- Removed `--no-media` CLI flag (#77)
+  If no media is found, extraction now continues without thumbnail image generation
+
+### Refinements
+
+- Complete rewrite of XML parser/extractor (in DAWFileKit dependency) with substantial performance improvements
 
 ## [0.2.8](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.2.8) (2023-11-30)
 
