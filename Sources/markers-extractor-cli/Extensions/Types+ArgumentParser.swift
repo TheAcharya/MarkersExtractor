@@ -10,18 +10,33 @@ import DAWFileKit
 
 // Export
 
-extension ExportProfileFormat: ExpressibleByArgument { }
-extension ExportField: ExpressibleByArgument { }
-extension ExportFolderFormat: ExpressibleByArgument { }
+extension ExportProfileFormat: CustomExpressibleByArgument { }
+extension ExportField: CustomExpressibleByArgument { }
+extension ExportFolderFormat: CustomExpressibleByArgument { }
 
 // Markers
 
-extension MarkerIDMode: ExpressibleByArgument { }
-extension MarkerImageFormat: ExpressibleByArgument { }
-extension MarkerLabelProperties.AlignHorizontal: ExpressibleByArgument { }
-extension MarkerLabelProperties.AlignVertical: ExpressibleByArgument { }
-extension MarkersSource: ExpressibleByArgument { }
+extension MarkerIDMode: CustomExpressibleByArgument { }
+extension MarkerImageFormat: CustomExpressibleByArgument { }
+extension MarkerLabelProperties.AlignHorizontal: CustomExpressibleByArgument { }
+extension MarkerLabelProperties.AlignVertical: CustomExpressibleByArgument { }
+extension MarkersSource: CustomExpressibleByArgument { }
 
 // DAWFileKit Types
 
-extension FinalCutPro.FCPXML.RoleType: ExpressibleByArgument { }
+extension FinalCutPro.FCPXML.RoleType: CustomExpressibleByArgument { }
+
+// CaseIterable suppression
+// prevents ArgumentParser from writing out enum case allCases in the argument help.
+
+protocol CustomExpressibleByArgument: ExpressibleByArgument { }
+
+extension CustomExpressibleByArgument {
+    public static var allValueStrings: [String] { [] }
+}
+
+func caseIterableValueString<R: RawRepresentable>(
+    for type: R.Type
+) -> String where R.RawValue == String, R: CaseIterable {
+    R.allCases.map { $0.rawValue }.joined(separator: " | ")
+}

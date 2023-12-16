@@ -25,7 +25,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Metadata export format.",
-            valueName: ExportProfileFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: ExportProfileFormat.self)
         )
     )
     var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
@@ -36,8 +36,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Annotations to import. If captions are used, their start timecode determines their position.",
-            valueName: MarkersSource.allCases
-                .map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: MarkersSource.self)
         )
     )
     var markersSource: MarkersSource = MarkersExtractor.Settings.Defaults.markersSource
@@ -54,7 +53,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
-            valueName: MarkerImageFormat.allCases.map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: MarkerImageFormat.self)
         )
     )
     var imageFormat: MarkerImageFormat = MarkersExtractor.Settings.Defaults.imageFormat
@@ -95,8 +94,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Marker naming mode. This affects Marker IDs and image filenames.",
-            valueName: MarkerIDMode.allCases
-                .map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: MarkerIDMode.self)
         )
     )
     var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
@@ -105,7 +103,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         name: [.customLong("label")],
         help: ArgumentHelp(
             "Label to overlay on thumb images. This argument can be supplied more than once to apply multiple labels.",
-            valueName: "\(ExportField.allCases.map { $0.rawValue }.joined(separator: ", "))"
+            valueName: caseIterableValueString(for: ExportField.self)
         )
     )
     var imageLabels: [ExportField] = []
@@ -166,8 +164,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         name: [.customLong("label-align-horizontal")],
         help: ArgumentHelp(
             "Horizontal alignment of image labels.",
-            valueName: MarkerLabelProperties.AlignHorizontal.allCases
-                .map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: MarkerLabelProperties.AlignHorizontal.self)
         )
     )
     var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = MarkersExtractor.Settings
@@ -177,8 +174,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         name: [.customLong("label-align-vertical")],
         help: ArgumentHelp(
             "Vertical alignment of image labels.",
-            valueName: MarkerLabelProperties.AlignVertical.allCases
-                .map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: MarkerLabelProperties.AlignVertical.self)
         )
     )
     var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
@@ -203,8 +199,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         name: [.customLong("folder-format")],
         help: ArgumentHelp(
             "Output folder name format.",
-            valueName: ExportFolderFormat.allCases
-                .map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: ExportFolderFormat.self)
         )
     )
     var exportFolderFormat: ExportFolderFormat = MarkersExtractor.Settings.Defaults.exportFolderFormat
@@ -215,7 +210,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Log level.",
-            valueName: Logger.Level.allCases.map { $0.rawValue }.joined(separator: ", ")
+            valueName: caseIterableValueString(for: Logger.Level.self)
         )
     )
     var logLevel: Logger.Level = .info
