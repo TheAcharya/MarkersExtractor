@@ -56,12 +56,12 @@
 
 ### Pre-Compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.8/markers-extractor-cli-0.2.8.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.0/markers-extractor-cli-0.3.0.zip).
 
 ### Compiled From Source
 
 ```shell
-VERSION=0.2.8 # replace this with the git tag of the version you need
+VERSION=0.3.0 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -87,14 +87,17 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable, midi, notion>
+  --export-format <airtable | midi | notion>
                           Metadata export format. (default: notion)
   --enable-subframes      Enable output of timecode subframes.
-  --markers-source <markers, markersAndCaptions, captions>
+  --markers-source <markers | markersAndCaptions | captions>
                           Annotations to import. If captions are used, their
                           start timecode determines their position. (default:
                           markers)
-  --image-format <png, jpg, gif>
+  --exclude-role <name>   Exclude markers with a specified role. This argument
+                          can be supplied more than once to apply multiple role
+                          exclusions.
+  --image-format <png | jpg | gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
                           and --gif-span. (default: png)
@@ -107,13 +110,10 @@ OPTIONS:
                           for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
-  --id-naming-mode <projectTimecode, name, notes>
+  --id-naming-mode <projectTimecode | name | notes>
                           Marker naming mode. This affects Marker IDs and image
                           filenames. (default: projectTimecode)
-  --include-outside-clip-boundaries
-                          Include markers that are outside the bounds of a
-                          clip. Also suppresses related log messages.
-  --label <id, name, type, checked, status, notes, position, clipType, clipName, clipDuration, videoRole, audioRole, eventName, projectName, libraryName, iconImage, imageFileName>
+  --label <id | name | type | checked | status | notes | position | clipType | clipName | clipDuration | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
@@ -129,26 +129,27 @@ OPTIONS:
                           Label stroke color (default: #000)
   --label-stroke-width <w>
                           Label stroke width, 0 to disable. (default: auto)
-  --label-align-horizontal <left, center, right>
+  --label-align-horizontal <left | center | right>
                           Horizontal alignment of image labels. (default: left)
-  --label-align-vertical <top, center, bottom>
+  --label-align-vertical <top | center | bottom>
                           Vertical alignment of image labels. (default: top)
   --label-hide-names      Hide names of image labels.
   --result-file-path <path>
                           Path including filename to create a JSON result file.
                           If this option is not passed, it won't be created.
-  --folder-format <short, medium, long>
+  --folder-format <short | medium | long>
                           Output folder name format. (default: medium)
   --log <log>             Log file path.
-  --log-level <trace, debug, info, notice, warning, error, critical>
-                          Log level. (default: info)
+  --log-level <trace | debug | info | notice | warning | error | critical>
+                          Log level. (values: trace, debug, info, notice,
+                          warning, error, critical; default: info)
   --quiet                 Disable log.
   --no-progress           Disable progress logging.
-  --no-media              Bypass media. No thumbnails will be generated.
   --media-search-path <path>
                           Media search path. This argument can be supplied more
                           than once to use multiple paths. (default: same
                           folder as fcpxml(d))
+  --no-media              Bypass media. No thumbnails will be generated.
   --version               Show the version.
   -h, --help              Show help information.
 ```
@@ -321,7 +322,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.2.8")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.0")
     ],
     targets: [
         .target(
