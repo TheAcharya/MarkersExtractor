@@ -5,6 +5,7 @@
 ### New Features
 
 - Added CSV export profile (#74)
+- Added TSV export profile (#74)
 
 ## [0.3.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.0) (2023-12-16)
 
