@@ -19,6 +19,7 @@ extension AVAssetImageGenerator {
         let isFinishedIgnoreImage: Bool
     }
     
+    @discardableResult
     func images(
         forTimesIn descriptors: [ImageDescriptor],
         updating progress: Progress? = nil,
