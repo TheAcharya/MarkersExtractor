@@ -90,7 +90,7 @@ ARGUMENTS:
 
 OPTIONS:
   --export-format <airtable | csv | midi | notion | tsv>
-                          Metadata export format. (default: notion)
+                          Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
   --markers-source <markers | markersAndCaptions | captions>
                           Annotations to import. If captions are used, their
