@@ -8,6 +8,7 @@ import Foundation
 
 public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case airtable
+    case csv
     case midi
     case notion
 }
@@ -17,6 +18,8 @@ extension ExportProfileFormat {
         switch self {
         case .airtable:
             return "Airtable"
+        case .csv:
+            return "CSV"
         case .midi:
             return "MIDI File"
         case .notion:
@@ -28,6 +31,8 @@ extension ExportProfileFormat {
         switch self {
         case .airtable:
             return AirtableExportProfile.self
+        case .csv:
+            return CSVProfile.self
         case .midi:
             return MIDIFileExportProfile.self
         case .notion:

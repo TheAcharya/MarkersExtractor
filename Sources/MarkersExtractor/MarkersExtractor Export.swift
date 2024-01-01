@@ -26,6 +26,19 @@ extension MarkersExtractor {
                 payload: .init(projectName: projectName, outputURL: outputURL),
                 parentProgress: parentProgress
             )
+        case .csv:
+            return try await export(
+                for: CSVProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    projectName: projectName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
+            
         case .midi:
             return try await export(
                 for: MIDIFileExportProfile.self,
