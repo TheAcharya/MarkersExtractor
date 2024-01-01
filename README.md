@@ -56,12 +56,12 @@
 
 ### Pre-Compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.0/markers-extractor-cli-0.3.0.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.1/markers-extractor-cli-0.3.1.zip).
 
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.0 # replace this with the git tag of the version you need
+VERSION=0.3.1 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -87,7 +87,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable | midi | notion>
+  --export-format <airtable | csv | midi | notion | tsv>
                           Metadata export format. (default: notion)
   --enable-subframes      Enable output of timecode subframes.
   --markers-source <markers | markersAndCaptions | captions>
@@ -307,8 +307,8 @@ It is recommended to read this file with a JSON parser to obtain the values for 
 
 ### Intended Behaviour & Logic
 
-The tool will only parse Markers of your project's main timeline.
-Markers nested deep within compound, multicam or synchronized Clips will be ignored.
+The tool will only parse markers of your project's main timeline.
+Markers nested deep within compound, multicam or synchronized clips will be ignored.
 
 ### Developer Library
 
@@ -322,7 +322,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.0")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.1")
     ],
     targets: [
         .target(
