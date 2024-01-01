@@ -9,7 +9,7 @@ import Logging
 
 public class NotionExportProfile: NSObject, ProgressReporting, ExportProfile {
     // ExportProfile
-    public typealias Payload = CSVJSONExportPayload
+    public typealias Payload = JSONExportPayload
     public typealias PreparedMarker = StandardExportMarker
     public static let profile: ExportProfileFormat = .notion
     public static let isMediaCapable: Bool = true
