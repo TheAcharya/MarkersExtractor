@@ -36,7 +36,7 @@ For code owners/maintainers, the following release spec is used:
 1. Unit tests must pass
 2. Ensure package dependencies are set to version numbers and not branch names.
 3. Perform the following file modifications:
-   - Update the version number string literal in `Sources/markers-extractor-cli/Version.swift`
+   - Update the version number string literal in `Sources/MarkersExtractor/Version.swift`
    - Update root `CHANGELOG.md`
      - with a condensed bullet-point list of changes/fixes/improvements according to its established format
      - where possible, reference the Issue/PR number(s) or commit(s) where each change was made
