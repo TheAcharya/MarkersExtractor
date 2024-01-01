@@ -221,7 +221,7 @@ extension MarkersExtractor.Settings {
         public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
             [fcpxml.defaultMediaSearchPath].compactMap { $0 }
         }
-        public static let exportFormat: ExportProfileFormat = .notion
+        public static let exportFormat: ExportProfileFormat = .csv
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers
         public static let excludeRoles: Set<String> = []
