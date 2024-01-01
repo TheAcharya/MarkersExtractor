@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.3.2
+
+### Changes
+
+- Default export profile is now CSV (#74, #82)
+
 ## [0.3.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.1) (2024-01-01)
 
 ### New Features
