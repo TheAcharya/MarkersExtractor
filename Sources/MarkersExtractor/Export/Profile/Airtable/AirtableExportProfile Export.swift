@@ -32,14 +32,8 @@ extension AirtableExportProfile {
         payload: Payload,
         noMedia: Bool
     ) throws {
-        try csvWriteManifest(
-            csvPath: payload.csvPayload.csvPath,
-            noMedia: noMedia,
-            preparedMarkers
-        )
-        
         try jsonWriteManifest(
-            jsonPath: payload.jsonPayload.jsonPath,
+            jsonPath: payload.jsonPath,
             noMedia: noMedia,
             preparedMarkers
         )
@@ -47,8 +41,7 @@ extension AirtableExportProfile {
     
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
-            .csvManifestPath: .url(payload.csvPayload.csvPath),
-            .jsonManifestPath: .url(payload.jsonPayload.jsonPath)
+            .jsonManifestPath: .url(payload.jsonPath)
         ]
     }
     

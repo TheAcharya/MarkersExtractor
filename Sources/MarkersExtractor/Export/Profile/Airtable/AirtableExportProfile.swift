@@ -9,7 +9,7 @@ import Logging
 
 public class AirtableExportProfile: NSObject, ProgressReporting, ExportProfile {
     // ExportProfile
-    public typealias Payload = CSVJSONExportPayload
+    public typealias Payload = JSONExportPayload
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = StandardExportMarker
     public static let profile: ExportProfileFormat = .airtable
