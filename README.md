@@ -30,8 +30,10 @@
 
 ## Extract Profiles
 
-- Notion (CSV) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
-- Airtable (CSV) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
+- Notion (JSON) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
+- Airtable (JSON) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
+- Comma-separated values (CSV) - Compatible with spreadsheet applications
+- Tab-separated values (TSV) - Compatible with spreadsheet application
 - Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
