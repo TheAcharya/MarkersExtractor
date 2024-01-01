@@ -61,6 +61,19 @@ extension MarkersExtractor {
                 payload: .init(projectName: projectName, outputURL: outputURL),
                 parentProgress: parentProgress
             )
+            
+        case .tsv:
+            return try await export(
+                for: TSVProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    projectName: projectName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         }
     }
     

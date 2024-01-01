@@ -14,30 +14,8 @@ extension ExportProfile {
         noMedia: Bool,
         _ preparedMarkers: [PreparedMarker]
     ) throws {
-        let rows = csvDictsToRows(preparedMarkers, noMedia: noMedia)
+        let rows = dictsToRows(preparedMarkers, noMedia: noMedia)
         let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
         try csvData.write(to: csvPath)
-    }
-    
-    // MARK: Helpers
-    
-    private func csvDictsToRows(
-        _ preparedMarkers: [PreparedMarker],
-        noMedia: Bool
-    ) -> [[String]] {
-        let dicts = preparedMarkers.map {
-            tableManifestFields(for: $0, noMedia: noMedia)
-        }
-        guard !dicts.isEmpty else { return [] }
-        
-        // header
-        var result = [Array(dicts[0].keys.map { $0.name })]
-        
-        // marker rows
-        result += dicts.map { row in
-            Array(row.values)
-        }
-        
-        return result
     }
 }

@@ -22,6 +22,9 @@ public struct ExportResult: Equatable, Hashable {
     /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
     public var csvManifestPath: URL?
     
+    /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
+    public var tsvManifestPath: URL?
+    
     /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
     public var jsonManifestPath: URL?
     
@@ -36,6 +39,7 @@ public struct ExportResult: Equatable, Hashable {
         profile: ExportProfileFormat,
         exportFolder: URL,
         csvManifestPath: URL? = nil,
+        tsvManifestPath: URL? = nil,
         jsonManifestPath: URL? = nil,
         midiFilePath: URL? = nil
     ) {
@@ -43,6 +47,7 @@ public struct ExportResult: Equatable, Hashable {
         self.profile = profile
         self.exportFolder = exportFolder
         self.csvManifestPath = csvManifestPath
+        self.tsvManifestPath = tsvManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
         version = packageVersion
@@ -65,6 +70,9 @@ extension ExportResult {
         
         /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
         case csvManifestPath
+        
+        /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
+        case tsvManifestPath
         
         /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
         case jsonManifestPath
@@ -113,6 +121,9 @@ extension ExportResult {
         if let value = dict[.csvManifestPath], case let .url(url) = value {
             csvManifestPath = url
         }
+        if let value = dict[.tsvManifestPath], case let .url(url) = value {
+            tsvManifestPath = url
+        }
         if let value = dict[.jsonManifestPath], case let .url(url) = value {
             jsonManifestPath = url
         }
@@ -129,6 +140,7 @@ extension ExportResult {
         dict[.profile] = profile.rawValue
         dict[.exportFolder] = exportFolder.path
         dict[.csvManifestPath] = csvManifestPath?.path
+        dict[.tsvManifestPath] = tsvManifestPath?.path
         dict[.jsonManifestPath] = jsonManifestPath?.path
         dict[.midiFilePath] = midiFilePath?.path
         dict[.version] = version

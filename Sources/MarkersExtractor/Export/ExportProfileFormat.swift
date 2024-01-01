@@ -11,6 +11,7 @@ public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case csv
     case midi
     case notion
+    case tsv
 }
 
 extension ExportProfileFormat {
@@ -24,6 +25,8 @@ extension ExportProfileFormat {
             return "MIDI File"
         case .notion:
             return "Notion"
+        case .tsv:
+            return "TSV"
         }
     }
     
@@ -37,6 +40,8 @@ extension ExportProfileFormat {
             return MIDIFileExportProfile.self
         case .notion:
             return NotionExportProfile.self
+        case .tsv:
+            return TSVProfile.self
         }
     }
 }
