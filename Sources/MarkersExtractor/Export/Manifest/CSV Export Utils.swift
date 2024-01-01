@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import CodableCSV
 import Foundation
 import OrderedCollections
+import TextFileKit
 
 extension ExportProfile {
     func csvWriteManifest(
@@ -15,7 +15,14 @@ extension ExportProfile {
         _ preparedMarkers: [PreparedMarker]
     ) throws {
         let rows = dictsToRows(preparedMarkers, noMedia: noMedia)
-        let csvData = try CSVWriter.encode(rows: rows, into: Data.self)
+        
+        guard let csvData = TextFile.CSV(table: rows).rawText.data(using: .utf8)
+        else {
+            throw MarkersExtractorError.extraction(.fileWrite(
+                "Could not encode CSV file."
+            ))
+        }
+        
         try csvData.write(to: csvPath)
     }
 }
