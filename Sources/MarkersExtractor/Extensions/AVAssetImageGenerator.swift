@@ -27,7 +27,7 @@ extension AVAssetImageGenerator {
             _ imageResult: Swift
                 .Result<CompletionHandlerResult, Error>
         ) async -> Void
-    ) async throws {
+    ) async throws -> [Fraction: CGImage] {
         let totalCount = Counter(count: descriptors.count) { count in
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
@@ -35,10 +35,12 @@ extension AVAssetImageGenerator {
             progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
-        await withThrowingTaskGroup(of: Void.self) { [weak self] taskGroup in
+        let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
+            of: (fraction: Fraction, image: CGImage)?.self
+        ) { [weak self] taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [weak self] in
-                    guard let self else { return }
+                    guard let self else { return nil }
                     
                     let requestedTime = descriptor.offsetFromVideoStart.cmTimeValue
                     
@@ -68,9 +70,31 @@ extension AVAssetImageGenerator {
                             )
                         )
                     )
+                    
+                    // we have to use Fraction as dictionary key since CMTime is not hashable on
+                    // older macOS versions
+                    
+                    if hasImage {
+                        return (
+                            fraction: descriptor.absoluteTimecode.cmTimeValue.fractionValue,
+                            image: imageForHandlerResult
+                        )
+                    } else {
+                        return nil
+                    }
                 }
             }
+            
+            var images: [Fraction: CGImage] = [:]
+            for try await result in taskGroup {
+                guard let result else { continue }
+                images[result.fraction] = result.image
+            }
+            
+            return images
         }
+        
+        return images
     }
     
     func images(

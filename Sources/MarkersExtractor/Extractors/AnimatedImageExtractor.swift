@@ -196,34 +196,30 @@ extension AnimatedImageExtractor {
         // important: frame images generation is ok to do concurrently, but
         // the creation of the GIF (CGImageDestinationAddImage) must happen serially
         
-        var images: [Fraction: CGImage] = [:]
-        try await generator
-            .images(forTimesIn: descriptors, updating: nil) { [weak self] descriptor, imageResult in
-                guard let self = self else {
-                    batchResult.addError(
-                        for: descriptor,
-                        .internalInconsistency("No reference to image extractor.")
-                    )
-                    return
-                }
-
-                do {
-                    let (image, isFinished) = try self.processFrame(
-                        for: imageResult,
-                        at: self.startTime
-                    )
-                    if let image {
-                        // we have to use Fraction as dictionary key since CMTime is not hashable on
-                        // older macOS versions
-                        images[descriptor.absoluteTimecode.cmTimeValue.fractionValue] = image
-                    }
-                    if isFinished { isBatchFinished = true }
-                } catch let error as AnimatedImageExtractorError {
-                    batchResult.addError(for: descriptor, error)
-                } catch {
-                    batchResult.addError(for: descriptor, .generateFrameFailed(error))
-                }
+        let images: [Fraction: CGImage] = try await generator.images(
+            forTimesIn: descriptors, 
+            updating: nil
+        ) { [weak self] descriptor, imageResult in
+            guard let self = self else {
+                batchResult.addError(
+                    for: descriptor,
+                    .internalInconsistency("No reference to image extractor.")
+                )
+                return
             }
+            
+            do {
+                let (/* image */ _, isFinished) = try self.processFrame(
+                    for: imageResult,
+                    at: self.startTime
+                )
+                if isFinished { isBatchFinished = true }
+            } catch let error as AnimatedImageExtractorError {
+                batchResult.addError(for: descriptor, error)
+            } catch {
+                batchResult.addError(for: descriptor, .generateFrameFailed(error))
+            }
+        }
         
         // TODO: throw error if `isBatchFinished == false`?
         assert(isBatchFinished)
