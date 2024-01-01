@@ -7,6 +7,10 @@
 - Added CSV export profile (#74)
 - Added TSV export profile (#74)
 
+### Refinements
+
+- CSV export correctly encodes fields that contain double-quote and/or comma characters (#74)
+
 ## [0.3.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.0) (2023-12-16)
 
 ### New Features
