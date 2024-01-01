@@ -7,6 +7,10 @@
 - Added CSV export profile (#74)
 - Added TSV export profile (#74)
 
+### Changes
+
+- Removed CSV manifest file export for Airtable and Notion profiles. (#21)
+
 ### Refinements
 
 - CSV export correctly encodes fields that contain double-quote and/or comma characters (#74)
