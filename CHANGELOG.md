@@ -6,7 +6,7 @@
 
 - Default export profile is now CSV (#74, #82)
 
-### Big Fixes
+### Bug Fixes
 
 - Fixed regression where labels would not be overlaid on animated GIF thumbnails (#83)
 
