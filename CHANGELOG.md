@@ -6,6 +6,10 @@
 
 - Default export profile is now CSV (#74, #82)
 
+### Big Fixes
+
+- Fixed regression where labels would not be overlaid on animated GIF thumbnails (#83)
+
 ## [0.3.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.1) (2024-01-01)
 
 ### New Features
