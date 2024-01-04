@@ -8,6 +8,7 @@
 
 ### Bug Fixes
 
+- Fixed issue where marker timecode locations were sometimes incorrect when a project contained mixed frame rates (#81)
 - Fixed regression where labels would not be overlaid on animated GIF thumbnails (#83)
 
 ## [0.3.1](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.1) (2024-01-01)
