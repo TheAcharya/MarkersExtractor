@@ -46,7 +46,7 @@ extension StillImageBatchExtractor {
         var isBatchFinished = false
         
         try await generator.images(forTimesIn: conversion.descriptors, updating: progress)
-            { [weak self] descriptor, imageResult in
+            { [weak self] descriptor, image, result in
                 guard let self = self else {
                     batchResult.addError(
                         for: descriptor,
@@ -59,7 +59,8 @@ extension StillImageBatchExtractor {
                 let label = descriptor.label
             
                 let frameResult = await self.processAndWriteFrameToDisk(
-                    for: imageResult,
+                    image: image,
+                    result: result,
                     fileName: fileName,
                     label: label
                 )
@@ -100,13 +101,14 @@ extension StillImageBatchExtractor {
     }
 
     private func processAndWriteFrameToDisk(
-        for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
+        image: CGImage,
+        result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         fileName: String,
         label: String?
     ) async -> Result<Bool, StillImageBatchExtractorError> {
         switch result {
         case let .success(result):
-            let image = await conversion.imageFilter?(result.image, label) ?? result.image
+            let image = await conversion.imageFilter?(image, label) ?? image
             
             let ciContext = CIContext()
             let ciImage = CIImage(cgImage: image)

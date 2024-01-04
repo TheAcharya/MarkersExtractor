@@ -61,9 +61,30 @@ extension NSColor {
 // MARK: - Images
 
 extension NSImage {
-    /// `UIImage` polyfill.
     convenience init(cgImage: CGImage) {
         self.init(cgImage: cgImage, size: .zero)
+    }
+}
+
+extension NSImage {
+    /// Compress image and write image file to disk.
+    func write(
+        to url: URL,
+        options: Data.WritingOptions = [],
+        type: NSBitmapImageRep.FileType,
+        compressionFactor: Double = 1.0
+    ) throws {
+        let properties: [NSBitmapImageRep.PropertyKey: Any] = [
+            .compressionFactor: compressionFactor as NSNumber
+        ]
+        guard
+            let imageData = tiffRepresentation,
+            let imageRep = NSBitmapImageRep(data: imageData),
+            let fileData = imageRep.representation(using: type, properties: properties)
+        else {
+            return
+        }
+        try fileData.write(to: url, options: options)
     }
 }
 

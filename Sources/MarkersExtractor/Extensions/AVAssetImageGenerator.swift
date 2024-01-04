@@ -10,7 +10,6 @@ import TimecodeKit
 
 extension AVAssetImageGenerator {
     struct CompletionHandlerResult {
-        let image: CGImage
         let requestedTime: CMTime
         let actualTime: CMTime
         let completedCount: Int
@@ -25,8 +24,8 @@ extension AVAssetImageGenerator {
         updating progress: Progress? = nil,
         completionHandler: @escaping (
             _ descriptor: ImageDescriptor,
-            _ imageResult: Swift
-                .Result<CompletionHandlerResult, Error>
+            _ image: inout CGImage,
+            _ result: Swift.Result<CompletionHandlerResult, Error>
         ) async -> Void
     ) async throws -> [Fraction: CGImage] {
         let totalCount = Counter(count: descriptors.count) { count in
@@ -47,7 +46,7 @@ extension AVAssetImageGenerator {
                     
                     let result = try await self.imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
-                    let imageForHandlerResult = result.image ?? CGImage.empty!
+                    var image = result.image ?? CGImage.empty!
                     
                     if hasImage {
                         completedCount.increment()
@@ -57,28 +56,26 @@ extension AVAssetImageGenerator {
                     
                     let isFinished = completedCount.count == totalCount.count
                     
+                    let completionResult = CompletionHandlerResult(
+                        requestedTime: requestedTime,
+                        actualTime: result.actualTime,
+                        completedCount: completedCount.count,
+                        totalCount: totalCount.count,
+                        isFinished: isFinished,
+                        isFinishedIgnoreImage: isFinished && !hasImage
+                    )
                     await completionHandler(
                         descriptor,
-                        .success(
-                            CompletionHandlerResult(
-                                image: imageForHandlerResult,
-                                requestedTime: requestedTime,
-                                actualTime: result.actualTime,
-                                completedCount: completedCount.count,
-                                totalCount: totalCount.count,
-                                isFinished: isFinished,
-                                isFinishedIgnoreImage: isFinished && !hasImage
-                            )
-                        )
+                        &image,
+                        .success(completionResult)
                     )
                     
-                    // we have to use Fraction as dictionary key since CMTime is not hashable on
-                    // older macOS versions
-                    
                     if hasImage {
+                        // we have to use Fraction as dictionary key since CMTime is not hashable on
+                        // older macOS versions
                         return (
                             fraction: descriptor.absoluteTimecode.cmTimeValue.fractionValue,
-                            image: imageForHandlerResult
+                            image: image
                         )
                     } else {
                         return nil
@@ -98,15 +95,16 @@ extension AVAssetImageGenerator {
         return images
     }
     
+    @discardableResult
     func images(
         forTimes times: [CMTime],
         updating progress: Progress? = nil,
         completionHandler: @escaping (
             _ time: CMTime,
+            _ image: inout CGImage,
             _ imageResult: Swift.Result<CompletionHandlerResult, Error>
-        )
-            -> Void
-    ) async throws {
+        ) async -> Void
+    ) async throws -> [Fraction: CGImage] {
         let totalCount = Counter(count: times.count) { count in
             progress?.totalUnitCount = Int64(exactly: count) ?? 0
         }
@@ -114,14 +112,16 @@ extension AVAssetImageGenerator {
             progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
         
-        await withThrowingTaskGroup(of: Void.self) { [weak self] taskGroup in
+        let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
+            of: (fraction: Fraction, image: CGImage)?.self
+        ) { [weak self] taskGroup in
             for requestedTime in times {
                 taskGroup.addTask { [weak self] in
-                    guard let self else { return }
+                    guard let self else { return nil }
                     
                     let result = try await self.imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
-                    let imageForHandlerResult = result.image ?? CGImage.empty!
+                    var image = result.image ?? CGImage.empty!
                     
                     if hasImage {
                         completedCount.increment()
@@ -131,23 +131,43 @@ extension AVAssetImageGenerator {
                     
                     let isFinished = completedCount.count == totalCount.count
                     
-                    completionHandler(
-                        requestedTime,
-                        .success(
-                            CompletionHandlerResult(
-                                image: imageForHandlerResult,
-                                requestedTime: requestedTime,
-                                actualTime: result.actualTime,
-                                completedCount: completedCount.count,
-                                totalCount: totalCount.count,
-                                isFinished: isFinished,
-                                isFinishedIgnoreImage: isFinished && !hasImage
-                            )
-                        )
+                    let completionResult = CompletionHandlerResult(
+                        requestedTime: requestedTime,
+                        actualTime: result.actualTime,
+                        completedCount: completedCount.count,
+                        totalCount: totalCount.count,
+                        isFinished: isFinished,
+                        isFinishedIgnoreImage: isFinished && !hasImage
                     )
+                    await completionHandler(
+                        requestedTime,
+                        &image,
+                        .success(completionResult)
+                    )
+                    
+                    if hasImage {
+                        // we have to use Fraction as dictionary key since CMTime is not hashable on
+                        // older macOS versions
+                        return (
+                            fraction: requestedTime.fractionValue,
+                            image: image
+                        )
+                    } else {
+                        return nil
+                    }
                 }
             }
+            
+            var images: [Fraction: CGImage] = [:]
+            for try await result in taskGroup {
+                guard let result else { continue }
+                images[result.fraction] = result.image
+            }
+            
+            return images
         }
+        
+        return images
     }
                                   
     /// Backward-compatible implementation of Apple's `image(at time: CMTime)`.

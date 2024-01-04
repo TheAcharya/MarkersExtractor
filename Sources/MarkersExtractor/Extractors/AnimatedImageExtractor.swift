@@ -199,7 +199,7 @@ extension AnimatedImageExtractor {
         let images: [Fraction: CGImage] = try await generator.images(
             forTimesIn: descriptors, 
             updating: nil
-        ) { [weak self] descriptor, imageResult in
+        ) { [weak self] descriptor, image, result in
             guard let self = self else {
                 batchResult.addError(
                     for: descriptor,
@@ -209,11 +209,16 @@ extension AnimatedImageExtractor {
             }
             
             do {
-                let (/* image */ _, isFinished) = try self.processFrame(
-                    for: imageResult,
+                let (processedImage, isFinished) = try self.processFrame(
+                    image: image,
+                    result: result,
                     at: self.startTime
                 )
                 if isFinished { isBatchFinished = true }
+                
+                if let processedImage {
+                    image = processedImage
+                }
             } catch let error as AnimatedImageExtractorError {
                 batchResult.addError(for: descriptor, error)
             } catch {
@@ -276,10 +281,11 @@ extension AnimatedImageExtractor {
         return generator
     }
 
-    /// - Returns: CGImage, or `nil` if
+    /// - Returns: CGImage, or `nil`.
     /// - Throws: ``AnimatedImageExtractorError``
     private func processFrame(
-        for result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
+        image: CGImage,
+        result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval
     ) throws -> (image: CGImage?, isFinished: Bool) {
         switch result {
@@ -290,17 +296,17 @@ extension AnimatedImageExtractor {
             }
 
             if result.completedCount == 1 {
-                logger.trace("CGImage: \(result.image.debugInfo)")
+                logger.trace("CGImage: \(image.debugInfo)")
             }
 
             // TODO: This is just a workaround. Look into the cause of this.
             // https://github.com/sindresorhus/Gifski/pull/262
             // Skip incorrect out-of-range frames.
-            if result.actualTime.seconds < startTime {
+            if result.actualTime.seconds < (startTime - 0.1) { // allow for small variances
                 return (nil, result.isFinished)
             }
-
-            let image = conversion.imageFilter?(result.image) ?? result.image
+            
+            let image = conversion.imageFilter?(image) ?? image
 
             assert(result.actualTime.seconds >= 0)
             
