@@ -4,12 +4,12 @@
 
 ### Changes
 
-- Progress is now always omitted from log file. (#75)
+- Progress is now always omitted from log file (#75)
 
 ### Bug Fixes
 
-- Fixed log file corruption when progress percentages were enabled. (#75)
-- Improved frame rate scaling accuracy for additional frame rates. (#81)
+- Fixed log file corruption when progress percentages were enabled (#75)
+- Improved frame rate scaling accuracy for additional frame rates (#81)
 
 ## [0.3.2](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.2) (2024-01-03)
 
@@ -31,7 +31,7 @@
 
 ### Changes
 
-- Removed CSV manifest file export for Airtable and Notion profiles. (#21)
+- Removed CSV manifest file export for Airtable and Notion profiles (#21)
 
 ### Refinements
 
@@ -94,7 +94,7 @@
 ### Changes
 
 - Changed `--done-filename` filename to `--result-file-path` path (#67)
-- Removed `--create-done-file` flag as it is now redundant. (#67)
+- Removed `--create-done-file` flag as it is now redundant (#67)
   If `--done-file-path` is specified, a result file will be written to disk and if not specified, none will be written.
 - Renamed result file JSON key `csvPath` to `csvManifestPath`
 - Renamed result file JSON key `jsonPath` to `jsonManifestPath`
