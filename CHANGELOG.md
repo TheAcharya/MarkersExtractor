@@ -4,11 +4,11 @@
 
 ### Changes
 
-- Progress is now always omitted from log file (#75)
+- Progress percentage messages are now always omitted from log file (#75)
 
 ### Bug Fixes
 
-- Fixed log file corruption when progress percentages were enabled (#75)
+- Fixed log file corruption when progress percentage messages were enabled (#75)
 - Improved frame rate scaling accuracy for additional frame rates (#81)
 
 ## [0.3.2](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.2) (2024-01-03)
