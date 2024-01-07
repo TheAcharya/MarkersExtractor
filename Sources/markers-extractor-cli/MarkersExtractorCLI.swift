@@ -261,8 +261,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     }
     
     mutating func run() async throws {
-        initLogging(logLevel: logQuiet ? nil : logLevel, logFile: log)
-        
         let settings: MarkersExtractor.Settings
         
         do {
@@ -306,10 +304,18 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             throw ValidationError(err.localizedDescription)
         }
         
-        let extractor = MarkersExtractor(settings)
+        let extractorLoggerLabel = "MarkersExtractor"
+        let extractorLogger = Logger(label: extractorLoggerLabel) { label in
+            fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logLevel, logFile: log)
+        }
+        
+        let extractor = MarkersExtractor(settings, logger: extractorLogger)
         
         if !noProgressLogging {
-            let progressLogger = Logger(label: "Progress")
+            let progressLoggerLabel = "Progress"
+            let progressLogger = Logger(label: progressLoggerLabel) { label in
+                consoleLogFactory(label: progressLoggerLabel, logLevel: logLevel)
+            }
             _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
         }
         
@@ -320,68 +326,4 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     }
     
     private var _progressLogging: ProgressLogging?
-}
-
-// MARK: Helpers
-
-extension MarkersExtractorCLI {
-    private func initLogging(logLevel: Logger.Level?, logFile: URL?) {
-        LoggingSystem.bootstrap { label in
-            guard let logLevel = logLevel else {
-                return SwiftLogNoOpLogHandler()
-            }
-
-            var logHandlers: [LogHandler] = [
-                ConsoleLogHandler(label: label)
-            ]
-
-            if let logFile = logFile {
-                do {
-                    try logHandlers.append(FileLogHandler(label: label, localFile: logFile))
-                } catch {
-                    print(
-                        "Cannot write to log file \(logFile.lastPathComponent.quoted):"
-                            + " \(error.localizedDescription)"
-                    )
-                }
-            }
-
-            logHandlers.indices.forEach { logHandlers[$0].logLevel = logLevel }
-
-            return MultiplexLogHandler(logHandlers)
-        }
-    }
-    
-    /// Observes changes in a `Progress` instance and logs updates to the console.
-    /// Codable conformance is a workaround to satisfy the compiler so we can store an
-    /// instance of this class in the AsyncParsableCommand struct.
-    private final class ProgressLogging: NSObject, Codable {
-        var logger: Logger
-        var progress: Progress?
-        var observation: NSKeyValueObservation?
-        
-        var lastOutput: String?
-        
-        init(to logger: Logger, progress: Progress) {
-            self.logger = logger
-            
-            super.init()
-            
-            self.progress = progress
-            observation = progress
-                .observe(\.fractionCompleted, options: [.new]) { [weak self] _, _ in
-                    guard let self else { return }
-                    let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
-                    guard self.lastOutput != output else { return } // suppress redundant output
-                    self.logger.info("\(output)")
-                    self.lastOutput = output
-                }
-        }
-        
-        func encode(to encoder: Encoder) throws { }
-        
-        init(from decoder: Decoder) throws {
-            logger = Logger(label: "Dummy")
-        }
-    }
 }

@@ -34,10 +34,12 @@ public struct ConsoleLogHandler: LogHandler {
         function: String,
         line: UInt
     ) {
-        if level == .info {
-            print("\(message)")
-        } else {
-            print("\(level.rawValue.uppercased()): \(message)")
+        DispatchQueue.main.async {
+            if level == .info {
+                print("\(message)")
+            } else {
+                print("\(level.rawValue.uppercased()): \(message)")
+            }
         }
     }
 }
