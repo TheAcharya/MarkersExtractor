@@ -22,6 +22,8 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         _ = await extractor.extractMarkers()
+        
+        // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
@@ -55,6 +57,8 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
         try await writer.write()
+        
+        // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - AnimatedImageExtractor
@@ -73,6 +77,8 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         let _ = try await extractor.convert()
+        
+        // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
@@ -104,6 +110,8 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
         try await writer.write()
+        
+        // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - StillImageBatchExtractor
@@ -122,6 +130,8 @@ final class ProgressTests: XCTestCase {
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
         let _ = try await extractor.convert()
+        
+        // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
 }
