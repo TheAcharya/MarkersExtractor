@@ -1,10 +1,12 @@
 # MarkersExtractor Change Log
 
-## [0.3.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.3) (2024-01-06)
+## [0.3.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.3) (2024-01-21)
 
 ### Changes
 
 - Progress percentage messages are now always omitted from log file (#75)
+- Added codesign and notarization to macOS binary
+- Added new macOS pkg release with notarization ticket stapled
 
 ### Bug Fixes
 
