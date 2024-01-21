@@ -43,7 +43,7 @@
   - [Compiled From Source](#compiled-from-source)
 - [Usage](#usage)
   - [CLI](#cli)
-  - [macOS Gatekeeper & Notarization](#macos-gatekeeper--notarization)
+  - [macOS Release](#macos-release)
   - [Examples](#examples)
   - [Result File Contents](#result-file-contents)
   - [Intended Behaviour & Logic](#intended-behaviour--logic)
@@ -156,16 +156,21 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
-### macOS Gatekeeper & Notarization
+### macOS Release
 
-After trying to run `markers-extractor-cli` for the first time, the process will be blocked by macOS's Gatekeeper, and a system dialog will appear which includes
+<details><summary>Privacy & Security</summary>
+<p>
 
-> "markers-extractor-cli" can't be opened because the developer cannot be verified...
+You have the option of two distinct releases: one packaged within a `.zip` archive and the other in a `.pkg` format. Navigate to the `Privacy & Security` settings and set your preference to `App Store and identified developers`.
 
-- To approve the process and allow `markers-extractor-cli` to run, go to:
-  _System Preferences → Security & Privacy → General_, and look in the bottom right corner for a button to click.
-- After approving `markers-extractor-cli`, it should run successfully. 
-- For more information, visit https://support.apple.com/en-us/HT202491.
+<p align="center"> <img src="https://github.com/TheAcharya/csv2notion-neo/blob/master/assets/macOS-privacy.png?raw=true"> </p>
+
+</p>
+</details>
+
+Utilise the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary located within `/Applications/Airlift/airlift`. To uninstall, you can simply delete the folder containing the binary.
+
+<p align="center"> <img src="https://github.com/TheAcharya/csv2notion-neo/blob/master/assets/macOS-installer.png?raw=true"> </p>
 
 ### Examples
 
