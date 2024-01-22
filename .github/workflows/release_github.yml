@@ -101,7 +101,7 @@ jobs:
         xcrun notarytool submit "notarization-m.zip" --keychain-profile "notarytool-profile" --progress --wait
 
         cp -R "$APP" dist/
-        zip -q -r dist_bin/markers-extractor-cli_${{ env.VERSION }}.zip "dist/"
+        zip -q -r dist_bin/markers-extractor-cli_portable_${{ env.VERSION }}.zip "dist/"
     
     - name: Save release binaries for cli
       uses: actions/upload-artifact@v3
@@ -114,7 +114,7 @@ jobs:
         PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
         BINARY_PATH="$PARENT/dist/latest-build/markers-extractor-cli"
         PKG_IDENTIFIER="co.theacharya.MarkersExtractor"
-        INSTALL_LOCATION="/Applications/MarkersExtractor"
+        INSTALL_LOCATION="/usr/local/bin"
         PACKAGE_NAME="MarkersExtractor-unsigned"
         OUTPUT_DIR="$PARENT/dist/pkg-build"
         VERSION=${{ env.VERSION }}
