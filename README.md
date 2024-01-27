@@ -63,10 +63,10 @@ Download the latest release of the CLI universal binary [here](https://github.co
 ### With [Homebrew](https://brew.sh/)
 
 ```bash
-$ brew install TheAcharya/homebrew-tap/markersextractor
+$ brew install TheAcharya/homebrew-tap/markers-extractor
 ```
 ```bash
-$ brew uninstall --cask markersextractor
+$ brew uninstall --cask markers-extractor
 ```
 
 ### Compiled From Source
