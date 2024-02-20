@@ -79,19 +79,19 @@ git checkout "tags/$VERSION"
 swift build -c release
 ```
 
-Once the build has finished, the `markers-extractor-cli` executable will be located at `.build/release/`.
+Once the build has finished, the `markers-extractor` executable will be located at `.build/release/`.
 
 ## Usage
 
 ### CLI
 
 ```plain
-$ markers-extractor-cli --help
+$ markers-extractor --help
 OVERVIEW: Tool to extract markers from Final Cut Pro FCPXML/FCPXMLD.
 
 https://github.com/TheAcharya/MarkersExtractor
 
-USAGE: markers-extractor-cli [<options>] <fcpxml-path> <output-dir>
+USAGE: markers-extractor [<options>] <fcpxml-path> <output-dir>
 
 ARGUMENTS:
   <fcpxml-path>           Input FCPXML file / FCPXMLD bundle.
@@ -177,10 +177,10 @@ You have the option of two distinct releases: one packaged within a `.zip` archi
 </p>
 </details>
 
-Utilise the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary `markers-extractor-cli` located within `/usr/local/bin`. To uninstall, you can utalise this terminal command.
+Utilise the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary `markers-extractor` located within `/usr/local/bin`. To uninstall, you can utalise this terminal command.
 
 ```plain
-sudo rm /usr/local/bin/markers-extractor-cli
+sudo rm /usr/local/bin/markers-extractor
 ```
 
 <p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/macOS-installer.png?raw=true"> </p>
@@ -202,7 +202,7 @@ For ease of use, usage and creation of shell scripts (`.sh` files) is **recommen
    ```bash
    #!/bin/sh
    
-   TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+   TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor"
    FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
    OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
    ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
@@ -227,7 +227,7 @@ For ease of use, usage and creation of shell scripts (`.sh` files) is **recommen
 ```bash
 #!/bin/sh
 
-TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor"
 FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
@@ -254,7 +254,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
 ```bash
 #!/bin/sh
 
-TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor"
 FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
@@ -282,7 +282,7 @@ $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
 ```bash
 #!/bin/sh
 
-TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor-cli"
+TOOL_PATH="/Users/xxx/Desktop/MarkersExtractor/markers-extractor"
 FCPXML_PATH="/Users/xxx/Desktop/MarkersExtractor/Render/zzz.fcpxmld"
 OUTPUT_DIR="/Users/xxx/Desktop/MarkersExtractor/Output"
 ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
@@ -355,7 +355,7 @@ let package = Package(
 )
 ```
 
-Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/markers-extractor-cli/MarkersExtractorCLI.swift) to see how to use the [`MarkersExtractor`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/MarkersExtractor/MarkersExtractor.swift) class.
+Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/MarkersExtractorCLI/MarkersExtractorCLI.swift) to see how to use the [`MarkersExtractor`](https://github.com/TheAcharya/MarkersExtractor/blob/master/Sources/MarkersExtractor/MarkersExtractor.swift) class.
 
 ## Featured
 
