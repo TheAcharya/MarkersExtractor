@@ -21,8 +21,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.3"),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.6"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.4"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.6"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.0.9"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.4")
