@@ -6,6 +6,10 @@
 
 - Renamed CLI executable to `markers-extractor` (#86)
 
+### Bug Fixes
+
+- Fixed issue where placeholder GIF file was sometimes not generated (#90)
+
 ## [0.3.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.3) (2024-01-22)
 
 ### Changes
