@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "markers-extractor-cli"
-               BuildableName = "markers-extractor-cli"
-               BlueprintName = "markers-extractor-cli"
+               BlueprintIdentifier = "markers-extractor"
+               BuildableName = "markers-extractor"
+               BlueprintName = "markers-extractor"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -64,15 +64,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "markers-extractor-cli"
-            BuildableName = "markers-extractor-cli"
-            BlueprintName = "markers-extractor-cli"
+            BlueprintIdentifier = "markers-extractor"
+            BuildableName = "markers-extractor"
+            BlueprintName = "markers-extractor"
             ReferencedContainer = "container:">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -80,15 +81,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "markers-extractor-cli"
-            BuildableName = "markers-extractor-cli"
-            BlueprintName = "markers-extractor-cli"
+            BlueprintIdentifier = "markers-extractor"
+            BuildableName = "markers-extractor"
+            BlueprintName = "markers-extractor"
             ReferencedContainer = "container:">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

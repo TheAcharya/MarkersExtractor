@@ -15,8 +15,8 @@ let package = Package(
             targets: ["MarkersExtractor"]
         ),
         .executable(
-            name: "markers-extractor-cli",
-            targets: ["markers-extractor-cli"]
+            name: "markers-extractor",
+            targets: ["MarkersExtractorCLI"]
         )
     ],
     dependencies: [
@@ -44,7 +44,7 @@ let package = Package(
             resources: [.copy("TestResource/Media Files")]
         ),
         .executableTarget(
-            name: "markers-extractor-cli",
+            name: "MarkersExtractorCLI",
             dependencies: [
                 "MarkersExtractor",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
