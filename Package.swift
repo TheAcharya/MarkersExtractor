@@ -36,19 +36,22 @@ let package = Package(
                 .product(name: "TextFileKit", package: "TextFileKit"),
                 .product(name: "TimecodeKit", package: "TimecodeKit"),
                 .product(name: "DAWFileKit", package: "DAWFileKit")
-            ]
+            ],
+            swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),
         .testTarget(
             name: "MarkersExtractorTests",
             dependencies: ["MarkersExtractor"],
-            resources: [.copy("TestResource/Media Files")]
+            resources: [.copy("TestResource/Media Files")],
+            swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),
         .executableTarget(
             name: "MarkersExtractorCLI",
             dependencies: [
                 "MarkersExtractor",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ]
+            ], 
+            swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         )
     ]
 )
