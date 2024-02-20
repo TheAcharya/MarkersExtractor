@@ -61,7 +61,7 @@ jobs:
         mkdir -p "$PARENT/dist"
         mkdir -p "$PARENT/dist/latest-build"
         
-        cp -R $PARENT/dist/cli-build/Build/Products/${{ env.CONFIG }}/markers-extractor-cli "$PARENT/dist/latest-build/"
+        cp -R $PARENT/dist/cli-build/Build/Products/${{ env.CONFIG }}/markers-extractor "$PARENT/dist/latest-build/"
         
     - name: Codesign MarkersExtractor
       env: 
@@ -71,7 +71,7 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       run: |
         PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-        APP="$PARENT/dist/latest-build/markers-extractor-cli"
+        APP="$PARENT/dist/latest-build/markers-extractor"
         
         echo $APPLE_CERT_DATA | base64 --decode > certificate.p12
         security create-keychain -p $KEYCHAIN_PASSWORD_M build-m.keychain
@@ -89,7 +89,7 @@ jobs:
       run: |
         mkdir -p dist
         PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-        APP="$PARENT/dist/latest-build/markers-extractor-cli"
+        APP="$PARENT/dist/latest-build/markers-extractor"
     
         echo "Create keychain profile"
         xcrun notarytool store-credentials "notarytool-profile" --apple-id $APPLE_DEV_ID --password $APPLE_DEV_ID_PASSWORD --team-id $APPLE_TEAM_ID
@@ -112,7 +112,7 @@ jobs:
     - name: Create MarkersExtractor PKG for macOS
       run: |
         PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-        BINARY_PATH="$PARENT/dist/latest-build/markers-extractor-cli"
+        BINARY_PATH="$PARENT/dist/latest-build/markers-extractor"
         PKG_IDENTIFIER="co.theacharya.MarkersExtractor"
         INSTALL_LOCATION="/usr/local/bin"
         PACKAGE_NAME="MarkersExtractor-unsigned"
