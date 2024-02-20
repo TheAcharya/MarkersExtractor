@@ -172,9 +172,9 @@ extension AVAssetImageGenerator {
                                   
     /// Backward-compatible implementation of Apple's `image(at time: CMTime)`.
     func imageCompat(at time: CMTime) async throws -> (image: CGImage?, actualTime: CMTime) {
-        if #available(macOS 13.0, *) {
-            return try await image(at: time)
-        }
+        // if #available(macOS 13.0, *) {
+        //     return try await image(at: time)
+        // }
         
         var resultImage: CGImage?
         var resultError: Error?

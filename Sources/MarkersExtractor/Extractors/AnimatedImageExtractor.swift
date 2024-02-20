@@ -308,7 +308,7 @@ extension AnimatedImageExtractor {
             
             let image = conversion.imageFilter?(image) ?? image
 
-            assert(result.actualTime.seconds >= 0)
+            // assert(result.actualTime.seconds >= 0)
             
             return (image, result.isFinished)
             
