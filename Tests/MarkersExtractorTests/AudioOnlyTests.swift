@@ -12,9 +12,13 @@ import DAWFileKit
 
 final class AudioOnlyTests: XCTestCase {
     func testAudioOnly() async throws {
+        let outputDir = FileManager.default
+            .temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
-            outputDir: FileManager.default.temporaryDirectory
+            outputDir: outputDir
         )
         
         let extractor = MarkersExtractor(settings: settings)
@@ -26,7 +30,6 @@ final class AudioOnlyTests: XCTestCase {
         XCTAssertEqual(markers.count, 1)
         
         let fr: TimecodeFrameRate = .fps24
-        
         
         let marker0 = try XCTUnwrap(markers[safe: 0])
         XCTAssertEqual(marker0.name, "Marker 1")
@@ -43,6 +46,88 @@ final class AudioOnlyTests: XCTestCase {
         XCTAssertEqual(marker0.roles.isVideoDefined, false) // was default, not defined
         
         XCTAssertEqual(marker0.roles.caption, nil)
+    }
+    
+    /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
+    func testAudioOnly_WithMedia_PNG() async throws {
+        let tempDir = FileManager.default
+            .temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
+        
+        let dummyMediaData = try XCTUnwrap(EmbeddedResource.empty_mov.data)
+        let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
+        try dummyMediaData.write(to: dummyMediaURL)
+        
+        let settings = try MarkersExtractor.Settings(
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
+            outputDir: tempDir,
+            mediaSearchPaths: [tempDir],
+            exportFormat: .notion,
+            imageFormat: .still(.png)
+        )
+        
+        let extractor = MarkersExtractor(settings: settings)
+        
+        // extract
+        let result = try await extractor.extract()
+        let exportDir = result.exportFolder
+        
+        // open folder (for manual debugging)
+        // NSWorkspace.shared.open(exportDir)
+        
+        let dirContents = try FileManager.default.contentsOfDirectory(
+            at: exportDir,
+            includingPropertiesForKeys: [.nameKey]
+        )
+        
+        let exportFilenames = dirContents.map(\.lastPathComponent)
+        exportFilenames.forEach { print(" - " + $0) }
+        
+        // ensure that a placeholder thumbnail was used for the audio-only clip
+        XCTAssertTrue(exportFilenames.contains("marker-placeholder.png"))
+    }
+    
+    /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
+    func testAudioOnly_WithMedia_GIF() async throws {
+        let tempDir = FileManager.default
+            .temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
+        
+        let dummyMediaData = try XCTUnwrap(EmbeddedResource.empty_mov.data)
+        let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
+        try dummyMediaData.write(to: dummyMediaURL)
+        
+        let settings = try MarkersExtractor.Settings(
+            fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
+            outputDir: tempDir,
+            mediaSearchPaths: [tempDir],
+            exportFormat: .notion,
+            imageFormat: .animated(.gif)
+        )
+        
+        let extractor = MarkersExtractor(settings: settings)
+        
+        // extract
+        let result = try await extractor.extract()
+        let exportDir = result.exportFolder
+        
+        // open folder (for manual debugging)
+        // NSWorkspace.shared.open(exportDir)
+        
+        let dirContents = try FileManager.default.contentsOfDirectory(
+            at: exportDir,
+            includingPropertiesForKeys: [.nameKey]
+        )
+        
+        let exportFilenames = dirContents.map(\.lastPathComponent)
+        exportFilenames.forEach { print(" - " + $0) }
+        
+        // ensure that a placeholder thumbnail was used for the audio-only clip
+        XCTAssertTrue(exportFilenames.contains("marker-placeholder.gif"))
     }
 }
 
