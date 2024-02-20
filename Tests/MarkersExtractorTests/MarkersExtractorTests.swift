@@ -17,7 +17,7 @@ final class MarkersExtractorTests: XCTestCase {
         )
         settings.idNamingMode = .projectTimecode
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(
@@ -72,7 +72,7 @@ final class MarkersExtractorTests: XCTestCase {
         )
         settings.idNamingMode = .name
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(

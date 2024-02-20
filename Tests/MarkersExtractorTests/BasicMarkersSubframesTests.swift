@@ -17,7 +17,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
         )
         settings.enableSubframes = true
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         let markers = try await extractor.extractMarkers().sorted()
         
         // 24 total markers.

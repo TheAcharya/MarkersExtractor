@@ -18,7 +18,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
             outputDir: FileManager.default.temporaryDirectory
         )
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         let markers = try await extractor.extractMarkers()
         
         // check clips

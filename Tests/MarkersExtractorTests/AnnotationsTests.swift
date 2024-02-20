@@ -20,7 +20,7 @@ final class AnnotationsTests: XCTestCase {
         settings.idNamingMode = .projectTimecode
         settings.markersSource = .captions
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         // verify marker contents
         
@@ -58,7 +58,7 @@ final class AnnotationsTests: XCTestCase {
         settings.idNamingMode = .projectTimecode
         settings.markersSource = .markersAndCaptions
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         // verify marker contents
         

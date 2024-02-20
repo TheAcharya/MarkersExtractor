@@ -309,7 +309,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logLevel, logFile: log)
         }
         
-        let extractor = MarkersExtractor(settings, logger: extractorLogger)
+        let extractor = MarkersExtractor(settings: settings, logger: extractorLogger)
         
         if !noProgressLogging {
             let progressLoggerLabel = "Progress"

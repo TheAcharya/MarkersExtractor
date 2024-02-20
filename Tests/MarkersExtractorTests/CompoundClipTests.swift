@@ -19,7 +19,7 @@ final class CompoundClipTests: XCTestCase {
         )
         settings.idNamingMode = .projectTimecode
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         // verify marker contents
         

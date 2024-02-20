@@ -16,7 +16,7 @@ public final class MarkersExtractor: NSObject, ProgressReporting {
     var s: Settings
     public let progress: Progress
     
-    public init(_ settings: Settings, logger: Logger? = nil) {
+    public init(settings: Settings, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(MarkersExtractor.self)")
         s = settings
         progress = Progress()

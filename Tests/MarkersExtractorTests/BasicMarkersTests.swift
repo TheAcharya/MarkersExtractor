@@ -21,7 +21,7 @@ final class BasicMarkersTests: XCTestCase {
         )
         settings.idNamingMode = .projectTimecode
         
-        let extractor = MarkersExtractor(settings)
+        let extractor = MarkersExtractor(settings: settings)
         
         // verify marker contents
         
@@ -97,7 +97,7 @@ final class BasicMarkersTests: XCTestCase {
         for idMode in MarkerIDMode.allCases {
             settings.idNamingMode = idMode
             
-            let extractor = MarkersExtractor(settings)
+            let extractor = MarkersExtractor(settings: settings)
             
             // extract and unique
             var markers = try await extractor.extractMarkers()
