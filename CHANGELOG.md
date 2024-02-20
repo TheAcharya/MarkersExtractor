@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.3.4
+
+### Changes
+
+- Renamed CLI executable to `markers-extractor` (#86)
+
 ## [0.3.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.3) (2024-01-22)
 
 ### Changes
