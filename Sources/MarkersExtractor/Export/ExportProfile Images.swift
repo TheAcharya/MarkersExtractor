@@ -63,15 +63,16 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         progress.completedUnitCount = 0
         progress.totalUnitCount = Int64(descriptors.count)
         
-        await withThrowingTaskGroup(of: Void.self) { taskGroup in
+        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [self] in
                     try await write(descriptor: descriptor)
                     progress.completedUnitCount += 1
                 }
             }
+            
+            try await taskGroup.waitForAll()
         }
-        
         // TODO: NSProgress is wonky, sometimes its not fully 1.0 so asserting here isn't helpful
         // assert(progress.fractionCompleted == 1.0)
     }
