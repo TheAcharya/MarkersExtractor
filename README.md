@@ -1,24 +1,25 @@
-<a href="https://github.com/TheAcharya/MarkersExtractor"><img src="Assets/MarkersExtractor_Icon.png" width="200" alt="App icon" align="left"/></a>
+<p align="center">
+  <a href="https://github.com/TheAcharya/MarkersExtractor"><img src="Assets/MarkersExtractor_Icon.png" height="200">
+  <h1 align="center">MarkersExtractor (CLI & Library)</h1>
+</p>
 
-<div>
-<h1>MarkersExtractor (CLI & Library)</h1>
+
+<p align="center">
 <!-- license -->
-<a href="https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE">
-<img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="license"/>
-</a>
+  <a href="https://github.com/TheAcharya/MarkersExtractor/blob/main/LICENSE">
+    <img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="license"/>
+  </a>
 <!-- platform -->
-<a href="https://github.com/TheAcharya/MarkerData">
-<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg?style=flat" alt="platform"/>
-</a>
+  <a href="https://github.com/TheAcharya/MarkerData">
+    <img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg?style=flat" alt="platform"/>
+  </a>
 <!-- build -->
-<a href="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml">
-<img src="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml/badge.svg" alt="build"/>
-</a>
-<p>
-<p>Marker metadata extraction and conversion tool and library for Final Cut Pro.</p>
-<br>
-<br>
-</div>
+  <a href="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml">
+    <img src="https://github.com/TheAcharya/MarkersExtractor/actions/workflows/build.yml/badge.svg" alt="build"/>
+  </a>
+</p>
+
+Marker metadata extraction and conversion tool and library for Final Cut Pro.
 
 ## Core Features
 
