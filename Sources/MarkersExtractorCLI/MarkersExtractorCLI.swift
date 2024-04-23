@@ -15,6 +15,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     // MARK: - Config
     
     static var configuration = CommandConfiguration(
+        commandName: "markers-extractor",
         abstract: "Tool to extract markers from Final Cut Pro FCPXML/FCPXMLD.",
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
         version: packageVersion
