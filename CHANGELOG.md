@@ -2,6 +2,15 @@
 
 ## 0.3.4
 
+### New Features
+
+- Added `--include-disabled` CLI flag. Default is excluded unless flag is passed. (#4)
+
+### Bug Fixes
+
+- Resolved an issue where Titles clips were assigned an audio role when they should not have an audio role. (#9)
+- Resolved a bug in `RolesExtractor` where some roles may be missing. (#88)
+
 ### Changes
 
 - Renamed CLI executable to `markers-extractor` (#86)
@@ -57,7 +66,7 @@
 
 ### New Features
 
-- Added `-exclude-role` CLI flag (#57)
+- Added `--exclude-role` CLI flag (#57)
 - Added `RolesExtractor` class to library to extract roles from a FCPXML file (#69)
 - Added extraction date to result file (#76)
 - Added CLI version number to result file (#75)
