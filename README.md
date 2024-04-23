@@ -26,7 +26,6 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - Accurately extract markers and captions from FCP's FCPXML/FCPXMLD data export format
 - Ability to batch extract and render stills or animated GIFs based on each marker's timecode
 - Ability to batch burn-in labels of each marker's metadata onto the stills or animated GIFs
-- Ability to use Captions as Markers
 - Fast, multi-threaded operation
 
 ## Extract Profiles
@@ -59,7 +58,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 
 ### Pre-Compiled Binary (Recommended)
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.3/markers-extractor-cli-0.3.3.zip).
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.4/markers-extractor-cli-0.3.4.zip).
 
 ### With [Homebrew](https://brew.sh/)
 
@@ -73,7 +72,7 @@ $ brew uninstall --cask markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.3 # replace this with the git tag of the version you need
+VERSION=0.3.4 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -109,6 +108,8 @@ OPTIONS:
   --exclude-role <name>   Exclude markers with a specified role. This argument
                           can be supplied more than once to apply multiple role
                           exclusions.
+  --include-disabled      Include markers on disabled clips. By default,
+                          disabled clips are ignored.
   --image-format <png | jpg | gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
@@ -343,7 +344,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.3")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.4")
     ],
     targets: [
         .target(
