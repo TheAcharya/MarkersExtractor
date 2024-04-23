@@ -52,7 +52,7 @@ extension MIDIFileExportProfile {
         )
         
         buildMessages.forEach {
-            logger?.info("MIDI File: \($0)")
+            logger?.info("MIDI File diagnostic: \($0)")
         }
         
         let data = try midiFile.rawData()

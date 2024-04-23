@@ -56,7 +56,7 @@ extension ExportProfile {
         // thumbnail images
         
         let thumbnailsProgressUnitCount: Int64 = 90
-        if let media {
+        if Self.isMediaCapable, let media {
             try await exportThumbnails(
                 markers: markers,
                 preparedMarkers: preparedMarkers,

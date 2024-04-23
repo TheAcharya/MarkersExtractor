@@ -92,9 +92,16 @@ extension MarkersExtractor {
                 let exportMedia = try formExportMedia(projectName: projectName)
                 media = exportMedia
                 logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
-                logger.info(
-                    "Generating \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
-                )
+                
+                if s.exportFormat.concreteType.isMediaCapable {
+                    logger.info(
+                        "Generating \(s.imageFormat.name) thumbnail images into \(outputURL.path.quoted)."
+                    )
+                } else {
+                    logger.info(
+                        "Export profile does not support thumbnail image generation. No thumbnails will be exported."
+                    )
+                }
             } catch {
                 // not a critical error - if no media is found, let extraction continue without media
                 media = nil
