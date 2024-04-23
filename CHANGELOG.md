@@ -10,6 +10,7 @@
 
 - Resolved an issue where Titles clips were assigned an audio role when they should not have an audio role. (#9)
 - Resolved a bug in `RolesExtractor` where some roles may be missing. (#88)
+- Resolved a bug where thumbnail images were being generated for profiles that don't support thumbnails. (#93)
 
 ### Changes
 
