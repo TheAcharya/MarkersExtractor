@@ -18,6 +18,7 @@ extension MarkersExtractor {
         public var enableSubframes: Bool
         public var markersSource: MarkersSource
         public var excludeRoles: Set<String>
+        public var includeDisabled: Bool
         public var imageFormat: MarkerImageFormat
         public var imageQuality: Int
         public var imageWidth: Int?
@@ -49,6 +50,7 @@ extension MarkersExtractor {
             enableSubframes: Bool = Defaults.enableSubframes,
             markersSource: MarkersSource = Defaults.markersSource,
             excludeRoles: Set<String> = Defaults.excludeRoles,
+            includeDisabled: Bool = Defaults.includeDisabled,
             imageFormat: MarkerImageFormat = Defaults.imageFormat,
             imageQuality: Int = Defaults.imageQuality,
             imageWidth: Int? = Defaults.imageWidth,
@@ -82,6 +84,7 @@ extension MarkersExtractor {
             self.enableSubframes = enableSubframes
             self.markersSource = markersSource
             self.excludeRoles = excludeRoles
+            self.includeDisabled = includeDisabled
             self.imageFormat = imageFormat
             self.imageQuality = imageQuality
             self.imageWidth = imageWidth
@@ -225,6 +228,7 @@ extension MarkersExtractor.Settings {
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers
         public static let excludeRoles: Set<String> = []
+        public static let includeDisabled: Bool = false
         public static let imageFormat: MarkerImageFormat = .still(.png)
         public static let imageQuality = 85
         public static let imageWidth: Int? = nil

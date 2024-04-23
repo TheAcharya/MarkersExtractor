@@ -20,6 +20,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     let enableSubframes: Bool
     let markersSource: MarkersSource
     let excludeRoles: Set<String>
+    let includeDisabled: Bool
     
     // MARK: - Init
     
@@ -29,6 +30,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         enableSubframes: Bool,
         markersSource: MarkersSource,
         excludeRoles: Set<String>,
+        includeDisabled: Bool,
         logger: Logger? = nil
     ) {
         self.logger = logger ?? Logger(label: "\(Self.self)")
@@ -39,6 +41,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         self.enableSubframes = enableSubframes
         self.markersSource = markersSource
         self.excludeRoles = excludeRoles
+        self.includeDisabled = includeDisabled
     }
     
     required convenience init(
@@ -47,6 +50,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         enableSubframes: Bool,
         markersSource: MarkersSource,
         excludeRoles: Set<String>,
+        includeDisabled: Bool,
         logger: Logger? = nil
     ) throws {
         let xml = try XMLDocument(contentsOf: fcpxml)
@@ -56,6 +60,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             excludeRoles: excludeRoles,
+            includeDisabled: includeDisabled,
             logger: logger
         )
     }
@@ -66,6 +71,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         enableSubframes: Bool,
         markersSource: MarkersSource,
         excludeRoles: Set<String>,
+        includeDisabled: Bool,
         logger: Logger? = nil
     ) throws {
         let xml = try fcpxml.xmlDocument()
@@ -75,6 +81,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             enableSubframes: enableSubframes,
             markersSource: markersSource,
             excludeRoles: excludeRoles,
+            includeDisabled: includeDisabled,
             logger: logger
         )
     }
@@ -140,7 +147,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     ) async -> [Marker] {
         let extractedMarkers = await project.extract(
             preset: .markers,
-            scope: MarkersExtractor.extractionScope
+            scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )
         
         return extractedMarkers.compactMap {
@@ -159,7 +166,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     ) async -> [Marker] {
         let extractedCaptions = await project.extract(
             preset: .captions,
-            scope: MarkersExtractor.extractionScope
+            scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )
         
         return extractedCaptions.compactMap {

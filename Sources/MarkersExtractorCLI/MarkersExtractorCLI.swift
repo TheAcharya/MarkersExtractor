@@ -50,6 +50,14 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     )
     var excludeRoles: [String] = []
     
+    @Flag(
+        name: [.customLong("include-disabled")],
+        help: ArgumentHelp(
+            "Include markers on disabled clips. By default, disabled clips are ignored."
+        )
+    )
+    var includeDisabled: Bool = MarkersExtractor.Settings.Defaults.includeDisabled
+    
     @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
@@ -278,6 +286,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 enableSubframes: enableSubframes,
                 markersSource: markersSource,
                 excludeRoles: Set(excludeRoles),
+                includeDisabled: includeDisabled,
                 imageFormat: imageFormat,
                 imageQuality: imageQuality,
                 imageWidth: imageWidth,
