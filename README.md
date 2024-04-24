@@ -34,6 +34,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - Airtable (JSON) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
 - Comma-separated values (CSV) - Compatible with spreadsheet applications
 - Tab-separated values (TSV) - Compatible with spreadsheet application
+- YouTube Chapters
 - Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
@@ -98,7 +99,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable | csv | midi | notion | tsv>
+  --export-format <airtable | csv | midi | notion | tsv | youtube>
                           Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
   --markers-source <markers | markersAndCaptions | captions>
@@ -324,6 +325,7 @@ The format is a dictionary using the following key names:
 | `exportFolder`| The path to the output folder that the tool created where all exported files reside. |
 | `csvManifestPath`| The path to the CSV manifest file, if one was created by the profile. |
 | `tsvManifestPath` | The path to the TSV manifest file, if one was created by the profile. |
+| `txtManifestPath` | The path to the Plain Text manifest file, if one was created by the profile. |
 | `jsonManifestPath`| The path to the JSON manifest file, if one was created by the profile. |
 | `midiFilePath`| The path to the MIDI file, if one was created by the profile. |
 | `version` | The MarkersExtractor version used to perform extraction. | 
