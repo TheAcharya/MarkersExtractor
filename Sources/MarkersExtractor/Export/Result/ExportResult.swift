@@ -130,6 +130,9 @@ extension ExportResult {
         if let value = dict[.midiFilePath], case let .url(url) = value {
             midiFilePath = url
         }
+        if let value = dict[.version], case let .string(ver) = value {
+            version = ver
+        }
     }
     
     /// Returns the contents serialized to a dictionary.

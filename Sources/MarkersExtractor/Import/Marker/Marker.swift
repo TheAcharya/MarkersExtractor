@@ -7,6 +7,7 @@
 import CoreMedia
 import DAWFileKit
 import TimecodeKit
+import OTCore
 
 /// Raw FCP Marker data extracted from FCPXML.
 ///
@@ -23,8 +24,16 @@ public struct Marker: Equatable, Hashable, Sendable {
         var projectStartTime: Timecode
         var libraryName: String
         
-        func clipDurationTimecodeString(format: Timecode.StringFormat) -> String {
-            (clipOutTime - clipInTime).stringValue(format: format)
+        func clipDurationTimeString(format: ExportMarkerTimeFormat) -> String {
+            let dur = clipOutTime - clipInTime
+            
+            switch format {
+            case .timecode(let stringFormat):
+                return dur.stringValue(format: stringFormat)
+            case .realTime(let stringFormat):
+                // convert timecode to real time (wall time)
+                return Time(seconds: dur.realTimeValue).stringValue(format: stringFormat)
+            }
         }
     }
     
@@ -50,7 +59,7 @@ extension Marker {
         let baseID: String = {
             switch idMode {
             case .projectTimecode:
-                return "\(parentInfo.projectName)_\(positionTimecodeString(format: tcStringFormat))"
+                return "\(parentInfo.projectName)_\(positionTimeString(format: .timecode(stringFormat: tcStringFormat)))"
             case .name:
                 return name
             case .notes:
@@ -100,8 +109,14 @@ extension Marker {
         }
     }
     
-    func positionTimecodeString(format: Timecode.StringFormat) -> String {
-        position.stringValue(format: format)
+    func positionTimeString(format: ExportMarkerTimeFormat) -> String {
+        switch format {
+        case .timecode(let stringFormat):
+            return position.stringValue(format: stringFormat)
+        case .realTime(let stringFormat):
+            // convert timecode to real time (wall time)
+            return Time(seconds: position.realTimeValue).stringValue(format: stringFormat)
+        }
     }
 }
 

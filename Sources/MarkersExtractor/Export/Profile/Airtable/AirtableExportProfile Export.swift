@@ -20,9 +20,11 @@ extension AirtableExportProfile {
     ) -> [PreparedMarker] {
         markers.map {
             PreparedMarker(
-                $0,
+                marker: $0,
                 idMode: idMode,
-                mediaInfo: mediaInfo, tcStringFormat: tcStringFormat
+                mediaInfo: mediaInfo, 
+                tcStringFormat: tcStringFormat,
+                timeFormat: .timecode(stringFormat: tcStringFormat)
             )
         }
     }

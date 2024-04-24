@@ -27,7 +27,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
         
         let lastMarker = try XCTUnwrap(markers.last)
         XCTAssertEqual(
-            lastMarker.positionTimecodeString(format: [.showSubFrames]),
+            lastMarker.positionTimeString(format: .timecode(stringFormat: [.showSubFrames])),
             "00:00:28:19.25"
         )
     }

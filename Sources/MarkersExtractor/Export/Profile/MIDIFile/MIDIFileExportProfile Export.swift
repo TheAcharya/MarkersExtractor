@@ -21,8 +21,9 @@ extension MIDIFileExportProfile {
     ) -> [PreparedMarker] {
         markers.map {
             PreparedMarker(
-                $0,
-                idMode: idMode, tcStringFormat: tcStringFormat
+                marker: $0,
+                idMode: idMode,
+                timeFormat: .timecode(stringFormat: tcStringFormat)
             )
         }
     }
@@ -100,17 +101,17 @@ public struct MIDIFileExportMarker: ExportMarker {
     }
     
     public init(
-        _ marker: Marker,
+        marker: Marker,
         idMode: MarkerIDMode,
-        tcStringFormat: Timecode.StringFormat
+        timeFormat: ExportMarkerTimeFormat
     ) {
         name = marker.name
-        position = marker.positionTimecodeString(format: tcStringFormat)
+        position = marker.positionTimeString(format: timeFormat)
         frameRate = marker.frameRate()
         subFramesBase = marker.subFramesBase()
     }
     
-    /// Convert to a DAWFileKit `DAWMarker`
+    /// Convert to a DAWFileKit `DAWMarker`.
     func dawMarker() -> DAWMarker {
         DAWMarker(
             storage: .init(
