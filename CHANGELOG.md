@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## 0.3.5
+## [0.3.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.5) (2024-04-24)
 
 ### New Features
 
