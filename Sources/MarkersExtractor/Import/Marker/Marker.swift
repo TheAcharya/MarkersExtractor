@@ -109,13 +109,24 @@ extension Marker {
         }
     }
     
-    func positionTimeString(format: ExportMarkerTimeFormat) -> String {
+    /// - Parameters:
+    ///   - format: Time display format.
+    ///   - offsetToProjectStart: If true, time will be offset by project start time such that the timeline will be
+    ///     considered as starting from zero.
+    func positionTimeString(
+        format: ExportMarkerTimeFormat,
+        offsetToProjectStart: Bool = false
+    ) -> String {
+        let rectifiedPosition = offsetToProjectStart
+            ? position - parentInfo.projectStartTime
+            : position
+        
         switch format {
         case .timecode(let stringFormat):
-            return position.stringValue(format: stringFormat)
+            return rectifiedPosition.stringValue(format: stringFormat)
         case .realTime(let stringFormat):
             // convert timecode to real time (wall time)
-            return Time(seconds: position.realTimeValue).stringValue(format: stringFormat)
+            return Time(seconds: rectifiedPosition.realTimeValue).stringValue(format: stringFormat)
         }
     }
 }

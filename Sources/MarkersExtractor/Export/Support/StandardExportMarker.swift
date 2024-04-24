@@ -39,7 +39,8 @@ public struct StandardExportMarker: ExportMarker {
         idMode: MarkerIDMode,
         mediaInfo: ExportMarkerMediaInfo?,
         tcStringFormat: Timecode.StringFormat,
-        timeFormat: ExportMarkerTimeFormat
+        timeFormat: ExportMarkerTimeFormat,
+        offsetToProjectStart: Bool = false
     ) {
         id = marker.id(idMode, tcStringFormat: tcStringFormat)
         name = marker.name
@@ -47,7 +48,7 @@ public struct StandardExportMarker: ExportMarker {
         checked = String(marker.isChecked())
         status = NotionExportProfile.Status(marker.type).rawValue
         notes = marker.notes
-        position = marker.positionTimeString(format: timeFormat)
+        position = marker.positionTimeString(format: timeFormat, offsetToProjectStart: offsetToProjectStart)
         clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
         clipDuration = marker.parentInfo.clipDurationTimeString(format: timeFormat)

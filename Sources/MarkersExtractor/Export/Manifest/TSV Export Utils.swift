@@ -14,7 +14,7 @@ extension ExportProfile {
         noMedia: Bool,
         _ preparedMarkers: [PreparedMarker]
     ) throws {
-        let rows = dictsToRows(preparedMarkers, noMedia: noMedia)
+        let rows = dictsToRows(preparedMarkers, includeHeader: true, noMedia: noMedia)
         
         guard let tsvData = TextFile.TSV(table: rows).rawText.data(using: .utf8)
         else {

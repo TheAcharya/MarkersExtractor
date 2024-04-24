@@ -25,6 +25,9 @@ public struct ExportResult: Equatable, Hashable {
     /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
     public var tsvManifestPath: URL?
     
+    /// Plain Text manifest file path, if applicable to the profile. `nil` if not applicable.
+    public var txtManifestPath: URL?
+    
     /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
     public var jsonManifestPath: URL?
     
@@ -40,14 +43,17 @@ public struct ExportResult: Equatable, Hashable {
         exportFolder: URL,
         csvManifestPath: URL? = nil,
         tsvManifestPath: URL? = nil,
+        txtManifestPath: URL? = nil,
         jsonManifestPath: URL? = nil,
         midiFilePath: URL? = nil
+        // omit version from init parameters since we auto-set it
     ) {
         self.date = date
         self.profile = profile
         self.exportFolder = exportFolder
         self.csvManifestPath = csvManifestPath
         self.tsvManifestPath = tsvManifestPath
+        self.txtManifestPath = txtManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
         version = packageVersion
@@ -73,6 +79,9 @@ extension ExportResult {
         
         /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
         case tsvManifestPath
+        
+        /// Plain Text manifest file path, if applicable to the profile. `nil` if not applicable.
+        case txtManifestPath
         
         /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
         case jsonManifestPath
@@ -124,6 +133,9 @@ extension ExportResult {
         if let value = dict[.tsvManifestPath], case let .url(url) = value {
             tsvManifestPath = url
         }
+        if let value = dict[.txtManifestPath], case let .url(url) = value {
+            txtManifestPath = url
+        }
         if let value = dict[.jsonManifestPath], case let .url(url) = value {
             jsonManifestPath = url
         }
@@ -144,6 +156,7 @@ extension ExportResult {
         dict[.exportFolder] = exportFolder.path
         dict[.csvManifestPath] = csvManifestPath?.path
         dict[.tsvManifestPath] = tsvManifestPath?.path
+        dict[.txtManifestPath] = txtManifestPath?.path
         dict[.jsonManifestPath] = jsonManifestPath?.path
         dict[.midiFilePath] = midiFilePath?.path
         dict[.version] = version

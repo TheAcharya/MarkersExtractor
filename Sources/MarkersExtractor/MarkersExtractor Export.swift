@@ -74,6 +74,19 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+            
+        case .youtube:
+            return try await export(
+                for: YouTubeProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    projectName: projectName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         }
     }
     

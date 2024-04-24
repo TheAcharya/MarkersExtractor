@@ -10,6 +10,7 @@ import OrderedCollections
 extension ExportProfile {
     func dictsToRows(
         _ preparedMarkers: [PreparedMarker],
+        includeHeader: Bool,
         noMedia: Bool
     ) -> [[String]] {
         let dicts = preparedMarkers.map {
@@ -18,7 +19,11 @@ extension ExportProfile {
         guard !dicts.isEmpty else { return [] }
         
         // header
-        var result = [Array(dicts[0].keys.map { $0.name })]
+        var result: [[String]] = []
+        
+        if includeHeader {
+            result.append(Array(dicts[0].keys.map { $0.name }))
+        }
         
         // marker rows
         result += dicts.map { row in
