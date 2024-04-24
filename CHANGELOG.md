@@ -1,5 +1,15 @@
 # MarkersExtractor Change Log
 
+## 0.3.5
+
+### New Features
+
+- Added `youtube` export profile to generate YouTube chapters (#38)
+
+### Bug Fixes
+
+- Fixed regression where CSV/TSV did not export thumbnail images (#94)
+
 ## [0.3.4](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.4) (2024-04-23)
 
 ### New Features
