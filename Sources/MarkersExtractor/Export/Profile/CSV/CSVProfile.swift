@@ -13,7 +13,7 @@ public class CSVProfile: NSObject, ProgressReporting, ExportProfile {
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = StandardExportMarker
     public static let profile: ExportProfileFormat = .csv
-    public static let isMediaCapable: Bool = false
+    public static let isMediaCapable: Bool = true
     public var logger: Logger?
     
     // ProgressReporting
