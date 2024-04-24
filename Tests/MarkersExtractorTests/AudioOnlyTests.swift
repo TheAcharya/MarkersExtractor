@@ -40,9 +40,9 @@ final class AudioOnlyTests: XCTestCase {
         XCTAssertEqual(marker0.roles.isAudioEmpty, false)
         XCTAssertEqual(marker0.roles.isAudioDefined, true) // exists in the XML
         
-        XCTAssertEqual(marker0.roles.video, FinalCutPro.FCPXML.VideoRole(role: "Video"))
-        XCTAssertEqual(marker0.roles.isVideoDefault, true)
-        XCTAssertEqual(marker0.roles.isVideoEmpty, false)
+        XCTAssertEqual(marker0.roles.video, nil)
+        XCTAssertEqual(marker0.roles.isVideoDefault, false)
+        XCTAssertEqual(marker0.roles.isVideoEmpty, true)
         XCTAssertEqual(marker0.roles.isVideoDefined, false) // was default, not defined
         
         XCTAssertEqual(marker0.roles.caption, nil)

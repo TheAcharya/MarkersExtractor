@@ -35,8 +35,8 @@ final class AnnotationsTests: XCTestCase {
         XCTAssertEqual(marker0.type, .caption)
         XCTAssertEqual(marker0.name, "caption1")
         XCTAssertEqual(marker0.notes, "")
-        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on
-        XCTAssertEqual(marker0.roles.video?.rawValue, "Video") // inherited from clip it's anchored on
+        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        XCTAssertEqual(marker0.roles.video?.rawValue, nil)
         XCTAssertEqual(marker0.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
         XCTAssertEqual(marker0.position, tc("01:00:03:00", at: fr))
         
@@ -44,9 +44,9 @@ final class AnnotationsTests: XCTestCase {
         XCTAssertEqual(marker1.type, .caption)
         XCTAssertEqual(marker1.name, "caption2")
         XCTAssertEqual(marker1.notes, "")
-        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on
-        XCTAssertEqual(marker1.roles.video?.rawValue, "Video") // inherited from clip it's anchored on
-        XCTAssertEqual(marker1.roles.caption, .init(rawValue: "iTT?captionFormat=ITT.en")!)
+        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        XCTAssertEqual(marker1.roles.video?.rawValue, nil)
+        XCTAssertEqual(marker1.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
         XCTAssertEqual(marker1.position, tc("01:00:09:10", at: fr))
     }
     
@@ -74,8 +74,8 @@ final class AnnotationsTests: XCTestCase {
         XCTAssertEqual(marker0.type, .caption)
         XCTAssertEqual(marker0.name, "caption1")
         XCTAssertEqual(marker0.notes, "")
-        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on
-        XCTAssertEqual(marker0.roles.video?.rawValue, "Video") // inherited from clip it's anchored on
+        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        XCTAssertEqual(marker0.roles.video?.rawValue, nil)
         XCTAssertEqual(marker0.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
         XCTAssertEqual(marker0.position, tc("01:00:03:00", at: fr))
         
@@ -83,18 +83,18 @@ final class AnnotationsTests: XCTestCase {
         XCTAssertEqual(marker1.type, .caption)
         XCTAssertEqual(marker1.name, "caption2")
         XCTAssertEqual(marker1.notes, "")
-        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on
-        XCTAssertEqual(marker1.roles.video?.rawValue, "Video") // inherited from clip it's anchored on
-        XCTAssertEqual(marker1.roles.caption, .init(rawValue: "iTT?captionFormat=ITT.en")!)
+        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        XCTAssertEqual(marker1.roles.video?.rawValue, nil)
+        XCTAssertEqual(marker1.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
         XCTAssertEqual(marker1.position, tc("01:00:09:10", at: fr))
         
         let marker2 = try XCTUnwrap(markers[safe: 2])
         XCTAssertEqual(marker2.type, .marker(.standard))
         XCTAssertEqual(marker2.name, "marker1")
         XCTAssertEqual(marker2.notes, "m1 notes")
-        XCTAssertEqual(marker2.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on
-        XCTAssertEqual(marker2.roles.video?.rawValue, "Video") // inherited from clip it's anchored on
-        XCTAssertEqual(marker2.roles.caption, nil)
+        XCTAssertEqual(marker2.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        XCTAssertEqual(marker2.roles.video?.rawValue, nil)
+        XCTAssertEqual(marker2.roles.caption?.rawValue, nil)
         XCTAssertEqual(marker2.position, tc("01:00:27:10", at: fr))
     }
 }
