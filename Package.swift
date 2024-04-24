@@ -25,7 +25,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.6"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.0.9"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", branch: "main")
+        .package(url: "https://github.com/orchetect/DAWFileKit.git", branch: "main"),
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.5.2"),
     ],
     targets: [
         .target(
@@ -35,7 +36,8 @@ let package = Package(
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "TextFileKit", package: "TextFileKit"),
                 .product(name: "TimecodeKit", package: "TimecodeKit"),
-                .product(name: "DAWFileKit", package: "DAWFileKit")
+                .product(name: "DAWFileKit", package: "DAWFileKit"),
+                "OTCore"
             ],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),
