@@ -36,6 +36,7 @@ final class BasicMarkersTests: XCTestCase {
             clipName: "Basic Title",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),
+            clipKeywords: [],
             eventName: "Test Event",
             projectName: "Test Project",
             projectStartTime: tc("00:00:00:00", at: fr),
