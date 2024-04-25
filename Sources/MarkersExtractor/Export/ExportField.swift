@@ -18,6 +18,7 @@ public enum ExportField: String, CaseIterable, RawRepresentable, Hashable {
     case clipType
     case clipName
     case clipDuration
+    case clipKeywords
     case videoRole
     case audioRole
     case eventName
@@ -41,6 +42,7 @@ extension ExportField {
         case .clipType: return "Clip Type"
         case .clipName: return "Clip Name"
         case .clipDuration: return "Clip Duration"
+        case .clipKeywords: return "Clip Keywords"
         case .videoRole: return "Video Role & Subrole"
         case .audioRole: return "Audio Role & Subrole"
         case .eventName: return "Event Name"

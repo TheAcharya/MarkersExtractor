@@ -64,6 +64,7 @@ extension TSVProfile {
         dict[.clipType] = marker.clipType
         dict[.clipName] = marker.clipName
         dict[.clipDuration] = marker.clipDuration
+        dict[.clipKeywords] = marker.clipKeywords.flat
         dict[.videoRole] = marker.videoRole
         dict[.audioRole] = marker.audioRole.flat
         dict[.eventName] = marker.eventName
@@ -94,6 +95,7 @@ extension TSVProfile {
         dict[.clipType] = .string(marker.clipType)
         dict[.clipName] = .string(marker.clipName)
         dict[.clipDuration] = .string(marker.clipDuration)
+        dict[.clipKeywords] = .array(marker.clipKeywords.array)
         dict[.videoRole] = .string(marker.videoRole)
         dict[.audioRole] = .array(marker.audioRole.array)
         dict[.eventName] = .string(marker.eventName)

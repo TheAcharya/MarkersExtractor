@@ -251,6 +251,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             clipName: element.value(forContext: .parentName) ?? "",
             clipInTime: clipInTime,
             clipOutTime: clipOutTime,
+            clipKeywords: element.value(forContext: .keywords(constrainToKeywordRanges: true)).flatMap(\.keywords),
             eventName: element.value(forContext: .ancestorEventName) ?? "",
             projectName: element.value(forContext: .ancestorProjectName) ?? "",
             projectStartTime: projectStartTime,

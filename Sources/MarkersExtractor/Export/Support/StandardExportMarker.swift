@@ -24,6 +24,7 @@ public struct StandardExportMarker: ExportMarker {
     public let clipType: String
     public let clipName: String
     public let clipDuration: String
+    public let clipKeywords: (flat: String, array: [String])
     public let audioRole: (flat: String, array: [String])
     public let videoRole: String
     public let eventName: String
@@ -52,6 +53,7 @@ public struct StandardExportMarker: ExportMarker {
         clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
         clipDuration = marker.parentInfo.clipDurationTimeString(format: timeFormat)
+        clipKeywords = marker.parentInfo.clipKeywordsFormatted()
         videoRole = marker.roles.videoFormatted()
         audioRole = marker.roles.audioFormatted(multipleRoleSeparator: ",")
         eventName = marker.parentInfo.eventName

@@ -19,6 +19,7 @@ public struct Marker: Equatable, Hashable, Sendable {
         var clipName: String
         var clipInTime: Timecode
         var clipOutTime: Timecode
+        var clipKeywords: [String]
         var eventName: String
         var projectName: String
         var projectStartTime: Timecode
@@ -34,6 +35,14 @@ public struct Marker: Equatable, Hashable, Sendable {
                 // convert timecode to real time (wall time)
                 return Time(seconds: dur.realTimeValue).stringValue(format: stringFormat)
             }
+        }
+        
+        func clipKeywordsFlat() -> String {
+            clipKeywords.joined(separator: ",")
+        }
+        
+        func clipKeywordsFormatted() -> (flat: String, array: [String]) {
+            (flat: clipKeywordsFlat(), array: clipKeywords)
         }
     }
     
