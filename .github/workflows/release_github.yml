@@ -138,7 +138,7 @@ jobs:
       
     - name: Productsign MarkersExtractor
       env: 
-        APPLE_INTSALL_CERT_DATA: ${{ secrets.APPLE_INSTALL_CERT_DATA }}
+        APPLE_INSTALL_CERT_DATA: ${{ secrets.APPLE_INSTALL_CERT_DATA }}
         APPLE_INSTALL_CERT_PASSWORD: ${{ secrets.APPLE_INSTALL_CERT_PASSWORD }}
         KEYCHAIN_PASSWORD_IN: ${{ secrets.KEYCHAIN_PASSWORD_IN }}
         APPLE_TEAM_ID_INSTALL: ${{ secrets.APPLE_TEAM_ID_INSTALL }}
@@ -148,7 +148,7 @@ jobs:
         SPKG="$PARENT/dist/pkg-build/markers-extractor-cli-${{env.VERSION}}.pkg"
         SIGNING_IDENTITY="$APPLE_TEAM_ID_INSTALL"
       
-        echo $APPLE_INTSALL_CERT_DATA | base64 --decode > certificate.p12
+        echo $APPLE_INSTALL_CERT_DATA | base64 --decode > certificate.p12
         security create-keychain -p $KEYCHAIN_PASSWORD_IN build-i.keychain
         security default-keychain -s build-i.keychain
         security unlock-keychain -p $KEYCHAIN_PASSWORD_IN build-i.keychain
