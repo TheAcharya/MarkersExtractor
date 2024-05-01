@@ -79,17 +79,17 @@ extension Marker {
     }
     
     func id(pathSafe idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
-        // TODO: add better sanitation here that can deal with all illegal filename characters
-        
         switch idMode {
         case .projectTimecode:
             return id(idMode, tcStringFormat: tcStringFormat)
-                .replacingOccurrences(of: ";", with: "_") // used in drop-frame timecode
-                .replacingOccurrences(of: ":", with: "_")
+                .replacingOccurrences(of: ";", with: "-") // used in drop-frame timecode
+                .replacingOccurrences(of: ":", with: "-")
                 .replacingOccurrences(of: ".", with: "_") // when subframes are enabled
+                .sanitizingPathComponent(for: nil, replacement: "-")
         case .name, .notes:
             return id(idMode, tcStringFormat: tcStringFormat)
-                .replacingOccurrences(of: ":", with: "_")
+                .replacingOccurrences(of: ":", with: "-")
+                .sanitizingPathComponent(for: nil, replacement: "-")
         }
     }
     
