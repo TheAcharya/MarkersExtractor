@@ -2,6 +2,10 @@
 
 ## 0.3.6
 
+### New Features
+
+- Added `Clip Keywords` manifest field (#63)
+
 ### Bug Fixes
 
 - Added better filename sanitation which can avoid failure to generate image files (#95)
