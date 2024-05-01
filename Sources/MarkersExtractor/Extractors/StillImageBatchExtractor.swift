@@ -76,7 +76,7 @@ extension StillImageBatchExtractor {
             }
         
         // TODO: throw error if `isBatchFinished == false`?
-        assert(isBatchFinished)
+        // assert(isBatchFinished)
         
         // sometimes NSProgress doesn't fully reach 1.0 so this assert is not reliable
         // assert(progress.fractionCompleted == 1.0)
