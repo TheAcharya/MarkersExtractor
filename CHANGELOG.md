@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.3.6
+
+### Bug Fixes
+
+- Added better filename sanitation which can avoid failure to generate image files (#95)
+
 ## [0.3.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.5) (2024-04-24)
 
 ### New Features
