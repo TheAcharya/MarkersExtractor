@@ -8,6 +8,7 @@ import Foundation
 import Logging
 import OTCore
 import TimecodeKit
+import OrderedCollections
 
 // MARK: - Export media information packet
 
@@ -195,8 +196,19 @@ extension ExportProfile {
         includeHeaders: Bool,
         preparedMarkers: [PreparedMarker]
     ) -> [String] {
-        preparedMarkers
-            .map { tableManifestFields(for: $0, noMedia: false) }
+        let markersFields: [OrderedDictionary<ExportField, String>] = preparedMarkers
+            .map {
+                var fields = tableManifestFields(for: $0, noMedia: false)
+                
+                // truncate Clip Keywords field, which can sometimes be extremely long
+                if let kw = fields[.clipKeywords] {
+                    fields[.clipKeywords] = String(kw.prefix(100))
+                }
+                
+                return fields
+            }
+        
+        let markersLabels: [String] = markersFields
             .map { markerDict in
                 headers
                     .map {
@@ -205,5 +217,7 @@ extension ExportProfile {
                     }
                     .joined(separator: "\n")
             }
+        
+        return markersLabels
     }
 }
