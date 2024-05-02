@@ -40,11 +40,11 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 ## Table of contents
 
 - [Installation](#Installation)
-  - [Pre-Compiled Binary (Recommended)](#pre-compiled-binary-recommended)
+  - [Pre-Compiled CLI Binary](#pre-compiled-cli-binary)
+  - [Pre-Compiled CLI Binary (macOS Installer)](#pre-compiled-cli-binary-macos-installer)
   - [Compiled From Source](#compiled-from-source)
 - [Usage](#usage)
   - [CLI](#cli)
-  - [macOS Release](#macos-release)
   - [Examples](#examples)
   - [Result File Contents](#result-file-contents)
   - [Intended Behaviour & Logic](#intended-behaviour--logic)
@@ -57,17 +57,47 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 
 ## Installation
 
-### Pre-Compiled Binary (Recommended)
+First, ensure your system is configured to allow the tool to run:
 
-Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases/download/0.3.5/markers-extractor-cli-0.3.5.zip).
+<details><summary>Privacy & Security Settings</summary>
+<p>
 
-### With [Homebrew](https://brew.sh/)
+Navigate to the `Privacy & Security` settings and set your preference to `App Store and identified developers`.
+
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/macOS-privacy.png?raw=true"> </p>
+
+</p>
+</details>
+
+### Pre-Compiled CLI Binary
+
+Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases).
+
+### Using [Homebrew](https://brew.sh/)
 
 ```bash
 $ brew install TheAcharya/homebrew-tap/markers-extractor
 ```
 ```bash
 $ brew uninstall --cask markers-extractor
+```
+
+Upon completion, find the installed binary `markers-extractor` located within `/usr/local/bin`. Since this is a standard directory part of the environment search path, it will allow running `markers-extractor` from any directory like a standard command.
+
+### Pre-Compiled CLI Binary (macOS Installer)
+
+#### Install
+
+Use the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary `markers-extractor` located within `/usr/local/bin`. Since this is a standard directory part of the environment search path, it will allow running `markers-extractor` from any directory like a standard command. 
+
+<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/macOS-installer.png?raw=true"> </p>
+
+#### Uninstall
+
+To uninstall, run this terminal command. It will require your account password.
+
+```bash
+sudo rm /usr/local/bin/markers-extractor
 ```
 
 ### Compiled From Source
@@ -81,6 +111,7 @@ swift build -c release
 ```
 
 Once the build has finished, the `markers-extractor` executable will be located at `.build/release/`.
+
 
 ## Usage
 
@@ -170,26 +201,6 @@ OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 ```
-
-### macOS Release
-
-<details><summary>Privacy & Security</summary>
-<p>
-
-You have the option of two distinct releases: one packaged within a `.zip` archive and the other in a `.pkg` format. Navigate to the `Privacy & Security` settings and set your preference to `App Store and identified developers`.
-
-<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/macOS-privacy.png?raw=true"> </p>
-
-</p>
-</details>
-
-Utilise the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary `markers-extractor` located within `/usr/local/bin`. To uninstall, you can utalise this terminal command.
-
-```plain
-sudo rm /usr/local/bin/markers-extractor
-```
-
-<p align="center"> <img src="https://github.com/TheAcharya/MarkersExtractor/blob/main/Assets/macOS-installer.png?raw=true"> </p>
 
 ### Examples
 
