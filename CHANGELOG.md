@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 - Added better filename sanitation which can avoid failure to generate image files (#95)
+- Fixed issue where log file may not be created on disk if its target parent path does not exist (#96)
 
 ## [0.3.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.5) (2024-04-24)
 
