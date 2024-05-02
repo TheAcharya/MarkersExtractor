@@ -106,6 +106,9 @@ OPTIONS:
                           Annotations to import. If captions are used, their
                           start timecode determines their position. (default:
                           markers)
+  --use-chapter-marker-thumbnails
+                          For chapter markers, use their thumbnail pin position
+                          for thumbnail image generation.
   --exclude-role <name>   Exclude markers with a specified role. This argument
                           can be supplied more than once to apply multiple role
                           exclusions.
@@ -127,7 +130,7 @@ OPTIONS:
   --id-naming-mode <projectTimecode | name | notes>
                           Marker naming mode. This affects Marker IDs and image
                           filenames. (default: projectTimecode)
-  --label <id | name | type | checked | status | notes | position | clipType | clipName | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName>
+  --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
