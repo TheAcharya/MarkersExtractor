@@ -73,7 +73,7 @@ Navigate to the `Privacy & Security` settings and set your preference to `App St
 
 Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases).
 
-Extract the `markers-extractor-cli_portable-x.x.x.zip` file from the release.
+Extract the `markers-extractor-cli-portable-x.x.x.zip` file from the release.
 
 ### Using [Homebrew](https://brew.sh/)
 
