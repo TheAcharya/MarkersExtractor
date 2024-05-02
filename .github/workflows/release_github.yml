@@ -101,7 +101,7 @@ jobs:
         xcrun notarytool submit "notarization-m.zip" --keychain-profile "notarytool-profile" --progress --wait
 
         cp -R "$APP" dist/
-        zip -q -r dist_bin/markers-extractor-cli_portable-${{ env.VERSION }}.zip "dist/"
+        zip -q -r dist_bin/markers-extractor-cli-portable-${{ env.VERSION }}.zip "dist/"
     
     - name: Save release binaries for cli
       uses: actions/upload-artifact@v3
