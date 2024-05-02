@@ -23,6 +23,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         idMode: MarkerIDMode,
         media: ExportMedia?,
         tcStringFormat: Timecode.StringFormat,
+        useChapterMarkerPosterOffset: Bool,
         outputURL: URL,
         payload: Payload,
         resultFilePath: URL?,
@@ -36,6 +37,7 @@ public protocol ExportProfile: AnyObject where Self: ProgressReporting {
         markers: [Marker],
         idMode: MarkerIDMode,
         tcStringFormat: Timecode.StringFormat,
+        useChapterMarkerPosterOffset: Bool,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker]

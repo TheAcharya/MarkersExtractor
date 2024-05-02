@@ -127,7 +127,7 @@ extension Marker {
         position.upperLimit
     }
     
-    func offsetFromProjectStart() -> Timecode {
+    func positionOffsetFromProjectStart() -> Timecode {
         position - parentInfo.projectStartTime
     }
     
@@ -148,9 +148,7 @@ extension Marker {
         format: ExportMarkerTimeFormat,
         offsetToProjectStart: Bool = false
     ) -> String {
-        let rectifiedPosition = offsetToProjectStart
-            ? position - parentInfo.projectStartTime
-            : position
+        let rectifiedPosition = positionTimecode(offsetToProjectStart: offsetToProjectStart)
         
         switch format {
         case .timecode(let stringFormat):
@@ -158,6 +156,38 @@ extension Marker {
         case .realTime(let stringFormat):
             // convert timecode to real time (wall time)
             return Time(seconds: rectifiedPosition.realTimeValue).stringValue(format: stringFormat)
+        }
+    }
+    
+    func positionTimecode(offsetToProjectStart: Bool = false) -> Timecode {
+        offsetToProjectStart
+            ? position - parentInfo.projectStartTime
+            : position
+    }
+    
+    /// The timecode to use for thumbnail image extraction.
+    /// This is usually the same as marker position, except for certain cases such as a chapter
+    /// marker which may incorporate its poster offset.
+    ///
+    /// - Parameters:
+    ///   - useChapterMarkerPosterOffset: For chapter markers, use the poster offset.
+    ///   - offsetToProjectStart: If true, time will be offset by project start time such that the timeline will be
+    ///     considered as starting from zero.
+    func imageTimecode(
+        useChapterMarkerPosterOffset: Bool,
+        offsetToProjectStart: Bool = false
+    ) -> Timecode {
+        let rectifiedPosition = positionTimecode(offsetToProjectStart: offsetToProjectStart)
+        
+        switch type {
+        case .marker(.chapter(let posterOffset)):
+            if useChapterMarkerPosterOffset {
+                return (try? position.adding(.rational(posterOffset))) ?? rectifiedPosition
+            } else {
+                return rectifiedPosition
+            }
+        default:
+            return rectifiedPosition
         }
     }
 }

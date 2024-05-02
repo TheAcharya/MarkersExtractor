@@ -38,6 +38,7 @@ public struct StandardExportMarker: ExportMarker {
     public let icon: Icon
     
     public let imageFileName: String
+    public let imageTimecode: Timecode
     // public let mediaInfo: ExportMarkerMediaInfo?
     
     public init(
@@ -46,7 +47,8 @@ public struct StandardExportMarker: ExportMarker {
         mediaInfo: ExportMarkerMediaInfo?,
         tcStringFormat: Timecode.StringFormat,
         timeFormat: ExportMarkerTimeFormat,
-        offsetToProjectStart: Bool = false
+        offsetToProjectStart: Bool = false,
+        useChapterMarkerPosterOffset: Bool
     ) {
         id = marker.id(idMode, tcStringFormat: tcStringFormat)
         name = marker.name
@@ -75,5 +77,10 @@ public struct StandardExportMarker: ExportMarker {
         imageFileName = mediaInfo?
             .imageFileName(for: marker, idMode: idMode, tcStringFormat: tcStringFormat)
             ?? ""
+        
+        imageTimecode = marker.imageTimecode(
+            useChapterMarkerPosterOffset: useChapterMarkerPosterOffset, 
+            offsetToProjectStart: offsetToProjectStart
+        )
     }
 }

@@ -16,6 +16,7 @@ extension TSVProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         tcStringFormat: Timecode.StringFormat,
+        useChapterMarkerPosterOffset: Bool,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
@@ -25,7 +26,8 @@ extension TSVProfile {
                 idMode: idMode,
                 mediaInfo: mediaInfo,
                 tcStringFormat: tcStringFormat,
-                timeFormat: .timecode(stringFormat: tcStringFormat)
+                timeFormat: .timecode(stringFormat: tcStringFormat),
+                useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
             )
         }
     }

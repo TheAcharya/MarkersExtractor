@@ -17,6 +17,7 @@ extension MarkersExtractor {
         public var exportFormat: ExportProfileFormat
         public var enableSubframes: Bool
         public var markersSource: MarkersSource
+        public var useChapterMarkerThumbnails: Bool
         public var excludeRoles: Set<String>
         public var includeDisabled: Bool
         public var imageFormat: MarkerImageFormat
@@ -49,6 +50,7 @@ extension MarkersExtractor {
             exportFormat: ExportProfileFormat = Defaults.exportFormat,
             enableSubframes: Bool = Defaults.enableSubframes,
             markersSource: MarkersSource = Defaults.markersSource,
+            useChapterMarkerThumbnails: Bool = Defaults.useChapterMarkerThumbnails,
             excludeRoles: Set<String> = Defaults.excludeRoles,
             includeDisabled: Bool = Defaults.includeDisabled,
             imageFormat: MarkerImageFormat = Defaults.imageFormat,
@@ -83,6 +85,7 @@ extension MarkersExtractor {
             self.exportFormat = exportFormat
             self.enableSubframes = enableSubframes
             self.markersSource = markersSource
+            self.useChapterMarkerThumbnails = useChapterMarkerThumbnails
             self.excludeRoles = excludeRoles
             self.includeDisabled = includeDisabled
             self.imageFormat = imageFormat
@@ -227,6 +230,7 @@ extension MarkersExtractor.Settings {
         public static let exportFormat: ExportProfileFormat = .csv
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers
+        public static let useChapterMarkerThumbnails = false
         public static let excludeRoles: Set<String> = []
         public static let includeDisabled: Bool = false
         public static let imageFormat: MarkerImageFormat = .still(.png)

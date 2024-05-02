@@ -12,6 +12,7 @@ public protocol ExportMarker {
     associatedtype Icon: ExportIcon
     
     var imageFileName: String { get }
+    var imageTimecode: Timecode { get }
     var icon: Icon { get }
 }
 

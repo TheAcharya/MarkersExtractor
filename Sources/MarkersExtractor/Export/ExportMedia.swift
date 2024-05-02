@@ -112,16 +112,21 @@ extension ExportProfile {
         let imageFileNames = preparedMarkers.map { $0.imageFileName }
         
         // if no video - grabbing first frame from video placeholder using zero timecode
-        let offsets: [Timecode] = markers.map {
-            isVideoPresent
-                ? $0.offsetFromProjectStart()
-                : Timecode(
-                    .zero,
-                    at: $0.frameRate(),
-                    base: $0.subFramesBase(),
-                    limit: $0.upperLimit()
-                )
-        }
+        let offsets: [Timecode] = zip(markers, preparedMarkers)
+            .map { marker, preparedMarker in
+                if isVideoPresent {
+                    let projectStart = marker.parentInfo.projectStartTime
+                    let offset = preparedMarker.imageTimecode - projectStart
+                    return offset
+                } else {
+                    return Timecode(
+                        .zero,
+                        at: marker.frameRate(),
+                        base: marker.subFramesBase(),
+                        limit: marker.upperLimit()
+                    )
+                }
+            }
         
         let labels = makeImageLabelText(
             preparedMarkers: preparedMarkers,

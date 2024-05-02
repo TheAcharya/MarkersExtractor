@@ -15,6 +15,7 @@ extension YouTubeProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         tcStringFormat: Timecode.StringFormat,
+        useChapterMarkerPosterOffset: Bool,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
@@ -25,7 +26,8 @@ extension YouTubeProfile {
                 mediaInfo: mediaInfo,
                 tcStringFormat: tcStringFormat,
                 timeFormat: .realTime(stringFormat: .shortest),
-                offsetToProjectStart: true
+                offsetToProjectStart: true,
+                useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
             )
         }
     }

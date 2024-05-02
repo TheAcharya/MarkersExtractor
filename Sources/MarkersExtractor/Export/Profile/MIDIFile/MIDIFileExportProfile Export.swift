@@ -16,6 +16,7 @@ extension MIDIFileExportProfile {
         markers: [Marker],
         idMode: MarkerIDMode,
         tcStringFormat: Timecode.StringFormat,
+        useChapterMarkerPosterOffset: Bool,
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
@@ -96,9 +97,8 @@ public struct MIDIFileExportMarker: ExportMarker {
         .init(.standard) // never used, just dummy
     }
     
-    public var imageFileName: String {
-        UUID().uuidString // never used, just dummy
-    }
+    public let imageFileName: String
+    public let imageTimecode: Timecode // not used
     
     public init(
         marker: Marker,
@@ -109,6 +109,8 @@ public struct MIDIFileExportMarker: ExportMarker {
         position = marker.positionTimeString(format: timeFormat)
         frameRate = marker.frameRate()
         subFramesBase = marker.subFramesBase()
+        imageFileName = UUID().uuidString // never used, just dummy
+        imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToProjectStart: false) // not used
     }
     
     /// Convert to a DAWFileKit `DAWMarker`.
