@@ -73,6 +73,8 @@ Navigate to the `Privacy & Security` settings and set your preference to `App St
 
 Download the latest release of the CLI universal binary [here](https://github.com/TheAcharya/MarkersExtractor/releases).
 
+Extract the `markers-extractor-cli_portable-x.x.x.zip` file from the release.
+
 ### Using [Homebrew](https://brew.sh/)
 
 ```bash
@@ -87,6 +89,8 @@ Upon completion, find the installed binary `markers-extractor` located within `/
 ### Pre-Compiled CLI Binary (macOS Installer)
 
 #### Install
+
+Download the latest release of the CLI installer package [here](https://github.com/TheAcharya/MarkersExtractor/releases).
 
 Use the `markers-extractor-cli.pkg` installer to install the command-line binary into your system. Upon completion, find the installed binary `markers-extractor` located within `/usr/local/bin`. Since this is a standard directory part of the environment search path, it will allow running `markers-extractor` from any directory like a standard command. 
 
