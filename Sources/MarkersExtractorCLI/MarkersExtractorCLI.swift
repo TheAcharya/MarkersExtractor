@@ -42,6 +42,13 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     )
     var markersSource: MarkersSource = MarkersExtractor.Settings.Defaults.markersSource
     
+    @Flag(
+        help: ArgumentHelp(
+            "For chapter markers, use their thumbnail pin position for thumbnail image generation."
+        )
+    )
+    var useChapterMarkerThumbnails: Bool = MarkersExtractor.Settings.Defaults.useChapterMarkerThumbnails
+    
     @Option(
         name: [.customLong("exclude-role")],
         help: ArgumentHelp(
@@ -286,6 +293,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
                 exportFormat: exportFormat,
                 enableSubframes: enableSubframes,
                 markersSource: markersSource,
+                useChapterMarkerThumbnails: useChapterMarkerThumbnails,
                 excludeRoles: Set(excludeRoles),
                 includeDisabled: includeDisabled,
                 imageFormat: imageFormat,
