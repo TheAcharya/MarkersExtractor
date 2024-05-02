@@ -36,6 +36,11 @@ final class MarkersExtractorTests: XCTestCase {
                     projectName: "MyProject",
                     projectStartTime: tc("01:00:00:00", at: .fps24),
                     libraryName: "MyLibrary"
+                ), 
+                metadata: .init(
+                    reel: "Some reel",
+                    scene: "Some scene",
+                    take: "Some take"
                 )
             )
         }
@@ -92,6 +97,11 @@ final class MarkersExtractorTests: XCTestCase {
                     projectName: "MyProject",
                     projectStartTime: tc("01:00:00:00", at: .fps24),
                     libraryName: "MyLibrary"
+                ),
+                metadata: .init(
+                    reel: "Some reel",
+                    scene: "Some scene",
+                    take: "Some take"
                 )
             )
         }
