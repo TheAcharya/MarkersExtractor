@@ -240,7 +240,7 @@ ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
 $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --export-format notion --image-format png \
-  --label "name" --label "type" --label "notes" --label "position" \
+  --label name --label type --label notes --label position \
   --label-copyright "Road Runner & Coyote Productions" \
   --log-level debug --log $ERROR_LOG
 ```
@@ -267,7 +267,7 @@ ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
 $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --export-format notion --image-format gif \
-  --label "name" --label "type" --label "notes" --label "position" \
+  --label name --label type --label notes --label position \
   --label-copyright "Road Runner & Coyote Productions" \
   --label-font-size 15 \
   --log-level debug --log $ERROR_LOG
@@ -295,7 +295,7 @@ ERROR_LOG="/Users/xxx/Desktop/MarkersExtractor/log.txt"
 
 $TOOL_PATH "$FCPXML_PATH" "$OUTPUT_DIR" \
   --export-format notion --image-format gif --id-naming-mode notes \
-  --label "name" --label "type" --label "notes" --label "position" \
+  --label name --label type --label notes --label position \
   --label-copyright "Road Runner & Coyote Productions" \
   --label-font-size 15 \
   --log-level debug --log $ERROR_LOG
