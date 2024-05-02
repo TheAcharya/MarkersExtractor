@@ -46,6 +46,12 @@ extension MarkersExtractorCLI {
         if let fileLogHandler { return fileLogHandler }
         
         do {
+            // ensure the folder structure exists prior to attempting to create/write to the file
+            // otherwise this will throw an error and the file won't be created on disk.
+            
+            let logFileParentPath = logFile.deletingLastPathComponent()
+            try FileManager.default.createDirectory(at: logFileParentPath, withIntermediateDirectories: true)
+            
             var handler = try FileLogHandler(label: label, localFile: logFile)
             handler.logLevel = logLevel
             
