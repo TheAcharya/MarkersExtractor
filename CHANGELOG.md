@@ -5,6 +5,8 @@
 ### New Features
 
 - Added `Clip Keywords` manifest field (#63)
+- Added `--use-chapter-marker-thumbnails` CLI flag (#32)
+- Added `Reel`, `Scene`, `Take`, `Clip In`, `Clip Out` manifest fields (#39)
 
 ### Bug Fixes
 
