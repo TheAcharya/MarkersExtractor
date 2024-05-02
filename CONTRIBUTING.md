@@ -46,9 +46,8 @@ For code owners/maintainers, the following release spec is used:
        `https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip`
      - New help block output of the CLI tool
 4. Commit the changes made in Step 3 using the new version number (ie: `0.2.0`) as the commit message, and push to main.
-5. Compile the CLI tool as a binary executable and zip it using the filename `markers-extractor-cli-<ver>.zip`
-   ie: `markers-extractor-cli-0.2.0.zip`
-6. Make GitHub Release using:
-   - the new version number as its new tag and release name
-   - the added `CHANGELOG.md` block as the release notes
-   - attach the CLI binary zip file
+5. Run the `release_github` workflow, and enter `yes` for the `Release after build` parameter.
+6. After the workflow run successfully completes, publish GitHub Release:
+   1. Find the newly created draft release in https://github.com/TheAcharya/MarkersExtractor/releases
+   2. Paste the `CHANGELOG.md` block for this release version into the release notes field
+   3. Publish the release
