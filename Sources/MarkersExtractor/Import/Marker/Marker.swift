@@ -25,15 +25,29 @@ public struct Marker: Equatable, Hashable, Sendable {
         var projectStartTime: Timecode
         var libraryName: String
         
+        func clipInTimeString(format: ExportMarkerTimeFormat) -> String {
+            Self.timeString(from: clipInTime, format: format)
+        }
+        
+        func clipOutTimeString(format: ExportMarkerTimeFormat) -> String {
+            Self.timeString(from: clipOutTime, format: format)
+        }
+        
         func clipDurationTimeString(format: ExportMarkerTimeFormat) -> String {
             let dur = clipOutTime - clipInTime
-            
+            return Self.timeString(from: dur, format: format)
+        }
+        
+        static func timeString(
+            from timecode: Timecode,
+            format: ExportMarkerTimeFormat
+        ) -> String {
             switch format {
             case .timecode(let stringFormat):
-                return dur.stringValue(format: stringFormat)
+                return timecode.stringValue(format: stringFormat)
             case .realTime(let stringFormat):
                 // convert timecode to real time (wall time)
-                return Time(seconds: dur.realTimeValue).stringValue(format: stringFormat)
+                return Time(seconds: timecode.realTimeValue).stringValue(format: stringFormat)
             }
         }
         
@@ -46,7 +60,6 @@ public struct Marker: Equatable, Hashable, Sendable {
         }
     }
     
-    // raw metadata-related
     var type: InterpretedMarkerType
     var name: String
     var notes: String
@@ -56,6 +69,15 @@ public struct Marker: Equatable, Hashable, Sendable {
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
+    
+    struct Metadata: Equatable, Hashable {
+        var reel: String
+        var scene: String
+        var take: String
+    }
+    
+    /// Cached metadata.
+    var metadata: Metadata
     
     /// Used only when uniquing marker IDs to avoid duplicate IDs.
     var idSuffix: String?

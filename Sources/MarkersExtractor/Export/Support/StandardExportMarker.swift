@@ -20,9 +20,14 @@ public struct StandardExportMarker: ExportMarker {
     public let checked: String
     public let status: String
     public let notes: String
+    public let reel: String
+    public let scene: String
+    public let take: String
     public let position: String
     public let clipType: String
     public let clipName: String
+    public let clipIn: String
+    public let clipOut: String
     public let clipDuration: String
     public let clipKeywords: (flat: String, array: [String])
     public let audioRole: (flat: String, array: [String])
@@ -49,9 +54,14 @@ public struct StandardExportMarker: ExportMarker {
         checked = String(marker.isChecked())
         status = NotionExportProfile.Status(marker.type).rawValue
         notes = marker.notes
+        reel = marker.metadata.reel
+        scene = marker.metadata.scene
+        take = marker.metadata.take
         position = marker.positionTimeString(format: timeFormat, offsetToProjectStart: offsetToProjectStart)
         clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
+        clipIn = marker.parentInfo.clipInTimeString(format: timeFormat)
+        clipOut = marker.parentInfo.clipOutTimeString(format: timeFormat)
         clipDuration = marker.parentInfo.clipDurationTimeString(format: timeFormat)
         clipKeywords = marker.parentInfo.clipKeywordsFormatted()
         videoRole = marker.roles.videoFormatted()

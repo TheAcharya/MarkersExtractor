@@ -196,13 +196,16 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             return nil
         }
         
+        let markerMetadata = metadata(for: extractedMarker)
+        
         return Marker(
             type: .marker(extractedMarker.configuration),
             name: extractedMarker.name,
             notes: extractedMarker.note ?? "",
             roles: roles,
             position: position,
-            parentInfo: parentInfo
+            parentInfo: parentInfo, 
+            metadata: markerMetadata
         )
     }
     
@@ -226,13 +229,16 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             return nil
         }
         
+        let markerMetadata = metadata(for: extractedCaption)
+        
         return Marker(
             type: .caption,
             name: name,
             notes: extractedCaption.element.fcpNote ?? "",
             roles: roles,
             position: position,
-            parentInfo: parentInfo
+            parentInfo: parentInfo, 
+            metadata: markerMetadata
         )
     }
     
@@ -257,6 +263,42 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             projectStartTime: projectStartTime,
             libraryName: parentLibrary?.name ?? ""
         )
+    }
+    
+    private func metadata(
+        for extractedMarker: FinalCutPro.FCPXML.ExtractedMarker
+    ) -> Marker.Metadata {
+        let rawMetadata = extractedMarker.value(forContext: .metadata)
+        
+        return convertMetadata(rawMetadata: rawMetadata)
+    }
+    
+    private func metadata(
+        for extractedCaption: FinalCutPro.FCPXML.ExtractedCaption
+    ) -> Marker.Metadata {
+        let rawMetadata = extractedCaption.value(forContext: .metadata)
+        
+        return convertMetadata(rawMetadata: rawMetadata)
+    }
+    
+    private func convertMetadata(
+        rawMetadata: [FinalCutPro.FCPXML.Metadata.Metadatum]
+    ) -> Marker.Metadata {
+        // map metadata key/value pairs to a dictionary for easy access
+        let metadataDict: [FinalCutPro.FCPXML.Metadata.Key: String] = rawMetadata
+            .compactMapDictionary { element in
+                guard let key = element.key else { return nil }
+                let value = element.value ?? element.valueArray?.joined(separator: ",") ?? ""
+                return (key, value)
+            }
+        
+        let markerMetadata = Marker.Metadata(
+            reel: metadataDict[.reel] ?? "",
+            scene: metadataDict[.scene] ?? "",
+            take: metadataDict[.take] ?? ""
+        )
+        
+        return markerMetadata
     }
     
     func getClipRoles(_ element: any FCPXMLExtractedModelElement) -> MarkerRoles {
