@@ -41,11 +41,9 @@ For code owners/maintainers, the following release spec is used:
      - with a condensed bullet-point list of changes/fixes/improvements according to its established format
      - where possible, reference the Issue/PR number(s) or commit(s) where each change was made
    - Update root `README.md` with any pertinent revisions:
-     - Updated version number of CLI tool, updated link to CLI binary zip download URL.
-       (Change `0.2.0` here to the new version number)
-       `https://github.com/TheAcharya/MarkersExtractor/releases/download/0.2.0/markers-extractor-cli-0.2.0.zip`
+     - Update all literal instances of the package version to the latest package version
      - New help block output of the CLI tool
-4. Commit the changes made in Step 3 using the new version number (ie: `0.2.0`) as the commit message, and push to main.
+4. Commit the changes made in Step 3 using the new version number (ie: `0.3.0`) as the commit message, and push to main.
 5. Run the `release_github` workflow, and enter `yes` for the `Release after build` parameter.
 6. After the workflow run successfully completes, publish GitHub Release:
    1. Find the newly created draft release in https://github.com/TheAcharya/MarkersExtractor/releases
