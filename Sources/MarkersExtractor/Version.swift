@@ -4,6 +4,6 @@
 //  Licensed under MIT License
 //
 
-/// Static CLI version number stored in its own file to allow for easier modification by automated
+/// Static CLI version number stored in its own file to allow for easier access by automated
 /// build tools.
-public let packageVersion = "0.3.5"
+public let packageVersion = "0.3.6"
