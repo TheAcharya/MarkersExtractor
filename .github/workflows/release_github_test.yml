@@ -1,0 +1,214 @@
+name: release_github_test
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Release after build'
+        required: true
+        default: 'no'
+      
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Extract version number
+      run: |
+        CLI_VERSION=$(sed -n 's/.*let packageVersion = "\(.*\)".*/\1/p' Sources/MarkersExtractor/Version.swift)
+        echo "VERSION=$CLI_VERSION" >> $GITHUB_ENV
+        echo $CLI_VERSION
+      shell: bash
+      
+    - name: List Xcode installations
+      run: sudo ls -1 /Applications | grep "Xcode"
+      
+    - name: Select Xcode 15.3
+      run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
+    
+    - name: Change to Xcode Project Directory
+      run: cd .swiftpm/xcode
+      
+    - name: Create Distribution Directory
+      run: mkdir -p dist
+    
+    - name: Prepare Directories
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        mkdir -p "$PARENT/dist/latest-build"
+        mkdir -p "$PARENT/dist/cli-build"
+        mkdir dist_bin
+
+    - name: Build MarkersExtractor
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        WORKSPACE_PATH=".swiftpm/xcode/package.xcworkspace"
+        SCHEME="MarkersExtractor-Package"
+        CONFIGURATION="Release"
+        DESTINATION="platform=macOS"
+        BUILD_FOLDER="$PARENT/dist/cli-build"
+        echo "PARENT=$PARENT" >> $GITHUB_ENV
+        echo "CONFIG=$CONFIGURATION" >> $GITHUB_ENV
+
+        xcodebuild build -workspace "$WORKSPACE_PATH" -scheme "$SCHEME" -configuration "$CONFIGURATION" -destination "$DESTINATION" -derivedDataPath "$BUILD_FOLDER" clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -allowProvisioningUpdates | xcpretty
+        
+    - name: Prepare VM Directories
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        mkdir -p "$PARENT/dist"
+        mkdir -p "$PARENT/dist/latest-build"
+        
+        cp -R $PARENT/dist/cli-build/Build/Products/${{ env.CONFIG }}/markers-extractor "$PARENT/dist/latest-build/"
+        
+    - name: Codesign MarkersExtractor
+      env: 
+        APPLE_CERT_DATA: ${{ secrets.APPLE_CERT_DATA }}
+        APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+        KEYCHAIN_PASSWORD_M: ${{ secrets.KEYCHAIN_PASSWORD_M }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        APP="$PARENT/dist/latest-build/markers-extractor"
+        
+        echo $APPLE_CERT_DATA | base64 --decode > certificate.p12
+        security create-keychain -p $KEYCHAIN_PASSWORD_M build-m.keychain
+        security default-keychain -s build-m.keychain
+        security unlock-keychain -p $KEYCHAIN_PASSWORD_M build-m.keychain
+        security import certificate.p12 -k build-m.keychain -P $APPLE_CERT_PASSWORD -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KEYCHAIN_PASSWORD_M build-m.keychain
+        /usr/bin/codesign --force -s $APPLE_TEAM_ID --options runtime "$APP" -v
+        
+    - name: Notarize MarkersExtractor
+      env:
+        APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
+        APPLE_DEV_ID_PASSWORD: ${{ secrets.APPLE_DEV_ID_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        mkdir -p dist
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        APP="$PARENT/dist/latest-build/markers-extractor"
+    
+        echo "Create keychain profile"
+        xcrun notarytool store-credentials "notarytool-profile" --apple-id $APPLE_DEV_ID --password $APPLE_DEV_ID_PASSWORD --team-id $APPLE_TEAM_ID
+        
+        echo "Creating temp notarization archive"
+        ditto -c -k --keepParent "$APP" "notarization-m.zip"
+        
+        echo "Notarize app"
+        xcrun notarytool submit "notarization-m.zip" --keychain-profile "notarytool-profile" --progress --wait
+
+        cp -R "$APP" dist/
+        zip -q -r dist_bin/markers-extractor-cli-portable-${{ env.VERSION }}.zip "dist/"
+    
+    - name: Save release binaries for cli
+      uses: actions/upload-artifact@v4
+      with:
+        name: release_dist_bin_cli
+        path: dist_bin
+
+    - name: Create MarkersExtractor PKG for macOS
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        BINARY_PATH="$PARENT/dist/latest-build/markers-extractor"
+        PKG_IDENTIFIER="co.theacharya.MarkersExtractor"
+        INSTALL_LOCATION="/usr/local/bin"
+        PACKAGE_NAME="MarkersExtractor-unsigned"
+        OUTPUT_DIR="$PARENT/dist/pkg-build"
+        VERSION=${{ env.VERSION }}
+        
+        echo "Creating Temp Dir"
+        TMP_DIR="$OUTPUT_DIR/tmp_pkgbuild"
+        mkdir -p "$TMP_DIR"
+    
+        cp "$BINARY_PATH" "$TMP_DIR/$(basename "$BINARY_PATH")"
+    
+        echo "Running Creating PKG"
+        pkgbuild --root "$TMP_DIR" --identifier "$PKG_IDENTIFIER" --version "$VERSION" --install-location "$INSTALL_LOCATION" "$OUTPUT_DIR/$PACKAGE_NAME.pkg"
+    
+        rm -rf "$TMP_DIR"
+        
+    - name: Verify Files
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        echo "Checking copied files..."
+        ls -l "$PARENT/dist/pkg-build"
+      
+    - name: Productsign MarkersExtractor
+      env: 
+        APPLE_INSTALL_CERT_DATA: ${{ secrets.APPLE_INSTALL_CERT_DATA }}
+        APPLE_INSTALL_CERT_PASSWORD: ${{ secrets.APPLE_INSTALL_CERT_PASSWORD }}
+        KEYCHAIN_PASSWORD_IN: ${{ secrets.KEYCHAIN_PASSWORD_IN }}
+        APPLE_TEAM_ID_INSTALL: ${{ secrets.APPLE_TEAM_ID_INSTALL }}
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        PKG="$PARENT/dist/pkg-build/MarkersExtractor-unsigned.pkg"
+        SPKG="$PARENT/dist/pkg-build/markers-extractor-cli-${{env.VERSION}}.pkg"
+        SIGNING_IDENTITY="$APPLE_TEAM_ID_INSTALL"
+      
+        echo $APPLE_INSTALL_CERT_DATA | base64 --decode > certificate.p12
+        security create-keychain -p $KEYCHAIN_PASSWORD_IN build-i.keychain
+        security default-keychain -s build-i.keychain
+        security unlock-keychain -p $KEYCHAIN_PASSWORD_IN build-i.keychain
+        security import certificate.p12 -k build-i.keychain -P $APPLE_INSTALL_CERT_PASSWORD -T /usr/bin/productsign
+        security set-key-partition-list -S apple-tool:,apple:,productsign: -s -k $KEYCHAIN_PASSWORD_IN build-i.keychain
+        
+        /usr/bin/productsign --sign "$SIGNING_IDENTITY" "$PKG" "$SPKG"
+      
+    - name: Notarize MarkersExtractor PKG
+      env:
+        APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
+        APPLE_DEV_ID_PASSWORD: ${{ secrets.APPLE_DEV_ID_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        PARENT=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+        SPKG="$PARENT/dist/pkg-build/markers-extractor-cli-${{env.VERSION}}.pkg"
+        
+        echo "SPKG=$SPKG" >> $GITHUB_ENV
+        echo "Create Keychain Profile"
+        xcrun notarytool store-credentials "notarytool-profile" --apple-id $APPLE_DEV_ID --password $APPLE_DEV_ID_PASSWORD --team-id $APPLE_TEAM_ID
+        
+        echo "Notarize MarkersExtractor PKG"
+        xcrun notarytool submit "$SPKG" --keychain-profile "notarytool-profile" --progress --wait
+        
+        echo "Attach staple"
+        xcrun stapler staple "$SPKG"  
+    
+    - name: Save release binaries for macos
+      uses: actions/upload-artifact@v4
+      with:
+        name: release_MarkerExtractor_pkg
+        path: ${{ env.SPKG }}
+
+  release:
+    if: github.event_name == 'push' || github.event.inputs.release == 'yes'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get tag version
+        run: |
+          CLI_VERSION=$(sed -n 's/.*let packageVersion = "\(.*\)".*/\1/p' Sources/MarkersExtractor/Version.swift)
+          echo "VERSION=$CLI_VERSION" >> $GITHUB_ENV
+
+      - name: Load release binaries for macos
+        uses: actions/download-artifact@v4
+        with:
+          name: release_dist_bin_cli
+          path: dist
+      
+      - name: Load release pkg
+        uses: actions/download-artifact@v4
+        with:
+          name: release_MarkerExtractor_pkg
+          path: dist
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.VERSION }}
+          draft: true
