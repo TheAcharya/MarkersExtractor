@@ -39,7 +39,6 @@ public final class RolesExtractor {
         )
         
         let sorted = timelineRoles
-            .flatMap { $0 }
             .map {
                 FCPXMLMarkerExtractor.processExtractedRole(role: $0)
             }
