@@ -18,9 +18,9 @@ extension ExportFolderFormat {
         case .short:
             return "\(timelineName)"
         case .medium:
-            return "\(projectName) \(nowTimestamp(twentyFourHour: true))"
+            return "\(timelineName) \(nowTimestamp(twentyFourHour: true))"
         case .long:
-            return "\(projectName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
+            return "\(timelineName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
         }
     }
     
