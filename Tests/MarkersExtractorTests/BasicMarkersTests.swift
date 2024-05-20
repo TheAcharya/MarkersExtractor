@@ -19,7 +19,7 @@ final class BasicMarkersTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         
         let extractor = MarkersExtractor(settings: settings)
         
@@ -106,7 +106,7 @@ final class BasicMarkersTests: XCTestCase {
             
             // verify correct IDs
             switch idMode {
-            case .projectTimecode:
+            case .timelineNameAndTimecode:
                 XCTAssertEqual(
                     markers[safe: 0]?.id(
                         settings.idNamingMode,

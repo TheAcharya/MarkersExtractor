@@ -7,7 +7,7 @@
 import Foundation
 
 public enum MarkerIDMode: String, CaseIterable, Equatable, Hashable, Sendable {
-    case projectTimecode
+    case timelineNameAndTimecode
     case name
     case notes
 }

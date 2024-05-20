@@ -15,7 +15,7 @@ final class MarkersExtractorTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         
         let extractor = MarkersExtractor(settings: settings)
         

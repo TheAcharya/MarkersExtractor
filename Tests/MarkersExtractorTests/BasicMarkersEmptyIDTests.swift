@@ -23,7 +23,7 @@ final class BasicMarkersEmptyIDTests: XCTestCase {
             
             // attempt to extract markers.
             switch idMode {
-            case .projectTimecode:
+            case .timelineNameAndTimecode:
                 // no way case an error since timecode will always be a non-empty string.
                 // so just test that no error is thrown here.
                 do {

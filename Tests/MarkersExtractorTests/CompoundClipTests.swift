@@ -17,7 +17,7 @@ final class CompoundClipTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         
         let extractor = MarkersExtractor(settings: settings)
         

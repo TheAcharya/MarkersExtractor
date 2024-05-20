@@ -89,8 +89,8 @@ extension Marker {
     func id(_ idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         let baseID: String = {
             switch idMode {
-            case .projectTimecode:
-                return "\(parentInfo.projectName)_\(positionTimeString(format: .timecode(stringFormat: tcStringFormat)))"
+            case .timelineNameAndTimecode:
+                return "\(parentInfo.timelineName)_\(positionTimeString(format: .timecode(stringFormat: tcStringFormat)))"
             case .name:
                 return name
             case .notes:
@@ -102,7 +102,7 @@ extension Marker {
     
     func id(pathSafe idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         switch idMode {
-        case .projectTimecode:
+        case .timelineNameAndTimecode:
             return id(idMode, tcStringFormat: tcStringFormat)
                 .replacingOccurrences(of: ";", with: "-") // used in drop-frame timecode
                 .replacingOccurrences(of: ":", with: "-")

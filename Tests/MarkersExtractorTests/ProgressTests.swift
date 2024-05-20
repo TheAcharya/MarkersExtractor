@@ -13,7 +13,7 @@ final class ProgressTests: XCTestCase {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
-            idNamingMode: .projectTimecode,
+            idNamingMode: .timelineNameAndTimecode,
             enableSubframes: false, 
             markersSource: .markers, 
             excludeRoles: [], 

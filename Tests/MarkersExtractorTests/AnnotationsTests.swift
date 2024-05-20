@@ -17,7 +17,7 @@ final class AnnotationsTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .captions
         settings.includeDisabled = true
         
@@ -56,7 +56,7 @@ final class AnnotationsTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .markersAndCaptions
         settings.includeDisabled = true
         
