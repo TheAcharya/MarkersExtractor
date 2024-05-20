@@ -18,16 +18,22 @@ extension ExportFolderFormat {
         case .short:
             return "\(projectName)"
         case .medium:
-            return "\(projectName) \(nowTimestamp())"
+            return "\(projectName) \(nowTimestamp(twentyFourHour: true))"
         case .long:
-            return "\(projectName) \(nowTimestamp()) [\(profile.name)]"
+            return "\(projectName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
         }
     }
     
-    private func nowTimestamp() -> String {
+    private func nowTimestamp(twentyFourHour: Bool) -> String {
         let now = Date()
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd hh-mm-ss"
+        if twentyFourHour {
+            // "2024-03-20 14-45-10"
+            formatter.dateFormat = "yyyy-MM-dd HH-mm-ss"
+        } else {
+            // "2024-03-20 02-45-10PM"
+            formatter.dateFormat = "yyyy-MM-dd hh-mm-ssa"
+        }
         return formatter.string(from: now)
     }
 }
