@@ -6,6 +6,10 @@
 
 - Extraction now supports FCPXML containing a standalone clip without a project (#99)
 
+### Bug Fixes
+
+- Output folder name timestamp now formats as 24-hour time (#100)
+
 ### Changes
 
 - Renamed `projectTimecode` naming mode to `timelineNameAndTimecode` (#99)
