@@ -162,9 +162,9 @@ OPTIONS:
                           for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
-  --id-naming-mode <projectTimecode | name | notes>
+  --id-naming-mode <timelineNameAndTimecode | name | notes>
                           Marker naming mode. This affects Marker IDs and image
-                          filenames. (default: projectTimecode)
+                          filenames. (default: timelineNameAndTimecode)
   --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
@@ -352,7 +352,8 @@ It is recommended to read this file with a JSON parser to obtain the values for 
 
 ### Intended Behaviour & Logic
 
-The tool will only parse markers of your project's main timeline.
+The tool operates on a single Final Cut Pro timeline. If the FCPXML data contains a project, the project's main timeline will be used. If a standalone clip is present instead of a project, the clip's timeline will be used.
+
 Markers nested deep within compound, multicam or synchronized clips will be ignored.
 
 ### Developer Library
