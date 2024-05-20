@@ -79,7 +79,7 @@ extension MarkersExtractor {
             do {
                 let exportMedia = try formExportMedia(timelineName: context.timelineName)
                 media = exportMedia
-                logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
+                logger.info("Found media file: \(exportMedia.videoURL.path.quoted).")
                 
                 if s.exportFormat.concreteType.isMediaCapable {
                     logger.info(
