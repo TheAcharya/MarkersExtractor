@@ -6,10 +6,13 @@
 
 import Foundation
 import DAWFileKit
+import TimecodeKit
 
 // MARK: - Extract Markers
 
 extension MarkersExtractor {
+    static let defaultTimelineName = "Timeline"
+    
     /// Extract markers from `fcpxml` and optionally sort them chronologically by timecode.
     ///
     /// Does not perform any ID uniquing.
@@ -18,14 +21,16 @@ extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     func extractMarkers(
         sort: Bool = true,
-        preloadedProjects: [FinalCutPro.FCPXML.Project]? = nil,
-        preloadedClips: [any FCPXMLElement]? = nil,
         parentProgress: ParentProgress? = nil
-    ) async throws -> [Marker] {
+    ) async throws -> (
+        markers: [Marker],
+        context: FCPXMLMarkerExtractor.TimelineContext
+    ) {
+        let extractor: FCPXMLMarkerExtractor
         var markers: [Marker]
         
         do {
-            let extractor = try FCPXMLMarkerExtractor(
+            extractor = try FCPXMLMarkerExtractor(
                 fcpxml: &s.fcpxml,
                 idNamingMode: s.idNamingMode,
                 enableSubframes: s.enableSubframes, 
@@ -34,19 +39,22 @@ extension MarkersExtractor {
                 includeDisabled: s.includeDisabled,
                 logger: logger
             )
-            
-            // attach local progress to parent
-            parentProgress?.addChild(extractor.progress)
-            
-            markers = await extractor.extractMarkers(
-                preloadedProjects: preloadedProjects,
-                preloadedClips: preloadedClips
-            )
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
             ))
         }
+        
+        // attach local progress to parent
+        parentProgress?.addChild(extractor.progress)
+        
+        guard let context = extractor.extractTimelineContext(defaultTimelineName: Self.defaultTimelineName)
+        else {
+            // method already logs any specific errors
+            throw MarkersExtractorError.extraction(.fcpxmlParse("Error extracting timeline context."))
+        }
+        
+        markers = await extractor.extractMarkers(context: context)
         
         if !isAllUniqueIDNonEmpty(in: markers) {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
@@ -68,7 +76,7 @@ extension MarkersExtractor {
             markers.sort()
         }
         
-        return markers
+        return (markers: markers, context: context)
     }
 }
 

@@ -20,10 +20,15 @@ public struct Marker: Equatable, Hashable, Sendable {
         var clipInTime: Timecode
         var clipOutTime: Timecode
         var clipKeywords: [String]
-        var eventName: String
-        var projectName: String
-        var projectStartTime: Timecode
-        var libraryName: String
+        
+        var libraryName: String?
+        
+        var eventName: String?
+        
+        var projectName: String?
+        
+        var timelineName: String // will be same as project name when project is present, otherwise timeline clip name
+        var timelineStartTime: Timecode // project start, or clip start if no project
         
         func clipInTimeString(format: ExportMarkerTimeFormat) -> String {
             Self.timeString(from: clipInTime, format: format)
@@ -127,8 +132,8 @@ extension Marker {
         position.upperLimit
     }
     
-    func positionOffsetFromProjectStart() -> Timecode {
-        position - parentInfo.projectStartTime
+    func positionOffsetFromTimelineStart() -> Timecode {
+        position - parentInfo.timelineStartTime
     }
     
     func isChecked() -> Bool {
@@ -142,13 +147,13 @@ extension Marker {
     
     /// - Parameters:
     ///   - format: Time display format.
-    ///   - offsetToProjectStart: If true, time will be offset by project start time such that the timeline will be
+    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the timeline will be
     ///     considered as starting from zero.
     func positionTimeString(
         format: ExportMarkerTimeFormat,
-        offsetToProjectStart: Bool = false
+        offsetToTimelineStart: Bool = false
     ) -> String {
-        let rectifiedPosition = positionTimecode(offsetToProjectStart: offsetToProjectStart)
+        let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
         
         switch format {
         case .timecode(let stringFormat):
@@ -159,9 +164,9 @@ extension Marker {
         }
     }
     
-    func positionTimecode(offsetToProjectStart: Bool = false) -> Timecode {
-        offsetToProjectStart
-            ? position - parentInfo.projectStartTime
+    func positionTimecode(offsetToTimelineStart: Bool = false) -> Timecode {
+        offsetToTimelineStart
+            ? position - parentInfo.timelineStartTime
             : position
     }
     
@@ -171,13 +176,13 @@ extension Marker {
     ///
     /// - Parameters:
     ///   - useChapterMarkerPosterOffset: For chapter markers, use the poster offset.
-    ///   - offsetToProjectStart: If true, time will be offset by project start time such that the timeline will be
+    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the timeline will be
     ///     considered as starting from zero.
     func imageTimecode(
         useChapterMarkerPosterOffset: Bool,
-        offsetToProjectStart: Bool = false
+        offsetToTimelineStart: Bool = false
     ) -> Timecode {
-        let rectifiedPosition = positionTimecode(offsetToProjectStart: offsetToProjectStart)
+        let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
         
         switch type {
         case .marker(.chapter(let posterOffset)):

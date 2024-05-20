@@ -9,16 +9,16 @@ import TimecodeKit
 
 public struct MIDIFileExportPayload: ExportPayload {
     let midiFilePath: URL
-    let sessionStartTimecode: Timecode
+    let timelineStartTimecode: Timecode
     
     init(
         timelineName: String,
         outputURL: URL,
-        sessionStartTimecode: Timecode
+        timelineStartTimecode: Timecode
     ) {
         let midiFileName = "\(timelineName).mid"
         midiFilePath = outputURL.appendingPathComponent(midiFileName)
         
-        self.sessionStartTimecode = sessionStartTimecode
+        self.timelineStartTimecode = timelineStartTimecode
     }
 }

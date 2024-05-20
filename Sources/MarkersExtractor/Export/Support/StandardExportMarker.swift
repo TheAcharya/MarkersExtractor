@@ -47,7 +47,7 @@ public struct StandardExportMarker: ExportMarker {
         mediaInfo: ExportMarkerMediaInfo?,
         tcStringFormat: Timecode.StringFormat,
         timeFormat: ExportMarkerTimeFormat,
-        offsetToProjectStart: Bool = false,
+        offsetToTimelineStart: Bool = false,
         useChapterMarkerPosterOffset: Bool
     ) {
         id = marker.id(idMode, tcStringFormat: tcStringFormat)
@@ -59,7 +59,7 @@ public struct StandardExportMarker: ExportMarker {
         reel = marker.metadata.reel
         scene = marker.metadata.scene
         take = marker.metadata.take
-        position = marker.positionTimeString(format: timeFormat, offsetToProjectStart: offsetToProjectStart)
+        position = marker.positionTimeString(format: timeFormat, offsetToTimelineStart: offsetToTimelineStart)
         clipType = marker.parentInfo.clipType
         clipName = marker.parentInfo.clipName
         clipIn = marker.parentInfo.clipInTimeString(format: timeFormat)
@@ -68,9 +68,9 @@ public struct StandardExportMarker: ExportMarker {
         clipKeywords = marker.parentInfo.clipKeywordsFormatted()
         videoRole = marker.roles.videoFormatted()
         audioRole = marker.roles.audioFormatted(multipleRoleSeparator: ",")
-        eventName = marker.parentInfo.eventName
-        projectName = marker.parentInfo.projectName
-        libraryName = marker.parentInfo.libraryName
+        eventName = marker.parentInfo.eventName ?? ""
+        projectName = marker.parentInfo.projectName ?? ""
+        libraryName = marker.parentInfo.libraryName ?? ""
         icon = Icon(marker.type)
         
         // self.mediaInfo = mediaInfo
@@ -80,7 +80,7 @@ public struct StandardExportMarker: ExportMarker {
         
         imageTimecode = marker.imageTimecode(
             useChapterMarkerPosterOffset: useChapterMarkerPosterOffset, 
-            offsetToProjectStart: offsetToProjectStart
+            offsetToTimelineStart: offsetToTimelineStart
         )
     }
 }

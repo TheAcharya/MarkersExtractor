@@ -48,7 +48,7 @@ extension MIDIFileExportProfile {
         let midiFile = try MIDIFile(
             converting: dawMarkers,
             tempo: 120.0,
-            startTimecode: payload.sessionStartTimecode,
+            startTimecode: payload.timelineStartTimecode,
             includeComments: false,
             buildMessages: &buildMessages
         )
@@ -110,7 +110,7 @@ public struct MIDIFileExportMarker: ExportMarker {
         frameRate = marker.frameRate()
         subFramesBase = marker.subFramesBase()
         imageFileName = UUID().uuidString // never used, just dummy
-        imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToProjectStart: false) // not used
+        imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToTimelineStart: false) // not used
     }
     
     /// Convert to a DAWFileKit `DAWMarker`.

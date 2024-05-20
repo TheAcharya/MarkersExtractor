@@ -11,9 +11,9 @@ import OTCore
 // MARK: - Output Path
 
 extension MarkersExtractor {
-    func makeOutputPath(for projectName: String) throws -> URL {
+    func makeOutputPath(forTimelineName timelineName: String) throws -> URL {
         let folderName = s.exportFolderFormat.folderName(
-            projectName: projectName,
+            timelineName: timelineName,
             profile: s.exportFormat
         )
         let proposedOutputURL = s.outputDir.appendingPathComponent(folderName)

@@ -13,14 +13,14 @@ public enum ExportFolderFormat: String, CaseIterable, Equatable, Hashable {
 }
 
 extension ExportFolderFormat {
-    func folderName(projectName: String, profile: ExportProfileFormat) -> String {
+    func folderName(timelineName: String, profile: ExportProfileFormat) -> String {
         switch self {
         case .short:
-            return "\(projectName)"
+            return "\(timelineName)"
         case .medium:
-            return "\(projectName) \(nowTimestamp())"
+            return "\(timelineName) \(nowTimestamp())"
         case .long:
-            return "\(projectName) \(nowTimestamp()) [\(profile.name)]"
+            return "\(timelineName) \(nowTimestamp()) [\(profile.name)]"
         }
     }
     

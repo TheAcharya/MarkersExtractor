@@ -115,7 +115,7 @@ extension ExportProfile {
         let offsets: [Timecode] = zip(markers, preparedMarkers)
             .map { marker, preparedMarker in
                 if isVideoPresent {
-                    let projectStart = marker.parentInfo.projectStartTime
+                    let projectStart = marker.parentInfo.timelineStartTime
                     let offset = preparedMarker.imageTimecode - projectStart
                     return offset
                 } else {

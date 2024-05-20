@@ -12,9 +12,9 @@ import OrderedCollections
 extension MarkersExtractor {
     /// - Throws: ``MarkersExtractorError``
     func formExportMedia(
-        projectName: String
+        timelineName: String
     ) throws -> ExportMedia {
-        let videoPath = try findMedia(name: projectName, paths: s.mediaSearchPaths)
+        let videoPath = try findMedia(name: timelineName, paths: s.mediaSearchPaths)
         let imageLabels = OrderedSet(s.imageLabels).map { $0 }
         let labelProperties = MarkerLabelProperties(using: s)
         

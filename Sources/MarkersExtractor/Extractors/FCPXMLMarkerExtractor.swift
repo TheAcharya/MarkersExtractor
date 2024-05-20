@@ -87,18 +87,19 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     }
     
     // MARK: - Public Instance Methods
-
-    public func extractMarkers(
-        preloadedProjects projects: [FinalCutPro.FCPXML.Project]? = nil,
-        preloadedClips clips: [any FCPXMLElement]? = nil
-    ) async -> [Marker] {
-        progress.completedUnitCount = 0
-        progress.totalUnitCount = 1
-        
-        defer { progress.completedUnitCount = 1 }
-        
-        var fcpxmlMarkers: [Marker] = []
-
+    
+    public struct TimelineContext {
+        public let library: FinalCutPro.FCPXML.Library?
+        public let projectName: String?
+        public let timeline: FinalCutPro.FCPXML.AnyTimeline
+        public let timelineName: String
+        public let timelineStartTime: Timecode
+    }
+    
+    /// Returns the first timeline found in the FCPXML as well as contextual metadata.
+    public func extractTimelineContext(
+        defaultTimelineName: String
+    ) -> TimelineContext? {
         let parsedFCPXML = FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
         
         let library = parsedFCPXML.root.library
@@ -108,7 +109,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             logger.info(
                 "No timelines (projects or clips) could be found in the FCPXML."
             )
-            return []
+            return nil
         }
         
         // project element may or may not exist.
@@ -116,27 +117,57 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             .ancestorElements(includingSelf: false)
             .first(whereFCPElement: .project)
         
+        let projectName = parentProject?.name
+        
+        // the timeline always needs a name, whether it's a project or a clip.
+        // we prefer the project name if a project exists.
+        // this should also not be an empty string.
+        let timelineName = projectName
+            ?? timeline.timelineName
+            ?? defaultTimelineName
+        
         // extract from origin element
         guard let timelineStartTime = timeline.timelineStartAsTimecode() else {
             logger.error(
                 "Could not determine timeline start timecode."
             )
-            return []
+            return nil
         }
+        
+        return TimelineContext(
+            library: library,
+            projectName: projectName,
+            timeline: timeline,
+            timelineName: timelineName,
+            timelineStartTime: timelineStartTime
+        )
+    }
+    
+    public func extractMarkers(
+        context: TimelineContext
+    ) async -> [Marker] {
+        progress.completedUnitCount = 0
+        progress.totalUnitCount = 1
+        
+        defer { progress.completedUnitCount = 1 }
+        
+        var fcpxmlMarkers: [Marker] = []
         
         if markersSource.includesMarkers {
             fcpxmlMarkers += await markers(
-                in: timeline,
-                library: library,
-                timelineStartTime: timelineStartTime
+                in: context.timeline,
+                library: context.library,
+                timelineName: context.timelineName,
+                timelineStartTime: context.timelineStartTime
             )
         }
         
         if markersSource.includesCaptions {
             fcpxmlMarkers += await captions(
-                in: timeline,
-                library: library,
-                timelineStartTime: timelineStartTime
+                in: context.timeline,
+                library: context.library,
+                timelineName: context.timelineName,
+                timelineStartTime: context.timelineStartTime
             )
         }
         
@@ -149,10 +180,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     }
     
     // MARK: - Private Methods
-
+    
     private func markers(
         in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
+        timelineName: String,
         timelineStartTime: Timecode
     ) async -> [Marker] {
         let extractedMarkers = await timeline.extract(
@@ -164,7 +196,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             convertMarker(
                 $0,
                 parentLibrary: library,
-                projectStartTime: timelineStartTime
+                timelineName: timelineName,
+                timelineStartTime: timelineStartTime
             )
         }
     }
@@ -172,6 +205,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private func captions(
         in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
+        timelineName: String,
         timelineStartTime: Timecode
     ) async -> [Marker] {
         let extractedCaptions = await timeline.extract(
@@ -183,7 +217,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             convertCaption(
                 $0,
                 parentLibrary: library,
-                projectStartTime: timelineStartTime
+                timelineName: timelineName,
+                timelineStartTime: timelineStartTime
             )
         }
     }
@@ -191,15 +226,17 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private func convertMarker(
         _ extractedMarker: FinalCutPro.FCPXML.ExtractedMarker,
         parentLibrary: FinalCutPro.FCPXML.Library?,
-        projectStartTime: Timecode
+        timelineName: String,
+        timelineStartTime: Timecode
     ) -> Marker? {
         let roles = getClipRoles(extractedMarker)
         
         guard let position = extractedMarker.value(forContext: .absoluteStartAsTimecode()),
               let parentInfo = parentInfo(
                   from: extractedMarker,
-                  parentLibrary: parentLibrary,
-                  projectStartTime: projectStartTime
+                  parentLibrary: parentLibrary, 
+                  timelineName: timelineName,
+                  timelineStartTime: timelineStartTime
               )
         else {
             logger.error("Error converting marker: \(extractedMarker.name.quoted).")
@@ -222,7 +259,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private func convertCaption(
         _ extractedCaption: FinalCutPro.FCPXML.ExtractedCaption,
         parentLibrary: FinalCutPro.FCPXML.Library?,
-        projectStartTime: Timecode
+        timelineName: String,
+        timelineStartTime: Timecode
     ) -> Marker? {
         let roles = getClipRoles(extractedCaption)
         
@@ -231,8 +269,9 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         guard let position = extractedCaption.timecode(),
               let parentInfo = parentInfo(
                   from: extractedCaption,
-                  parentLibrary: parentLibrary,
-                  projectStartTime: projectStartTime
+                  parentLibrary: parentLibrary, 
+                  timelineName: timelineName,
+                  timelineStartTime: timelineStartTime
               )
         else {
             logger.error("Error converting caption: \(name.quoted).")
@@ -255,7 +294,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     private func parentInfo(
         from element: any FCPXMLExtractedModelElement,
         parentLibrary: FinalCutPro.FCPXML.Library?,
-        projectStartTime: Timecode
+        timelineName: String,
+        timelineStartTime: Timecode
     ) -> Marker.ParentInfo? {
         guard let clipInTime = element.value(forContext: .parentAbsoluteStartAsTimecode()),
               // let clipDuration = element.value(forContext: .parentDurationAsTimecode()),
@@ -268,10 +308,11 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             clipInTime: clipInTime,
             clipOutTime: clipOutTime,
             clipKeywords: element.value(forContext: .keywordsFlat(constrainToKeywordRanges: true)),
+            libraryName: parentLibrary?.name ?? "",
             eventName: element.value(forContext: .ancestorEventName) ?? "",
-            projectName: element.value(forContext: .ancestorProjectName) ?? "",
-            projectStartTime: projectStartTime,
-            libraryName: parentLibrary?.name ?? ""
+            projectName: element.value(forContext: .ancestorProjectName),
+            timelineName: timelineName,
+            timelineStartTime: timelineStartTime
         )
     }
     
