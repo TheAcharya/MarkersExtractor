@@ -103,38 +103,21 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let library = parsedFCPXML.root.library
         
-        var originElement: XMLElement? = nil
-        var originStartTimecode: Timecode? = nil
-        
         // prioritize a project if one exists, otherwise use clips
-        if let project = projects?.first
-            ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
-                .allProjects()
-                .first
-        {
-            originElement = project.element
-            originStartTimecode = project.startTimecode()
-        } 
-        else if let clip = clips?.first?.element
-            ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
-                .root
-                .element
-                .fcpTimelineElements
-                .first
-        { 
-            originElement = clip
-            originStartTimecode = clip.fcpAsClip?.tcStartAsTimecode()
-        }
-        
-        guard let originElement else {
+        guard let timeline = parsedFCPXML.allTimelines().first else {
             logger.info(
-                "No projects or clips could be found in the FCPXML."
+                "No timelines (projects or clips) could be found in the FCPXML."
             )
             return []
         }
         
+        // project element may or may not exist.
+        let parentProject = timeline.element
+            .ancestorElements(includingSelf: false)
+            .first(whereFCPElement: .project)
+        
         // extract from origin element
-        guard let originStartTimecode else {
+        guard let timelineStartTime = timeline.timelineStartAsTimecode() else {
             logger.error(
                 "Could not determine timeline start timecode."
             )
@@ -143,17 +126,17 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         if markersSource.includesMarkers {
             fcpxmlMarkers += await markers(
-                in: originElement,
+                in: timeline,
                 library: library,
-                projectStartTime: originStartTimecode
+                timelineStartTime: timelineStartTime
             )
         }
         
         if markersSource.includesCaptions {
             fcpxmlMarkers += await captions(
-                in: originElement,
+                in: timeline,
                 library: library,
-                projectStartTime: originStartTimecode
+                timelineStartTime: timelineStartTime
             )
         }
         
@@ -167,12 +150,12 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     
     // MARK: - Private Methods
 
-    private func markers<E: XMLElement>(
-        in element: E,
+    private func markers(
+        in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
-        projectStartTime: Timecode
+        timelineStartTime: Timecode
     ) async -> [Marker] {
-        let extractedMarkers = await element.fcpExtract(
+        let extractedMarkers = await timeline.extract(
             preset: .markers,
             scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )
@@ -181,17 +164,17 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             convertMarker(
                 $0,
                 parentLibrary: library,
-                projectStartTime: projectStartTime
+                projectStartTime: timelineStartTime
             )
         }
     }
     
-    private func captions<E: XMLElement>(
-        in element: E,
+    private func captions(
+        in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
-        projectStartTime: Timecode
+        timelineStartTime: Timecode
     ) async -> [Marker] {
-        let extractedCaptions = await element.fcpExtract(
+        let extractedCaptions = await timeline.extract(
             preset: .captions,
             scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )
@@ -200,7 +183,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             convertCaption(
                 $0,
                 parentLibrary: library,
-                projectStartTime: projectStartTime
+                projectStartTime: timelineStartTime
             )
         }
     }
