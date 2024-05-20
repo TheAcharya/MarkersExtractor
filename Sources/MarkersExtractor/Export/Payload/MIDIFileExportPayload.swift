@@ -12,11 +12,11 @@ public struct MIDIFileExportPayload: ExportPayload {
     let sessionStartTimecode: Timecode
     
     init(
-        projectName: String,
+        timelineName: String,
         outputURL: URL,
         sessionStartTimecode: Timecode
     ) {
-        let midiFileName = "\(projectName).mid"
+        let midiFileName = "\(timelineName).mid"
         midiFilePath = outputURL.appendingPathComponent(midiFileName)
         
         self.sessionStartTimecode = sessionStartTimecode

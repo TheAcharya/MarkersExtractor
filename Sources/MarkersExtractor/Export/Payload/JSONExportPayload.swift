@@ -9,8 +9,8 @@ import Foundation
 public struct JSONExportPayload: ExportPayload {
     let jsonPath: URL
         
-    init(projectName: String, outputURL: URL) {
-        let jsonName = "\(projectName).json"
+    init(timelineName: String, outputURL: URL) {
+        let jsonName = "\(timelineName).json"
         jsonPath = outputURL.appendingPathComponent(jsonName)
     }
 }

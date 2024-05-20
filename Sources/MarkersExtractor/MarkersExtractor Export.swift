@@ -23,7 +23,10 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL),
+                payload: .init(
+                    timelineName: projectName,
+                    outputURL: outputURL
+                ),
                 parentProgress: parentProgress
             )
         case .csv:
@@ -33,7 +36,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: projectName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress
@@ -46,7 +49,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: projectName,
                     outputURL: outputURL,
                     sessionStartTimecode: projectStartTimecode
                 ),
@@ -58,7 +61,10 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL),
+                payload: .init(
+                    timelineName: projectName,
+                    outputURL: outputURL
+                ),
                 parentProgress: parentProgress
             )
             
@@ -69,7 +75,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: projectName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress
@@ -82,7 +88,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: projectName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress

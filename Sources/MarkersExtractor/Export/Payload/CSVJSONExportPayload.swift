@@ -10,8 +10,8 @@ public struct CSVJSONExportPayload: ExportPayload {
     let csvPayload: CSVExportPayload
     let jsonPayload: JSONExportPayload
     
-    init(projectName: String, outputURL: URL) {
-        csvPayload = .init(projectName: projectName, outputURL: outputURL)
-        jsonPayload = .init(projectName: projectName, outputURL: outputURL)
+    init(timelineName: String, outputURL: URL) {
+        csvPayload = .init(timelineName: timelineName, outputURL: outputURL)
+        jsonPayload = .init(timelineName: timelineName, outputURL: outputURL)
     }
 }
