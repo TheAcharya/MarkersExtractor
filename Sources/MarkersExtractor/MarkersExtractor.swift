@@ -67,8 +67,6 @@ extension MarkersExtractor {
             )
         }
         
-        let timelineStartTimecode: Timecode = startTimecode(for: context.timeline)
-        
         let outputURL = try makeOutputPath(forTimelineName: context.timelineName)
         
         let media: ExportMedia?
@@ -105,7 +103,7 @@ extension MarkersExtractor {
         // increments progress by 80%
         let exportResult = try await export(
             timelineName: context.timelineName,
-            timelineStartTimecode: timelineStartTimecode,
+            timelineStartTimecode: context.timelineStartTimecode,
             media: media,
             markers: markers,
             outputURL: outputURL,

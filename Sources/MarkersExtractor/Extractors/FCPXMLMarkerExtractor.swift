@@ -93,7 +93,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         public let projectName: String?
         public let timeline: FinalCutPro.FCPXML.AnyTimeline
         public let timelineName: String
-        public let timelineStartTime: Timecode
+        public let timelineStartTimecode: Timecode
     }
     
     /// Returns the first timeline found in the FCPXML as well as contextual metadata.
@@ -127,20 +127,34 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             ?? defaultTimelineName
         
         // extract from origin element
-        guard let timelineStartTime = timeline.timelineStartAsTimecode() else {
-            logger.error(
-                "Could not determine timeline start timecode."
-            )
-            return nil
-        }
+        let timelineStartTimecode = startTimecode(for: timeline)
         
         return TimelineContext(
             library: library,
             projectName: projectName,
             timeline: timeline,
             timelineName: timelineName,
-            timelineStartTime: timelineStartTime
+            timelineStartTimecode: timelineStartTimecode
         )
+    }
+    
+    /// Fetch the FCPXML timeline's frame rate, with fallbacks in case errors occur.
+    func startTimecode(for timeline: FinalCutPro.FCPXML.AnyTimeline) -> Timecode {
+        if let tc = timeline.timelineStartAsTimecode() {
+            logger.info(
+                "Timeline start timecode: \(tc.stringValue()) @ \(tc.frameRate.stringValueVerbose)."
+            )
+            return tc
+        } else if let frameRate = timeline.localTimecodeFrameRate() {
+            let tc = FinalCutPro.formTimecode(at: frameRate)
+            return tc
+        } else {
+            let tc = FinalCutPro.formTimecode(at: .fps30)
+            logger.warning(
+                "Could not determine timeline start timecode. Defaulting to \(tc.stringValue()) @ \(tc.frameRate.stringValueVerbose)."
+            )
+            return tc
+        }
     }
     
     public func extractMarkers(
@@ -158,7 +172,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 in: context.timeline,
                 library: context.library,
                 timelineName: context.timelineName,
-                timelineStartTime: context.timelineStartTime
+                timelineStartTimecode: context.timelineStartTimecode
             )
         }
         
@@ -167,7 +181,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 in: context.timeline,
                 library: context.library,
                 timelineName: context.timelineName,
-                timelineStartTime: context.timelineStartTime
+                timelineStartTimecode: context.timelineStartTimecode
             )
         }
         
@@ -185,7 +199,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
         timelineName: String,
-        timelineStartTime: Timecode
+        timelineStartTimecode: Timecode
     ) async -> [Marker] {
         let extractedMarkers = await timeline.extract(
             preset: .markers,
@@ -197,7 +211,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 $0,
                 parentLibrary: library,
                 timelineName: timelineName,
-                timelineStartTime: timelineStartTime
+                timelineStartTime: timelineStartTimecode
             )
         }
     }
@@ -206,7 +220,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,
         timelineName: String,
-        timelineStartTime: Timecode
+        timelineStartTimecode: Timecode
     ) async -> [Marker] {
         let extractedCaptions = await timeline.extract(
             preset: .captions,
@@ -218,7 +232,7 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
                 $0,
                 parentLibrary: library,
                 timelineName: timelineName,
-                timelineStartTime: timelineStartTime
+                timelineStartTime: timelineStartTimecode
             )
         }
     }
