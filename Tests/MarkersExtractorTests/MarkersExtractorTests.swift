@@ -32,10 +32,11 @@ final class MarkersExtractorTests: XCTestCase {
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     clipKeywords: [],
+                    libraryName: "MyLibrary",
                     eventName: "Some Event",
                     projectName: "MyProject",
-                    projectStartTime: tc("01:00:00:00", at: .fps24),
-                    libraryName: "MyLibrary"
+                    timelineName: "MyProject",
+                    timelineStartTime: tc("01:00:00:00", at: .fps24)
                 ), 
                 metadata: .init(
                     reel: "Some reel",
@@ -93,10 +94,11 @@ final class MarkersExtractorTests: XCTestCase {
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
                     clipKeywords: [],
+                    libraryName: "MyLibrary",
                     eventName: "Some Event",
                     projectName: "MyProject",
-                    projectStartTime: tc("01:00:00:00", at: .fps24),
-                    libraryName: "MyLibrary"
+                    timelineName: "MyProject",
+                    timelineStartTime: tc("01:00:00:00", at: .fps24)
                 ),
                 metadata: .init(
                     reel: "Some reel",

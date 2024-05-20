@@ -25,7 +25,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 2)
         
@@ -64,7 +64,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 3)
         

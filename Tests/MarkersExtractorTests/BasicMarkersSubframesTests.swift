@@ -18,7 +18,7 @@ final class BasicMarkersSubframesTests: XCTestCase {
         settings.enableSubframes = true
         
         let extractor = MarkersExtractor(settings: settings)
-        let markers = try await extractor.extractMarkers().sorted()
+        let markers = try await extractor.extractMarkers().markers.sorted()
         
         // 24 total markers.
         // 6 markers are ignored because they are within compound clips (the 2 instances of the

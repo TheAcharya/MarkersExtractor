@@ -25,7 +25,7 @@ final class AudioOnlyTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 1)
         

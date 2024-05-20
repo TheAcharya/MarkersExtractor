@@ -25,7 +25,7 @@ final class BasicMarkersTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 4)
         
@@ -37,10 +37,11 @@ final class BasicMarkersTests: XCTestCase {
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),
             clipKeywords: [],
+            libraryName: "MyLibrary",
             eventName: "Test Event",
             projectName: "Test Project",
-            projectStartTime: tc("00:00:00:00", at: fr),
-            libraryName: "MyLibrary"
+            timelineName: "Test Project",
+            timelineStartTime: tc("00:00:00:00", at: fr)
         )
         
         let marker0 = try XCTUnwrap(markers[safe: 0])
@@ -101,7 +102,7 @@ final class BasicMarkersTests: XCTestCase {
             let extractor = MarkersExtractor(settings: settings)
             
             // extract and unique
-            var markers = try await extractor.extractMarkers()
+            var markers = try await extractor.extractMarkers().markers
             markers = extractor.uniquingMarkerIDs(in: markers)
             
             // verify correct IDs
