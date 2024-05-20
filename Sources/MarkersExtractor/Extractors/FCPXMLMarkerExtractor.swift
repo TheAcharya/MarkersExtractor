@@ -89,7 +89,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     // MARK: - Public Instance Methods
 
     public func extractMarkers(
-        preloadedProjects projects: [FinalCutPro.FCPXML.Project]? = nil
+        preloadedProjects projects: [FinalCutPro.FCPXML.Project]? = nil,
+        preloadedClips clips: [any FCPXMLElement]? = nil
     ) async -> [Marker] {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 1
@@ -102,32 +103,58 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let library = parsedFCPXML.root.library
         
-        let projects = projects ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
-            .allProjects()
+        var originElement: XMLElement? = nil
+        var originStartTimecode: Timecode? = nil
         
-        for project in projects {
-            guard let projectStartTime = project.startTimecode() else {
-                logger.error(
-                    "Could not determine start time for project \((project.name ?? "").quoted)."
-                )
-                return []
-            }
-            
-            if markersSource.includesMarkers {
-                fcpxmlMarkers += await markers(
-                    in: project,
-                    library: library,
-                    projectStartTime: projectStartTime
-                )
-            }
-            
-            if markersSource.includesCaptions {
-                fcpxmlMarkers += await captions(
-                    in: project,
-                    library: library,
-                    projectStartTime: projectStartTime
-                )
-            }
+        // prioritize a project if one exists, otherwise use clips
+        if let project = projects?.first
+            ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
+                .allProjects()
+                .first
+        {
+            originElement = project.element
+            originStartTimecode = project.startTimecode()
+        } 
+        else if let clip = clips?.first?.element
+            ?? FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
+                .root
+                .element
+                .fcpTimelineElements
+                .first
+        { 
+            originElement = clip
+            originStartTimecode = clip.fcpAsClip?.tcStartAsTimecode()
+        }
+        
+        guard let originElement else {
+            logger.info(
+                "No projects or clips could be found in the FCPXML."
+            )
+            return []
+        }
+        
+        // extract from origin element
+        guard let originStartTimecode else {
+            logger.error(
+                "Could not determine timeline start timecode."
+            )
+            return []
+        }
+        
+        if markersSource.includesMarkers {
+            fcpxmlMarkers += await markers(
+                in: originElement,
+                library: library,
+                projectStartTime: originStartTimecode
+            )
+        }
+        
+        if markersSource.includesCaptions {
+            fcpxmlMarkers += await captions(
+                in: originElement,
+                library: library,
+                projectStartTime: originStartTimecode
+            )
         }
         
         // remove markers with excluded roles
@@ -140,12 +167,12 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
     
     // MARK: - Private Methods
 
-    private func markers(
-        in project: FinalCutPro.FCPXML.Project,
+    private func markers<E: XMLElement>(
+        in element: E,
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) async -> [Marker] {
-        let extractedMarkers = await project.extract(
+        let extractedMarkers = await element.fcpExtract(
             preset: .markers,
             scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )
@@ -159,12 +186,12 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         }
     }
     
-    private func captions(
-        in project: FinalCutPro.FCPXML.Project,
+    private func captions<E: XMLElement>(
+        in element: E,
         library: FinalCutPro.FCPXML.Library?,
         projectStartTime: Timecode
     ) async -> [Marker] {
-        let extractedCaptions = await project.extract(
+        let extractedCaptions = await element.fcpExtract(
             preset: .captions,
             scope: MarkersExtractor.extractionScope(includeDisabled: includeDisabled)
         )

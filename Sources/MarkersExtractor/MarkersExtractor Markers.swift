@@ -19,6 +19,7 @@ extension MarkersExtractor {
     func extractMarkers(
         sort: Bool = true,
         preloadedProjects: [FinalCutPro.FCPXML.Project]? = nil,
+        preloadedClips: [any FCPXMLElement]? = nil,
         parentProgress: ParentProgress? = nil
     ) async throws -> [Marker] {
         var markers: [Marker]
@@ -37,7 +38,10 @@ extension MarkersExtractor {
             // attach local progress to parent
             parentProgress?.addChild(extractor.progress)
             
-            markers = await extractor.extractMarkers(preloadedProjects: preloadedProjects)
+            markers = await extractor.extractMarkers(
+                preloadedProjects: preloadedProjects,
+                preloadedClips: preloadedClips
+            )
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
                 "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
