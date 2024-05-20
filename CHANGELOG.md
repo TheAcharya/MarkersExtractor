@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.3.7
+
+### Bug Fixes
+
+- Output folder name timestamp now formats as 24-hour time (#100)
+
 ## [0.3.6](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.6) (2024-05-05)
 
 ### New Features
