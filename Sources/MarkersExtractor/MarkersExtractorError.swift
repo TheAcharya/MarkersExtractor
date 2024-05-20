@@ -82,7 +82,6 @@ extension MarkersExtractorError {
     /// Do not construct directly -- wrap in a ``MarkersExtractorError`` case instead.
     public enum ExtractionError: LocalizedError {
         case fcpxmlParse(_ message: String)
-        case projectMissing(_ message: String)
         case noMediaFound(_ message: String)
         case fileRead(_ message: String)
         case fileWrite(_ message: String)
@@ -94,8 +93,6 @@ extension MarkersExtractorError {
         public var errorDescription: String? {
             switch self {
             case let .fcpxmlParse(message):
-                return message
-            case let .projectMissing(message):
                 return message
             case let .noMediaFound(message):
                 return message

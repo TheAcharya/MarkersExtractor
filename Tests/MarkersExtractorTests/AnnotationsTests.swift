@@ -17,7 +17,7 @@ final class AnnotationsTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .captions
         settings.includeDisabled = true
         
@@ -25,7 +25,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 2)
         
@@ -56,7 +56,7 @@ final class AnnotationsTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .markersAndCaptions
         settings.includeDisabled = true
         
@@ -64,7 +64,7 @@ final class AnnotationsTests: XCTestCase {
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 3)
         

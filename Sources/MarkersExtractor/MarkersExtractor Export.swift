@@ -9,8 +9,8 @@ import TimecodeKit
 
 extension MarkersExtractor {
     func export(
-        projectName: String,
-        projectStartTimecode: Timecode,
+        timelineName: String,
+        timelineStartTimecode: Timecode,
         media: ExportMedia?,
         markers: [Marker],
         outputURL: URL,
@@ -23,7 +23,10 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL),
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
                 parentProgress: parentProgress
             )
         case .csv:
@@ -33,7 +36,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: timelineName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress
@@ -46,9 +49,9 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: timelineName,
                     outputURL: outputURL,
-                    sessionStartTimecode: projectStartTimecode
+                    timelineStartTimecode: timelineStartTimecode
                 ),
                 parentProgress: parentProgress
             )
@@ -58,7 +61,10 @@ extension MarkersExtractor {
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
-                payload: .init(projectName: projectName, outputURL: outputURL),
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
                 parentProgress: parentProgress
             )
             
@@ -69,7 +75,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: timelineName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress
@@ -82,7 +88,7 @@ extension MarkersExtractor {
                 markers: markers,
                 outputURL: outputURL,
                 payload: .init(
-                    projectName: projectName,
+                    timelineName: timelineName,
                     outputURL: outputURL
                 ),
                 parentProgress: parentProgress

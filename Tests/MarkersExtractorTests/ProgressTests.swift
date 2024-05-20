@@ -13,7 +13,7 @@ final class ProgressTests: XCTestCase {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
-            idNamingMode: .projectTimecode,
+            idNamingMode: .timelineNameAndTimecode,
             enableSubframes: false, 
             markersSource: .markers, 
             excludeRoles: [], 
@@ -22,7 +22,8 @@ final class ProgressTests: XCTestCase {
         )
         
         XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        _ = await extractor.extractMarkers()
+        let context = try XCTUnwrap(extractor.extractTimelineContext(defaultTimelineName: "Timeline"))
+        _ = await extractor.extractMarkers(context: context)
         
         // NOTE: this may randomly fail because NSProgress is garbage
         XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)

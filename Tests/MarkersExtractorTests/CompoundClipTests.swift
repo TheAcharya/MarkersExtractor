@@ -17,13 +17,13 @@ final class CompoundClipTests: XCTestCase {
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        settings.idNamingMode = .projectTimecode
+        settings.idNamingMode = .timelineNameAndTimecode
         
         let extractor = MarkersExtractor(settings: settings)
         
         // verify marker contents
         
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         XCTAssertEqual(markers.count, 1)
         

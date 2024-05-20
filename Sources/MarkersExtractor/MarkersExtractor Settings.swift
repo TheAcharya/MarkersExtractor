@@ -241,7 +241,7 @@ extension MarkersExtractor.Settings {
         public static let imageSizePercentGIF = 50
         public static let gifFPS: Double = 10.0
         public static let gifSpan: TimeInterval = 2
-        public static let idNamingMode: MarkerIDMode = .projectTimecode
+        public static let idNamingMode: MarkerIDMode = .timelineNameAndTimecode
         public static let imageLabels: [ExportField] = []
         public static let imageLabelCopyright: String? = nil
         public static let imageLabelFont = "Menlo-Regular"

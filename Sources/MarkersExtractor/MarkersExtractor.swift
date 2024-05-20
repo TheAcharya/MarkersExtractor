@@ -40,22 +40,12 @@ extension MarkersExtractor {
         logger.info("Using \(s.exportFormat.name) export profile.")
         
         logger.info("Parsing XML from \(s.fcpxml)")
-        logger.info("Note that this may take several seconds for very large projects. Please wait...")
-        
-        let dawFile = try s.fcpxml.dawFile()
-        let projects = dawFile.allProjects()
-        guard let project = projects.first
-        else {
-            throw MarkersExtractorError.extraction(.projectMissing(
-                "Could not find a project in the FCPXML data."
-            ))
-        }
+        logger.info("Note that this may take several seconds for complex timelines. Please wait...")
         
         logger.info("Extracting \(s.markersSource)...")
         
         // increments progress by 5%
-        var markers = try await extractMarkers(
-            preloadedProjects: projects,
+        var (markers, context) = try await extractMarkers(
             parentProgress: ParentProgress(progress: progress, unitCount: 5)
         )
         
@@ -77,11 +67,9 @@ extension MarkersExtractor {
             )
         }
         
-        let projectName = markers[0].parentInfo.projectName
+        let timelineStartTimecode: Timecode = startTimecode(for: context.timeline)
         
-        let projectStartTimecode: Timecode = startTimecode(forProject: project)
-        
-        let outputURL = try makeOutputPath(for: projectName)
+        let outputURL = try makeOutputPath(forTimelineName: context.timelineName)
         
         let media: ExportMedia?
         if s.noMedia {
@@ -89,9 +77,9 @@ extension MarkersExtractor {
             logger.info("Bypassing media file.")
         } else {
             do {
-                let exportMedia = try formExportMedia(projectName: projectName)
+                let exportMedia = try formExportMedia(timelineName: context.timelineName)
                 media = exportMedia
-                logger.info("Found project media file: \(exportMedia.videoURL.path.quoted).")
+                logger.info("Found media file: \(exportMedia.videoURL.path.quoted).")
                 
                 if s.exportFormat.concreteType.isMediaCapable {
                     logger.info(
@@ -116,8 +104,8 @@ extension MarkersExtractor {
         
         // increments progress by 80%
         let exportResult = try await export(
-            projectName: projectName,
-            projectStartTimecode: projectStartTimecode,
+            timelineName: context.timelineName,
+            timelineStartTimecode: timelineStartTimecode,
             media: media,
             markers: markers,
             outputURL: outputURL,

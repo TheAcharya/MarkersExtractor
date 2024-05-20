@@ -9,8 +9,8 @@ import Foundation
 public struct TSVExportPayload: ExportPayload {
     let tsvPath: URL
         
-    init(projectName: String, outputURL: URL) {
-        let tsvName = "\(projectName).tsv"
+    init(timelineName: String, outputURL: URL) {
+        let tsvName = "\(timelineName).tsv"
         tsvPath = outputURL.appendingPathComponent(tsvName)
     }
 }

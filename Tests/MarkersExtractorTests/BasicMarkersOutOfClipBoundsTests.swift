@@ -19,7 +19,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         )
         
         let extractor = MarkersExtractor(settings: settings)
-        let markers = try await extractor.extractMarkers()
+        let markers = try await extractor.extractMarkers().markers
         
         // check clips
         
@@ -32,10 +32,11 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:00:20:20", at: fr), 
             clipKeywords: [],
+            libraryName: "MyLibrary", 
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
-            projectStartTime: tc("00:00:00:00", at: fr),
-            libraryName: "MyLibrary"
+            timelineName: "Out of Bounds Markers",
+            timelineStartTime: tc("00:00:00:00", at: fr)
         )
         
         let clip2ParentInfo = Marker.ParentInfo(
@@ -45,10 +46,11 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
             clipInTime: tc("00:00:20:20", at: fr),
             clipOutTime: tc("00:00:41:15", at: fr),
             clipKeywords: [],
+            libraryName: "MyLibrary", 
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
-            projectStartTime: tc("00:00:00:00", at: fr),
-            libraryName: "MyLibrary"
+            timelineName: "Out of Bounds Markers",
+            timelineStartTime: tc("00:00:00:00", at: fr)
         )
         
         // check markers

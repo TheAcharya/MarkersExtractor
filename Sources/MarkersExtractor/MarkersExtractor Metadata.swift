@@ -9,20 +9,20 @@ import Foundation
 import TimecodeKit
 
 extension MarkersExtractor {
-    /// Fetch the FCPXML project's frame rate, with fallbacks in case errors occur.
-    func startTimecode(forProject project: FinalCutPro.FCPXML.Project) -> Timecode {
-        if let tc = project.startTimecode() {
+    /// Fetch the FCPXML timeline's frame rate, with fallbacks in case errors occur.
+    func startTimecode(for timeline: FinalCutPro.FCPXML.AnyTimeline) -> Timecode {
+        if let tc = timeline.timelineStartAsTimecode() {
             logger.info(
-                "Project start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
+                "Timeline start timecode: \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
             )
             return tc
-        } else if let frameRate = project.localTimecodeFrameRate() {
+        } else if let frameRate = timeline.localTimecodeFrameRate() {
             let tc = FinalCutPro.formTimecode(at: frameRate)
             return tc
         } else {
             let tc = FinalCutPro.formTimecode(at: .fps30)
             logger.warning(
-                "Could not determine project start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
+                "Could not determine timeline start timecode. Defaulting to \(tc.stringValue(format: timecodeStringFormat)) @ \(tc.frameRate.stringValueVerbose)."
             )
             return tc
         }
