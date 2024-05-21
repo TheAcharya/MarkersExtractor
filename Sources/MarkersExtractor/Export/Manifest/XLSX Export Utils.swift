@@ -32,10 +32,30 @@ extension ExportProfile {
         
         // cell coordinates: [Row, Column]
         
-        // Write some simple text.
-        ws.write(.string("Hello"), [0, 0], format: formatBold)
+        var rowIndex = 0
         
-        // Text with formatting.
-        ws.write(.string("World"), [1, 0])
+        // write header cells
+        guard let headerRow = rows.first else { return }
+        ws.write(row: rowIndex, cells: headerRow, format: formatBold)
+        rowIndex += 1
+        
+        // write data rows
+        let dataRows = rows.dropFirst()
+        for rowValues in dataRows {
+            ws.write(row: rowIndex, cells: rowValues)
+            rowIndex += 1
+        }
+    }
+}
+
+extension Worksheet {
+    fileprivate func write(row rowIndex: Int, cells: [String], format: Format? = nil) {
+        for (columnIndex, cellValue) in cells.enumerated() {
+            write(
+                .string(cellValue),
+                [rowIndex, columnIndex],
+                format: format
+            )
+        }
     }
 }
