@@ -24,7 +24,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.4"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
         .package(url: "https://github.com/damuellen/xlsxwriter.swift", branch: "SPM"),
-        .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.6"),
+        .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.7"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.0.10"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.9"),
         .package(url: "https://github.com/orchetect/OTCore.git", from: "1.5.3")
