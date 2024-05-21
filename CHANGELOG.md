@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## 0.3.8
+
+### New Features
+
+- Added support for new Excel XLSX export profile (#102)
+
 ## [0.3.7](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.7) (2024-05-20)
 
 ### New Features
