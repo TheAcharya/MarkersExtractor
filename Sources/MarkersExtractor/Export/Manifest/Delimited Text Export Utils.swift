@@ -6,20 +6,21 @@
 
 import Foundation
 import OrderedCollections
+import TextFileKit
 
 extension ExportProfile {
     func dictsToRows(
         _ preparedMarkers: [PreparedMarker],
         includeHeader: Bool,
         noMedia: Bool
-    ) -> [[String]] {
+    ) -> StringTable {
         let dicts = preparedMarkers.map {
             tableManifestFields(for: $0, noMedia: noMedia)
         }
         guard !dicts.isEmpty else { return [] }
         
         // header
-        var result: [[String]] = []
+        var result: StringTable = []
         
         if includeHeader {
             result.append(Array(dicts[0].keys.map { $0.name }))
