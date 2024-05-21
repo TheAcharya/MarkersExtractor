@@ -81,6 +81,19 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
             
+        case .xlsx:
+            return try await export(
+                for: ExcelProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
+            
         case .youtube:
             return try await export(
                 for: YouTubeProfile.self,

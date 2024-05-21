@@ -34,6 +34,9 @@ public struct ExportResult: Equatable, Hashable {
     /// MIDI file path, if applicable to the profile. `nil` if not applicable.
     public var midiFilePath: URL?
     
+    /// Excel (XLSX) file path, if applicable to the profile. `nil` if not applicable.
+    public var xlsxManifestPath: URL?
+    
     /// MarkersExtractor version used to perform extraction.
     public var version: String
     
@@ -45,7 +48,8 @@ public struct ExportResult: Equatable, Hashable {
         tsvManifestPath: URL? = nil,
         txtManifestPath: URL? = nil,
         jsonManifestPath: URL? = nil,
-        midiFilePath: URL? = nil
+        midiFilePath: URL? = nil,
+        xlsxManifestPath: URL? = nil
         // omit version from init parameters since we auto-set it
     ) {
         self.date = date
@@ -56,6 +60,7 @@ public struct ExportResult: Equatable, Hashable {
         self.txtManifestPath = txtManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
+        self.xlsxManifestPath = xlsxManifestPath
         version = packageVersion
     }
 }
@@ -88,6 +93,9 @@ extension ExportResult {
         
         /// MIDI file path, if applicable to the profile. `nil` if not applicable.
         case midiFilePath
+        
+        /// Excel (XLSX) file path, if applicable to the profile. `nil` if not applicable.
+        case xlsxManifestPath
         
         /// MarkersExtractor version used to perform extraction.
         case version
@@ -142,6 +150,9 @@ extension ExportResult {
         if let value = dict[.midiFilePath], case let .url(url) = value {
             midiFilePath = url
         }
+        if let value = dict[.xlsxManifestPath], case let .url(url) = value {
+            xlsxManifestPath = url
+        }
         if let value = dict[.version], case let .string(ver) = value {
             version = ver
         }
@@ -159,6 +170,7 @@ extension ExportResult {
         dict[.txtManifestPath] = txtManifestPath?.path
         dict[.jsonManifestPath] = jsonManifestPath?.path
         dict[.midiFilePath] = midiFilePath?.path
+        dict[.xlsxManifestPath] = xlsxManifestPath?.path
         dict[.version] = version
         
         return dict.mapKeys(\.rawValue)

@@ -12,6 +12,7 @@ public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case midi
     case notion
     case tsv
+    case xlsx
     case youtube
 }
 
@@ -28,6 +29,8 @@ extension ExportProfileFormat {
             return "Notion"
         case .tsv:
             return "TSV"
+        case .xlsx:
+            return "Excel (XLSX)"
         case .youtube:
             return "YouTube Chapters"
         }
@@ -45,6 +48,8 @@ extension ExportProfileFormat {
             return NotionExportProfile.self
         case .tsv:
             return TSVProfile.self
+        case .xlsx:
+            return ExcelProfile.self
         case .youtube:
             return YouTubeProfile.self
         }
