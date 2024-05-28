@@ -34,7 +34,7 @@ Publishing releases and tags should be left to code owners/maintainers.
 For code owners/maintainers, the following release spec is used:
 
 1. Unit tests must pass
-2. Ensure package dependencies are set to version numbers and not branch names.
+2. Ensure package dependencies are set to version numbers and not branch names where possible.
 3. Perform the following file modifications:
    - Update the version number string literal in `Sources/MarkersExtractor/Version.swift`
    - Update root `CHANGELOG.md`
