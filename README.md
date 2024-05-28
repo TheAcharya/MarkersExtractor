@@ -34,6 +34,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - Airtable (JSON) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
 - Comma-separated values (CSV) - Compatible with spreadsheet applications
 - Tab-separated values (TSV) - Compatible with spreadsheet application
+- Microsoft Excel (XLSX)
 - YouTube Chapters
 - Standard MIDI File - Compatible with most audio DAWs
 
