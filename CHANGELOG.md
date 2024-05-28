@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## [0.3.9](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.9) (2024-05-28)
+
+### Bug Fixes
+
+- (SPM Library only) Fixed Xcode compiler error when adding MarkersExtractor as a dependency (#102)
+
 ## [0.3.8](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.8) (2024-05-27)
 
 ### New Features

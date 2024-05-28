@@ -108,7 +108,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.8 # replace this with the git tag of the version you need
+VERSION=0.3.9 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -369,7 +369,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.8")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.9")
     ],
     targets: [
         .target(
