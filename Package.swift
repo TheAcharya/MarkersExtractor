@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.1"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.4"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
-        .package(url: "https://github.com/damuellen/xlsxwriter.swift", branch: "SPM"),
+        .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.7"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.0.10"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.9"),
@@ -35,7 +35,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Collections", package: "swift-collections"),
-                .product(name: "xlsxwriter", package: "xlsxwriter.swift"),
+                .product(name: "xlsxwriter", package: "xlsxwriter"),
                 .product(name: "TextFileKit", package: "TextFileKit"),
                 .product(name: "TimecodeKit", package: "TimecodeKit"),
                 .product(name: "DAWFileKit", package: "DAWFileKit"),
