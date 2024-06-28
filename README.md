@@ -51,6 +51,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
   - [Intended Behaviour & Logic](#intended-behaviour--logic)
   - [Developer Library](#developer-library)
 - [Featured](#featured)
+- [Utilised By](#utilised-by)
 - [Credits](#Credits)
 - [License](#License)
 - [Reporting Bugs](#reporting-bugs)
@@ -387,6 +388,18 @@ Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor
 ## Featured
 
 - [Newsshooter](https://www.newsshooter.com/2023/01/03/markersextractor-cli-marker-metadata-extraction-conversion-tool-for-final-cut-pro/)
+
+## Utilised By
+
+### [Marker Data](https://markerdata.theacharya.co)
+
+<details><summary>Marker Data's Main Window</summary>
+<p>
+
+<p align="center"> <img src="https://github.com/TheAcharya/MarkerData-Website/blob/main/docs/assets/md-main-share.png?raw=true"> </p>
+
+</p>
+</details>
 
 ## Credits
 
