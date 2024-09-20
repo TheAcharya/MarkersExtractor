@@ -176,92 +176,66 @@ extension AVAssetImageGenerator {
         //     return try await image(at: time)
         // }
         
-        var resultImage: CGImage?
-        var resultError: Error?
-        var resultActualTime: CMTime?
         var isNoFrame = false
         
-        let group = DispatchGroup()
-        group.enter()
-        
         let nsValue = NSValue(time: time)
-        generateCGImagesAsynchronously(forTimes: [nsValue])
-            { requestedTime, image, actualTime, result, error in
-                defer { group.leave() }
-            
-                resultImage = image
-                resultError = error
-                resultActualTime = actualTime
-            
-                switch result {
-                case .succeeded:
-                    break
-                
-                case .failed:
-                    guard let error else {
-                        resultError = MarkersExtractorError.extraction(.image(.generic(
-                            "Image generator failed but no additional error information is available."
-                        )))
-                        return
-                    }
-                
-                    // Handle blank frames
-                    switch error {
-                    case let avError as AVError:
-                        switch avError.code {
-                        case .noImageAtTime:
-                            // We ignore blank frames.
-                            #if DEBUG
-                            print(
-                                "No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
-                            )
-                            #endif
-                            isNoFrame = true
-                        case .decodeFailed:
-                            // macOS 11 (still an issue in macOS 11.2) started throwing “decode
-                            // failed”
-                            // error for some frames in screen recordings.
-                            // As a workaround, we ignore these as the GIF seems fine still.
-                            #if DEBUG
-                            print(
-                                "Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
-                            )
-                            #endif
-                            isNoFrame = true
-                        default:
-                            break
-                        }
-                    
-                    default:
-                        break
-                    }
-                case .cancelled:
-                    resultError = CancellationError()
-                
-                @unknown default:
-                    resultError = MarkersExtractorError
-                        .extraction(.image(.generic("Unhandled image result case.")))
-                }
-            }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            group.notify(queue: .main) {
-                if isNoFrame, let resultActualTime {
-                    let tuple = (image: CGImage?.none, actualTime: resultActualTime)
-                    continuation.resume(with: .success(tuple))
-                } else if let resultError {
-                    continuation.resume(throwing: resultError)
-                } else if let resultImage, let resultActualTime {
-                    let tuple = (image: resultImage, actualTime: resultActualTime)
-                    continuation.resume(with: .success(tuple))
-                } else {
-                    continuation
-                        .resume(
-                            throwing: MarkersExtractorError
-                                .extraction(.image(.generic("Unknown error.")))
-                        )
-                }
+        let (requestedTime, image, actualTime, result, error) = await generateCGImages(forTimes: [nsValue])
+        
+        switch result {
+        case .succeeded:
+            break
+            
+        case .failed:
+            guard let error else {
+                throw MarkersExtractorError.extraction(.image(.generic(
+                    "Image generator failed but no additional error information is available."
+                )))
             }
+            
+            // Handle blank frames
+            switch error {
+            case let avError as AVError:
+                switch avError.code {
+                case .noImageAtTime:
+                    // We ignore blank frames.
+                    #if DEBUG
+                    print(
+                        "No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                    )
+                    #endif
+                    isNoFrame = true
+                case .decodeFailed:
+                    // macOS 11 (still an issue in macOS 11.2) started throwing “decode
+                    // failed”
+                    // error for some frames in screen recordings.
+                    // As a workaround, we ignore these as the GIF seems fine still.
+                    #if DEBUG
+                    print(
+                        "Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                    )
+                    #endif
+                    isNoFrame = true
+                default:
+                    break
+                }
+                
+            default:
+                break
+            }
+        case .cancelled:
+            throw CancellationError()
+            
+        @unknown default:
+            throw MarkersExtractorError.extraction(.image(.generic(
+                "Unhandled image result case."
+            )))
+        }
+        
+        if isNoFrame {
+            return (image: nil, actualTime: actualTime)
+        } else {
+            return (image: image, actualTime: actualTime)
         }
     }
 }
@@ -270,5 +244,26 @@ extension AVAssetImageGenerator {
     func image(at time: CMTime) -> NSImage? {
         (try? copyCGImage(at: time, actualTime: nil))?
             .nsImage
+    }
+}
+
+extension AVAssetImageGenerator {
+    /// Swift Concurrency wrapper for `generateCGImagesAsynchronously` method.
+    /// TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
+    @_disfavoredOverload
+    func generateCGImages(
+        forTimes requestedTimes: [NSValue]
+    ) async -> (
+        requestedTime: CMTime,
+        image: CGImage?,
+        actualTime: CMTime,
+        result: AVAssetImageGenerator.Result,
+        error: (any Error)?)
+    {
+        await withCheckedContinuation { continuation in
+            generateCGImagesAsynchronously(forTimes: requestedTimes) { requestedTime, image, actualTime, result, error in
+                continuation.resume(returning: (requestedTime, image, actualTime, result, error))
+            }
+        }
     }
 }
