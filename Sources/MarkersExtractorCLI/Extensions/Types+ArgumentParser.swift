@@ -8,28 +8,37 @@ import ArgumentParser
 import MarkersExtractor
 import DAWFileKit
 
-// Export
+// MARK: - Markers Extractor: Export
 
-extension ExportProfileFormat: CustomExpressibleByArgument { }
-extension ExportField: CustomExpressibleByArgument { }
-extension ExportFolderFormat: CustomExpressibleByArgument { }
+// Note: Use of `@retroactive` is safe here since we control these types within the package,
+// however they are in a different module. To suppress Xcode 16's build warning we can add `@retroactive`.
 
-// Markers
+extension ExportProfileFormat: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension ExportField: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension ExportFolderFormat: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
 
-extension MarkerIDMode: CustomExpressibleByArgument { }
-extension MarkerImageFormat: CustomExpressibleByArgument { }
-extension MarkerLabelProperties.AlignHorizontal: CustomExpressibleByArgument { }
-extension MarkerLabelProperties.AlignVertical: CustomExpressibleByArgument { }
-extension MarkersSource: CustomExpressibleByArgument { }
+// MARK: - Markers Extractor: Markers
 
-// DAWFileKit Types
+// Note: Use of `@retroactive` is safe here since we control these types within the package,
+// however they are in a different module. To suppress Xcode 16's build warning we can add `@retroactive`.
 
-extension FinalCutPro.FCPXML.RoleType: CustomExpressibleByArgument { }
+extension MarkerIDMode: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension MarkerImageFormat: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension MarkerLabelProperties.AlignHorizontal: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension MarkerLabelProperties.AlignVertical: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension MarkersSource: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
 
-// CaseIterable suppression
+// MARK: - DAWFileKit Types
+
+// Note: Use of `@retroactive` is safe here since `RoleType` will never be
+// conformed to ExpressibleByArgument in DAWFileKit.
+
+extension FinalCutPro.FCPXML.RoleType: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+
+// MARK: - CaseIterable suppression
 // prevents ArgumentParser from writing out enum case allCases in the argument help.
 
-protocol CustomExpressibleByArgument: ExpressibleByArgument { }
+protocol CustomExpressibleByArgument where Self: ExpressibleByArgument { }
 
 extension CustomExpressibleByArgument {
     public static var allValueStrings: [String] { [] }
@@ -38,5 +47,7 @@ extension CustomExpressibleByArgument {
 func caseIterableValueString<R: RawRepresentable>(
     for type: R.Type
 ) -> String where R.RawValue == String, R: CaseIterable {
-    R.allCases.map { $0.rawValue }.joined(separator: " | ")
+    R.allCases
+        .map { $0.rawValue }
+        .joined(separator: " | ")
 }
