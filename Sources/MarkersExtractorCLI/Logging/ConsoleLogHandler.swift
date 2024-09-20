@@ -30,6 +30,7 @@ public struct ConsoleLogHandler: LogHandler {
         level: Logger.Level,
         message: Logger.Message,
         metadata: Logger.Metadata?,
+        source: String,
         file: String,
         function: String,
         line: UInt
