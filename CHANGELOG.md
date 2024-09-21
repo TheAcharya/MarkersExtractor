@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.3.10](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.10) (2024-09-20)
+
+### Improvements
+
+- Codebase updates for better compatibility with Xcode 16/Swift 6
+- Added `Identifiable` conformance to all relevant exported types
+
 ## [0.3.9](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.9) (2024-05-28)
 
 ### Bug Fixes
