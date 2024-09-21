@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.1.7"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.1.0"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", branch: "main"), // from: "0.4.9"),
+        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.10"),
         .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0")
     ],
     targets: [
