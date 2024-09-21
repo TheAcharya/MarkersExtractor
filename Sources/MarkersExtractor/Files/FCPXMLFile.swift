@@ -37,6 +37,10 @@ public struct FCPXMLFile: Equatable, Hashable {
     }
 }
 
+extension FCPXMLFile: Identifiable {
+    public var id: Self { self }
+}
+
 extension FCPXMLFile: CustomStringConvertible {
     public var description: String {
         switch source {
@@ -44,57 +48,6 @@ extension FCPXMLFile: CustomStringConvertible {
             return "\(path.xmlPath.path.quoted)"
         case .rawFileContents:
             return "FCP XML Data"
-        }
-    }
-}
-
-extension FCPXMLFile {
-    public enum FCPXMLFileSource: Equatable, Hashable {
-        case fileOnDisk(FCPXMLFilePath)
-        case rawFileContents
-    }
-    
-    public enum FCPXMLFilePath: Equatable, Hashable {
-        case fcpxml(xmlURL: URL)
-        case fcpxmld(bundleURL: URL)
-        
-        public init(inputURL: URL) throws {
-            if inputURL.pathExtension.caseInsensitiveCompare("fcpxml") == .orderedSame {
-                self = .fcpxml(xmlURL: inputURL)
-            } else if inputURL.pathExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame {
-                self = .fcpxmld(bundleURL: inputURL)
-            } else {
-                throw MarkersExtractorError.validation(
-                    .unsupportedFileFormat(atPath: inputURL.path)
-                )
-            }
-        }
-        
-        /// Returns the path to the directory containing the base path.
-        public var parentPath: URL {
-            basePath.deletingLastPathComponent()
-        }
-        
-        /// Returns the base path.
-        /// For an `fcpxml` file, the file's path is returned.
-        /// For an `dcpxmld` bundle, the bundle's path is returned.
-        public var basePath: URL {
-            switch self {
-            case let .fcpxml(xmlURL):
-                return xmlURL
-            case let .fcpxmld(bundleURL):
-                return bundleURL
-            }
-        }
-        
-        /// Resolves the location of the actual XML file.
-        public var xmlPath: URL {
-            switch self {
-            case let .fcpxml(xmlURL):
-                return xmlURL
-            case let .fcpxmld(bundleURL):
-                return bundleURL.appendingPathComponent("Info.fcpxml")
-            }
         }
     }
 }
@@ -140,4 +93,69 @@ extension FCPXMLFile {
     var defaultMediaSearchPath: URL? {
         parentDir
     }
+}
+
+// MARK: - FCPXMLFileSource
+
+extension FCPXMLFile {
+    public enum FCPXMLFileSource: Equatable, Hashable {
+        case fileOnDisk(FCPXMLFilePath)
+        case rawFileContents
+    }
+}
+
+extension FCPXMLFile.FCPXMLFileSource: Identifiable {
+    public var id: Self { self }
+}
+
+// MARK: - FCPXMLFilePath
+
+extension FCPXMLFile {
+    public enum FCPXMLFilePath: Equatable, Hashable {
+        case fcpxml(xmlURL: URL)
+        case fcpxmld(bundleURL: URL)
+        
+        public init(inputURL: URL) throws {
+            if inputURL.pathExtension.caseInsensitiveCompare("fcpxml") == .orderedSame {
+                self = .fcpxml(xmlURL: inputURL)
+            } else if inputURL.pathExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame {
+                self = .fcpxmld(bundleURL: inputURL)
+            } else {
+                throw MarkersExtractorError.validation(
+                    .unsupportedFileFormat(atPath: inputURL.path)
+                )
+            }
+        }
+        
+        /// Returns the path to the directory containing the base path.
+        public var parentPath: URL {
+            basePath.deletingLastPathComponent()
+        }
+        
+        /// Returns the base path.
+        /// For an `fcpxml` file, the file's path is returned.
+        /// For an `dcpxmld` bundle, the bundle's path is returned.
+        public var basePath: URL {
+            switch self {
+            case let .fcpxml(xmlURL):
+                return xmlURL
+            case let .fcpxmld(bundleURL):
+                return bundleURL
+            }
+        }
+        
+        /// Resolves the location of the actual XML file.
+        public var xmlPath: URL {
+            switch self {
+            case let .fcpxml(xmlURL):
+                return xmlURL
+            case let .fcpxmld(bundleURL):
+                return bundleURL.appendingPathComponent("Info.fcpxml")
+            }
+        }
+    }
+}
+
+extension FCPXMLFile.FCPXMLFilePath: Identifiable {
+    public var id: URL { basePath }
 }

@@ -202,3 +202,7 @@ extension Marker: Comparable {
         lhs.position < rhs.position
     }
 }
+
+extension Marker: Identifiable {
+    public var id: Self { self }
+}

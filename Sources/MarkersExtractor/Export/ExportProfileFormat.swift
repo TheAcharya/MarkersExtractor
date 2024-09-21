@@ -16,6 +16,10 @@ public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case youtube
 }
 
+extension ExportProfileFormat: Identifiable {
+    public var id: Self { self }
+}
+
 extension ExportProfileFormat {
     public var name: String {
         switch self {

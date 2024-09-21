@@ -45,14 +45,7 @@ extension MarkerImageFormat: RawRepresentable {
 }
 
 extension MarkerImageFormat: Identifiable {
-    public var id: RawValue {
-        switch self {
-        case let .still(format):
-            return "still-\(format.id)"
-        case let .animated(format):
-            return "animated-\(format.id)"
-        }
-    }
+    public var id: Self { self }
 }
 
 extension MarkerImageFormat: CustomStringConvertible {
@@ -87,7 +80,7 @@ extension MarkerImageFormat {
 }
 
 extension MarkerImageFormat.Still: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: Self { self }
 }
 
 // MARK: - MarkerImageFormat: Animated
@@ -107,5 +100,5 @@ extension MarkerImageFormat {
 }
 
 extension MarkerImageFormat.Animated: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: Self { self }
 }

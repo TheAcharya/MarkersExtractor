@@ -12,6 +12,10 @@ public enum ExportFieldValue: Equatable, Hashable, Sendable {
     case dictionary(_ dictionary: [String: ExportFieldValue])
 }
 
+extension ExportFieldValue: Identifiable {
+    public var id: Self { self }
+}
+
 // MARK: - Static Constructors
 
 extension ExportFieldValue {

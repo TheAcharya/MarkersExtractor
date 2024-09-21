@@ -12,6 +12,10 @@ public enum MarkersSource: String, Equatable, Hashable, CaseIterable, Sendable {
     case captions
 }
 
+extension MarkersSource: Identifiable {
+    public var id: Self { self }
+}
+
 extension MarkersSource: CustomStringConvertible {
     public var description: String {
         switch self {

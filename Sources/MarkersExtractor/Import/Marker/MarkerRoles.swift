@@ -94,6 +94,10 @@ public struct MarkerRoles: Equatable, Hashable, Sendable {
     }
 }
 
+extension MarkerRoles: Identifiable {
+    public var id: Self { self }
+}
+
 // MARK: - Convenience Properties
 
 extension MarkerRoles {

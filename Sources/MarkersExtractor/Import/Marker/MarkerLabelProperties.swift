@@ -6,19 +6,9 @@
 
 import AppKit
 
+// MARK: - MarkerLabelProperties
+
 public struct MarkerLabelProperties: Sendable {
-    public enum AlignHorizontal: String, CaseIterable, Equatable, Hashable, Sendable {
-        case left
-        case center
-        case right
-    }
-
-    public enum AlignVertical: String, CaseIterable, Equatable, Hashable, Sendable {
-        case top
-        case center
-        case bottom
-    }
-
     let fontName: String
     let fontMaxSize: Int
     let fontColor: NSColor
@@ -26,6 +16,34 @@ public struct MarkerLabelProperties: Sendable {
     let fontStrokeWidth: Int?
     let alignHorizontal: AlignHorizontal
     let alignVertical: AlignVertical
+}
+
+// MARK: - AlignHorizontal
+
+extension MarkerLabelProperties {
+    public enum AlignHorizontal: String, CaseIterable, Equatable, Hashable, Sendable {
+        case left
+        case center
+        case right
+    }
+}
+
+extension MarkerLabelProperties.AlignHorizontal: Identifiable {
+    public var id: Self { self }
+}
+
+// MARK: - AlignVertical
+
+extension MarkerLabelProperties {
+    public enum AlignVertical: String, CaseIterable, Equatable, Hashable, Sendable {
+        case top
+        case center
+        case bottom
+    }
+}
+
+extension MarkerLabelProperties.AlignVertical: Identifiable {
+    public var id: Self { self }
 }
 
 // MARK: - Constructors

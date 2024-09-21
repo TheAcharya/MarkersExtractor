@@ -11,3 +11,7 @@ public enum MarkerIDMode: String, CaseIterable, Equatable, Hashable, Sendable {
     case name
     case notes
 }
+
+extension MarkerIDMode: Identifiable {
+    public var id: Self { self }
+}

@@ -12,6 +12,10 @@ public enum ExportFolderFormat: String, CaseIterable, Equatable, Hashable {
     case long
 }
 
+extension ExportFolderFormat: Identifiable {
+    public var id: Self { self }
+}
+
 extension ExportFolderFormat {
     func folderName(timelineName: String, profile: ExportProfileFormat) -> String {
         switch self {

@@ -18,6 +18,10 @@ public enum MarkerRole: Hashable, Equatable, Sendable {
     case caption(_ roleFormattedForUserDisplay: String)
 }
 
+extension MarkerRole: Identifiable {
+    public var id: Self { self }
+}
+
 extension MarkerRole: CustomStringConvertible {
     public var description: String {
         stringValue
