@@ -108,7 +108,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
         )
         
         do {
-            let extractor = try AnimatedImageExtractor(conversion, logger: logger)
+            let extractor = try await AnimatedImageExtractor(conversion, logger: logger)
             let result = try await extractor.convert()
             
             // post errors to console if operation partially completed

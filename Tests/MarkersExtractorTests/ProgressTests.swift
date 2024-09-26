@@ -65,7 +65,7 @@ final class ProgressTests: XCTestCase {
         
         // MARK: - AnimatedImageExtractor
         
-        let extractor = try AnimatedImageExtractor(
+        let extractor = try await AnimatedImageExtractor(
             AnimatedImageExtractor.ConversionSettings(
                 timecodeRange: range,
                 sourceMediaFile: videoPlaceholder.url,

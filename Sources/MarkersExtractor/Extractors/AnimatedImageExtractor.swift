@@ -32,7 +32,7 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
     // MARK: - Init
     
     /// - Throws: ``AnimatedImageExtractorError``
-    init(_ conversion: ConversionSettings, logger: Logger? = nil) throws {
+    init(_ conversion: ConversionSettings, logger: Logger? = nil) async throws {
         self.logger = logger ?? Logger(label: "\(AnimatedImageExtractor.self)")
         
         self.conversion = conversion
@@ -52,7 +52,7 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
         videoTrackForThumbnails = videoTrack
         
         do {
-            frameRate = try asset.timecodeFrameRate()
+            frameRate = try await asset.timecodeFrameRate()
         } catch {
             throw AnimatedImageExtractorError.couldNotDetermineFrameRate(error)
         }
@@ -64,7 +64,7 @@ final class AnimatedImageExtractor: NSObject, ProgressReporting {
         // video track is shorter than the asset duration, so the handling here is not
         // strictly necessary but kept just to be safe.
         do {
-            let dur = try videoTrackForThumbnails.durationTimecode(at: frameRate)
+            let dur = try await videoTrackForThumbnails.durationTimecode(at: frameRate)
             videoTrackRange = Timecode(.zero, at: frameRate) ... dur
         } catch {
             throw AnimatedImageExtractorError.couldNotDetermineVideoTrackDuration(error)
