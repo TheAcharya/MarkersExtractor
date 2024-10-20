@@ -6,7 +6,7 @@
 
 import AppKit
 import AVFoundation
-import TimecodeKit
+import TimecodeKitCore
 
 extension AVAssetImageGenerator {
     struct CompletionHandlerResult {

@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 import OTCore
 
 /// A marker with its contents prepared as flat String values in a standard format suitable for

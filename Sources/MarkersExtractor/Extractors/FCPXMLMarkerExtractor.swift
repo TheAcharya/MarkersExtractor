@@ -8,7 +8,7 @@ import CoreMedia
 import DAWFileKit
 import Foundation
 import Logging
-import TimecodeKit
+import TimecodeKitCore
 import OTCore
 
 class FCPXMLMarkerExtractor: NSObject, ProgressReporting {

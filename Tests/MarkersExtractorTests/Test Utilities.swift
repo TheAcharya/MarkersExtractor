@@ -5,7 +5,7 @@
 //
 
 @testable import MarkersExtractor
-import TimecodeKit
+import TimecodeKitCore
 import XCTest
 
 extension XCTestCase {

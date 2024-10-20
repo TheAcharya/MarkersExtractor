@@ -9,7 +9,7 @@ import AVFoundation
 import DAWFileKit
 import Foundation
 import Logging
-import TimecodeKit
+import TimecodeKitCore
 
 public final class MarkersExtractor: NSObject, ProgressReporting {
     public let logger: Logger

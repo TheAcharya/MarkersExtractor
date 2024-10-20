@@ -6,7 +6,7 @@
 
 @testable import MarkersExtractor
 import OTCore
-import TimecodeKit
+import TimecodeKitCore
 import XCTest
 import DAWFileKit
 

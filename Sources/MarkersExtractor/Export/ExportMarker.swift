@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 
 public protocol ExportMarker {
     associatedtype Icon: ExportIcon

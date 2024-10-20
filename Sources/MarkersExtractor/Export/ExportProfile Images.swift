@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 
 public struct ImageDescriptor: Sendable {
     let absoluteTimecode: Timecode

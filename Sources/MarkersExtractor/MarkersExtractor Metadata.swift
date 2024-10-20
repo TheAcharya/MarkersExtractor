@@ -6,7 +6,7 @@
 
 import DAWFileKit
 import Foundation
-import TimecodeKit
+import TimecodeKitCore
 
 extension MarkersExtractor {
     var timecodeStringFormat: Timecode.StringFormat {

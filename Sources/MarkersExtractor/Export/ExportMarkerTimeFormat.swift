@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TimecodeKit
+import TimecodeKitCore
 import OTCore
 
 public enum ExportMarkerTimeFormat: Equatable, Hashable {

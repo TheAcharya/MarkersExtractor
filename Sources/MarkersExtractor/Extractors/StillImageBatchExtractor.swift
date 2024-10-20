@@ -9,7 +9,7 @@ import CoreImage
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 
 /// Extract one or more images from a video asset.
 final class StillImageBatchExtractor: NSObject, ProgressReporting {

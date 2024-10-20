@@ -9,7 +9,7 @@ import Foundation
 import Logging
 import OrderedCollections
 import TextFileKit
-import TimecodeKit
+import TimecodeKitCore
 
 extension TSVProfile {
     public func prepareMarkers(

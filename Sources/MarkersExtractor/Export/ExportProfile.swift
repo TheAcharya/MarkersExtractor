@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 
 public protocol ExportProfile: AnyObject where Self: ProgressReporting {
     associatedtype Payload: ExportPayload

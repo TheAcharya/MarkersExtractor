@@ -6,7 +6,7 @@
 
 import CoreMedia
 import DAWFileKit
-import TimecodeKit
+import TimecodeKitCore
 import OTCore
 
 /// Raw FCP Marker data extracted from FCPXML.

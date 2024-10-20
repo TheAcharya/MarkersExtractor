@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 import OTCore
-import TimecodeKit
+import TimecodeKitCore
 import OrderedCollections
 
 // MARK: - Export media information packet

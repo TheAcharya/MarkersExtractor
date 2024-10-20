@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKit
+import TimecodeKitCore
 
 extension YouTubeProfile {
     public func prepareMarkers(

@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TimecodeKit
+import TimecodeKitCore
 
 extension MarkersExtractor {
     func export(

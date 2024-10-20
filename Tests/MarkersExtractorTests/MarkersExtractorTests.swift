@@ -6,7 +6,7 @@
 
 import DAWFileKit
 @testable import MarkersExtractor
-import TimecodeKit
+import TimecodeKitCore
 import XCTest
 
 final class MarkersExtractorTests: XCTestCase {
