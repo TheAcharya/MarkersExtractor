@@ -18,9 +18,9 @@ jobs:
     - uses: actions/checkout@main
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: latest-stable # Sometimes a newer version of Xcode is available but isn't yet made default
+        xcode-version: latest-stable
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
 
 # xcodebuild test reference:
 # https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/08-automation.html
