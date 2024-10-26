@@ -27,7 +27,8 @@ let package = Package(
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.2.0"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.0"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.11"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0")
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0"),
+        .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.0")
     ],
     targets: [
         .target(
@@ -45,7 +46,10 @@ let package = Package(
         ),
         .testTarget(
             name: "MarkersExtractorTests",
-            dependencies: ["MarkersExtractor"],
+            dependencies: [
+                "MarkersExtractor",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions")
+            ],
             resources: [.copy("TestResource/Media Files")],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),
