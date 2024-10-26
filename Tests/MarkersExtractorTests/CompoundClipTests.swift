@@ -4,15 +4,16 @@
 //  Licensed under MIT License
 //
 
-@testable import MarkersExtractor
 import OTCore
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class CompoundClipTests: XCTestCase {
+@Suite struct CompoundClipTests {
     /// Ensure that markers directly attached to compound clips (`ref-clip`s) on the main timeline
     /// are preserved, while all markers within compound clips are discarded.
-    func testCompoundClips() async throws {
+    @Test func compoundClips() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -25,14 +26,14 @@ final class CompoundClipTests: XCTestCase {
         
         let markers = try await extractor.extractMarkers().markers
         
-        XCTAssertEqual(markers.count, 1)
+        #expect(markers.count == 1)
         
         let fr: TimecodeFrameRate = .fps25
         
         // just test basic marker info to identify the marker
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.name, "Marker On Compound Clip in Main Timeline")
-        XCTAssertEqual(marker0.position, tc("01:00:04:00", at: fr))
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.name == "Marker On Compound Clip in Main Timeline")
+        #expect(marker0.position == tc("01:00:04:00", at: fr))
     }
 }
 

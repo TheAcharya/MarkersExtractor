@@ -4,49 +4,55 @@
 //  Licensed under MIT License
 //
 
-@testable import MarkersExtractor
+import Foundation
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class BasicMarkersEmptyIDTests: XCTestCase {
-    /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs() async throws {
-        var settings = try MarkersExtractor.Settings(
+@Suite struct BasicMarkersEmptyIDTests {
+    var settings: MarkersExtractor.Settings
+    
+    init() throws {
+        settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
+    }
+    
+    /// Ensure that empty marker ID strings cause an error and abort the conversion process.
+    @Test(arguments: MarkerIDMode.allCases)
+    mutating func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
+        settings.idNamingMode = idMode
         
-        for idMode in MarkerIDMode.allCases {
-            settings.idNamingMode = idMode
+        let extractor = MarkersExtractor(settings: settings)
+        
+        // attempt to extract markers.
+        switch idMode {
+        case .timelineNameAndTimecode:
+            // no way case an error since timecode will always be a non-empty string.
+            // so just test that no error is thrown here.
             
-            let extractor = MarkersExtractor(settings: settings)
-            
-            // attempt to extract markers.
-            switch idMode {
-            case .timelineNameAndTimecode:
-                // no way case an error since timecode will always be a non-empty string.
-                // so just test that no error is thrown here.
-                do {
-                    _ = try await extractor.extractMarkers()
-                } catch {
-                    XCTFail()
-                }
-            case .name:
-                // expect an error here - 3rd marker has an empty Name
-                do {
-                    _ = try await extractor.extractMarkers()
-                    XCTFail("Expected error to be thrown.")
-                } catch {
-                    // we want an error
-                }
-            case .notes:
-                // expect an error here - 2nd marker has an empty Name
-                do {
-                    _ = try await extractor.extractMarkers()
-                    XCTFail("Expected error to be thrown.")
-                } catch {
-                    // we want an error
-                }
+            do {
+                _ = try await extractor.extractMarkers()
+            } catch {
+                #fail
+            }
+        case .name:
+            // expect an error here - 3rd marker has an empty Name
+            do {
+                _ = try await extractor.extractMarkers()
+                #fail("Expected error to be thrown.")
+            } catch {
+                // we want an error
+            }
+        case .notes:
+            // expect an error here - 2nd marker has an empty Name
+            do {
+                _ = try await extractor.extractMarkers()
+                #fail("Expected error to be thrown.")
+            } catch {
+                // we want an error
             }
         }
     }

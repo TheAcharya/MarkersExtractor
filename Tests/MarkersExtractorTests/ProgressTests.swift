@@ -4,12 +4,13 @@
 //  Licensed under MIT License
 //
 
-@testable import MarkersExtractor
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class ProgressTests: XCTestCase {
-    func testFCPXMLMarkerExtractor() async throws {
+@Suite struct ProgressTests {
+    @Test func fcpxmlMarkerExtractor() async throws {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
@@ -21,15 +22,15 @@ final class ProgressTests: XCTestCase {
             logger: nil
         )
         
-        XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
-        let context = try XCTUnwrap(extractor.extractTimelineContext(defaultTimelineName: "Timeline"))
+        #expect(extractor.progress.fractionCompleted == 0.0)
+        let context = try #require(extractor.extractTimelineContext(defaultTimelineName: "Timeline"))
         _ = await extractor.extractMarkers(context: context)
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
+        #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
-    func testAnimatedImageExtractor() async throws {
+    @Test func animatedImageExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
@@ -57,11 +58,11 @@ final class ProgressTests: XCTestCase {
             imageLabelProperties: .default()
         )
         
-        XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
+        #expect(writer.progress.fractionCompleted == 0.0)
         try await writer.write()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
+        #expect(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - AnimatedImageExtractor
         
@@ -77,14 +78,14 @@ final class ProgressTests: XCTestCase {
             )
         )
         
-        XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
+        #expect(extractor.progress.fractionCompleted == 0.0)
         let _ = try await extractor.convert()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
+        #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
-    func testStillImageBatchExtractor() async throws {
+    @Test func stillImageBatchExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
@@ -110,11 +111,11 @@ final class ProgressTests: XCTestCase {
             imageLabelProperties: .default()
         )
         
-        XCTAssertEqual(writer.progress.fractionCompleted, 0.0)
+        #expect(writer.progress.fractionCompleted == 0.0)
         try await writer.write()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        XCTAssert(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
+        #expect(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
         
         // MARK: - StillImageBatchExtractor
         
@@ -130,11 +131,11 @@ final class ProgressTests: XCTestCase {
             )
         )
         
-        XCTAssertEqual(extractor.progress.fractionCompleted, 0.0)
+        #expect(extractor.progress.fractionCompleted == 0.0)
         let _ = try await extractor.convert()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        XCTAssert(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
+        #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
 }
 

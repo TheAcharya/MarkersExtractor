@@ -5,16 +5,17 @@
 //
 
 import DAWFileKit
-@testable import MarkersExtractor
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class BasicMarkersTests: XCTestCase {
+@Suite struct BasicMarkersTests {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
     ///
     /// Note that two markers share the same marker ID. This test also checks the default behavior
     /// of non-unique IDs.
-    func testBasicMarkers_extractMarkers() async throws {
+    @Test func basicMarkers_extractMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -27,7 +28,7 @@ final class BasicMarkersTests: XCTestCase {
         
         let markers = try await extractor.extractMarkers().markers
         
-        XCTAssertEqual(markers.count, 4)
+        #expect(markers.count == 4)
         
         let fr: TimecodeFrameRate = .fps29_97
         
@@ -44,53 +45,53 @@ final class BasicMarkersTests: XCTestCase {
             timelineStartTime: tc("00:00:00:00", at: fr)
         )
         
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.type, .marker(.standard))
-        XCTAssertEqual(marker0.name, "Marker 1")
-        XCTAssertEqual(marker0.notes, "some notes here")
-        XCTAssertEqual(
-            marker0.roles,
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.type == .marker(.standard))
+        #expect(marker0.name == "Marker 1")
+        #expect(marker0.notes == "some notes here")
+        #expect(
+            marker0.roles ==
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker0.position, tc("00:00:29:14", at: fr))
-        XCTAssertEqual(marker0.parentInfo, parentInfo)
+        #expect(marker0.position == tc("00:00:29:14", at: fr))
+        #expect(marker0.parentInfo == parentInfo)
         
-        let marker1 = try XCTUnwrap(markers[safe: 1])
-        XCTAssertEqual(marker1.type, .marker(.toDo(completed: false)))
-        XCTAssertEqual(marker1.name, "Marker 1")
-        XCTAssertEqual(marker1.notes, "more notes here")
-        XCTAssertEqual(
-            marker1.roles,
+        let marker1 = try #require(markers[safe: 1])
+        #expect(marker1.type == .marker(.toDo(completed: false)))
+        #expect(marker1.name == "Marker 1")
+        #expect(marker1.notes == "more notes here")
+        #expect(
+            marker1.roles ==
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker1.position, tc("00:00:29:15", at: fr))
-        XCTAssertEqual(marker1.parentInfo, parentInfo)
+        #expect(marker1.position == tc("00:00:29:15", at: fr))
+        #expect(marker1.parentInfo == parentInfo)
         
-        let marker2 = try XCTUnwrap(markers[safe: 2])
-        XCTAssertEqual(marker2.type, .marker(.toDo(completed: true)))
-        XCTAssertEqual(marker2.name, "Marker 2")
-        XCTAssertEqual(marker2.notes, "notes yay")
-        XCTAssertEqual(
-            marker2.roles,
+        let marker2 = try #require(markers[safe: 2])
+        #expect(marker2.type == .marker(.toDo(completed: true)))
+        #expect(marker2.name == "Marker 2")
+        #expect(marker2.notes == "notes yay")
+        #expect(
+            marker2.roles ==
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker2.position, tc("00:00:29:15", at: fr))
-        XCTAssertEqual(marker2.parentInfo, parentInfo)
+        #expect(marker2.position == tc("00:00:29:15", at: fr))
+        #expect(marker2.parentInfo == parentInfo)
         
-        let marker3 = try XCTUnwrap(markers[safe: 3])
-        XCTAssertEqual(marker3.type, .marker(.chapter(posterOffset: Fraction(11, 30))))
-        XCTAssertEqual(marker3.name, "Marker 3")
-        XCTAssertEqual(marker3.notes, "more notes here")
-        XCTAssertEqual(
-            marker3.roles,
+        let marker3 = try #require(markers[safe: 3])
+        #expect(marker3.type == .marker(.chapter(posterOffset: Fraction(11, 30))))
+        #expect(marker3.name == "Marker 3")
+        #expect(marker3.notes == "more notes here")
+        #expect(
+            marker3.roles ==
             .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
         )
-        XCTAssertEqual(marker3.position, tc("00:00:29:17", at: fr))
-        XCTAssertEqual(marker3.parentInfo, parentInfo)
+        #expect(marker3.position == tc("00:00:29:17", at: fr))
+        #expect(marker3.parentInfo == parentInfo)
     }
     
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
-    func testBasicMarkers_extractMarkers_uniquing() async throws {
+    @Test func basicMarkers_extractMarkers_uniquing() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -108,90 +109,90 @@ final class BasicMarkersTests: XCTestCase {
             // verify correct IDs
             switch idMode {
             case .timelineNameAndTimecode:
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Test Project_00:00:29:14"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Test Project_00:00:29:15-1"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Test Project_00:00:29:15-2"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Test Project_00:00:29:17"
                 )
             case .name:
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Marker 1-1"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Marker 1-2"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Marker 2"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "Marker 3"
                 )
             case .notes:
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "some notes here"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "more notes here-1"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "notes yay"
                 )
-                XCTAssertEqual(
+                #expect(
                     markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ),
+                    ) ==
                     "more notes here-2"
                 )
             }

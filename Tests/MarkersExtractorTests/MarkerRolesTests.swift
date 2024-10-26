@@ -4,11 +4,12 @@
 //  Licensed under MIT License
 //
 
+import Testing
+import TestingExtensions
 @testable import MarkersExtractor
-import XCTest
 
-final class MarkerRolesTests: XCTestCase {
-    func testVerbatim() {
+@Suite struct MarkerRolesTests {
+    @Test func verbatim() async {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
@@ -19,13 +20,13 @@ final class MarkerRolesTests: XCTestCase {
             collapseSubroles: false
         )
         
-        XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role.My Video Role-1")
-        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ",").flat, "My Audio Role.My Audio Role-1")
-        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ",").array, ["My Audio Role.My Audio Role-1"])
-        XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
+        #expect(markerRoles.videoFormatted() == "My Video Role.My Video Role-1")
+        #expect(markerRoles.audioFormatted(multipleRoleSeparator: ",").flat == "My Audio Role.My Audio Role-1")
+        #expect(markerRoles.audioFormatted(multipleRoleSeparator: ",").array == ["My Audio Role.My Audio Role-1"])
+        #expect(markerRoles.captionFormatted() == "My Caption Role")
     }
     
-    func testCollapsedSubRole() {
+    @Test func collapsedSubRole() async {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
@@ -36,58 +37,58 @@ final class MarkerRolesTests: XCTestCase {
             collapseSubroles: true
         )
         
-        XCTAssertEqual(markerRoles.videoFormatted(), "My Video Role")
-        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ",").flat, "My Audio Role")
-        XCTAssertEqual(markerRoles.audioFormatted(multipleRoleSeparator: ",").array, ["My Audio Role"])
-        XCTAssertEqual(markerRoles.captionFormatted(), "My Caption Role")
+        #expect(markerRoles.videoFormatted() == "My Video Role")
+        #expect(markerRoles.audioFormatted(multipleRoleSeparator: ",").flat == "My Audio Role")
+        #expect(markerRoles.audioFormatted(multipleRoleSeparator: ",").array == ["My Audio Role"])
+        #expect(markerRoles.captionFormatted() == "My Caption Role")
     }
     
-    func testIsDefault() {
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault, true)
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
+    @Test func isDefault() async {
+        #expect(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault)
+        #expect(!MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault)
         
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault, true)
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault, false)
+        #expect(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault)
+        #expect(!MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault)
         
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault, true)
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault, false)
+        #expect(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefault)
+        #expect(!MarkerRoles(audio: ["Dialogue"], isAudioDefault: false).isAudioDefault)
         
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isAudioDefault, false)
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault, false)
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: false).isCaptionDefault, false)
+        #expect(!MarkerRoles(video: "Video", isVideoDefault: true).isAudioDefault)
+        #expect(!MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault)
+        #expect(!MarkerRoles(video: "Video", isVideoDefault: false).isCaptionDefault)
     }
     
-    func testIsEmpty() {
-        XCTAssertEqual(MarkerRoles(video: nil).isVideoEmpty, true)
-        XCTAssertEqual(MarkerRoles(video: "").isVideoEmpty, true)
-        XCTAssertEqual(MarkerRoles(video: "Video").isVideoEmpty, false)
+    @Test func isEmpty() async {
+        #expect(MarkerRoles(video: nil).isVideoEmpty)
+        #expect(MarkerRoles(video: "").isVideoEmpty)
+        #expect(!MarkerRoles(video: "Video").isVideoEmpty)
         
-        XCTAssertEqual(MarkerRoles(audio: nil).isAudioEmpty, true)
-        XCTAssertEqual(MarkerRoles(audio: [""]).isAudioEmpty, true)
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"]).isAudioEmpty, false)
+        #expect(MarkerRoles(audio: nil).isAudioEmpty)
+        #expect(MarkerRoles(audio: [""]).isAudioEmpty)
+        #expect(!MarkerRoles(audio: ["Dialogue"]).isAudioEmpty)
     }
     
-    func testIsDefined() {
-        XCTAssertEqual(MarkerRoles(video: nil).isVideoDefined, false)
-        XCTAssertEqual(MarkerRoles(video: "").isVideoDefined, false)
-        XCTAssertEqual(MarkerRoles(video: "Video").isVideoDefined, true)
-        XCTAssertEqual(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefined, false)
+    @Test func isDefined() async {
+        #expect(!MarkerRoles(video: nil).isVideoDefined)
+        #expect(!MarkerRoles(video: "").isVideoDefined)
+        #expect(MarkerRoles(video: "Video").isVideoDefined)
+        #expect(!MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefined)
         
-        XCTAssertEqual(MarkerRoles(audio: nil).isAudioDefined, false)
-        XCTAssertEqual(MarkerRoles(audio: [""]).isAudioDefined, false)
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"]).isAudioDefined, true)
-        XCTAssertEqual(MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefined, false)
+        #expect(!MarkerRoles(audio: nil).isAudioDefined)
+        #expect(!MarkerRoles(audio: [""]).isAudioDefined)
+        #expect(MarkerRoles(audio: ["Dialogue"]).isAudioDefined)
+        #expect(!MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefined)
     }
     
-    func testMultipleAudio() {
-        XCTAssertEqual(
+    @Test func multipleAudio() async {
+        #expect(
             MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"])
-                .audioFormatted(multipleRoleSeparator: ",").flat,
+                .audioFormatted(multipleRoleSeparator: ",").flat ==
             "Dialogue.MixL,Dialogue.MixR"
         )
-        XCTAssertEqual(
+        #expect(
             MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"])
-                .audioFormatted(multipleRoleSeparator: ",").array,
+                .audioFormatted(multipleRoleSeparator: ",").array ==
             ["Dialogue.MixL", "Dialogue.MixR"]
         )
     }

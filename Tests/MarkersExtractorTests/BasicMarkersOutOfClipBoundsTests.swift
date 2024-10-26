@@ -5,14 +5,15 @@
 //
 
 import DAWFileKit
-@testable import MarkersExtractor
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
+@Suite struct BasicMarkersOutOfClipBoundsTests {
     /// Ensure that markers that are out of bounds of clips are not included in extraction.
     /// Also tests to make sure marker parent clip information is correct.
-    func testOutOfClipBounds() async throws {
+    @Test func outOfClipBounds() async throws {
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -55,7 +56,7 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // check markers
         
-        XCTAssertEqual(markers.count, 2)
+        #expect(markers.count == 2)
         
         // if the clip is the first clip on the timeline (it starts at 00:00:00:00) and
         // it had been resized from its left edge to result in an out-of-boundary marker prior to
@@ -63,17 +64,17 @@ final class BasicMarkersOutOfClipBoundsTests: XCTestCase {
         
         // clip 1
         
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.name, "Marker 2")
-        XCTAssertEqual(marker0.position, tc("00:00:07:23", at: fr))
-        XCTAssertEqual(marker0.parentInfo, clip1ParentInfo)
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.name == "Marker 2")
+        #expect(marker0.position == tc("00:00:07:23", at: fr))
+        #expect(marker0.parentInfo == clip1ParentInfo)
         
         // clip 2
         
-        let marker1 = try XCTUnwrap(markers[safe: 1])
-        XCTAssertEqual(marker1.name, "Marker 5")
-        XCTAssertEqual(marker1.position, tc("00:00:28:18", at: fr))
-        XCTAssertEqual(marker1.parentInfo, clip2ParentInfo)
+        let marker1 = try #require(markers[safe: 1])
+        #expect(marker1.name == "Marker 5")
+        #expect(marker1.position == tc("00:00:28:18", at: fr))
+        #expect(marker1.parentInfo == clip2ParentInfo)
     }
 }
 

@@ -5,12 +5,13 @@
 //
 
 import DAWFileKit
-@testable import MarkersExtractor
+import Testing
+import TestingExtensions
 import TimecodeKitCore
-import XCTest
+@testable import MarkersExtractor
 
-final class MarkersExtractorTests: XCTestCase {
-    func testFindDuplicateIDs_inMarkers() throws {
+@Suite struct MarkersExtractorTests {
+    @Test func findDuplicateIDs_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
@@ -49,30 +50,30 @@ final class MarkersExtractorTests: XCTestCase {
         let marker1 = makeMarker("marker1", position: .init(f: 1))
         let marker2 = makeMarker("marker2", position: .init(f: 2))
         
-        XCTAssertEqual(
-            extractor.findDuplicateIDs(in: []), []
+        #expect(
+            extractor.findDuplicateIDs(in: []) == []
         )
         
-        XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker1]), []
+        #expect(
+            extractor.findDuplicateIDs(in: [marker1]) == []
         )
         
-        XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker1, marker2]), []
+        #expect(
+            extractor.findDuplicateIDs(in: [marker1, marker2]) == []
         )
         
-        XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker1, marker1]),
+        #expect(
+            extractor.findDuplicateIDs(in: [marker1, marker1]) ==
             [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
         
-        XCTAssertEqual(
-            extractor.findDuplicateIDs(in: [marker2, marker1, marker2]),
+        #expect(
+            extractor.findDuplicateIDs(in: [marker2, marker1, marker2]) ==
             [marker2.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
     }
     
-    func testIsAllUniqueIDNonEmpty_inMarkers() throws {
+    @Test func isAllUniqueIDNonEmpty_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
@@ -111,20 +112,20 @@ final class MarkersExtractorTests: XCTestCase {
         let marker1 = makeMarker("marker1", position: .init(f: 1))
         let marker2 = makeMarker("", position: .init(f: 2))
         
-        XCTAssertTrue(
+        #expect(
             extractor.isAllUniqueIDNonEmpty(in: [])
         )
         
-        XCTAssertTrue(
+        #expect(
             extractor.isAllUniqueIDNonEmpty(in: [marker1])
         )
         
-        XCTAssertFalse(
-            extractor.isAllUniqueIDNonEmpty(in: [marker1, marker2])
+        #expect(
+            !extractor.isAllUniqueIDNonEmpty(in: [marker1, marker2])
         )
         
-        XCTAssertFalse(
-            extractor.isAllUniqueIDNonEmpty(in: [marker2])
+        #expect(
+            !extractor.isAllUniqueIDNonEmpty(in: [marker2])
         )
     }
 }

@@ -4,14 +4,15 @@
 //  Licensed under MIT License
 //
 
-@testable import MarkersExtractor
-import OTCore
-import TimecodeKitCore
-import XCTest
 import DAWFileKit
+import OTCore
+import Testing
+import TestingExtensions
+import TimecodeKitCore
+@testable import MarkersExtractor
 
-final class AudioOnlyTests: XCTestCase {
-    func testAudioOnly() async throws {
+@Suite struct AudioOnlyTests {
+    @Test func audioOnly() async throws {
         let outputDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -27,36 +28,36 @@ final class AudioOnlyTests: XCTestCase {
         
         let markers = try await extractor.extractMarkers().markers
         
-        XCTAssertEqual(markers.count, 1)
+        #expect(markers.count == 1)
         
         let fr: TimecodeFrameRate = .fps24
         
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.name, "Marker 1")
-        XCTAssertEqual(marker0.position, tc("00:00:02:00", at: fr))
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.name == "Marker 1")
+        #expect(marker0.position == tc("00:00:02:00", at: fr))
         
-        XCTAssertEqual(marker0.roles.audio, [FinalCutPro.FCPXML.AudioRole(role: "Dialogue")])
-        XCTAssertEqual(marker0.roles.isAudioDefault, false) // TODO: Dialogue isn't a builtin/default role??
-        XCTAssertEqual(marker0.roles.isAudioEmpty, false)
-        XCTAssertEqual(marker0.roles.isAudioDefined, true) // exists in the XML
+        #expect(marker0.roles.audio == [FinalCutPro.FCPXML.AudioRole(role: "Dialogue")])
+        #expect(marker0.roles.isAudioDefault == false) // TODO: Dialogue isn't a builtin/default role??
+        #expect(marker0.roles.isAudioEmpty == false)
+        #expect(marker0.roles.isAudioDefined == true) // exists in the XML
         
-        XCTAssertEqual(marker0.roles.video, nil)
-        XCTAssertEqual(marker0.roles.isVideoDefault, false)
-        XCTAssertEqual(marker0.roles.isVideoEmpty, true)
-        XCTAssertEqual(marker0.roles.isVideoDefined, false) // was default, not defined
+        #expect(marker0.roles.video == nil)
+        #expect(marker0.roles.isVideoDefault == false)
+        #expect(marker0.roles.isVideoEmpty == true)
+        #expect(marker0.roles.isVideoDefined == false) // was default, not defined
         
-        XCTAssertEqual(marker0.roles.caption, nil)
+        #expect(marker0.roles.caption == nil)
     }
     
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
-    func testAudioOnly_WithMedia_PNG() async throws {
+    @Test func audioOnly_WithMedia_PNG() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
         
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
         
-        let dummyMediaData = try XCTUnwrap(EmbeddedResource.empty_mov.data)
+        let dummyMediaData = try #require(EmbeddedResource.empty_mov.data)
         let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
         try dummyMediaData.write(to: dummyMediaURL)
         
@@ -86,18 +87,18 @@ final class AudioOnlyTests: XCTestCase {
         exportFilenames.forEach { print(" - " + $0) }
         
         // ensure that a placeholder thumbnail was used for the audio-only clip
-        XCTAssertTrue(exportFilenames.contains("marker-placeholder.png"))
+        #expect(exportFilenames.contains("marker-placeholder.png"))
     }
     
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
-    func testAudioOnly_WithMedia_GIF() async throws {
+    @Test func audioOnly_WithMedia_GIF() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
         
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
         
-        let dummyMediaData = try XCTUnwrap(EmbeddedResource.empty_mov.data)
+        let dummyMediaData = try #require(EmbeddedResource.empty_mov.data)
         let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
         try dummyMediaData.write(to: dummyMediaURL)
         
@@ -127,7 +128,7 @@ final class AudioOnlyTests: XCTestCase {
         exportFilenames.forEach { print(" - " + $0) }
         
         // ensure that a placeholder thumbnail was used for the audio-only clip
-        XCTAssertTrue(exportFilenames.contains("marker-placeholder.gif"))
+        #expect(exportFilenames.contains("marker-placeholder.gif"))
     }
 }
 

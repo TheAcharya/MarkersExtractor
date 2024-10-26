@@ -4,15 +4,16 @@
 //  Licensed under MIT License
 //
 
-@testable import MarkersExtractor
 import OTCore
 import TimecodeKitCore
-import XCTest
+import Testing
+import TestingExtensions
+@testable import MarkersExtractor
 
-final class AnnotationsTests: XCTestCase {
+@Suite struct AnnotationsTests {
     // TODO: add test for filtering disabled captions once that's implemented
     /// Test importing captions
-    func testAnnotations_CaptionsOnly() async throws {
+    @Test func annotations_CaptionsOnly() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -27,31 +28,31 @@ final class AnnotationsTests: XCTestCase {
         
         let markers = try await extractor.extractMarkers().markers
         
-        XCTAssertEqual(markers.count, 2)
+        #expect(markers.count == 2)
         
         let fr: TimecodeFrameRate = .fps25
         
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.type, .caption)
-        XCTAssertEqual(marker0.name, "caption1")
-        XCTAssertEqual(marker0.notes, "")
-        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
-        XCTAssertEqual(marker0.roles.video?.rawValue, nil)
-        XCTAssertEqual(marker0.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
-        XCTAssertEqual(marker0.position, tc("01:00:03:00", at: fr))
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.type == .caption)
+        #expect(marker0.name == "caption1")
+        #expect(marker0.notes == "")
+        #expect(marker0.roles.audio?.map(\.rawValue) == ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        #expect(marker0.roles.video?.rawValue == nil)
+        #expect(marker0.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
+        #expect(marker0.position == tc("01:00:03:00", at: fr))
         
-        let marker1 = try XCTUnwrap(markers[safe: 1])
-        XCTAssertEqual(marker1.type, .caption)
-        XCTAssertEqual(marker1.name, "caption2")
-        XCTAssertEqual(marker1.notes, "")
-        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
-        XCTAssertEqual(marker1.roles.video?.rawValue, nil)
-        XCTAssertEqual(marker1.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
-        XCTAssertEqual(marker1.position, tc("01:00:09:10", at: fr))
+        let marker1 = try #require(markers[safe: 1])
+        #expect(marker1.type == .caption)
+        #expect(marker1.name == "caption2")
+        #expect(marker1.notes == "")
+        #expect(marker1.roles.audio?.map(\.rawValue) == ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        #expect(marker1.roles.video?.rawValue == nil)
+        #expect(marker1.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
+        #expect(marker1.position == tc("01:00:09:10", at: fr))
     }
     
     /// Test importing captions
-    func testAnnotations_MarkersAndCaptions() async throws {
+    @Test func annotations_MarkersAndCaptions() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -66,36 +67,36 @@ final class AnnotationsTests: XCTestCase {
         
         let markers = try await extractor.extractMarkers().markers
         
-        XCTAssertEqual(markers.count, 3)
+        #expect(markers.count == 3)
         
         let fr: TimecodeFrameRate = .fps25
         
-        let marker0 = try XCTUnwrap(markers[safe: 0])
-        XCTAssertEqual(marker0.type, .caption)
-        XCTAssertEqual(marker0.name, "caption1")
-        XCTAssertEqual(marker0.notes, "")
-        XCTAssertEqual(marker0.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
-        XCTAssertEqual(marker0.roles.video?.rawValue, nil)
-        XCTAssertEqual(marker0.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
-        XCTAssertEqual(marker0.position, tc("01:00:03:00", at: fr))
+        let marker0 = try #require(markers[safe: 0])
+        #expect(marker0.type == .caption)
+        #expect(marker0.name == "caption1")
+        #expect(marker0.notes == "")
+        #expect(marker0.roles.audio?.map(\.rawValue) == ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        #expect(marker0.roles.video?.rawValue == nil)
+        #expect(marker0.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
+        #expect(marker0.position == tc("01:00:03:00", at: fr))
         
-        let marker1 = try XCTUnwrap(markers[safe: 1])
-        XCTAssertEqual(marker1.type, .caption)
-        XCTAssertEqual(marker1.name, "caption2")
-        XCTAssertEqual(marker1.notes, "")
-        XCTAssertEqual(marker1.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
-        XCTAssertEqual(marker1.roles.video?.rawValue, nil)
-        XCTAssertEqual(marker1.roles.caption?.rawValue, "iTT?captionFormat=ITT.en")
-        XCTAssertEqual(marker1.position, tc("01:00:09:10", at: fr))
+        let marker1 = try #require(markers[safe: 1])
+        #expect(marker1.type == .caption)
+        #expect(marker1.name == "caption2")
+        #expect(marker1.notes == "")
+        #expect(marker1.roles.audio?.map(\.rawValue) == ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        #expect(marker1.roles.video?.rawValue == nil)
+        #expect(marker1.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
+        #expect(marker1.position == tc("01:00:09:10", at: fr))
         
-        let marker2 = try XCTUnwrap(markers[safe: 2])
-        XCTAssertEqual(marker2.type, .marker(.standard))
-        XCTAssertEqual(marker2.name, "marker1")
-        XCTAssertEqual(marker2.notes, "m1 notes")
-        XCTAssertEqual(marker2.roles.audio?.map(\.rawValue), ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
-        XCTAssertEqual(marker2.roles.video?.rawValue, nil)
-        XCTAssertEqual(marker2.roles.caption?.rawValue, nil)
-        XCTAssertEqual(marker2.position, tc("01:00:27:10", at: fr))
+        let marker2 = try #require(markers[safe: 2])
+        #expect(marker2.type == .marker(.standard))
+        #expect(marker2.name == "marker1")
+        #expect(marker2.notes == "m1 notes")
+        #expect(marker2.roles.audio?.map(\.rawValue) == ["Dialogue"]) // inherited from clip it's anchored on (TODO: ?)
+        #expect(marker2.roles.video?.rawValue == nil)
+        #expect(marker2.roles.caption?.rawValue == nil)
+        #expect(marker2.position == tc("01:00:27:10", at: fr))
     }
 }
 
