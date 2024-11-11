@@ -35,6 +35,3 @@ jobs:
         xcode-version: latest-stable # Sometimes a newer version of Xcode is available but isn't yet made default
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "generic/platform=macOS,name=Any Mac" | xcpretty && exit ${PIPESTATUS[0]}
-
-# xcodebuild test reference:
-# https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/08-automation.html

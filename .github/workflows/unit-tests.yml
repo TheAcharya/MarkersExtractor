@@ -12,7 +12,7 @@ on:
 jobs:
   unit-tests:
     name: Unit Tests
-    runs-on: macos-latest
+    runs-on: macos-15 # required for Xcode 16.x
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
     - uses: actions/checkout@main
@@ -21,6 +21,3 @@ jobs:
         xcode-version: latest-stable
     - name: Unit Tests
       run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
-
-# xcodebuild test reference:
-# https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/08-automation.html
