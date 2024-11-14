@@ -27,11 +27,11 @@ on:
 jobs:
   macOS:
     name: macOS
-    runs-on: macos-latest
+    runs-on: macos-15 # required for Xcode 16.x
     steps:
     - uses: actions/checkout@main
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: latest-stable # Sometimes a newer version of Xcode is available but isn't yet made default
+        xcode-version: latest-stable
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "generic/platform=macOS,name=Any Mac" | xcpretty && exit ${PIPESTATUS[0]}
