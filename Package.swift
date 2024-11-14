@@ -22,11 +22,11 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.6.1"),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.3"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.4"),
         .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.2.0"),
-        .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.0"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.11"),
+        .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.3"),
+        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.4.12"),
         .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.0")
     ],
