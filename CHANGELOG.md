@@ -5,7 +5,7 @@
 ### New Features
 
 - Supports FCPXML 1.13 (Final Cut Pro 11.0) (#113)
-- Added new 90 fps frame rate added (#112)
+- Added new 90 fps frame rate (#112)
 
 ## [0.3.11](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.11) (2024-09-26)
 
