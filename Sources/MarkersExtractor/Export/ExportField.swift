@@ -31,6 +31,7 @@ public enum ExportField: String, CaseIterable, RawRepresentable, Hashable {
     case libraryName
     case iconImage
     case imageFileName
+    case xmlPath
 }
 
 extension ExportField: Identifiable {
@@ -64,6 +65,7 @@ extension ExportField {
         case .libraryName: return "Library Name"
         case .iconImage: return "Icon Image"
         case .imageFileName: return "Image Filename"
+        case .xmlPath: return "XML Path"
         }
     }
 }
