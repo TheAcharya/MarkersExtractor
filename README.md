@@ -19,6 +19,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 
 - Notion (JSON) - Compatible with [CSV2Notion Neo](https://github.com/TheAcharya/csv2notion-neo)
 - Airtable (JSON) - Compatible with [Airlift](https://github.com/TheAcharya/Airlift)
+- Generic JSON
 - Comma-separated values (CSV) - Compatible with spreadsheet applications
 - Tab-separated values (TSV) - Compatible with spreadsheet application
 - Microsoft Excel (XLSX)

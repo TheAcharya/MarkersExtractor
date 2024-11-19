@@ -9,6 +9,7 @@ import Foundation
 public enum ExportProfileFormat: String, CaseIterable, Equatable, Hashable {
     case airtable
     case csv
+    case json
     case midi
     case notion
     case tsv
@@ -27,6 +28,8 @@ extension ExportProfileFormat {
             return "Airtable"
         case .csv:
             return "CSV"
+        case .json:
+            return "JSON"
         case .midi:
             return "MIDI File"
         case .notion:
@@ -46,6 +49,8 @@ extension ExportProfileFormat {
             return AirtableExportProfile.self
         case .csv:
             return CSVProfile.self
+        case .json:
+            return JSONProfile.self
         case .midi:
             return MIDIFileExportProfile.self
         case .notion:
