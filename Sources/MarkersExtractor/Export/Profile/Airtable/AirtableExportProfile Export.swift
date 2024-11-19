@@ -82,6 +82,8 @@ extension AirtableExportProfile {
             dict[.imageFileName] = marker.imageFileName
         }
         
+        dict[.xmlPath] = marker.xmlPath
+        
         return dict
     }
     
@@ -117,6 +119,8 @@ extension AirtableExportProfile {
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
         }
+        
+        dict[.xmlPath] = .string(marker.xmlPath)
         
         return dict
     }
