@@ -124,7 +124,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 OPTIONS:
-  --export-format <airtable | csv | midi | notion | tsv | xlsx | youtube>
+  --export-format <airtable | csv | json | midi | notion | tsv | xlsx | youtube>
                           Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
   --markers-source <markers | markersAndCaptions | captions>
@@ -155,7 +155,7 @@ OPTIONS:
   --id-naming-mode <timelineNameAndTimecode | name | notes>
                           Marker naming mode. This affects Marker IDs and image
                           filenames. (default: timelineNameAndTimecode)
-  --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName>
+  --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName | xmlPath>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
