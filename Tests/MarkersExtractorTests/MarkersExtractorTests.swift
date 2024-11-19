@@ -43,7 +43,8 @@ import TimecodeKitCore
                     reel: "Some reel",
                     scene: "Some scene",
                     take: "Some take"
-                )
+                ),
+                xmlPath: "" // not used here
             )
         }
         
@@ -105,7 +106,8 @@ import TimecodeKitCore
                     reel: "Some reel",
                     scene: "Some scene",
                     take: "Some take"
-                )
+                ),
+                xmlPath: "" // not used here
             )
         }
         
