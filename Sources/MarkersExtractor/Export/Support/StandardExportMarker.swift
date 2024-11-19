@@ -41,6 +41,8 @@ public struct StandardExportMarker: ExportMarker {
     public let imageTimecode: Timecode
     // public let mediaInfo: ExportMarkerMediaInfo?
     
+    public let xmlPath: String
+    
     public init(
         marker: Marker,
         idMode: MarkerIDMode,
@@ -82,5 +84,7 @@ public struct StandardExportMarker: ExportMarker {
             useChapterMarkerPosterOffset: useChapterMarkerPosterOffset, 
             offsetToTimelineStart: offsetToTimelineStart
         )
+        
+        xmlPath = marker.xmlPath
     }
 }
