@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.4.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.0) (T.B.D.)
+
+### New Features
+
+- Added Generic JSON Export Profile (#f60082cf)
+- Added XML Path manifest field (#97)
+
 ## [0.3.12](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.12) (2024-11-14)
 
 ### New Features
