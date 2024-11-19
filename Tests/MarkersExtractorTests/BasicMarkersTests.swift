@@ -55,6 +55,7 @@ import TimecodeKitCore
         )
         #expect(marker0.position == tc("00:00:29:14", at: fr))
         #expect(marker0.parentInfo == parentInfo)
+        #expect(marker0.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[1]")
         
         let marker1 = try #require(markers[safe: 1])
         #expect(marker1.type == .marker(.toDo(completed: false)))
@@ -66,6 +67,7 @@ import TimecodeKitCore
         )
         #expect(marker1.position == tc("00:00:29:15", at: fr))
         #expect(marker1.parentInfo == parentInfo)
+        #expect(marker1.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[2]")
         
         let marker2 = try #require(markers[safe: 2])
         #expect(marker2.type == .marker(.toDo(completed: true)))
@@ -77,6 +79,7 @@ import TimecodeKitCore
         )
         #expect(marker2.position == tc("00:00:29:15", at: fr))
         #expect(marker2.parentInfo == parentInfo)
+        #expect(marker2.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[3]")
         
         let marker3 = try #require(markers[safe: 3])
         #expect(marker3.type == .marker(.chapter(posterOffset: Fraction(11, 30))))
@@ -88,6 +91,7 @@ import TimecodeKitCore
         )
         #expect(marker3.position == tc("00:00:29:17", at: fr))
         #expect(marker3.parentInfo == parentInfo)
+        #expect(marker3.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/chapter-marker[1]")
     }
     
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
@@ -196,6 +200,63 @@ import TimecodeKitCore
                     "more notes here-2"
                 )
             }
+        }
+    }
+    
+    @Test func basicMarkers_xPath() async throws {
+        let xml = try XMLDocument(data: fcpxmlTestData)
+        
+        let marker0XPath = "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[1]"
+        
+        do {
+            let settings = try MarkersExtractor.Settings(
+                fcpxml: FCPXMLFile(fileContents: xml),
+                outputDir: FileManager.default.temporaryDirectory
+            )
+            
+            let extractor = MarkersExtractor(settings: settings)
+            
+            let markers = try await extractor.extractMarkers().markers
+            
+            let marker0 = try #require(markers[safe: 0])
+            
+            // verify XPath string
+            #expect(marker0.xmlPath == marker0XPath)
+        }
+        
+        // look up XPath
+        let marker0Nodes = try xml.nodes(forXPath: marker0XPath)
+        try #require(marker0Nodes.count == 1)
+        let marker0Node = try #require(marker0Nodes.first?.asElement)
+        let marker0AsMarker = try #require(marker0Node.fcpAsMarker)
+        
+        // verify marker
+        #expect(marker0AsMarker.name == "Marker 1")
+        #expect(marker0AsMarker.note == "some notes here")
+        
+        // mutate marker XML element
+        marker0AsMarker.name = "Renamed Marker"
+        marker0AsMarker.note = "new notes here"
+        
+        // verify updated marker in-place
+        #expect(marker0AsMarker.name == "Renamed Marker")
+        #expect(marker0AsMarker.note == "new notes here")
+        
+        do {
+            let settings = try MarkersExtractor.Settings(
+                fcpxml: FCPXMLFile(fileContents: xml),
+                outputDir: FileManager.default.temporaryDirectory
+            )
+            
+            let extractor = MarkersExtractor(settings: settings)
+            
+            let markers = try await extractor.extractMarkers().markers
+            
+            let marker0 = try #require(markers[safe: 0])
+            
+            // verify updated marker
+            #expect(marker0.name == "Renamed Marker")
+            #expect(marker0.notes == "new notes here")
         }
     }
 }
