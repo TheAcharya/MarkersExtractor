@@ -22,9 +22,7 @@ public struct Marker: Equatable, Hashable, Sendable {
         var clipKeywords: [String]
         
         var libraryName: String?
-        
         var eventName: String?
-        
         var projectName: String?
         
         var timelineName: String // will be same as project name when project is present, otherwise timeline clip name
@@ -86,6 +84,9 @@ public struct Marker: Equatable, Hashable, Sendable {
     
     /// Used only when uniquing marker IDs to avoid duplicate IDs.
     var idSuffix: String?
+    
+    /// XML XPath for back-reference allowing editing of the FCPXML directly.
+    var xmlPath: String
 }
 
 // MARK: Computed

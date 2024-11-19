@@ -259,6 +259,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let markerMetadata = metadata(for: extractedMarker)
         
+        let xmlPath = extractedMarker.element.xPath ?? ""
+        
         return Marker(
             type: .marker(extractedMarker.configuration),
             name: extractedMarker.name,
@@ -266,7 +268,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             roles: roles,
             position: position,
             parentInfo: parentInfo, 
-            metadata: markerMetadata
+            metadata: markerMetadata,
+            xmlPath: xmlPath
         )
     }
     
@@ -294,6 +297,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
         
         let markerMetadata = metadata(for: extractedCaption)
         
+        let xmlPath = extractedCaption.element.xPath ?? ""
+        
         return Marker(
             type: .caption,
             name: name,
@@ -301,7 +306,8 @@ class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
             roles: roles,
             position: position,
             parentInfo: parentInfo, 
-            metadata: markerMetadata
+            metadata: markerMetadata,
+            xmlPath: xmlPath
         )
     }
     
