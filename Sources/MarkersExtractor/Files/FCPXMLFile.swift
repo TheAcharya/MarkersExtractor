@@ -35,6 +35,11 @@ public struct FCPXMLFile: Equatable, Hashable {
         source = .rawFileContents
         xmlFileContents = File(fileContents: .string(fileContents))
     }
+    
+    public init(fileContents: XMLDocument) {
+        source = .xmlDocument(fileContents)
+        xmlFileContents = File(fileContents: .data(fileContents.xmlData))
+    }
 }
 
 extension FCPXMLFile: Identifiable {
@@ -46,6 +51,8 @@ extension FCPXMLFile: CustomStringConvertible {
         switch source {
         case let .fileOnDisk(path):
             return "\(path.xmlPath.path.quoted)"
+        case .xmlDocument(_):
+            return "FCP XML Document"
         case .rawFileContents:
             return "FCP XML Data"
         }
@@ -53,7 +60,6 @@ extension FCPXMLFile: CustomStringConvertible {
 }
 
 extension FCPXMLFile {
-    // TODO: refactor so that this is processed on init, not on each access to data()
     /// Return file contents. Method is mutating because it maintains an internal cache.
     mutating func data() throws -> Data {
         try xmlFileContents.data()
@@ -65,6 +71,8 @@ extension FCPXMLFile {
         switch source {
         case let .fileOnDisk(path):
             return path.xmlPath
+        case .xmlDocument(_):
+            return nil
         case .rawFileContents:
             return nil
         }
@@ -76,6 +84,8 @@ extension FCPXMLFile {
         switch source {
         case let .fileOnDisk(path):
             return path.parentPath
+        case .xmlDocument(_):
+            return nil
         case .rawFileContents:
             return nil
         }
@@ -83,11 +93,21 @@ extension FCPXMLFile {
     
     /// Returns a new `XMLDocument` instance representing the XML file's contents.
     mutating func xmlDocument() throws -> XMLDocument {
-        try XMLDocument(data: data())
+        switch source {
+        case let .xmlDocument(xmlDoc):
+            return xmlDoc
+        default:
+            return try XMLDocument(data: data())
+        }
     }
     
     mutating func dawFile() throws -> FinalCutPro.FCPXML {
-        try FinalCutPro.FCPXML(fileContent: data())
+        switch source {
+        case let .xmlDocument(xmlDoc):
+            return FinalCutPro.FCPXML(fileContent: xmlDoc)
+        default:
+            return try FinalCutPro.FCPXML(fileContent: data())
+        }
     }
     
     var defaultMediaSearchPath: URL? {
@@ -101,6 +121,7 @@ extension FCPXMLFile {
     public enum FCPXMLFileSource: Equatable, Hashable {
         case fileOnDisk(FCPXMLFilePath)
         case rawFileContents
+        case xmlDocument(XMLDocument)
     }
 }
 
