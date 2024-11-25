@@ -190,9 +190,7 @@ extension AVAssetImageGeneratorWrapper {
         
         var isNoFrame = false
         
-        let nsValue = NSValue(time: time)
-        
-        let (requestedTime, image, actualTime, result, error) = await imageGenerator.generateCGImages(forTimes: [nsValue])
+        let (requestedTime, image, actualTime, result, error) = await imageGenerator.generateCGImages(forTimes: [time])
         
         switch result {
         case .succeeded:
@@ -277,5 +275,21 @@ extension AVAssetImageGenerator {
                 continuation.resume(returning: (requestedTime, image, actualTime, result, error))
             }
         }
+    }
+    
+    /// Swift Concurrency wrapper for `generateCGImagesAsynchronously` method.
+    /// TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
+    @_disfavoredOverload
+    func generateCGImages(
+        forTimes requestedTimes: [CMTime]
+    ) async -> (
+        requestedTime: CMTime,
+        image: CGImage?,
+        actualTime: CMTime,
+        result: AVAssetImageGenerator.Result,
+        error: (any Error)?)
+    {
+        let requestedTimes = requestedTimes.map(NSValue.init(time:))
+        return await generateCGImages(forTimes: requestedTimes)
     }
 }
