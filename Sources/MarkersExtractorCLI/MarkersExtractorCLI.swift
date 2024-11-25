@@ -14,7 +14,7 @@ import DAWFileKit
 struct MarkersExtractorCLI: AsyncParsableCommand {
     // MARK: - Config
     
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "markers-extractor",
         abstract: "Tool to extract markers from Final Cut Pro FCPXML/FCPXMLD.",
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
@@ -323,16 +323,18 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         }
         
         let extractorLoggerLabel = "MarkersExtractor"
+        let extractorLoggerHandler = await LogFactory.shared.fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logLevel, logFile: log)
         let extractorLogger = Logger(label: extractorLoggerLabel) { label in
-            fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logLevel, logFile: log)
+            extractorLoggerHandler
         }
         
         let extractor = MarkersExtractor(settings: settings, logger: extractorLogger)
         
         if !noProgressLogging {
             let progressLoggerLabel = "Progress"
+            let progressLoggerHandler = await LogFactory.shared.consoleLogFactory(label: progressLoggerLabel, logLevel: logLevel)
             let progressLogger = Logger(label: progressLoggerLabel) { label in
-                consoleLogFactory(label: progressLoggerLabel, logLevel: logLevel)
+                progressLoggerHandler
             }
             _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
         }

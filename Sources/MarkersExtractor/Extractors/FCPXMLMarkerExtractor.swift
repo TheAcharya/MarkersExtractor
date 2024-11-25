@@ -11,7 +11,7 @@ import Logging
 import TimecodeKitCore
 import OTCore
 
-class FCPXMLMarkerExtractor: NSObject, ProgressReporting {
+class FCPXMLMarkerExtractor {
     private let logger: Logger
     public let progress: Progress
     

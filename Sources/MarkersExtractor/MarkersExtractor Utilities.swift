@@ -72,7 +72,7 @@ public struct ParentProgress {
     }
 }
 
-class Counter {
+actor Counter: Sendable {
     private(set) var count: Int
     private let onUpdate: ((_ count: Int) -> Void)?
     

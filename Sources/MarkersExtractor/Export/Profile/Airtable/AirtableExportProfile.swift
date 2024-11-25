@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class AirtableExportProfile: NSObject, ProgressReporting, ExportProfile {
+public class AirtableExportProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = JSONExportPayload
     public typealias Icon = EmptyExportIcon

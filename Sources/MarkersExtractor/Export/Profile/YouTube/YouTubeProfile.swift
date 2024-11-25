@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class YouTubeProfile: NSObject, ProgressReporting, ExportProfile {
+public class YouTubeProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = TextExportPayload
     public typealias Icon = EmptyExportIcon

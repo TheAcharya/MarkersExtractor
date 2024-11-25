@@ -16,6 +16,8 @@ extension ExportFolderFormat: Identifiable {
     public var id: Self { self }
 }
 
+extension ExportFolderFormat: Sendable { }
+
 extension ExportFolderFormat {
     func folderName(timelineName: String, profile: ExportProfileFormat) -> String {
         switch self {

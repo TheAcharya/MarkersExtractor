@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class MIDIFileExportProfile: NSObject, ProgressReporting, ExportProfile {
+public class MIDIFileExportProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = MIDIFileExportPayload
     public typealias Icon = EmptyExportIcon

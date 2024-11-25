@@ -7,11 +7,15 @@
 import Foundation
 import Logging
 
-fileprivate var consoleLogHandler: LogHandler?
-fileprivate var fileLogHandler: LogHandler?
-
-extension MarkersExtractorCLI {
-    func fileAndConsoleLogFactory(label: String, logLevel: Logger.Level?, logFile: URL?) -> LogHandler {
+@globalActor final actor LogFactory {
+    public static let shared = LogFactory()
+    
+    fileprivate var consoleLogHandler: LogHandler?
+    fileprivate var fileLogHandler: LogHandler?
+    
+    public init() { }
+    
+    public func fileAndConsoleLogFactory(label: String, logLevel: Logger.Level?, logFile: URL?) -> LogHandler {
         guard let logLevel else {
             return SwiftLogNoOpLogHandler()
         }
@@ -20,7 +24,7 @@ extension MarkersExtractorCLI {
             consoleLogFactory(label: label, logLevel: logLevel)
         ]
         
-        if let logFile, 
+        if let logFile,
            let fileLogger = fileLogFactory(label: label, logLevel: logLevel, logFile: logFile)
         {
             logHandlers.insert(fileLogger, at: 0)
@@ -29,7 +33,7 @@ extension MarkersExtractorCLI {
         return MultiplexLogHandler(logHandlers)
     }
     
-    func consoleLogFactory(label: String, logLevel: Logger.Level) -> LogHandler {
+    public func consoleLogFactory(label: String, logLevel: Logger.Level) -> LogHandler {
         if let consoleLogHandler { return consoleLogHandler }
         
         var handler = ConsoleLogHandler(label: label)
@@ -40,7 +44,7 @@ extension MarkersExtractorCLI {
         return handler
     }
     
-    func fileLogFactory(label: String, logLevel: Logger.Level, logFile: URL?) -> LogHandler? {
+    public func fileLogFactory(label: String, logLevel: Logger.Level, logFile: URL?) -> LogHandler? {
         guard let logFile else { return nil }
         
         if let fileLogHandler { return fileLogHandler }

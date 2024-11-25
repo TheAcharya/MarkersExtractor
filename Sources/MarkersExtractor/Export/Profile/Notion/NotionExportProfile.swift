@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class NotionExportProfile: NSObject, ProgressReporting, ExportProfile {
+public class NotionExportProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = JSONExportPayload
     public typealias PreparedMarker = StandardExportMarker

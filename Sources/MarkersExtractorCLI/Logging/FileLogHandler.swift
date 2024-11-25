@@ -11,7 +11,7 @@ import Logging
 ///
 /// Derived from https://github.com/crspybits/swift-log-file
 public struct FileLogHandler: LogHandler {
-    private let stream: TextOutputStream
+    private let stream: FileHandlerOutputStream
     private var label: String
 
     public var logLevel: Logger.Level = .info

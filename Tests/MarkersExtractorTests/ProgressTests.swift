@@ -58,11 +58,15 @@ import TimecodeKitCore
             imageLabelProperties: .default()
         )
         
-        #expect(writer.progress.fractionCompleted == 0.0)
+        #expect(await writer.progress.fractionCompleted == 0.0)
         try await writer.write()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        #expect(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
+        await #expect({
+            let a = await writer.progress.fractionCompleted == 1.0
+            let b = await writer.progress.isFinished
+            return a || b
+        }())
         
         // MARK: - AnimatedImageExtractor
         
@@ -78,11 +82,15 @@ import TimecodeKitCore
             )
         )
         
-        #expect(extractor.progress.fractionCompleted == 0.0)
+        #expect(await extractor.progress.fractionCompleted == 0.0)
         let _ = try await extractor.convert()
         
         // NOTE: this may randomly fail because NSProgress is garbage
-        #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
+        await #expect({
+            let a = await extractor.progress.fractionCompleted == 1.0
+            let b = await extractor.progress.isFinished
+            return a || b
+        }())
     }
     
     @Test func stillImageBatchExtractor() async throws {

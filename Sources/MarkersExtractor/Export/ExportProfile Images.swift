@@ -17,12 +17,13 @@ public struct ImageDescriptor: Sendable {
     let label: String?
 }
 
-protocol ImageWriterProtocol: ProgressReporting {
+protocol ImageWriterProtocol {
+    var progress: Progress { get }
     func write() async throws
 }
 
 /// Generate animated images on disk.
-class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
+final actor AnimatedImagesWriter: ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
     let sourceMediaFile: URL
     let outputFolder: URL
@@ -34,7 +35,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
     let logger: Logger
     
     // ProgressReporting
-    let progress: Progress = .init()
+    let progress = Progress()
     
     init(
         descriptors: [ImageDescriptor],
@@ -112,7 +113,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
             let result = try await extractor.convert()
             
             // post errors to console if operation partially completed
-            for error in result.errors {
+            for error in await result.errors {
                 let tc = descriptor.absoluteTimecode.stringValue()
                 let filename = descriptor.filename.quoted
                 let err = error.error.localizedDescription
@@ -133,7 +134,7 @@ class AnimatedImagesWriter: NSObject, ImageWriterProtocol {
 }
 
 /// Generate still images on disk.
-class ImagesWriter: NSObject, ImageWriterProtocol {
+class ImagesWriter: ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
     let sourceMediaFile: URL
     let outputFolder: URL
@@ -196,7 +197,7 @@ class ImagesWriter: NSObject, ImageWriterProtocol {
         do {
             let result = try await extractor.convert()
             // post errors to console if operation partially completed
-            for error in result.errors {
+            for error in await result.errors {
                 let tc = error.descriptor.absoluteTimecode.stringValue()
                 let filename = error.descriptor.filename.quoted
                 let err = error.error.localizedDescription

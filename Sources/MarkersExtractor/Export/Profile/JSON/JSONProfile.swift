@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class JSONProfile: NSObject, ProgressReporting, ExportProfile {
+public class JSONProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = JSONExportPayload
     public typealias Icon = EmptyExportIcon

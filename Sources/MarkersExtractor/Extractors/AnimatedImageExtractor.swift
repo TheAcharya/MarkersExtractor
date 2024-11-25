@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import AVFoundation
+@preconcurrency import AVFoundation
 import Foundation
 import ImageIO
 import Logging
@@ -12,7 +12,7 @@ import TimecodeKitCore
 
 /// Extract a sequence of frames from a video asset and produce an animated image (such as animated
 /// GIF).
-final class AnimatedImageExtractor: NSObject, ProgressReporting {
+final actor AnimatedImageExtractor {
     // MARK: - Properties
     
     private let logger: Logger
@@ -188,8 +188,7 @@ extension AnimatedImageExtractor {
         
         let gifDestination = try initGIF(framesCount: descriptors.count)
 
-        var batchResult = AnimatedImageExtractorResult()
-        var isBatchFinished = false
+        let batchResult = AnimatedImageExtractorResult()
         
         let generator = imageGenerator()
         
@@ -199,9 +198,9 @@ extension AnimatedImageExtractor {
         let images: [Fraction: CGImage] = try await generator.images(
             forTimesIn: descriptors, 
             updating: nil
-        ) { [weak self] descriptor, image, result in
+        ) { [weak self, batchResult] descriptor, image, result in
             guard let self = self else {
-                batchResult.addError(
+                await batchResult.addError(
                     for: descriptor,
                     .internalInconsistency("No reference to image extractor.")
                 )
@@ -209,25 +208,26 @@ extension AnimatedImageExtractor {
             }
             
             do {
-                let (processedImage, isFinished) = try self.processFrame(
+                let (processedImage, isFinished) = try await self.processFrame(
                     image: image,
                     result: result,
                     at: self.startTime
                 )
-                if isFinished { isBatchFinished = true }
+                if isFinished { await batchResult.setFinished() }
                 
                 if let processedImage {
                     image = processedImage
                 }
             } catch let error as AnimatedImageExtractorError {
-                batchResult.addError(for: descriptor, error)
+                await batchResult.addError(for: descriptor, error)
             } catch {
-                batchResult.addError(for: descriptor, .generateFrameFailed(error))
+                await batchResult.addError(for: descriptor, .generateFrameFailed(error))
             }
         }
         
         // TODO: throw error if `isBatchFinished == false`?
-        assert(isBatchFinished)
+        let isFinished = await batchResult.isBatchFinished
+        assert(isFinished)
         
         // assemble GIF
         // we have to sort since images were generated concurrently and may be out of order
@@ -265,7 +265,7 @@ extension AnimatedImageExtractor {
         return destination
     }
 
-    private func imageGenerator() -> AVAssetImageGenerator {
+    private func imageGenerator() -> AVAssetImageGeneratorWrapper {
         let asset = AVAsset(url: conversion.sourceMediaFile)
 
         let generator = AVAssetImageGenerator(asset: asset)
@@ -278,14 +278,14 @@ extension AnimatedImageExtractor {
             generator.maximumSize = CGSize(square: dimensions.longestSide)
         }
 
-        return generator
+        return AVAssetImageGeneratorWrapper(generator)
     }
 
     /// - Returns: CGImage, or `nil`.
     /// - Throws: ``AnimatedImageExtractorError``
     private func processFrame(
         image: CGImage,
-        result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
+        result: Result<AVAssetImageGeneratorWrapper.CompletionHandlerResult, Swift.Error>,
         at startTime: TimeInterval
     ) throws -> (image: CGImage?, isFinished: Bool) {
         switch result {
@@ -321,13 +321,13 @@ extension AnimatedImageExtractor {
 // MARK: - Types
 
 extension AnimatedImageExtractor {
-    struct ConversionSettings {
+    struct ConversionSettings: Sendable {
         var timecodeRange: ClosedRange<Timecode>?
         let sourceMediaFile: URL
         let outputFile: URL
         var dimensions: CGSize?
         var outputFPS: Double
-        let imageFilter: ((CGImage) -> CGImage)?
+        let imageFilter: (@Sendable (CGImage) -> CGImage)?
         let imageFormat: MarkerImageFormat.Animated
     }
 }
@@ -375,14 +375,19 @@ public enum AnimatedImageExtractorError: LocalizedError {
     }
 }
 
-public struct AnimatedImageExtractorResult: Sendable {
+public actor AnimatedImageExtractorResult: Sendable {
     public var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
+    public var isBatchFinished = false
     
     init(errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []) {
         self.errors = errors
     }
     
-    mutating func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
+    func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
         errors.append((descriptor: descriptor, error: error))
+    }
+    
+    func setFinished() {
+        isBatchFinished = true
     }
 }

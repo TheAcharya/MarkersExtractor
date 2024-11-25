@@ -38,6 +38,8 @@ extension ExportField: Identifiable {
     public var id: Self { self }
 }
 
+extension ExportField: Sendable { }
+
 extension ExportField {
     /// Human-readable name. Useful for column name in exported tabular data.
     public var name: String {

@@ -12,7 +12,7 @@ import OrderedCollections
 import TimecodeKitCore
 
 /// Extract one or more images from a video asset.
-final class StillImageBatchExtractor: NSObject, ProgressReporting {
+final class StillImageBatchExtractor {
     // MARK: - Properties
     
     private let logger: Logger
@@ -30,6 +30,8 @@ final class StillImageBatchExtractor: NSObject, ProgressReporting {
     }
 }
 
+extension StillImageBatchExtractor: Sendable { }
+
 // MARK: - Convert
 
 extension StillImageBatchExtractor {
@@ -42,13 +44,12 @@ extension StillImageBatchExtractor {
         
         let generator = imageGenerator()
         
-        var batchResult = StillImageBatchExtractorResult()
-        var isBatchFinished = false
+        let batchResult = StillImageBatchExtractorResult()
         
         try await generator.images(forTimesIn: conversion.descriptors, updating: progress)
-            { [weak self] descriptor, image, result in
-                guard let self = self else {
-                    batchResult.addError(
+            { [weak self, batchResult] descriptor, image, result in
+                guard let self else {
+                    await batchResult.addError(
                         for: descriptor,
                         .internalInconsistency("No reference to image extractor.")
                     )
@@ -68,16 +69,16 @@ extension StillImageBatchExtractor {
                 switch frameResult {
                 case let .success(isFinished):
                     if isFinished {
-                        isBatchFinished = true
+                        await batchResult.setFinished()
                     }
                 case let .failure(error):
-                    batchResult.addError(for: descriptor, error)
+                    await batchResult.addError(for: descriptor, error)
                 }
             }
         
         // TODO: throw error if `isBatchFinished == false`?
-        // assert(isBatchFinished)
-        _ = isBatchFinished // silence compiler warning since we're not using this right now
+        // let isFinished = await batchResult.isBatchFinished
+        // assert(isFinished)
         
         // sometimes NSProgress doesn't fully reach 1.0 so this assert is not reliable
         // assert(progress.fractionCompleted == 1.0)
@@ -85,7 +86,7 @@ extension StillImageBatchExtractor {
         return batchResult
     }
 
-    private func imageGenerator() -> AVAssetImageGenerator {
+    private func imageGenerator() -> AVAssetImageGeneratorWrapper {
         let asset = AVAsset(url: conversion.sourceMediaFile)
         
         let generator = AVAssetImageGenerator(asset: asset)
@@ -98,12 +99,12 @@ extension StillImageBatchExtractor {
             generator.maximumSize = CGSize(square: dimensions.longestSide)
         }
 
-        return generator
+        return AVAssetImageGeneratorWrapper(generator)
     }
 
     private func processAndWriteFrameToDisk(
         image: CGImage,
-        result: Result<AVAssetImageGenerator.CompletionHandlerResult, Swift.Error>,
+        result: Result<AVAssetImageGeneratorWrapper.CompletionHandlerResult, Swift.Error>,
         fileName: String,
         label: String?
     ) async -> Result<Bool, StillImageBatchExtractorError> {
@@ -157,7 +158,7 @@ extension StillImageBatchExtractor {
 // MARK: - Types
 
 extension StillImageBatchExtractor {
-    struct ConversionSettings {
+    struct ConversionSettings: Sendable {
         let descriptors: [ImageDescriptor]
         let sourceMediaFile: URL
         let outputFolder: URL
@@ -167,7 +168,7 @@ extension StillImageBatchExtractor {
         let jpgQuality: Double?
         
         let dimensions: CGSize?
-        let imageFilter: ((_ image: CGImage, _ label: String?) async -> CGImage)?
+        let imageFilter: (@Sendable (_ image: CGImage, _ label: String?) async -> CGImage)?
     }
 }
 
@@ -198,17 +199,22 @@ public enum StillImageBatchExtractorError: LocalizedError {
     }
 }
 
-public struct StillImageBatchExtractorResult: Sendable {
+public actor StillImageBatchExtractorResult: Sendable {
     public var errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []
+    public var isBatchFinished = false
     
     init(errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []) {
         self.errors = errors
     }
     
-    mutating func addError(
+    func addError(
         for descriptor: ImageDescriptor,
         _ error: StillImageBatchExtractorError
     ) {
         errors.append((descriptor: descriptor, error: error))
+    }
+    
+    func setFinished() {
+        isBatchFinished = true
     }
 }

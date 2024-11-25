@@ -9,12 +9,15 @@ import Logging
 import OrderedCollections
 import TimecodeKitCore
 
-public protocol ExportProfile: AnyObject where Self: ProgressReporting {
+public protocol ExportProfile: AnyObject {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
     
     static var profile: ExportProfileFormat { get }
+    
+    // ProgressReporting
+    var progress: Progress { get }
     
     /// Exports markers to disk.
     /// Writes metadata files, images, and any other resources necessary.

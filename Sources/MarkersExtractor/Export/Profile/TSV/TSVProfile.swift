@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 
-public class TSVProfile: NSObject, ProgressReporting, ExportProfile {
+public class TSVProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = TSVExportPayload
     public typealias Icon = EmptyExportIcon

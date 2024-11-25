@@ -5,11 +5,23 @@
 //
 
 import AppKit
-import AVFoundation
+@preconcurrency import AVFoundation
 import TimecodeKitCore
 
-extension AVAssetImageGenerator {
-    struct CompletionHandlerResult {
+actor AVAssetImageGeneratorWrapper {
+    private let imageGenerator: AVAssetImageGenerator
+    
+    public init(asset: AVAsset) {
+        imageGenerator = AVAssetImageGenerator(asset: asset)
+    }
+    
+    public init(_ imageGenerator: AVAssetImageGenerator) {
+        self.imageGenerator = imageGenerator
+    }
+}
+
+extension AVAssetImageGeneratorWrapper {
+    struct CompletionHandlerResult: Sendable {
         let requestedTime: CMTime
         let actualTime: CMTime
         let completedCount: Int
@@ -22,7 +34,7 @@ extension AVAssetImageGenerator {
     func images(
         forTimesIn descriptors: [ImageDescriptor],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (
+        completionHandler: sending @escaping @Sendable (
             _ descriptor: ImageDescriptor,
             _ image: inout CGImage,
             _ result: Swift.Result<CompletionHandlerResult, Error>
@@ -37,9 +49,9 @@ extension AVAssetImageGenerator {
         
         let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
             of: (fraction: Fraction, image: CGImage)?.self
-        ) { [weak self] taskGroup in
+        ) { [weak self, totalCount, completedCount, completionHandler] taskGroup in
             for descriptor in descriptors {
-                taskGroup.addTask { [weak self] in
+                taskGroup.addTask { [weak self, totalCount, completedCount, completionHandler] in
                     guard let self else { return nil }
                     
                     let requestedTime = descriptor.offsetFromVideoStart.cmTimeValue
@@ -49,14 +61,14 @@ extension AVAssetImageGenerator {
                     var image = result.image ?? CGImage.empty!
                     
                     if hasImage {
-                        completedCount.increment()
+                        await completedCount.increment()
                     } else {
-                        totalCount.decrement()
+                        await totalCount.decrement()
                     }
                     
-                    let isFinished = completedCount.count == totalCount.count
+                    let isFinished = await completedCount.count == totalCount.count
                     
-                    let completionResult = CompletionHandlerResult(
+                    let completionResult = await CompletionHandlerResult(
                         requestedTime: requestedTime,
                         actualTime: result.actualTime,
                         completedCount: completedCount.count,
@@ -99,7 +111,7 @@ extension AVAssetImageGenerator {
     func images(
         forTimes times: [CMTime],
         updating progress: Progress? = nil,
-        completionHandler: @escaping (
+        completionHandler: sending @escaping @Sendable (
             _ time: CMTime,
             _ image: inout CGImage,
             _ imageResult: Swift.Result<CompletionHandlerResult, Error>
@@ -114,9 +126,9 @@ extension AVAssetImageGenerator {
         
         let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
             of: (fraction: Fraction, image: CGImage)?.self
-        ) { [weak self] taskGroup in
+        ) { [weak self, totalCount, completedCount, completionHandler] taskGroup in
             for requestedTime in times {
-                taskGroup.addTask { [weak self] in
+                taskGroup.addTask { [weak self, totalCount, completedCount, completionHandler] in
                     guard let self else { return nil }
                     
                     let result = try await self.imageCompat(at: requestedTime)
@@ -124,14 +136,14 @@ extension AVAssetImageGenerator {
                     var image = result.image ?? CGImage.empty!
                     
                     if hasImage {
-                        completedCount.increment()
+                        await completedCount.increment()
                     } else {
-                        totalCount.decrement()
+                        await totalCount.decrement()
                     }
                     
-                    let isFinished = completedCount.count == totalCount.count
+                    let isFinished = await completedCount.count == totalCount.count
                     
-                    let completionResult = CompletionHandlerResult(
+                    let completionResult = await CompletionHandlerResult(
                         requestedTime: requestedTime,
                         actualTime: result.actualTime,
                         completedCount: completedCount.count,
@@ -180,7 +192,7 @@ extension AVAssetImageGenerator {
         
         let nsValue = NSValue(time: time)
         
-        let (requestedTime, image, actualTime, result, error) = await generateCGImages(forTimes: [nsValue])
+        let (requestedTime, image, actualTime, result, error) = await imageGenerator.generateCGImages(forTimes: [nsValue])
         
         switch result {
         case .succeeded:

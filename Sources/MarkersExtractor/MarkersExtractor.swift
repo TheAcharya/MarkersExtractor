@@ -11,7 +11,7 @@ import Foundation
 import Logging
 import TimecodeKitCore
 
-public final class MarkersExtractor: NSObject, ProgressReporting {
+public final class MarkersExtractor {
     public let logger: Logger
     var s: Settings
     public let progress: Progress
