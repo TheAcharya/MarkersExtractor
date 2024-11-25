@@ -6,6 +6,7 @@
 
 - Added Generic JSON Export Profile (#f60082cf)
 - Added XML Path manifest field (#97)
+- Library updated for full Swift 6 strict concurrency compatibility
 
 ## [0.3.12](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.12) (2024-11-14)
 
