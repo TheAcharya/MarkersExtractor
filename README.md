@@ -391,7 +391,7 @@ Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor
 
 ## Credits
 
-Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://twitter.com/IAmVigneswaran)
+Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://bsky.app/profile/vigneswaranrajkumar.com)
 
 Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
