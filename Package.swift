@@ -27,7 +27,7 @@ let package = Package(
         .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.2.1"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.3"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.5.1"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.2"),
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.3"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.1")
     ],
     targets: [
