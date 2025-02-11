@@ -1,12 +1,21 @@
 # MarkersExtractor Change Log
 
-## [0.4.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.0) (T.B.D.)
+## [0.3.13](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.13) (2024-02-10)
 
 ### New Features
 
 - Added Generic JSON Export Profile (#f60082cf)
 - Added XML Path manifest field (#97)
 - Library updated for full Swift 6 strict concurrency compatibility
+
+### Bug Fixes
+
+- YouTube export profile now formats output timestamps consistently formatted as `HH:MM:SS` (#114)
+- YouTube export profile now inserts initial chapter marker at `00:00:00` if one does not exist (#114)
+
+### Maintenance
+
+- Bumped package Swift toolchain to Swift 6.0 (#98997c6)
 
 ## [0.3.12](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.12) (2024-11-14)
 
