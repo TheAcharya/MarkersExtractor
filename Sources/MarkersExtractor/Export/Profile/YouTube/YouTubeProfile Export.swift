@@ -25,7 +25,7 @@ extension YouTubeProfile {
                 idMode: idMode,
                 mediaInfo: mediaInfo,
                 tcStringFormat: tcStringFormat,
-                timeFormat: .realTime(stringFormat: .shortest),
+                timeFormat: .realTime(stringFormat: .hh_mm_ss),
                 offsetToTimelineStart: true,
                 useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
             )
