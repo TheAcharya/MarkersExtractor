@@ -9,7 +9,7 @@ import Foundation
 /// Standardized export results.
 /// Returned by MarkersExtractor regardless the export profile used.
 /// Properties that are not applicable to the export profile will be `nil`.
-public struct ExportResult: Equatable, Hashable {
+public struct ExportResult: Equatable, Hashable, Sendable {
     /// Date the extraction was performed (ISO8601 formatted).
     public var date: Date
     
