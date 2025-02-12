@@ -4,7 +4,7 @@
 
 ### New Features
 
-- Added Generic JSON Export Profile (#f60082cf)
+- Added Generic JSON Export Profile (f60082cf)
 - Added XML Path manifest field (#97)
 - Library updated for full Swift 6 strict concurrency compatibility
 
@@ -16,7 +16,7 @@
 
 ### Maintenance
 
-- Bumped package Swift toolchain to Swift 6.0 (#98997c6)
+- Bumped package Swift toolchain to Swift 6.0 (98997c6)
 
 ## [0.3.12](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.12) (2024-11-14)
 
