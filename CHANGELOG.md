@@ -1,6 +1,6 @@
 # MarkersExtractor Change Log
 
-## [0.3.13](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.13) (2025-02-10)
+## [0.3.13](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.13) (2025-02-11)
 
 ### New Features
 
@@ -10,6 +10,7 @@
 
 ### Bug Fixes
 
+- Markers placed on transitions are now extracted correctly (#114)
 - YouTube export profile now formats output timestamps consistently formatted as `HH:MM:SS` (#114)
 - YouTube export profile now inserts initial chapter marker at `00:00:00` if one does not exist (#114)
 
