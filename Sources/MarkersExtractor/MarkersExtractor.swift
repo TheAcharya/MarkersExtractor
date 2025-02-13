@@ -7,8 +7,8 @@
 import Foundation
 import Logging
 
-public final class MarkersExtractor {
-    var settings: Settings
+public actor MarkersExtractor {
+    public var settings: Settings
     public let logger: Logger
     public let progress: Progress
     

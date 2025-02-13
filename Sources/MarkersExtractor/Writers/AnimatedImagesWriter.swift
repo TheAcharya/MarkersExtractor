@@ -67,7 +67,7 @@ extension AnimatedImagesWriter {
             try await taskGroup.waitForAll()
         }
         
-        // TODO: NSProgress is wonky, sometimes its not fully 1.0 so asserting here isn't helpful
+        // TODO: NSProgress is wonky, sometimes it's not fully 1.0 so asserting here isn't helpful
         // assert(progress.fractionCompleted == 1.0)
     }
 }

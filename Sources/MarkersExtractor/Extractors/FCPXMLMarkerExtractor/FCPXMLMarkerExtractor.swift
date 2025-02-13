@@ -75,6 +75,7 @@ class FCPXMLMarkerExtractor {
         logger: Logger? = nil
     ) throws {
         let xml = try fcpxml.xmlDocument()
+        
         self.init(
             fcpxml: xml,
             idNamingMode: idNamingMode,
@@ -90,14 +91,6 @@ class FCPXMLMarkerExtractor {
 // MARK: - Public Methods
 
 extension FCPXMLMarkerExtractor {
-    struct TimelineContext {
-        let library: FinalCutPro.FCPXML.Library?
-        let projectName: String?
-        let timeline: FinalCutPro.FCPXML.AnyTimeline
-        let timelineName: String
-        let timelineStartTimecode: Timecode
-    }
-    
     /// Returns the first timeline found in the FCPXML as well as contextual metadata.
     func extractTimelineContext(
         defaultTimelineName: String
@@ -424,6 +417,8 @@ extension FCPXMLMarkerExtractor {
         enableSubframes ? [.showSubFrames] : .default()
     }
 }
+
+// MARK: - Static
 
 extension FCPXMLMarkerExtractor {
     static func processExtractedRole<Role: FCPXMLRole>(role: Role) -> Role {

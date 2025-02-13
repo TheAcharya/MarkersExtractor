@@ -7,7 +7,7 @@
 import Foundation
 import TimecodeKitCore
 
-public struct ImageDescriptor {
+struct ImageDescriptor {
     let absoluteTimecode: Timecode
     let offsetFromVideoStart: Timecode
     let filename: String

@@ -37,12 +37,14 @@ extension MarkersExtractor {
 // MARK: - Helpers
 
 extension MarkersExtractor {
+    /// Supported media format file extensions.
+    static let mediaFormatFileExtensions = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
+    
     /// - Throws: ``MarkersExtractorError``
     private func findMedia(name: String, paths: [URL]) throws -> URL {
-        let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
         
         let files: [URL] = try paths.reduce(into: []) { base, path in
-            let matches = try matchFiles(at: path, name: name, exts: mediaFormats)
+            let matches = try matchFiles(at: path, name: name, exts: Self.mediaFormatFileExtensions)
             base.append(contentsOf: matches)
         }
         

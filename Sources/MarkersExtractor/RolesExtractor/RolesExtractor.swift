@@ -14,8 +14,8 @@ import OTCore
 /// roles for output manifest files.
 ///
 /// Results will be sorted by type (video, audio, caption), then by name.
-public final class RolesExtractor { // TODO: make an actor, or Sendable?
-    public var fcpxml: FCPXMLFile
+public actor RolesExtractor {
+    public private(set) var fcpxml: FCPXMLFile
     
     public init(fcpxml: FCPXMLFile) {
         self.fcpxml = fcpxml

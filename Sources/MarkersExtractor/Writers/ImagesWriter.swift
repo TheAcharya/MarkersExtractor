@@ -11,7 +11,7 @@ import OrderedCollections
 import TimecodeKitCore
 
 /// Generate still images on disk.
-class ImagesWriter: ImageWriterProtocol { // TODO: refator as actor?
+class ImagesWriter: ImageWriterProtocol {
     let descriptors: [ImageDescriptor]
     let sourceMediaFile: URL
     let outputFolder: URL

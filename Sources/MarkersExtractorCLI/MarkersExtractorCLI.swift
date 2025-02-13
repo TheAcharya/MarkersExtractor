@@ -342,7 +342,7 @@ extension MarkersExtractorCLI {
             let progressLogger = Logger(label: progressLoggerLabel) { label in
                 progressLoggerHandler
             }
-            _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
+            _progressLogging = await ProgressLogging(to: progressLogger, progress: extractor.progress)
         }
         
         // can ignore return data from extract(), as it merely contains result file content
