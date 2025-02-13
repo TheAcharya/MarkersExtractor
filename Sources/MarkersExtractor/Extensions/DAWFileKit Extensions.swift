@@ -33,6 +33,7 @@ extension FinalCutPro.FCPXML.ElementType {
         case .refClip: return "Compound"
         case .syncClip: return "Sync"
         case .title: return "Title"
+        case .transition: return "Transition"
         case .video: return "Video"
             
         // structure
