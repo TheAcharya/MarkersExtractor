@@ -14,13 +14,17 @@ import OTCore
 /// roles for output manifest files.
 ///
 /// Results will be sorted by type (video, audio, caption), then by name.
-public final class RolesExtractor {
+public final class RolesExtractor { // TODO: make an actor, or Sendable?
     public var fcpxml: FCPXMLFile
     
     public init(fcpxml: FCPXMLFile) {
         self.fcpxml = fcpxml
     }
-    
+}
+
+// MARK: - Methods
+
+extension RolesExtractor {
     /// Returns all the roles used in the FCPXML document that are relevant to the main timeline.
     ///
     /// Results will be formatted in the same manner as ``MarkersExtractor`` formats

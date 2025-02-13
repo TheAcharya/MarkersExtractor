@@ -11,11 +11,11 @@ import TimecodeKitCore
 actor AVAssetImageGeneratorWrapper {
     private let imageGenerator: AVAssetImageGenerator
     
-    public init(asset: AVAsset) {
+    init(asset: AVAsset) {
         imageGenerator = AVAssetImageGenerator(asset: asset)
     }
     
-    public init(_ imageGenerator: AVAssetImageGenerator) {
+    init(_ imageGenerator: AVAssetImageGenerator) {
         self.imageGenerator = imageGenerator
     }
 }

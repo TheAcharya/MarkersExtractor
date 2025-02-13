@@ -9,7 +9,7 @@ import Foundation
 /// Standardized export results.
 /// Returned by MarkersExtractor regardless the export profile used.
 /// Properties that are not applicable to the export profile will be `nil`.
-public struct ExportResult: Equatable, Hashable, Sendable {
+public struct ExportResult {
     /// Date the extraction was performed (ISO8601 formatted).
     public var date: Date
     
@@ -65,63 +65,13 @@ public struct ExportResult: Equatable, Hashable, Sendable {
     }
 }
 
-extension ExportResult {
-    public typealias ResultDictionary = [Key: Value]
-    
-    /// Keys used in the result file JSON dictionary.
-    public enum Key: String, CaseIterable, Equatable, Hashable {
-        /// Date of extraction operation (ISO8601 formatted).
-        case date
-        
-        /// Export profile used.
-        case profile
-        
-        /// Output folder path used for the export.
-        case exportFolder
-        
-        /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
-        case csvManifestPath
-        
-        /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
-        case tsvManifestPath
-        
-        /// Plain Text manifest file path, if applicable to the profile. `nil` if not applicable.
-        case txtManifestPath
-        
-        /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
-        case jsonManifestPath
-        
-        /// MIDI file path, if applicable to the profile. `nil` if not applicable.
-        case midiFilePath
-        
-        /// Excel (XLSX) file path, if applicable to the profile. `nil` if not applicable.
-        case xlsxManifestPath
-        
-        /// MarkersExtractor version used to perform extraction.
-        case version
-    }
-    
-    /// Type-erased box to maintain type safety for the intermediate dictionary.
-    public enum Value: Equatable, Hashable {
-        case date(_ date: Date)
-        case string(_ string: String)
-        case url(_ url: URL)
-        case profile(_ profile: ExportProfileFormat)
-        
-        public var stringValueForJSON: String {
-            switch self {
-            case let .date(date):
-                return date.formatted(.iso8601)
-            case let .string(string):
-                return string
-            case let .url(url): 
-                return url.path
-            case let .profile(profile):
-                return profile.rawValue
-            }
-        }
-    }
-}
+extension ExportResult: Equatable { }
+
+extension ExportResult: Hashable { }
+
+extension ExportResult: Sendable { }
+
+// MARK: - Update
 
 extension ExportResult {
     /// Updates local properties from a dictionary's contents.
@@ -157,7 +107,11 @@ extension ExportResult {
             version = ver
         }
     }
-    
+}
+
+// MARK: - Conversion
+
+extension ExportResult {
     /// Returns the contents serialized to a dictionary.
     func exportResultContentDict() -> [String: String] {
         var dict: [Key: String] = [:]

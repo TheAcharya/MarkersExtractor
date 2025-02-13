@@ -375,7 +375,7 @@ public enum AnimatedImageExtractorError: LocalizedError {
     }
 }
 
-public actor AnimatedImageExtractorResult: Sendable {
+actor AnimatedImageExtractorResult: Sendable { // TODO: refactor as struct?
     public var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
     public var isBatchFinished = false
     

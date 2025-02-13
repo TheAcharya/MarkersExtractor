@@ -13,7 +13,7 @@ import OTCore
 
 class FCPXMLMarkerExtractor {
     private let logger: Logger
-    public let progress: Progress
+    let progress: Progress
     
     let fcpxmlDoc: XMLDocument
     let idNamingMode: MarkerIDMode
@@ -88,16 +88,16 @@ class FCPXMLMarkerExtractor {
     
     // MARK: - Public Instance Methods
     
-    public struct TimelineContext {
-        public let library: FinalCutPro.FCPXML.Library?
-        public let projectName: String?
-        public let timeline: FinalCutPro.FCPXML.AnyTimeline
-        public let timelineName: String
-        public let timelineStartTimecode: Timecode
+    struct TimelineContext {
+        let library: FinalCutPro.FCPXML.Library?
+        let projectName: String?
+        let timeline: FinalCutPro.FCPXML.AnyTimeline
+        let timelineName: String
+        let timelineStartTimecode: Timecode
     }
     
     /// Returns the first timeline found in the FCPXML as well as contextual metadata.
-    public func extractTimelineContext(
+    func extractTimelineContext(
         defaultTimelineName: String
     ) -> TimelineContext? {
         let parsedFCPXML = FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
@@ -157,7 +157,7 @@ class FCPXMLMarkerExtractor {
         }
     }
     
-    public func extractMarkers(
+    func extractMarkers(
         context: TimelineContext
     ) async -> [Marker] {
         progress.completedUnitCount = 0

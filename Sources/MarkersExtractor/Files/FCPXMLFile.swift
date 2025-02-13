@@ -8,7 +8,7 @@ import DAWFileKit
 import Foundation
 
 /// Final Cut Pro XML file/bundle abstract file reference and content reader.
-public struct FCPXMLFile: Equatable, Hashable {
+public struct FCPXMLFile: Equatable, Hashable { // TODO: make Sendable?
     /// Maintains an objective reference to the fcpxml file.
     private let source: FCPXMLFileSource
     

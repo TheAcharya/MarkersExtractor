@@ -12,72 +12,26 @@ import OTCore
 /// Raw FCP Marker data extracted from FCPXML.
 ///
 /// - Note: This struct should mainly be an agnostic data repository and not assume anything about
-/// its ultimate intended destination(s).
-public struct Marker: Equatable, Hashable, Sendable {
-    struct ParentInfo: Equatable, Hashable {
-        var clipType: String
-        var clipName: String
-        var clipInTime: Timecode
-        var clipOutTime: Timecode
-        var clipKeywords: [String]
-        
-        var libraryName: String?
-        var eventName: String?
-        var projectName: String?
-        
-        var timelineName: String // will be same as project name when project is present, otherwise timeline clip name
-        var timelineStartTime: Timecode // project start, or clip start if no project
-        
-        func clipInTimeString(format: ExportMarkerTimeFormat) -> String {
-            Self.timeString(from: clipInTime, format: format)
-        }
-        
-        func clipOutTimeString(format: ExportMarkerTimeFormat) -> String {
-            Self.timeString(from: clipOutTime, format: format)
-        }
-        
-        func clipDurationTimeString(format: ExportMarkerTimeFormat) -> String {
-            let dur = clipOutTime - clipInTime
-            return Self.timeString(from: dur, format: format)
-        }
-        
-        static func timeString(
-            from timecode: Timecode,
-            format: ExportMarkerTimeFormat
-        ) -> String {
-            switch format {
-            case .timecode(let stringFormat):
-                return timecode.stringValue(format: stringFormat)
-            case .realTime(let stringFormat):
-                // convert timecode to real time (wall time)
-                return Time(seconds: timecode.realTimeValue).stringValue(format: stringFormat)
-            }
-        }
-        
-        func clipKeywordsFlat() -> String {
-            clipKeywords.joined(separator: ",")
-        }
-        
-        func clipKeywordsFormatted() -> (flat: String, array: [String]) {
-            (flat: clipKeywordsFlat(), array: clipKeywords)
-        }
-    }
-    
+///   its ultimate intended destination(s).
+public struct Marker {
+    /// Marker type.
     var type: InterpretedMarkerType
+    
+    /// Marker name.
     var name: String
+    
+    /// Notes attached to the marker, if any.
     var notes: String
+    
+    /// Marker roles.
     var roles: MarkerRoles
+    
+    /// Absolute marker timecode position/location.
     var position: Timecode
     
     // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
-    
-    struct Metadata: Equatable, Hashable {
-        var reel: String
-        var scene: String
-        var take: String
-    }
     
     /// Cached metadata.
     var metadata: Metadata
@@ -89,7 +43,23 @@ public struct Marker: Equatable, Hashable, Sendable {
     var xmlPath: String
 }
 
-// MARK: Computed
+extension Marker: Equatable { }
+
+extension Marker: Hashable { }
+
+extension Marker: Comparable {
+    public static func < (lhs: Marker, rhs: Marker) -> Bool {
+        lhs.position < rhs.position
+    }
+}
+
+extension Marker: Identifiable {
+    public var id: Self { self }
+}
+
+extension Marker: Sendable { }
+
+// MARK: - Computed Properties
 
 extension Marker {
     func id(_ idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
@@ -196,14 +166,4 @@ extension Marker {
             return rectifiedPosition
         }
     }
-}
-
-extension Marker: Comparable {
-    public static func < (lhs: Marker, rhs: Marker) -> Bool {
-        lhs.position < rhs.position
-    }
-}
-
-extension Marker: Identifiable {
-    public var id: Self { self }
 }

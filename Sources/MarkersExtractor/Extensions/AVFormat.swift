@@ -6,7 +6,7 @@
 
 import AVFoundation
 
-enum AVFormat: String, Equatable, Hashable {
+enum AVFormat: String {
     case hevc
     case h264
     case av1
@@ -37,56 +37,25 @@ enum AVFormat: String, Equatable, Hashable {
     
     // https://en.wikipedia.org/wiki/Avid_DNxHD
     case avidDNxHD
-    
+}
+extension AVFormat: Equatable { }
+
+extension AVFormat: Hashable { }
+
+extension AVFormat: CaseIterable { }
+
+extension AVFormat: Sendable { }
+
+// MARK: - FourCC Init & Property
+
+extension AVFormat {
     init?(fourCC: String) {
-        switch fourCC.trimmingCharacters(in: .whitespaces) {
-        case "hvc1":
-            self = .hevc
-        case "avc1":
-            self = .h264
-        case "av01":
-            self = .av1
-        case "vp09":
-            self = .vp9
-        case "aprh":  // From https://avpres.net/Glossar/ProResRAW.html
-            self = .appleProResRAWHQ
-        case "aprn":
-            self = .appleProResRAW
-        case "ap4x":
-            self = .appleProRes4444XQ
-        case "ap4h":
-            self = .appleProRes4444
-        case "apch":
-            self = .appleProRes422HQ
-        case "apcn":
-            self = .appleProRes422
-        case "apcs":
-            self = .appleProRes422LT
-        case "apco":
-            self = .appleProRes422Proxy
-        case "rle":
-            self = .appleAnimation
-        case "Hap1":
-            self = .hap1
-        case "Hap5":
-            self = .hap5
-        case "HapY":
-            self = .hapY
-        case "HapM":
-            self = .hapM
-        case "HapA":
-            self = .hapA
-        case "Hap7":
-            self = .hap7
-        case "CFHD":
-            self = .cineFormHD
-        case "smc":
-            self = .quickTimeGraphics
-        case "AVdh":
-            self = .avidDNxHD
-        default:
-            return nil
-        }
+        let sanitizedFourCC = fourCC.trimmingCharacters(in: .whitespaces)
+        
+        guard let match = Self.allCases.first(where: { $0.fourCC == sanitizedFourCC })
+        else { return nil }
+        
+        self = match
     }
     
     init?(fourCC: FourCharCode) {
@@ -141,7 +110,11 @@ enum AVFormat: String, Equatable, Hashable {
             return "AVdh"
         }
     }
-    
+}
+
+// MARK: - Properties
+
+extension AVFormat {
     var isAppleProRes: Bool {
         [
             .appleProResRAWHQ,
@@ -155,10 +128,12 @@ enum AVFormat: String, Equatable, Hashable {
         ].contains(self)
     }
     
-    /// - Important: This check only covers known (by us) compatible formats. It might be missing
-    /// some. Don't use it for strict matching. Also keep in mind that even though a codec is
-    /// supported, it might still not be decodable as the codec profile level might not be
-    /// supported.
+    /// > Important:
+    /// >
+    /// > This check only covers known (by us) compatible formats. It might be missing some.
+    /// > Don't use it for strict matching. Also keep in mind that even though a codec is
+    /// > supported, it might still not be decodable as the codec profile level might not be
+    /// > supported.
     var isSupported: Bool {
         self == .hevc || self == .h264 || isAppleProRes
     }
