@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.3.14](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.14) (2025-02-12)
+
+### Maintenance
+
+- Added `Sendable` conformance to all types and objects for better interoperability with Swift 6 strict concurrency
+- Codebase cleanup
+
 ## [0.3.13](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.13) (2025-02-11)
 
 ### New Features
