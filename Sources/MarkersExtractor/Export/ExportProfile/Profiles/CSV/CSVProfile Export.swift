@@ -70,9 +70,9 @@ extension CSVProfile {
         dict[.clipIn] = marker.clipIn
         dict[.clipOut] = marker.clipOut
         dict[.clipDuration] = marker.clipDuration
-        dict[.clipKeywords] = marker.clipKeywords.flat
+        dict[.clipKeywords] = marker.clipKeywordsFlat
         dict[.videoRole] = marker.videoRole
-        dict[.audioRole] = marker.audioRole.flat
+        dict[.audioRole] = marker.audioRoleFlat
         dict[.eventName] = marker.eventName
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
@@ -108,9 +108,9 @@ extension CSVProfile {
         dict[.clipIn] = .string(marker.clipIn)
         dict[.clipOut] = .string(marker.clipOut)
         dict[.clipDuration] = .string(marker.clipDuration)
-        dict[.clipKeywords] = .array(marker.clipKeywords.array)
+        dict[.clipKeywords] = .array(marker.clipKeywordsArray)
         dict[.videoRole] = .string(marker.videoRole)
-        dict[.audioRole] = .array(marker.audioRole.array)
+        dict[.audioRole] = .array(marker.audioRoleArray)
         dict[.eventName] = .string(marker.eventName)
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)

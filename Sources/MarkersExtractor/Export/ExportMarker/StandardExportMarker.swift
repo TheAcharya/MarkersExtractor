@@ -29,8 +29,10 @@ public struct StandardExportMarker: ExportMarker {
     public let clipIn: String
     public let clipOut: String
     public let clipDuration: String
-    public let clipKeywords: (flat: String, array: [String])
-    public let audioRole: (flat: String, array: [String])
+    public let clipKeywordsFlat: String
+    public let clipKeywordsArray: [String]
+    public let audioRoleFlat: String
+    public let audioRoleArray: [String]
     public let videoRole: String
     public let eventName: String
     public let projectName: String
@@ -53,26 +55,51 @@ public struct StandardExportMarker: ExportMarker {
         useChapterMarkerPosterOffset: Bool
     ) {
         id = marker.id(idMode, tcStringFormat: tcStringFormat)
+        
         name = marker.name
+        
         type = marker.type.name
+        
         checked = String(marker.isChecked())
+        
         status = NotionExportProfile.Status(marker.type).rawValue
+        
         notes = marker.notes
+        
         reel = marker.metadata.reel
+        
         scene = marker.metadata.scene
+        
         take = marker.metadata.take
+        
         position = marker.positionTimeString(format: timeFormat, offsetToTimelineStart: offsetToTimelineStart)
+        
         clipType = marker.parentInfo.clipType
+        
         clipName = marker.parentInfo.clipName
+        
         clipIn = marker.parentInfo.clipInTimeString(format: timeFormat)
+        
         clipOut = marker.parentInfo.clipOutTimeString(format: timeFormat)
+        
         clipDuration = marker.parentInfo.clipDurationTimeString(format: timeFormat)
-        clipKeywords = marker.parentInfo.clipKeywordsFormatted()
+        
+        let (clipKeywordsFlat, clipKeywordsArray) = marker.parentInfo.clipKeywordsFormatted()
+        self.clipKeywordsFlat = clipKeywordsFlat
+        self.clipKeywordsArray = clipKeywordsArray
+        
         videoRole = marker.roles.videoFormatted()
-        audioRole = marker.roles.audioFormatted(multipleRoleSeparator: ",")
+        
+        let (audioRoleFlat, audioRoleArray) = marker.roles.audioFormatted(multipleRoleSeparator: ",")
+        self.audioRoleFlat = audioRoleFlat
+        self.audioRoleArray = audioRoleArray
+        
         eventName = marker.parentInfo.eventName ?? ""
+        
         projectName = marker.parentInfo.projectName ?? ""
+        
         libraryName = marker.parentInfo.libraryName ?? ""
+        
         icon = Icon(marker.type)
         
         // self.mediaInfo = mediaInfo
