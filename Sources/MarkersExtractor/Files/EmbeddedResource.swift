@@ -7,7 +7,7 @@
 import Foundation
 
 /// Embedded resource files.
-public enum EmbeddedResource: CaseIterable, Equatable, Hashable {
+public enum EmbeddedResource {
     // Images
     case icon_notion_marker_png
     case icon_notion_marker_chapter_png
@@ -22,6 +22,16 @@ public enum EmbeddedResource: CaseIterable, Equatable, Hashable {
     case empty_png
     case empty_mov
 }
+
+extension EmbeddedResource: Equatable { }
+
+extension EmbeddedResource: Hashable { }
+
+extension EmbeddedResource: CaseIterable { }
+
+extension EmbeddedResource: Sendable { }
+
+// MARK: - Properties
 
 extension EmbeddedResource {
     var fileName: String {
@@ -82,7 +92,7 @@ extension EmbeddedResource {
 
 // Note: This is a workaround. We need to Base64 encode the files themselves
 // in order for the CLI executable to build as a standalone file.
-// If the files are actual files within this Package and we use .resources []
+// If the files are actual files within this Package and we use `.resources: []`
 // in Package.swift, compiling the CLI target will produce a .bundle in addition
 // to the executable file and will not embed the resources files in the executable.
 

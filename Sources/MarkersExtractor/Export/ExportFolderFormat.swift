@@ -6,17 +6,25 @@
 
 import Foundation
 
-public enum ExportFolderFormat: String, CaseIterable, Equatable, Hashable {
+public enum ExportFolderFormat: String {
     case short
     case medium
     case long
 }
+
+extension ExportFolderFormat: Equatable { }
+
+extension ExportFolderFormat: Hashable { }
+
+extension ExportFolderFormat: CaseIterable { }
 
 extension ExportFolderFormat: Identifiable {
     public var id: Self { self }
 }
 
 extension ExportFolderFormat: Sendable { }
+
+// MARK: - Properties
 
 extension ExportFolderFormat {
     func folderName(timelineName: String, profile: ExportProfileFormat) -> String {

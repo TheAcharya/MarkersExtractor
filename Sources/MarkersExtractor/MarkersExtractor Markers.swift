@@ -31,17 +31,17 @@ extension MarkersExtractor {
         
         do {
             extractor = try FCPXMLMarkerExtractor(
-                fcpxml: &s.fcpxml,
-                idNamingMode: s.idNamingMode,
-                enableSubframes: s.enableSubframes, 
-                markersSource: s.markersSource,
-                excludeRoles: s.excludeRoles, 
-                includeDisabled: s.includeDisabled,
+                fcpxml: &settings.fcpxml,
+                idNamingMode: settings.idNamingMode,
+                enableSubframes: settings.enableSubframes, 
+                markersSource: settings.markersSource,
+                excludeRoles: settings.excludeRoles, 
+                includeDisabled: settings.includeDisabled,
                 logger: logger
             )
         } catch {
             throw MarkersExtractorError.extraction(.fcpxmlParse(
-                "Failed to parse \(s.fcpxml): \(error.localizedDescription)"
+                "Failed to parse \(settings.fcpxml): \(error.localizedDescription)"
             ))
         }
         
@@ -89,7 +89,7 @@ extension MarkersExtractor {
         
         let dupeIndices = Dictionary(
             grouping: markers.indices,
-            by: { markers[$0].id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+            by: { markers[$0].id(settings.idNamingMode, tcStringFormat: timecodeStringFormat) }
         )
         .filter { $1.count > 1 }
         
@@ -107,17 +107,17 @@ extension MarkersExtractor {
     func findDuplicateIDs(in markers: [Marker]) -> [String] {
         Dictionary(
             grouping: markers,
-            by: { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+            by: { $0.id(settings.idNamingMode, tcStringFormat: timecodeStringFormat) }
         )
         .filter { $1.count > 1 }
         .compactMap { $0.1.first }
-        .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+        .map { $0.id(settings.idNamingMode, tcStringFormat: timecodeStringFormat) }
         .sorted()
     }
     
     func isAllUniqueIDNonEmpty(in markers: [Marker]) -> Bool {
         markers
-            .map { $0.id(s.idNamingMode, tcStringFormat: timecodeStringFormat) }
+            .map { $0.id(settings.idNamingMode, tcStringFormat: timecodeStringFormat) }
             .allSatisfy { !$0.isEmpty }
     }
 }

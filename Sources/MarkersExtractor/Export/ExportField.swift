@@ -7,7 +7,7 @@
 import Foundation
 
 /// Markers CSV fields (header column names).
-public enum ExportField: String, CaseIterable, RawRepresentable, Hashable {
+public enum ExportField: String {
     case id
     case name
     case type
@@ -34,11 +34,21 @@ public enum ExportField: String, CaseIterable, RawRepresentable, Hashable {
     case xmlPath
 }
 
+extension ExportField: Equatable { }
+
+extension ExportField: Hashable { }
+
+extension ExportField: CaseIterable { }
+
+extension ExportField: RawRepresentable { }
+
 extension ExportField: Identifiable {
     public var id: Self { self }
 }
 
 extension ExportField: Sendable { }
+
+// MARK: - Properties
 
 extension ExportField {
     /// Human-readable name. Useful for column name in exported tabular data.

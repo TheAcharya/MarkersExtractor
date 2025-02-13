@@ -52,24 +52,24 @@ import TimecodeKitCore
         let marker2 = makeMarker("marker2", position: .init(f: 2))
         
         #expect(
-            extractor.findDuplicateIDs(in: []) == []
+            await extractor.findDuplicateIDs(in: []) == []
         )
         
         #expect(
-            extractor.findDuplicateIDs(in: [marker1]) == []
+            await extractor.findDuplicateIDs(in: [marker1]) == []
         )
         
         #expect(
-            extractor.findDuplicateIDs(in: [marker1, marker2]) == []
+            await extractor.findDuplicateIDs(in: [marker1, marker2]) == []
         )
         
         #expect(
-            extractor.findDuplicateIDs(in: [marker1, marker1]) ==
+            await extractor.findDuplicateIDs(in: [marker1, marker1]) ==
             [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
         
         #expect(
-            extractor.findDuplicateIDs(in: [marker2, marker1, marker2]) ==
+            await extractor.findDuplicateIDs(in: [marker2, marker1, marker2]) ==
             [marker2.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
     }
@@ -115,19 +115,19 @@ import TimecodeKitCore
         let marker2 = makeMarker("", position: .init(f: 2))
         
         #expect(
-            extractor.isAllUniqueIDNonEmpty(in: [])
+            await extractor.isAllUniqueIDNonEmpty(in: [])
         )
         
         #expect(
-            extractor.isAllUniqueIDNonEmpty(in: [marker1])
+            await extractor.isAllUniqueIDNonEmpty(in: [marker1])
         )
         
         #expect(
-            !extractor.isAllUniqueIDNonEmpty(in: [marker1, marker2])
+            await !extractor.isAllUniqueIDNonEmpty(in: [marker1, marker2])
         )
         
         #expect(
-            !extractor.isAllUniqueIDNonEmpty(in: [marker2])
+            await !extractor.isAllUniqueIDNonEmpty(in: [marker2])
         )
     }
 }

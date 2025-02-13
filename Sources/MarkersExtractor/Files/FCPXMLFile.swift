@@ -8,15 +8,15 @@ import DAWFileKit
 import Foundation
 
 /// Final Cut Pro XML file/bundle abstract file reference and content reader.
-public struct FCPXMLFile: Equatable, Hashable {
+public struct FCPXMLFile {
     /// Maintains an objective reference to the fcpxml file.
-    private let source: FCPXMLFileSource
+    private let source: Source
     
     /// Reads and caches the actual XML file from disk.
     private var xmlFileContents: File
     
     public init(at url: URL) throws {
-        let path = try FCPXMLFilePath(inputURL: url)
+        let path = try FilePath(inputURL: url)
         source = .fileOnDisk(path)
         xmlFileContents = File(path.xmlPath)
     }
@@ -42,6 +42,10 @@ public struct FCPXMLFile: Equatable, Hashable {
     }
 }
 
+extension FCPXMLFile: Equatable { }
+
+extension FCPXMLFile: Hashable { }
+
 extension FCPXMLFile: Identifiable {
     public var id: Self { self }
 }
@@ -58,6 +62,10 @@ extension FCPXMLFile: CustomStringConvertible {
         }
     }
 }
+
+extension FCPXMLFile: Sendable { }
+
+// MARK: - Properties
 
 extension FCPXMLFile {
     /// Return file contents. Method is mutating because it maintains an internal cache.
@@ -113,70 +121,4 @@ extension FCPXMLFile {
     var defaultMediaSearchPath: URL? {
         parentDir
     }
-}
-
-// MARK: - FCPXMLFileSource
-
-extension FCPXMLFile {
-    public enum FCPXMLFileSource: Equatable, Hashable {
-        case fileOnDisk(FCPXMLFilePath)
-        case rawFileContents
-        case xmlDocument(XMLDocument)
-    }
-}
-
-extension FCPXMLFile.FCPXMLFileSource: Identifiable {
-    public var id: Self { self }
-}
-
-// MARK: - FCPXMLFilePath
-
-extension FCPXMLFile {
-    public enum FCPXMLFilePath: Equatable, Hashable {
-        case fcpxml(xmlURL: URL)
-        case fcpxmld(bundleURL: URL)
-        
-        public init(inputURL: URL) throws {
-            if inputURL.pathExtension.caseInsensitiveCompare("fcpxml") == .orderedSame {
-                self = .fcpxml(xmlURL: inputURL)
-            } else if inputURL.pathExtension.caseInsensitiveCompare("fcpxmld") == .orderedSame {
-                self = .fcpxmld(bundleURL: inputURL)
-            } else {
-                throw MarkersExtractorError.validation(
-                    .unsupportedFileFormat(atPath: inputURL.path)
-                )
-            }
-        }
-        
-        /// Returns the path to the directory containing the base path.
-        public var parentPath: URL {
-            basePath.deletingLastPathComponent()
-        }
-        
-        /// Returns the base path.
-        /// For an `fcpxml` file, the file's path is returned.
-        /// For an `dcpxmld` bundle, the bundle's path is returned.
-        public var basePath: URL {
-            switch self {
-            case let .fcpxml(xmlURL):
-                return xmlURL
-            case let .fcpxmld(bundleURL):
-                return bundleURL
-            }
-        }
-        
-        /// Resolves the location of the actual XML file.
-        public var xmlPath: URL {
-            switch self {
-            case let .fcpxml(xmlURL):
-                return xmlURL
-            case let .fcpxmld(bundleURL):
-                return bundleURL.appendingPathComponent("Info.fcpxml")
-            }
-        }
-    }
-}
-
-extension FCPXMLFile.FCPXMLFilePath: Identifiable {
-    public var id: URL { basePath }
 }

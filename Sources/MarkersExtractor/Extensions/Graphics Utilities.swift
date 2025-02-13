@@ -119,7 +119,7 @@ extension CGImage {
 }
 
 extension CGImage {
-    enum PixelFormat: Equatable, Hashable {
+    enum PixelFormat: Equatable, Hashable, CaseIterable, Sendable {
         /// Big-endian, alpha first.
         case argb
         

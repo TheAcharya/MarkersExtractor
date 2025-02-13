@@ -14,20 +14,20 @@ extension MarkersExtractor {
     func formExportMedia(
         timelineName: String
     ) throws -> ExportMedia {
-        let videoPath = try findMedia(name: timelineName, paths: s.mediaSearchPaths)
-        let imageLabels = OrderedSet(s.imageLabels).map { $0 }
-        let labelProperties = MarkerLabelProperties(using: s)
+        let videoPath = try findMedia(name: timelineName, paths: settings.mediaSearchPaths)
+        let imageLabels = OrderedSet(settings.imageLabels).map { $0 }
+        let labelProperties = MarkerLabelProperties(using: settings)
         
         let imageSettings = ExportImageSettings(
-            gifFPS: s.gifFPS,
-            gifSpan: s.gifSpan,
-            format: s.imageFormat,
-            quality: s.imageQualityDouble,
+            gifFPS: settings.gifFPS,
+            gifSpan: settings.gifSpan,
+            format: settings.imageFormat,
+            quality: settings.imageQualityDouble,
             dimensions: calcVideoDimensions(for: videoPath),
             labelFields: imageLabels,
-            labelCopyright: s.imageLabelCopyright,
+            labelCopyright: settings.imageLabelCopyright,
             labelProperties: labelProperties,
-            imageLabelHideNames: s.imageLabelHideNames
+            imageLabelHideNames: settings.imageLabelHideNames
         )
         
         return ExportMedia(videoURL: videoPath, imageSettings: imageSettings)
@@ -37,12 +37,14 @@ extension MarkersExtractor {
 // MARK: - Helpers
 
 extension MarkersExtractor {
+    /// Supported media format file extensions.
+    static let mediaFormatFileExtensions = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
+    
     /// - Throws: ``MarkersExtractorError``
     private func findMedia(name: String, paths: [URL]) throws -> URL {
-        let mediaFormats = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
         
         let files: [URL] = try paths.reduce(into: []) { base, path in
-            let matches = try matchFiles(at: path, name: name, exts: mediaFormats)
+            let matches = try matchFiles(at: path, name: name, exts: Self.mediaFormatFileExtensions)
             base.append(contentsOf: matches)
         }
         

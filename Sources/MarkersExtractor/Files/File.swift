@@ -9,43 +9,37 @@ import Foundation
 /// Represents a file's contents, either from a file stored on disk or directly from raw data.
 /// In either case, the file content is cached in memory to improve performance and reduce
 /// unnecessary disk activity.
-struct File: Equatable, Hashable {
-    public private(set) var contents: FileContents
+struct File {
+    public private(set) var contents: Contents
 }
 
-extension File {
-    enum FileContents: Equatable, Hashable {
-        case fileOnDisk(url: URL, cache: FileContentsCache?)
-        case rawFileContents(FileContentsCache)
-    }
-}
+extension File: Equatable { }
 
-// MARK: - Constructors
+extension File: Hashable { }
+
+extension File: Sendable { }
+
+// MARK: - Init
 
 extension File {
     init(_ url: URL) {
         contents = .fileOnDisk(url: url, cache: nil)
     }
     
-    init(fileContents: FileContentsCache) {
+    init(fileContents: Contents.Cache) {
         contents = .rawFileContents(fileContents)
     }
+}
     
-    static func fileContents(_ contents: FileContentsCache) -> Self {
+// MARK: - Static Constructors
+
+extension File {
+    static func fileContents(_ contents: Contents.Cache) -> Self {
         File(contents: .rawFileContents(contents))
     }
 }
 
-extension File {
-    /// Type-erased ``File`` contents cache.
-    enum FileContentsCache: Equatable, Hashable {
-        /// Pre-fetched file contents as `Data`.
-        case data(Data)
-        
-        /// Pre-fetched file contents as `String`.
-        case string(String)
-    }
-}
+// MARK: - Properties
 
 extension File {
     /// Returns a Boolean value indicating whether the file's contents has been read off disk
@@ -102,7 +96,7 @@ extension File {
         try fetch()
         
         // retrieve cache
-        let unwrappedCache: FileContentsCache
+        let unwrappedCache: Contents.Cache
         switch contents {
         case let .fileOnDisk(url, cache):
             guard let cache else {

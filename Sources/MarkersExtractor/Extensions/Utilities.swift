@@ -23,39 +23,39 @@ extension Double {
     /// print(0.0100.formatted)
     /// // "0.01"
     /// ```
-    var formatted: String {
+    package var formatted: String {
         truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
     }
 }
 
 extension Comparable {
-    func clamped(from lowerBound: Self, to upperBound: Self) -> Self {
+    package func clamped(from lowerBound: Self, to upperBound: Self) -> Self {
         min(max(self, lowerBound), upperBound)
     }
     
-    func clamped(to range: ClosedRange<Self>) -> Self {
+    package func clamped(to range: ClosedRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound)
     }
     
-    func clamped(to range: PartialRangeThrough<Self>) -> Self {
+    package func clamped(to range: PartialRangeThrough<Self>) -> Self {
         min(self, range.upperBound)
     }
     
-    func clamped(to range: PartialRangeFrom<Self>) -> Self {
+    package func clamped(to range: PartialRangeFrom<Self>) -> Self {
         max(self, range.lowerBound)
     }
 }
 
 extension Strideable where Stride: SignedInteger {
-    func clamped(to range: CountableRange<Self>) -> Self {
+    package func clamped(to range: CountableRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound.advanced(by: -1))
     }
     
-    func clamped(to range: CountableClosedRange<Self>) -> Self {
+    package func clamped(to range: CountableClosedRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound)
     }
     
-    func clamped(to range: PartialRangeUpTo<Self>) -> Self {
+    package func clamped(to range: PartialRangeUpTo<Self>) -> Self {
         min(self, range.upperBound.advanced(by: -1))
     }
 }
@@ -72,7 +72,7 @@ extension Sequence {
     /// [1, 2, 3].sum { $0 == 1 ? 10 : $0 }
     /// // 15
     /// ```
-    func sum<T: AdditiveArithmetic>(_ numerator: (Element) throws -> T) rethrows -> T {
+    package func sum<T: AdditiveArithmetic>(_ numerator: (Element) throws -> T) rethrows -> T {
         var result = T.zero
         
         for element in self {
@@ -86,7 +86,7 @@ extension Sequence {
 extension String {
     /// Wraps a string with double-quotes (`"`)
     @_disfavoredOverload
-    public var quoted: Self {
+    package var quoted: Self {
         "\"\(self)\""
     }
 }
@@ -94,7 +94,7 @@ extension String {
 // MARK: - FileManager
 
 extension FileManager {
-    func fileIsDirectory(_ path: String) -> Bool {
+    package func fileIsDirectory(_ path: String) -> Bool {
         var fileIsDirectory: ObjCBool = false
         let fileExists = FileManager.default.fileExists(
             atPath: path,
@@ -103,7 +103,7 @@ extension FileManager {
         return fileExists && fileIsDirectory.boolValue
     }
     
-    func mkdirWithParent(_ path: String, reuseExisting: Bool = false) throws {
+    package func mkdirWithParent(_ path: String, reuseExisting: Bool = false) throws {
         if FileManager.default.fileExists(atPath: path) {
             if reuseExisting, fileIsDirectory(path) {
                 return
@@ -132,7 +132,7 @@ extension FileManager {
     /// Returns input if the proposed path does not exist.
     /// Uniques the file or folder name if it already exists by incrementing a trailing integer.
     /// ie: "File.png", "File (1).png", "File (2).png", etc.
-    func uniqueFileURL(proposedPath url: URL) -> URL {
+    package func uniqueFileURL(proposedPath url: URL) -> URL {
         var url = url
         var counter = 1
         
@@ -157,7 +157,7 @@ extension FileManager {
 // MARK: - URL
 
 extension URL {
-    var fileExtension: String? {
+    package var fileExtension: String? {
         get {
             // edge case for when filename ends with "." and no extension following
             if pathExtension.isEmpty, !lastPathComponent.contains(".") {
@@ -174,7 +174,7 @@ extension URL {
     }
     
     /// File size in bytes.
-    var fileSize: Int { resourceValue(forKey: .fileSizeKey) ?? 0 }
+    package var fileSize: Int { resourceValue(forKey: .fileSizeKey) ?? 0 }
     
     // MARK: Helpers
     
@@ -199,7 +199,7 @@ extension FixedWidthInteger {
     /// Returns the integer formatted as a human readable file size.
     ///
     /// Example: `2.3 GB`
-    var bytesFormattedAsFileSize: String {
+    package var bytesFormattedAsFileSize: String {
         ByteCountFormatter.string(fromByteCount: Int64(self), countStyle: .file)
     }
 }
@@ -210,7 +210,7 @@ extension FixedWidthInteger {
 // An identifier for a video codec, compression format, color or pixel format used in media files.
 extension FourCharCode { // a.k.a. UInt32
     /// Create a String representation of a FourCC.
-    func fourCharCodeToString() -> String {
+    package func fourCharCodeToString() -> String {
         NSFileTypeForHFSTypeCode(self)
     }
 }
@@ -218,7 +218,7 @@ extension FourCharCode { // a.k.a. UInt32
 extension URL {
     // Note: this only compiles if Package.swift contains `.resources: []` for this package target
     // /// Form a URL to a resource file contained within this Swift package.
-    // init?(
+    // package init?(
     //    moduleResource: String,
     //    withExtension: String,
     //    subFolder: String? = nil
@@ -231,11 +231,11 @@ extension URL {
     //    self = url
     // }
     
-    var exists: Bool { FileManager.default.fileExists(atPath: path) }
+    package var exists: Bool { FileManager.default.fileExists(atPath: path) }
     
-    var isReadable: Bool { boolResourceValue(forKey: .isReadableKey) }
+    package var isReadable: Bool { boolResourceValue(forKey: .isReadableKey) }
     
-    var isWritable: Bool { boolResourceValue(forKey: .isWritableKey) }
+    package var isWritable: Bool { boolResourceValue(forKey: .isWritableKey) }
 }
 
 // MARK: - RegEx
@@ -243,7 +243,7 @@ extension URL {
 extension StringProtocol {
     /// Returns an array of RegEx matches
     /// (Borrowed from OTCore 1.4.10, under MIT license)
-    func regexMatches(
+    package func regexMatches(
         pattern: String,
         options: NSRegularExpression.Options = [],
         matchesOptions: NSRegularExpression.MatchingOptions = [.withTransparentBounds]
@@ -285,7 +285,7 @@ extension StringProtocol {
     
     /// Returns a string from a tokenized string of RegEx matches
     /// (Borrowed from OTCore 1.4.10, under MIT license)
-    func regexMatches(
+    package func regexMatches(
         pattern: String,
         replacementTemplate: String,
         options: NSRegularExpression.Options = [],
@@ -328,7 +328,7 @@ extension StringProtocol {
     /// Returns capture groups from regex matches.
     /// If any capture group is not matched it will be `nil`.
     /// (Borrowed from OTCore 1.4.10, under MIT license)
-    func regexMatches(
+    package func regexMatches(
         captureGroupsFromPattern: String,
         options: NSRegularExpression.Options = [],
         matchesOptions: NSRegularExpression.MatchingOptions = [.withTransparentBounds]

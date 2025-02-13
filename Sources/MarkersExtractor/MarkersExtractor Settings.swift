@@ -116,6 +116,8 @@ extension MarkersExtractor {
     }
 }
 
+extension MarkersExtractor.Settings: Sendable { }
+
 // MARK: - Validation
 
 extension MarkersExtractor.Settings {

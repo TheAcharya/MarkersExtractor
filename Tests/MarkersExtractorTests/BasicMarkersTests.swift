@@ -108,34 +108,34 @@ import TimecodeKitCore
             
             // extract and unique
             var markers = try await extractor.extractMarkers().markers
-            markers = extractor.uniquingMarkerIDs(in: markers)
+            markers = await extractor.uniquingMarkerIDs(in: markers)
             
             // verify correct IDs
             switch idMode {
             case .timelineNameAndTimecode:
                 #expect(
-                    markers[safe: 0]?.id(
+                    await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Test Project_00:00:29:14"
                 )
                 #expect(
-                    markers[safe: 1]?.id(
+                    await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Test Project_00:00:29:15-1"
                 )
                 #expect(
-                    markers[safe: 2]?.id(
+                    await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Test Project_00:00:29:15-2"
                 )
                 #expect(
-                    markers[safe: 3]?.id(
+                    await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
@@ -143,28 +143,28 @@ import TimecodeKitCore
                 )
             case .name:
                 #expect(
-                    markers[safe: 0]?.id(
+                    await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Marker 1-1"
                 )
                 #expect(
-                    markers[safe: 1]?.id(
+                    await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Marker 1-2"
                 )
                 #expect(
-                    markers[safe: 2]?.id(
+                    await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "Marker 2"
                 )
                 #expect(
-                    markers[safe: 3]?.id(
+                    await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
@@ -172,28 +172,28 @@ import TimecodeKitCore
                 )
             case .notes:
                 #expect(
-                    markers[safe: 0]?.id(
+                    await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "some notes here"
                 )
                 #expect(
-                    markers[safe: 1]?.id(
+                    await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "more notes here-1"
                 )
                 #expect(
-                    markers[safe: 2]?.id(
+                    await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==
                     "notes yay"
                 )
                 #expect(
-                    markers[safe: 3]?.id(
+                    await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
                     ) ==

@@ -16,7 +16,7 @@ extension MarkersExtractor {
         outputURL: URL,
         parentProgress: ParentProgress? = nil
     ) async throws -> ExportResult {
-        switch s.exportFormat {
+        switch settings.exportFormat {
         case .airtable:
             return try await export(
                 for: AirtableExportProfile.self,
@@ -130,13 +130,13 @@ extension MarkersExtractor {
     ) async throws -> ExportResult {
         try await P(logger: logger).export(
             markers: markers,
-            idMode: s.idNamingMode,
+            idMode: settings.idNamingMode,
             media: media,
             tcStringFormat: timecodeStringFormat, 
-            useChapterMarkerPosterOffset: s.useChapterMarkerThumbnails,
+            useChapterMarkerPosterOffset: settings.useChapterMarkerThumbnails,
             outputURL: outputURL,
             payload: payload,
-            resultFilePath: s.resultFilePath,
+            resultFilePath: settings.resultFilePath,
             logger: logger,
             parentProgress: parentProgress
         )

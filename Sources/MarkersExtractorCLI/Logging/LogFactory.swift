@@ -11,10 +11,15 @@ import Logging
     public static let shared = LogFactory()
     
     fileprivate var consoleLogHandler: LogHandler?
+    
     fileprivate var fileLogHandler: LogHandler?
     
     public init() { }
-    
+}
+
+// MARK: - Methods
+
+extension LogFactory {
     public func fileAndConsoleLogFactory(label: String, logLevel: Logger.Level?, logFile: URL?) -> LogHandler {
         guard let logLevel else {
             return SwiftLogNoOpLogHandler()

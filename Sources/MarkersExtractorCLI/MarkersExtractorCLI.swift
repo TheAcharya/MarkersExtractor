@@ -259,8 +259,14 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
     var outputDir: URL
     
-    // MARK: - Protocol Method Implementations
+    // MARK: - Internal
     
+    private var _progressLogging: ProgressLogging?
+}
+
+// MARK: - AsyncParsableCommand Implementations
+
+extension MarkersExtractorCLI {
     mutating func validate() throws {
         if let log {
             if FileManager.default.fileExists(atPath: log.path) {
@@ -282,8 +288,8 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         do {
             let fcpxml = try FCPXMLFile(at: fcpxmlPath)
             let mediaSearchPaths = mediaSearchPaths.isEmpty
-                ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
-                : mediaSearchPaths
+            ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
+            : mediaSearchPaths
             
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
@@ -336,7 +342,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
             let progressLogger = Logger(label: progressLoggerLabel) { label in
                 progressLoggerHandler
             }
-            _progressLogging = ProgressLogging(to: progressLogger, progress: extractor.progress)
+            _progressLogging = await ProgressLogging(to: progressLogger, progress: extractor.progress)
         }
         
         // can ignore return data from extract(), as it merely contains result file content
@@ -344,6 +350,4 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         // and is mainly provided to consumers of the library to use. for the CLI we don't need it.
         _ = try await extractor.extract()
     }
-    
-    private var _progressLogging: ProgressLogging?
 }

@@ -33,6 +33,7 @@ extension FinalCutPro.FCPXML.ElementType {
         case .refClip: return "Compound"
         case .syncClip: return "Sync"
         case .title: return "Title"
+        case .transition: return "Transition"
         case .video: return "Video"
             
         // structure
@@ -43,6 +44,26 @@ extension FinalCutPro.FCPXML.ElementType {
             
         default:
             return rawValue.titleCased
+        }
+    }
+}
+
+extension FinalCutPro.FCPXML.Marker.MarkerKind {
+    var name: String {
+        switch self {
+        case .standard: return "Standard"
+        case .chapter: return "Chapter"
+        case .toDo: return "To Do"
+        }
+    }
+}
+
+extension FinalCutPro.FCPXML.Marker.Configuration {
+    var name: String {
+        switch self {
+        case .standard: return "Standard"
+        case .chapter: return "Chapter"
+        case .toDo: return "To Do"
         }
     }
 }

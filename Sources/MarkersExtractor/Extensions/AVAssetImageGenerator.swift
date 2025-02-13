@@ -11,11 +11,11 @@ import TimecodeKitCore
 actor AVAssetImageGeneratorWrapper {
     private let imageGenerator: AVAssetImageGenerator
     
-    public init(asset: AVAsset) {
+    init(asset: AVAsset) {
         imageGenerator = AVAssetImageGenerator(asset: asset)
     }
     
-    public init(_ imageGenerator: AVAssetImageGenerator) {
+    init(_ imageGenerator: AVAssetImageGenerator) {
         self.imageGenerator = imageGenerator
     }
 }
@@ -258,8 +258,8 @@ extension AVAssetImageGenerator {
 }
 
 extension AVAssetImageGenerator {
+    // TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
     /// Swift Concurrency wrapper for `generateCGImagesAsynchronously` method.
-    /// TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
     @_disfavoredOverload
     func generateCGImages(
         forTimes requestedTimes: [NSValue]
@@ -277,8 +277,8 @@ extension AVAssetImageGenerator {
         }
     }
     
+    // TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
     /// Swift Concurrency wrapper for `generateCGImagesAsynchronously` method.
-    /// TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
     @_disfavoredOverload
     func generateCGImages(
         forTimes requestedTimes: [CMTime]

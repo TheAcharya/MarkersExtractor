@@ -6,11 +6,17 @@
 
 import Foundation
 
-public enum ExportFieldValue: Equatable, Hashable, Sendable {
+public enum ExportFieldValue {
     case string(_ string: String)
     case array(_ array: [ExportFieldValue])
     case dictionary(_ dictionary: [String: ExportFieldValue])
 }
+
+extension ExportFieldValue: Equatable { }
+
+extension ExportFieldValue: Hashable { }
+
+extension ExportFieldValue: Sendable { }
 
 extension ExportFieldValue: Identifiable {
     public var id: Self { self }

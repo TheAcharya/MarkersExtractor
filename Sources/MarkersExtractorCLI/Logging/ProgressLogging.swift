@@ -21,7 +21,20 @@ final actor ProgressLogging {
         
         Task { await setup() }
     }
+}
+
+// TODO: Codable conformance is a workaround to satisfy the compiler so we can store an instance of this class in the AsyncParsableCommand struct.
+extension ProgressLogging: @preconcurrency Codable {
+    func encode(to encoder: Encoder) throws { }
     
+    init(from decoder: Decoder) throws {
+        let logger = Logger(label: "Dummy")
+        let progress = Progress()
+        self.init(to: logger, progress: progress)
+    }
+}
+
+extension ProgressLogging {
     private func setup() {
         observation = progress
             .observe(\.fractionCompleted, options: [.new]) { [weak self] _, _ in
@@ -36,17 +49,3 @@ final actor ProgressLogging {
         self.lastOutput = output
     }
 }
-
-// TODO: Codable conformance is a workaround to satisfy the compiler so we can store an
-// instance of this class in the AsyncParsableCommand struct.
-extension ProgressLogging: @preconcurrency Codable {
-    func encode(to encoder: Encoder) throws { }
-    
-    init(from decoder: Decoder) throws {
-        let logger = Logger(label: "Dummy")
-        let progress = Progress()
-        self.init(to: logger, progress: progress)
-    }
-}
-
-extension ProgressLogging: Sendable { }
