@@ -10,7 +10,7 @@ import TimecodeKitCore
 import OTCore
 
 extension Marker {
-    struct ParentInfo: Equatable, Hashable {
+    struct ParentInfo {
         var clipType: String
         var clipName: String
         var clipInTime: Timecode
@@ -27,6 +27,12 @@ extension Marker {
         var timelineStartTime: Timecode
     }
 }
+
+extension Marker.ParentInfo: Equatable { }
+
+extension Marker.ParentInfo: Hashable { }
+
+extension Marker.ParentInfo: Sendable { }
 
 // MARK: - Properties
 

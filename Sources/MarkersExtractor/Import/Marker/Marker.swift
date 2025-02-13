@@ -29,7 +29,7 @@ public struct Marker {
     /// Absolute marker timecode position/location.
     var position: Timecode
     
-    // TODO: This shouldn't be stored here. Should be refactored out to reference its parent with computed properties.
+    // TODO: This shouldn't really be stored here; factor it out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
     

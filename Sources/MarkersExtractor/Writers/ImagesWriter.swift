@@ -24,7 +24,7 @@ class ImagesWriter: ImageWriterProtocol { // TODO: refator as actor?
     
     let extractor: StillImageBatchExtractor
     
-    // ProgressReporting / ImageWriterProtocol
+    // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress: Progress
     
     init(

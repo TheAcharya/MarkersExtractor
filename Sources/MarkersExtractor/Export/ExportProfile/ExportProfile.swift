@@ -9,14 +9,14 @@ import Logging
 import OrderedCollections
 import TimecodeKitCore
 
-public protocol ExportProfile: AnyObject {
+public protocol ExportProfile {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
     
     static var profile: ExportProfileFormat { get }
     
-    // ProgressReporting
+    // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     var progress: Progress { get }
     
     /// Exports markers to disk.
@@ -78,6 +78,8 @@ public protocol ExportProfile: AnyObject {
     
     init(logger: Logger?)
 }
+
+// MARK: - Static
 
 extension ExportProfile {
     /// Progress instance factory.

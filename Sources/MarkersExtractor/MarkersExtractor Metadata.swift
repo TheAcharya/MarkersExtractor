@@ -10,7 +10,7 @@ import TimecodeKitCore
 
 extension MarkersExtractor {
     var timecodeStringFormat: Timecode.StringFormat {
-        s.enableSubframes ? [.showSubFrames] : .default()
+        settings.enableSubframes ? [.showSubFrames] : .default()
     }
 }
 

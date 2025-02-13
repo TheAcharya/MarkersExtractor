@@ -48,6 +48,26 @@ extension FinalCutPro.FCPXML.ElementType {
     }
 }
 
+extension FinalCutPro.FCPXML.Marker.MarkerKind {
+    var name: String {
+        switch self {
+        case .standard: return "Standard"
+        case .chapter: return "Chapter"
+        case .toDo: return "To Do"
+        }
+    }
+}
+
+extension FinalCutPro.FCPXML.Marker.Configuration {
+    var name: String {
+        switch self {
+        case .standard: return "Standard"
+        case .chapter: return "Chapter"
+        case .toDo: return "To Do"
+        }
+    }
+}
+
 extension FinalCutPro.FCPXML.ExtractedCaption {
     var isOutOfBounds: Bool {
         value(forContext: .effectiveOcclusion) == .fullyOccluded

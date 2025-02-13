@@ -26,7 +26,7 @@ final actor AnimatedImageExtractor {
     let startTime: TimeInterval
     let descriptors: [ImageDescriptor]
     
-    // ProgressReporting
+    // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress: Progress
     
     // MARK: - Init
@@ -80,77 +80,21 @@ final actor AnimatedImageExtractor {
         
         progress = Progress()
     }
-    
-    private static func generateDescriptors(
-        for conversion: ConversionSettings,
-        videoTrackRange: ClosedRange<Timecode>,
-        frameRate: TimecodeFrameRate
-    ) -> [ImageDescriptor] {
-        // TODO: needs some guards/validation in the event a LOT of frames are requested (such as an entire video length)
-        
-        // this process converts the source frame rate to the target frame rate
-        // and uses the nearest source whole frame timecode for each destination frame
-        
-        let range = timecodeRange(for: conversion, videoTrackRange: videoTrackRange)
-        let fd = frameDuration(for: conversion)
-        
-        let frameStride = stride(
-            from: range.lowerBound.realTimeValue,
-            through: range.upperBound.realTimeValue,
-            by: fd
-        )
-        
-        let timecodes = frameStride.map {
-            Timecode(.realTime(seconds: $0), at: frameRate, by: .clamping)
-        }
-        
-        // map to ImageDescriptor for richer error reporting
-        let descriptors: [ImageDescriptor] = timecodes.map {
-            // name and label are not used, just need to pack the timecode in
-            ImageDescriptor(
-                absoluteTimecode: $0,
-                offsetFromVideoStart: $0,
-                filename: "Animation Frame",
-                label: nil
-            )
-        }
-        
-        return descriptors
-    }
-    
-    static func timecodeRange(
-        for conversion: ConversionSettings,
-        videoTrackRange: ClosedRange<Timecode>
-    ) -> ClosedRange<Timecode> {
-        conversion.timecodeRange ?? videoTrackRange
-    }
-    
-    var timecodeRange: ClosedRange<Timecode> {
-        Self.timecodeRange(for: conversion, videoTrackRange: videoTrackRange)
-    }
-    
-    static func frameDuration(for conversion: ConversionSettings) -> TimeInterval {
-        1.0 / conversion.outputFPS
-    }
-    
-    var frameDuration: TimeInterval {
-        Self.frameDuration(for: conversion)
-    }
 }
 
-// MARK: - Convert
+// MARK: - Public Methods
 
 extension AnimatedImageExtractor {
     /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
     /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or
     /// partially.
-    func convert() async throws -> AnimatedImageExtractorResult {
+    func convert() async throws -> BatchResult {
         progress.completedUnitCount = 0
         progress.totalUnitCount = 1
         
         try validate()
         
-        let result: AnimatedImageExtractorResult
+        let result: BatchResult
         
         // only gif is supported for now, but more formats could be added in future
         switch conversion.imageFormat {
@@ -162,9 +106,11 @@ extension AnimatedImageExtractor {
         
         return result
     }
-    
-    // MARK: - Helpers
-    
+}
+
+// MARK: - Helpers
+
+extension AnimatedImageExtractor {
     private func validate() throws {
         // Even though we enforce a minimum of 3 fps (?) in the GUI, a source video could have lower
         // FPS, and we should allow that.
@@ -179,7 +125,7 @@ extension AnimatedImageExtractor {
     /// - Throws: ``AnimatedImageExtractorError`` in the event of an unrecoverable error.
     /// - Returns: ``AnimatedImageExtractorResult`` if the batch operation completed either fully or
     /// partially.
-    private func generateGIF() async throws -> AnimatedImageExtractorResult {
+    private func generateGIF() async throws -> BatchResult {
         let frameProperties = [
             kCGImagePropertyGIFDictionary as String: [
                 kCGImagePropertyGIFUnclampedDelayTime as String: frameDuration
@@ -188,7 +134,7 @@ extension AnimatedImageExtractor {
         
         let gifDestination = try initGIF(framesCount: descriptors.count)
 
-        let batchResult = AnimatedImageExtractorResult()
+        let batchResult = BatchResult()
         
         let generator = imageGenerator()
         
@@ -316,78 +262,64 @@ extension AnimatedImageExtractor {
             throw AnimatedImageExtractorError.generateFrameFailed(error)
         }
     }
+    
+    var timecodeRange: ClosedRange<Timecode> {
+        Self.timecodeRange(for: conversion, videoTrackRange: videoTrackRange)
+    }
+    
+    var frameDuration: TimeInterval {
+        Self.frameDuration(for: conversion)
+    }
 }
 
-// MARK: - Types
+// MARK: - Static
 
 extension AnimatedImageExtractor {
-    struct ConversionSettings: Sendable {
-        var timecodeRange: ClosedRange<Timecode>?
-        let sourceMediaFile: URL
-        let outputFile: URL
-        var dimensions: CGSize?
-        var outputFPS: Double
-        let imageFilter: (@Sendable (CGImage) -> CGImage)?
-        let imageFormat: MarkerImageFormat.Animated
-    }
-}
-
-/// Animated image extraction error.
-public enum AnimatedImageExtractorError: LocalizedError {
-    case internalInconsistency(_ verboseError: String)
-    case unreadableFile
-    case noVideoTracks
-    case couldNotDetermineFrameRate(Error)
-    case couldNotDetermineVideoTrackDuration(Error)
-    case gifInitializationFailed
-    case gifFinalizationFailed
-    case notEnoughFrames(Int)
-    case generateFrameFailed(Swift.Error)
-    case addFrameFailed(Swift.Error)
-    case writeFailed(Swift.Error)
-    
-    public var errorDescription: String? {
-        switch self {
-        case let .internalInconsistency(verboseError):
-            return "Internal error occurred: \(verboseError)"
-        case .unreadableFile:
-            return "The selected file is no longer readable."
-        case .noVideoTracks:
-            return "The media file does not contain a video track."
-        case let .couldNotDetermineFrameRate(error):
-            return "Could not determine the media file's frame rate. \(error.localizedDescription)"
-        case let .couldNotDetermineVideoTrackDuration(error):
-            return "Could not determine the media file's video track duration. \(error.localizedDescription)"
-        case .gifInitializationFailed:
-            return "Failed to initialize GIF file."
-        case .gifFinalizationFailed:
-            return "Failed to finalize GIF file."
-        case let .notEnoughFrames(frameCount):
-            let framesString = "\(frameCount) frame\(frameCount == 1 ? "" : "s")"
-            return "An animated GIF requires a minimum of 2 frames but the video contains \(framesString)."
-        case let .generateFrameFailed(error):
-            return "Failed to generate frame: \(error.localizedDescription)"
-        case let .addFrameFailed(error):
-            return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-        case let .writeFailed(error):
-            return "Failed to write, with underlying error: \(error.localizedDescription)"
+    private static func generateDescriptors(
+        for conversion: ConversionSettings,
+        videoTrackRange: ClosedRange<Timecode>,
+        frameRate: TimecodeFrameRate
+    ) -> [ImageDescriptor] {
+        // TODO: needs some guards/validation in the event a LOT of frames are requested (such as an entire video length)
+        
+        // this process converts the source frame rate to the target frame rate
+        // and uses the nearest source whole frame timecode for each destination frame
+        
+        let range = timecodeRange(for: conversion, videoTrackRange: videoTrackRange)
+        let fd = frameDuration(for: conversion)
+        
+        let frameStride = stride(
+            from: range.lowerBound.realTimeValue,
+            through: range.upperBound.realTimeValue,
+            by: fd
+        )
+        
+        let timecodes = frameStride.map {
+            Timecode(.realTime(seconds: $0), at: frameRate, by: .clamping)
         }
+        
+        // map to ImageDescriptor for richer error reporting
+        let descriptors: [ImageDescriptor] = timecodes.map {
+            // name and label are not used, just need to pack the timecode in
+            ImageDescriptor(
+                absoluteTimecode: $0,
+                offsetFromVideoStart: $0,
+                filename: "Animation Frame",
+                label: nil
+            )
+        }
+        
+        return descriptors
     }
-}
-
-actor AnimatedImageExtractorResult: Sendable { // TODO: refactor as struct?
-    public var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
-    public var isBatchFinished = false
     
-    init(errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []) {
-        self.errors = errors
+    static func timecodeRange(
+        for conversion: ConversionSettings,
+        videoTrackRange: ClosedRange<Timecode>
+    ) -> ClosedRange<Timecode> {
+        conversion.timecodeRange ?? videoTrackRange
     }
     
-    func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
-        errors.append((descriptor: descriptor, error: error))
-    }
-    
-    func setFinished() {
-        isBatchFinished = true
+    static func frameDuration(for conversion: ConversionSettings) -> TimeInterval {
+        1.0 / conversion.outputFPS
     }
 }

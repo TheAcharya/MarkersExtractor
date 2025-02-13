@@ -12,11 +12,11 @@ import OTCore
 
 extension MarkersExtractor {
     func makeOutputPath(forTimelineName timelineName: String) throws -> URL {
-        let folderName = s.exportFolderFormat.folderName(
+        let folderName = settings.exportFolderFormat.folderName(
             timelineName: timelineName,
-            profile: s.exportFormat
+            profile: settings.exportFormat
         )
-        let proposedOutputURL = s.outputDir.appendingPathComponent(folderName)
+        let proposedOutputURL = settings.outputDir.appendingPathComponent(folderName)
         let outputURL = FileManager.default.uniqueFileURL(proposedPath: proposedOutputURL)
         try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
         
@@ -28,9 +28,9 @@ extension MarkersExtractor {
 
 extension MarkersExtractor {
     func calcVideoDimensions(for videoPath: URL) -> CGSize? {
-        if s.imageWidth != nil || s.imageHeight != nil {
-            return CGSize(width: s.imageWidth ?? 0, height: s.imageHeight ?? 0)
-        } else if let imageSizePercent = s.imageSizePercent {
+        if settings.imageWidth != nil || settings.imageHeight != nil {
+            return CGSize(width: settings.imageWidth ?? 0, height: settings.imageHeight ?? 0)
+        } else if let imageSizePercent = settings.imageSizePercent {
             return calcVideosSizePercent(at: videoPath, for: imageSizePercent)
         }
         

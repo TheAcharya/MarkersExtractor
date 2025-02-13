@@ -13,12 +13,10 @@ import TimecodeKitCore
 
 /// Extract one or more images from a video asset.
 final class StillImageBatchExtractor {
-    // MARK: - Properties
-    
     private let logger: Logger
     private let conversion: ConversionSettings
     
-    // ProgressReporting
+    // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress: Progress
     
     // MARK: - Init
@@ -32,19 +30,19 @@ final class StillImageBatchExtractor {
 
 extension StillImageBatchExtractor: Sendable { }
 
-// MARK: - Convert
+// MARK: - Public Methods
 
 extension StillImageBatchExtractor {
     /// - Throws: ``StillImageBatchExtractorError`` in the event of an unrecoverable error.
     /// - Returns: ``StillImageBatchExtractorResult`` if the batch operation completed either fully
     /// or partially.
-    func convert() async throws -> StillImageBatchExtractorResult {
+    func convert() async throws -> BatchResult {
         progress.completedUnitCount = 0
         progress.totalUnitCount = Int64(conversion.descriptors.count)
         
         let generator = imageGenerator()
         
-        let batchResult = StillImageBatchExtractorResult()
+        let batchResult = BatchResult()
         
         try await generator.images(forTimesIn: conversion.descriptors, updating: progress)
             { [weak self, batchResult] descriptor, image, result in
@@ -55,7 +53,7 @@ extension StillImageBatchExtractor {
                     )
                     return
                 }
-
+            
                 let fileName = descriptor.filename
                 let label = descriptor.label
             
@@ -85,7 +83,11 @@ extension StillImageBatchExtractor {
         
         return batchResult
     }
+}
 
+// MARK: - Private Methods
+
+extension StillImageBatchExtractor {
     private func imageGenerator() -> AVAssetImageGeneratorWrapper {
         let asset = AVAsset(url: conversion.sourceMediaFile)
         
@@ -152,69 +154,5 @@ extension StillImageBatchExtractor {
         case let .failure(error):
             return .failure(.generateFrameFailed(error))
         }
-    }
-}
-
-// MARK: - Types
-
-extension StillImageBatchExtractor {
-    struct ConversionSettings: Sendable {
-        let descriptors: [ImageDescriptor]
-        let sourceMediaFile: URL
-        let outputFolder: URL
-        let frameFormat: MarkerImageFormat.Still
-        
-        /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`
-        let jpgQuality: Double?
-        
-        let dimensions: CGSize?
-        let imageFilter: (@Sendable (_ image: CGImage, _ label: String?) async -> CGImage)?
-    }
-}
-
-/// Still image extraction error.
-public enum StillImageBatchExtractorError: LocalizedError {
-    case internalInconsistency(_ verboseError: String)
-    case unreadableFile
-    case unsupportedType
-    case generateFrameFailed(Swift.Error)
-    case addFrameFailed(Swift.Error)
-    case writeFailed(Swift.Error)
-    
-    public var errorDescription: String? {
-        switch self {
-        case let .internalInconsistency(verboseError):
-            return "Internal error occurred: \(verboseError)"
-        case .unreadableFile:
-            return "The selected file is no longer readable."
-        case .unsupportedType:
-            return "Image type is not supported."
-        case let .generateFrameFailed(error):
-            return "Failed to generate frame: \(error.localizedDescription)"
-        case let .addFrameFailed(error):
-            return "Failed to add frame, with underlying error: \(error.localizedDescription)"
-        case let .writeFailed(error):
-            return "Failed to write, with underlying error: \(error.localizedDescription)"
-        }
-    }
-}
-
-public actor StillImageBatchExtractorResult: Sendable {
-    public var errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []
-    public var isBatchFinished = false
-    
-    init(errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []) {
-        self.errors = errors
-    }
-    
-    func addError(
-        for descriptor: ImageDescriptor,
-        _ error: StillImageBatchExtractorError
-    ) {
-        errors.append((descriptor: descriptor, error: error))
-    }
-    
-    func setFinished() {
-        isBatchFinished = true
     }
 }

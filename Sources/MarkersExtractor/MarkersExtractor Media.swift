@@ -14,20 +14,20 @@ extension MarkersExtractor {
     func formExportMedia(
         timelineName: String
     ) throws -> ExportMedia {
-        let videoPath = try findMedia(name: timelineName, paths: s.mediaSearchPaths)
-        let imageLabels = OrderedSet(s.imageLabels).map { $0 }
-        let labelProperties = MarkerLabelProperties(using: s)
+        let videoPath = try findMedia(name: timelineName, paths: settings.mediaSearchPaths)
+        let imageLabels = OrderedSet(settings.imageLabels).map { $0 }
+        let labelProperties = MarkerLabelProperties(using: settings)
         
         let imageSettings = ExportImageSettings(
-            gifFPS: s.gifFPS,
-            gifSpan: s.gifSpan,
-            format: s.imageFormat,
-            quality: s.imageQualityDouble,
+            gifFPS: settings.gifFPS,
+            gifSpan: settings.gifSpan,
+            format: settings.imageFormat,
+            quality: settings.imageQualityDouble,
             dimensions: calcVideoDimensions(for: videoPath),
             labelFields: imageLabels,
-            labelCopyright: s.imageLabelCopyright,
+            labelCopyright: settings.imageLabelCopyright,
             labelProperties: labelProperties,
-            imageLabelHideNames: s.imageLabelHideNames
+            imageLabelHideNames: settings.imageLabelHideNames
         )
         
         return ExportMedia(videoURL: videoPath, imageSettings: imageSettings)

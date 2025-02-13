@@ -22,7 +22,7 @@ final actor AnimatedImagesWriter: ImageWriterProtocol {
     let imageLabelProperties: MarkerLabelProperties
     let logger: Logger
     
-    // ProgressReporting
+    // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress = Progress()
     
     init(

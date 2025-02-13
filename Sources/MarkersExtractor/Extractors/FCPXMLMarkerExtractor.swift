@@ -85,9 +85,11 @@ class FCPXMLMarkerExtractor {
             logger: logger
         )
     }
-    
-    // MARK: - Public Instance Methods
-    
+}
+
+// MARK: - Public Methods
+
+extension FCPXMLMarkerExtractor {
     struct TimelineContext {
         let library: FinalCutPro.FCPXML.Library?
         let projectName: String?
@@ -123,8 +125,8 @@ class FCPXMLMarkerExtractor {
         // we prefer the project name if a project exists.
         // this should also not be an empty string.
         let timelineName = projectName
-            ?? timeline.timelineName
-            ?? defaultTimelineName
+        ?? timeline.timelineName
+        ?? defaultTimelineName
         
         // extract from origin element
         let timelineStartTimecode = startTimecode(for: timeline)
@@ -192,9 +194,11 @@ class FCPXMLMarkerExtractor {
         
         return fcpxmlMarkers
     }
-    
-    // MARK: - Private Methods
-    
+}
+
+// MARK: - Private Methods
+
+extension FCPXMLMarkerExtractor {
     private func markers(
         in timeline: FinalCutPro.FCPXML.AnyTimeline,
         library: FinalCutPro.FCPXML.Library?,

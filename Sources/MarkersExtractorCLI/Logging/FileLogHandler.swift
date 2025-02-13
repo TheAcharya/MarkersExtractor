@@ -12,17 +12,28 @@ import Logging
 /// Derived from https://github.com/crspybits/swift-log-file
 public struct FileLogHandler: LogHandler {
     private let stream: FileHandlerOutputStream
+    
     private var label: String
-
+    
     public var logLevel: Logger.Level = .info
+    
     public var metadata = Logger.Metadata() {
         didSet {
             prettyMetadata = prettify(metadata)
         }
     }
-
+    
     private var prettyMetadata: String?
+    
+    public init(label: String, localFile url: URL) throws {
+        self.label = label
+        stream = try FileHandlerOutputStream(localFile: url)
+    }
+}
 
+extension FileLogHandler: Sendable { }
+
+extension FileLogHandler {
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
             metadata[metadataKey]
@@ -31,12 +42,7 @@ public struct FileLogHandler: LogHandler {
             metadata[metadataKey] = newValue
         }
     }
-
-    public init(label: String, localFile url: URL) throws {
-        self.label = label
-        stream = try FileHandlerOutputStream(localFile: url)
-    }
-
+    
     public func log(
         level: Logger.Level,
         message: Logger.Message,
@@ -47,8 +53,8 @@ public struct FileLogHandler: LogHandler {
         line: UInt
     ) {
         let prettyMetadata = metadata?.isEmpty ?? true
-            ? prettyMetadata
-            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+        ? prettyMetadata
+        : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
         
         var stream = stream
         stream.write(
@@ -58,8 +64,8 @@ public struct FileLogHandler: LogHandler {
     
     private func prettify(_ metadata: Logger.Metadata) -> String? {
         !metadata.isEmpty
-            ? metadata.map { "\($0)=\($1)" }.joined(separator: " ")
-            : nil
+        ? metadata.map { "\($0)=\($1)" }.joined(separator: " ")
+        : nil
     }
     
     // TODO: Gross. Probably a safer/simpler way to do this.
@@ -72,43 +78,6 @@ public struct FileLogHandler: LogHandler {
             $0.withMemoryRebound(to: CChar.self) {
                 guard let addr = $0.baseAddress else { return "" }
                 return String(cString: addr)
-            }
-        }
-    }
-}
-
-struct FileHandlerOutputStream: TextOutputStream {
-    let queue = DispatchQueue(label: "FileHandlerOutputStream", qos: .default)
-    
-    enum StreamError: Error {
-        case couldNotCreateFile
-    }
-    
-    private let fileHandle: FileHandle
-    let encoding: String.Encoding
-    
-    init(localFile url: URL, encoding: String.Encoding = .utf8) throws {
-        if !FileManager.default.fileExists(atPath: url.path) {
-            guard FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
-            else {
-                throw StreamError.couldNotCreateFile
-            }
-        }
-        
-        fileHandle = try FileHandle(forWritingTo: url)
-        try fileHandle.seekToEnd()
-        self.encoding = encoding
-    }
-    
-    mutating func write(_ string: String) {
-        guard let data = string.data(using: encoding) else { return }
-        queue.sync { [self] in
-            do {
-                try fileHandle.write(contentsOf: data)
-            } catch {
-                #if DEBUG
-                print(error)
-                #endif
             }
         }
     }

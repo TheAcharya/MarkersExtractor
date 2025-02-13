@@ -45,25 +45,3 @@ extension InterpretedMarkerType {
         }
     }
 }
-
-// MARK: - DAWFileKit Extensions
-
-extension FinalCutPro.FCPXML.Marker.MarkerKind {
-    public var name: String {
-        switch self {
-        case .standard: return "Standard"
-        case .chapter: return "Chapter"
-        case .toDo: return "To Do"
-        }
-    }
-}
-
-extension FinalCutPro.FCPXML.Marker.Configuration {
-    public var name: String {
-        switch self {
-        case .standard: return "Standard"
-        case .chapter: return "Chapter"
-        case .toDo: return "To Do"
-        }
-    }
-}
