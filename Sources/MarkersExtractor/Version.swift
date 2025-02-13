@@ -6,4 +6,4 @@
 
 /// Static CLI version number stored in its own file to allow for easier access by automated
 /// build tools.
-public let packageVersion = "0.3.13"
+public let packageVersion = "0.3.14"
