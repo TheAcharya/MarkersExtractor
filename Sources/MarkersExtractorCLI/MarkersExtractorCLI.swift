@@ -10,19 +10,62 @@ import Logging
 import MarkersExtractor
 import DAWFileKit
 
+// MARK: - Main Command
+
 @main
 struct MarkersExtractorCLI: AsyncParsableCommand {
-    // MARK: - Config
-    
     static let configuration = CommandConfiguration(
         commandName: "markers-extractor",
         abstract: "Tool to extract markers from Final Cut Pro FCPXML/FCPXMLD.",
         discussion: "https://github.com/TheAcharya/MarkersExtractor",
-        version: packageVersion
+        version: packageVersion,
+        subcommands: [],
+        defaultSubcommand: nil,
+        helpNames: .shortAndLong
     )
     
-    // MARK: - Arguments
+    // MARK: - General Options
     
+    @OptionGroup(title: "GENERAL")
+    var generalOptions: GeneralOptions
+    
+    // MARK: - Image Options
+    
+    @OptionGroup(title: "IMAGE")
+    var imageOptions: ImageOptions
+    
+    // MARK: - Label Options
+    
+    @OptionGroup(title: "LABEL")
+    var labelOptions: LabelOptions
+    
+    // MARK: - Log Options
+    
+    @OptionGroup(title: "LOG")
+    var logOptions: LogOptions
+    
+    // MARK: - Other Media
+    
+    @OptionGroup(title: "MEDIA")
+    var mediaOptions: MediaOptions
+    
+    // MARK: - Required Arguments
+    
+    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
+    var fcpxmlPath: URL
+    
+    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
+    var outputDir: URL
+    
+    // MARK: - Internal
+    
+    private var _progressLogging: ProgressLogging?
+}
+
+// MARK: - Option Groups
+
+// General Options
+struct GeneralOptions: ParsableArguments {
     @Option(
         help: ArgumentHelp(
             "Metadata export format.",
@@ -67,6 +110,26 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     var includeDisabled: Bool = MarkersExtractor.Settings.Defaults.includeDisabled
     
     @Option(
+        name: [.customLong("folder-format")],
+        help: ArgumentHelp(
+            "Output folder name format.",
+            valueName: caseIterableValueString(for: ExportFolderFormat.self)
+        )
+    )
+    var exportFolderFormat: ExportFolderFormat = MarkersExtractor.Settings.Defaults.exportFolderFormat
+    
+    @Option(
+        help: ArgumentHelp(
+            "Marker naming mode. This affects Marker IDs and image filenames.",
+            valueName: caseIterableValueString(for: MarkerIDMode.self)
+        )
+    )
+    var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
+}
+
+// Image Options
+struct ImageOptions: ParsableArguments {
+    @Option(
         help: ArgumentHelp(
             "Marker thumb image format. 'gif' is animated and additional options can be specified with --gif-fps and --gif-span.",
             valueName: caseIterableValueString(for: MarkerImageFormat.self)
@@ -106,15 +169,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
     var gifSpan: TimeInterval = MarkersExtractor.Settings.Defaults.gifSpan
-    
-    @Option(
-        help: ArgumentHelp(
-            "Marker naming mode. This affects Marker IDs and image filenames.",
-            valueName: caseIterableValueString(for: MarkerIDMode.self)
-        )
-    )
-    var idNamingMode: MarkerIDMode = MarkersExtractor.Settings.Defaults.idNamingMode
-    
+}
+
+// Label Options
+struct LabelOptions: ParsableArguments {
     @Option(
         name: [.customLong("label")],
         help: ArgumentHelp(
@@ -201,7 +259,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         help: ArgumentHelp("Hide names of image labels.")
     )
     var imageLabelHideNames: Bool = MarkersExtractor.Settings.Defaults.imageLabelHideNames
-    
+}
+
+// Log Options
+struct LogOptions: ParsableArguments {
     @Option(
         help: ArgumentHelp(
             "Path including filename to create a JSON result file. If this option is not passed, it won't be created.",
@@ -210,15 +271,6 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         transform: URL.init(fileURLWithPath:)
     )
     var resultFilePath: URL? = MarkersExtractor.Settings.Defaults.resultFilePath
-    
-    @Option(
-        name: [.customLong("folder-format")],
-        help: ArgumentHelp(
-            "Output folder name format.",
-            valueName: caseIterableValueString(for: ExportFolderFormat.self)
-        )
-    )
-    var exportFolderFormat: ExportFolderFormat = MarkersExtractor.Settings.Defaults.exportFolderFormat
     
     @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
     var log: URL?
@@ -236,7 +288,10 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     
     @Flag(name: [.customLong("no-progress")], help: "Disable progress logging.")
     var noProgressLogging = false
-    
+}
+
+// Other Options
+struct MediaOptions: ParsableArguments {
     @Option(
         name: [.customLong("media-search-path")],
         help: ArgumentHelp(
@@ -252,23 +307,13 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
         help: "Bypass media. No thumbnails will be generated."
     )
     var noMedia: Bool = MarkersExtractor.Settings.Defaults.noMedia
-    
-    @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
-    var fcpxmlPath: URL
-    
-    @Argument(help: "Output directory.", transform: URL.init(fileURLWithPath:))
-    var outputDir: URL
-    
-    // MARK: - Internal
-    
-    private var _progressLogging: ProgressLogging?
 }
 
 // MARK: - AsyncParsableCommand Implementations
 
 extension MarkersExtractorCLI {
     mutating func validate() throws {
-        if let log {
+        if let log = logOptions.log {
             if FileManager.default.fileExists(atPath: log.path) {
                 // check that existing file is writable
                 if !FileManager.default.isWritableFile(atPath: log.path) {
@@ -277,8 +322,8 @@ extension MarkersExtractorCLI {
             }
         }
         
-        if imageFormat == .animated(.gif), imageSizePercent == nil {
-            imageSizePercent = MarkersExtractor.Settings.Defaults.imageSizePercentGIF
+        if imageOptions.imageFormat == .animated(.gif), imageOptions.imageSizePercent == nil {
+            imageOptions.imageSizePercent = MarkersExtractor.Settings.Defaults.imageSizePercentGIF
         }
     }
     
@@ -287,58 +332,58 @@ extension MarkersExtractorCLI {
         
         do {
             let fcpxml = try FCPXMLFile(at: fcpxmlPath)
-            let mediaSearchPaths = mediaSearchPaths.isEmpty
+            let mediaSearchPaths = mediaOptions.mediaSearchPaths.isEmpty
             ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
-            : mediaSearchPaths
+            : mediaOptions.mediaSearchPaths
             
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
                 outputDir: outputDir,
-                noMedia: noMedia,
+                noMedia: mediaOptions.noMedia,
                 mediaSearchPaths: mediaSearchPaths,
-                exportFormat: exportFormat,
-                enableSubframes: enableSubframes,
-                markersSource: markersSource,
-                useChapterMarkerThumbnails: useChapterMarkerThumbnails,
-                excludeRoles: Set(excludeRoles),
-                includeDisabled: includeDisabled,
-                imageFormat: imageFormat,
-                imageQuality: imageQuality,
-                imageWidth: imageWidth,
-                imageHeight: imageHeight,
-                imageSizePercent: imageSizePercent,
-                gifFPS: gifFPS,
-                gifSpan: gifSpan,
-                idNamingMode: idNamingMode,
-                imageLabels: imageLabels,
-                imageLabelCopyright: imageLabelCopyright,
-                imageLabelFont: imageLabelFont,
-                imageLabelFontMaxSize: imageLabelFontMaxSize,
-                imageLabelFontOpacity: imageLabelFontOpacity,
-                imageLabelFontColor: imageLabelFontColor,
-                imageLabelFontStrokeColor: imageLabelFontStrokeColor,
-                imageLabelFontStrokeWidth: imageLabelFontStrokeWidth,
-                imageLabelAlignHorizontal: imageLabelAlignHorizontal,
-                imageLabelAlignVertical: imageLabelAlignVertical,
-                imageLabelHideNames: imageLabelHideNames,
-                resultFilePath: resultFilePath,
-                exportFolderFormat: exportFolderFormat
+                exportFormat: generalOptions.exportFormat,
+                enableSubframes: generalOptions.enableSubframes,
+                markersSource: generalOptions.markersSource,
+                useChapterMarkerThumbnails: generalOptions.useChapterMarkerThumbnails,
+                excludeRoles: Set(generalOptions.excludeRoles),
+                includeDisabled: generalOptions.includeDisabled,
+                imageFormat: imageOptions.imageFormat,
+                imageQuality: imageOptions.imageQuality,
+                imageWidth: imageOptions.imageWidth,
+                imageHeight: imageOptions.imageHeight,
+                imageSizePercent: imageOptions.imageSizePercent,
+                gifFPS: imageOptions.gifFPS,
+                gifSpan: imageOptions.gifSpan,
+                idNamingMode: generalOptions.idNamingMode,
+                imageLabels: labelOptions.imageLabels,
+                imageLabelCopyright: labelOptions.imageLabelCopyright,
+                imageLabelFont: labelOptions.imageLabelFont,
+                imageLabelFontMaxSize: labelOptions.imageLabelFontMaxSize,
+                imageLabelFontOpacity: labelOptions.imageLabelFontOpacity,
+                imageLabelFontColor: labelOptions.imageLabelFontColor,
+                imageLabelFontStrokeColor: labelOptions.imageLabelFontStrokeColor,
+                imageLabelFontStrokeWidth: labelOptions.imageLabelFontStrokeWidth,
+                imageLabelAlignHorizontal: labelOptions.imageLabelAlignHorizontal,
+                imageLabelAlignVertical: labelOptions.imageLabelAlignVertical,
+                imageLabelHideNames: labelOptions.imageLabelHideNames,
+                resultFilePath: logOptions.resultFilePath,
+                exportFolderFormat: generalOptions.exportFolderFormat
             )
         } catch let err as MarkersExtractorError {
             throw ValidationError(err.localizedDescription)
         }
         
         let extractorLoggerLabel = "MarkersExtractor"
-        let extractorLoggerHandler = await LogFactory.shared.fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logLevel, logFile: log)
+        let extractorLoggerHandler = await LogFactory.shared.fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logOptions.logLevel, logFile: logOptions.log)
         let extractorLogger = Logger(label: extractorLoggerLabel) { label in
             extractorLoggerHandler
         }
         
         let extractor = MarkersExtractor(settings: settings, logger: extractorLogger)
         
-        if !noProgressLogging {
+        if !logOptions.noProgressLogging {
             let progressLoggerLabel = "Progress"
-            let progressLoggerHandler = await LogFactory.shared.consoleLogFactory(label: progressLoggerLabel, logLevel: logLevel)
+            let progressLoggerHandler = await LogFactory.shared.consoleLogFactory(label: progressLoggerLabel, logLevel: logOptions.logLevel)
             let progressLogger = Logger(label: progressLoggerLabel) { label in
                 progressLoggerHandler
             }
