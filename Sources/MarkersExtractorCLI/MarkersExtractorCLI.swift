@@ -44,7 +44,7 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @OptionGroup(title: "LOG")
     var logOptions: LogOptions
     
-    // MARK: - Other Media
+    // MARK: - Media Options
     
     @OptionGroup(title: "MEDIA")
     var mediaOptions: MediaOptions
