@@ -117,6 +117,19 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+            
+        case .compressor:
+            return try await export(
+                for: CompressorProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         }
     }
     
