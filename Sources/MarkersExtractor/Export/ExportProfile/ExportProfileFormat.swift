@@ -17,6 +17,7 @@ public enum ExportProfileFormat: String {
     case xlsx
     case youtube
     case compressor
+    case markdown
 }
 
 extension ExportProfileFormat: Equatable { }
@@ -54,6 +55,8 @@ extension ExportProfileFormat {
             return "YouTube Chapters"
         case .compressor:
             return "Compressor Chapters"
+        case .markdown:
+            return "Markdown"
         }
     }
     
@@ -77,6 +80,8 @@ extension ExportProfileFormat {
             return YouTubeProfile.self
         case .compressor:
             return CompressorProfile.self
+        case .markdown:
+            return MarkdownProfile.self
         }
     }
 }

@@ -130,6 +130,19 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+            
+        case .markdown:
+            return try await export(
+                for: MarkdownProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         }
     }
     
