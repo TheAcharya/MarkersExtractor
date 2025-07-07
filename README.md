@@ -97,7 +97,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.14 # replace this with the git tag of the version you need
+VERSION=0.3.15 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -370,7 +370,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.14")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.15")
     ],
     targets: [
         .target(
@@ -405,7 +405,7 @@ Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor
 
 Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://bsky.app/profile/vigneswaranrajkumar.com)
 
-Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
+Additional Work & Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
 Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
 
