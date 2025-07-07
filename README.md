@@ -393,7 +393,7 @@ Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor
 
 Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://bsky.app/profile/vigneswaranrajkumar.com)
 
-Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
+Additional Work & Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
 Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
 
