@@ -12,7 +12,6 @@ public enum ExportProfileFormat: String {
     case compressor
     case csv
     case json
-    case markdown
     case midi
     case notion
     case tsv
@@ -41,7 +40,6 @@ extension ExportProfileFormat {
         case .compressor: "Compressor Chapters"
         case .csv: "CSV"
         case .json: "JSON"
-        case .markdown: "Markdown"
         case .midi: "MIDI File"
         case .notion: "Notion"
         case .tsv: "TSV"
@@ -56,7 +54,6 @@ extension ExportProfileFormat {
         case .compressor: CompressorProfile.self
         case .csv: CSVProfile.self
         case .json: JSONProfile.self
-        case .markdown: MarkdownProfile.self
         case .midi: MIDIFileExportProfile.self
         case .notion: NotionExportProfile.self
         case .tsv: TSVProfile.self
