@@ -36,10 +36,14 @@ extension ExcelProfile {
         payload: Payload,
         noMedia: Bool
     ) throws {
+        // Extract output folder from payload path
+        let outputFolder = payload.xlsxPath.deletingLastPathComponent()
+        
         try xlsxWriteManifest(
             xlsxPath: payload.xlsxPath,
             noMedia: noMedia,
-            preparedMarkers
+            preparedMarkers,
+            outputFolder: outputFolder
         )
     }
     
@@ -80,6 +84,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
+            dict[.images] = "" // Empty string for data rows, header will be set separately
         }
         
         return dict
@@ -116,6 +121,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
+            dict[.images] = .string("") // Empty string for data rows, header will be set separately
         }
         
         return dict
