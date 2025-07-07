@@ -20,7 +20,7 @@ extension CompressorProfile {
         payload: Payload,
         mediaInfo: ExportMarkerMediaInfo?
     ) -> [PreparedMarker] {
-        var preparedMarkers = markers.map {
+        let preparedMarkers = markers.map {
             PreparedMarker(
                 marker: $0,
                 idMode: idMode,
@@ -30,30 +30,6 @@ extension CompressorProfile {
                 offsetToTimelineStart: true,
                 useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
             )
-        }
-        
-        // There is a bug in Compressor whereby the last marker is inadvertently omitted during the import process.
-        // As a workaround, the last marker is duplicated and given a placeholder name.
-        if let lastMarker = markers.last {
-            let nullMarker = PreparedMarker(
-                marker: Marker(
-                    type: lastMarker.type,
-                    name: "-",
-                    notes: lastMarker.notes,
-                    roles: lastMarker.roles,
-                    position: lastMarker.position,
-                    parentInfo: lastMarker.parentInfo,
-                    metadata: lastMarker.metadata,
-                    xmlPath: lastMarker.xmlPath
-                ),
-                idMode: idMode,
-                mediaInfo: mediaInfo,
-                tcStringFormat: tcStringFormat,
-                timeFormat: .timecode(stringFormat: tcStringFormat),
-                offsetToTimelineStart: true,
-                useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
-            )
-            preparedMarkers.append(nullMarker)
         }
         
         return preparedMarkers
@@ -66,9 +42,15 @@ extension CompressorProfile {
     ) throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: false, noMedia: noMedia)
         
-        let txt = rows
+        var txt = rows
             .map { $0.joined(separator: "\t") }
             .joined(separator: "\n")
+        
+        // Note that Compressor is fussy with text file formatting and expects a
+        // new-line character at the end of each line.
+        // This means that if the final marker does not have a trailing new-line character,
+        // Compressor will silently fail to import the final marker.
+        txt += "\n"
         
         guard let txtData = txt.data(using: .utf8)
         else {
