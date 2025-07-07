@@ -52,5 +52,12 @@ extension MarkersExtractorCLI {
         
         @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
         var gifSpan: TimeInterval = MarkersExtractor.Settings.Defaults.gifSpan
+        
+        @Flag(
+            help: ArgumentHelp(
+                "For chapter markers, use their thumbnail pin position for thumbnail image generation."
+            )
+        )
+        var useChapterMarkerThumbnails: Bool = MarkersExtractor.Settings.Defaults.useChapterMarkerThumbnails
     }
 }

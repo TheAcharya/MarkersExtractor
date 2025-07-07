@@ -29,6 +29,11 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @OptionGroup(title: "GENERAL")
     var generalOptions: GeneralOptions
     
+    // MARK: - Filter Options
+    
+    @OptionGroup(title: "MARKER FILTERING")
+    var filterOptions: FilterOptions
+    
     // MARK: - Image Options
     
     @OptionGroup(title: "IMAGE")
@@ -96,10 +101,10 @@ extension MarkersExtractorCLI {
                 mediaSearchPaths: mediaSearchPaths,
                 exportFormat: generalOptions.exportFormat,
                 enableSubframes: generalOptions.enableSubframes,
-                markersSource: generalOptions.markersSource,
-                useChapterMarkerThumbnails: generalOptions.useChapterMarkerThumbnails,
-                excludeRoles: Set(generalOptions.excludeRoles),
-                includeDisabled: generalOptions.includeDisabled,
+                markersSource: filterOptions.markersSource,
+                useChapterMarkerThumbnails: imageOptions.useChapterMarkerThumbnails,
+                excludeRoles: Set(filterOptions.excludeRoles),
+                includeDisabled: filterOptions.includeDisabled,
                 imageFormat: imageOptions.imageFormat,
                 imageQuality: imageOptions.imageQuality,
                 imageWidth: imageOptions.imageWidth,
