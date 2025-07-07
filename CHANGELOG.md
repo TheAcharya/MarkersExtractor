@@ -5,6 +5,7 @@
 ### New Features
 
 - Added Apple Compressor export profile to export chapter marker lists (#123)
+- Added Markdown export profile (#127)
 
 ### Maintenance
 
