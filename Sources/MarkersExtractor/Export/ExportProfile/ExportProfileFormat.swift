@@ -9,15 +9,15 @@ import Foundation
 /// Supported MarkersExtractor export profiles.
 public enum ExportProfileFormat: String {
     case airtable
+    case compressor
     case csv
     case json
+    case markdown
     case midi
     case notion
     case tsv
     case xlsx
     case youtube
-    case compressor
-    case markdown
 }
 
 extension ExportProfileFormat: Equatable { }
@@ -37,51 +37,31 @@ extension ExportProfileFormat: Sendable { }
 extension ExportProfileFormat {
     public var name: String {
         switch self {
-        case .airtable:
-            return "Airtable"
-        case .csv:
-            return "CSV"
-        case .json:
-            return "JSON"
-        case .midi:
-            return "MIDI File"
-        case .notion:
-            return "Notion"
-        case .tsv:
-            return "TSV"
-        case .xlsx:
-            return "Excel (XLSX)"
-        case .youtube:
-            return "YouTube Chapters"
-        case .compressor:
-            return "Compressor Chapters"
-        case .markdown:
-            return "Markdown"
+        case .airtable: "Airtable"
+        case .compressor: "Compressor Chapters"
+        case .csv: "CSV"
+        case .json: "JSON"
+        case .markdown: "Markdown"
+        case .midi: "MIDI File"
+        case .notion: "Notion"
+        case .tsv: "TSV"
+        case .xlsx: "Excel (XLSX)"
+        case .youtube: "YouTube Chapters"
         }
     }
     
     public var concreteType: any ExportProfile.Type {
         switch self {
-        case .airtable:
-            return AirtableExportProfile.self
-        case .csv:
-            return CSVProfile.self
-        case .json:
-            return JSONProfile.self
-        case .midi:
-            return MIDIFileExportProfile.self
-        case .notion:
-            return NotionExportProfile.self
-        case .tsv:
-            return TSVProfile.self
-        case .xlsx:
-            return ExcelProfile.self
-        case .youtube:
-            return YouTubeProfile.self
-        case .compressor:
-            return CompressorProfile.self
-        case .markdown:
-            return MarkdownProfile.self
+        case .airtable: AirtableExportProfile.self
+        case .compressor: CompressorProfile.self
+        case .csv: CSVProfile.self
+        case .json: JSONProfile.self
+        case .markdown: MarkdownProfile.self
+        case .midi: MIDIFileExportProfile.self
+        case .notion: NotionExportProfile.self
+        case .tsv: TSVProfile.self
+        case .xlsx: ExcelProfile.self
+        case .youtube: YouTubeProfile.self
         }
     }
 }

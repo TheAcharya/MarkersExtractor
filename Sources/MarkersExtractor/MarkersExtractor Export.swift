@@ -29,6 +29,18 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+        case .compressor:
+            return try await export(
+                for: CompressorProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         case .csv:
             return try await export(
                 for: CSVProfile.self,
@@ -44,6 +56,18 @@ extension MarkersExtractor {
         case .json:
             return try await export(
                 for: JSONProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
+        case .markdown:
+            return try await export(
+                for: MarkdownProfile.self,
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
@@ -78,7 +102,6 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
-            
         case .tsv:
             return try await export(
                 for: TSVProfile.self,
@@ -91,7 +114,6 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
-            
         case .xlsx:
             return try await export(
                 for: ExcelProfile.self,
@@ -104,36 +126,9 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
-            
         case .youtube:
             return try await export(
                 for: YouTubeProfile.self,
-                media: media,
-                markers: markers,
-                outputURL: outputURL,
-                payload: .init(
-                    timelineName: timelineName,
-                    outputURL: outputURL
-                ),
-                parentProgress: parentProgress
-            )
-            
-        case .compressor:
-            return try await export(
-                for: CompressorProfile.self,
-                media: media,
-                markers: markers,
-                outputURL: outputURL,
-                payload: .init(
-                    timelineName: timelineName,
-                    outputURL: outputURL
-                ),
-                parentProgress: parentProgress
-            )
-            
-        case .markdown:
-            return try await export(
-                for: MarkdownProfile.self,
                 media: media,
                 markers: markers,
                 outputURL: outputURL,
