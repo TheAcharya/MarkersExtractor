@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## [0.3.16](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.16) (2025-07-??)
+
+### Maintenance
+
+- Organized CLI help text arguments into categories (#121)
+
 ## [0.3.15](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.15) (2025-03-29)
 
 ### Bug Fixes
