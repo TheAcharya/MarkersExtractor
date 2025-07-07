@@ -346,9 +346,11 @@ The format is a dictionary using the following key names:
 | `csvManifestPath`| The path to the CSV manifest file, if one was created by the profile. |
 | `tsvManifestPath` | The path to the TSV manifest file, if one was created by the profile. |
 | `txtManifestPath` | The path to the Plain Text manifest file, if one was created by the profile. |
+| `mdManifestPath` | The path to the Markdown manifest file, if one was created by the profile. |
 | `jsonManifestPath`| The path to the JSON manifest file, if one was created by the profile. |
 | `midiFilePath`| The path to the MIDI file, if one was created by the profile. |
-| `version` | The MarkersExtractor version used to perform extraction. | 
+| `xlsxManifestPath` | The path to the XLSX file, if one was created by the profile. |
+| `version` | The MarkersExtractor version used to perform extraction. |
 
 It is recommended to read this file with a JSON parser to obtain the values for keys. If using a shell script, it may be possible to grep the information.
 
