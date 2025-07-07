@@ -123,22 +123,28 @@ ARGUMENTS:
   <fcpxml-path>           Input FCPXML file / FCPXMLD bundle.
   <output-dir>            Output directory.
 
-OPTIONS:
+GENERAL:
   --export-format <airtable | csv | json | midi | notion | tsv | xlsx | youtube>
                           Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
+  --folder-format <short | medium | long>
+                          Output folder name format. (default: medium)
+  --id-naming-mode <timelineNameAndTimecode | name | notes>
+                          Marker naming mode. This affects Marker IDs and image
+                          filenames. (default: timelineNameAndTimecode)
+
+MARKER FILTERING:
   --markers-source <markers | markersAndCaptions | captions>
                           Annotations to import. If captions are used, their
                           start timecode determines their position. (default:
                           markers)
-  --use-chapter-marker-thumbnails
-                          For chapter markers, use their thumbnail pin position
-                          for thumbnail image generation.
   --exclude-role <name>   Exclude markers with a specified role. This argument
                           can be supplied more than once to apply multiple role
                           exclusions.
   --include-disabled      Include markers on disabled clips. By default,
                           disabled clips are ignored.
+
+IMAGE:
   --image-format <png | jpg | gif>
                           Marker thumb image format. 'gif' is animated and
                           additional options can be specified with --gif-fps
@@ -152,9 +158,11 @@ OPTIONS:
                           for GIF: 50)
   --gif-fps <0.1...60.0>  GIF frame rate. (default: 10.0)
   --gif-span <sec>        GIF capture span around marker. (default: 2.0)
-  --id-naming-mode <timelineNameAndTimecode | name | notes>
-                          Marker naming mode. This affects Marker IDs and image
-                          filenames. (default: timelineNameAndTimecode)
+  --use-chapter-marker-thumbnails
+                          For chapter markers, use their thumbnail pin position
+                          for thumbnail image generation.
+
+LABEL:
   --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName | xmlPath>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
@@ -176,22 +184,26 @@ OPTIONS:
   --label-align-vertical <top | center | bottom>
                           Vertical alignment of image labels. (default: top)
   --label-hide-names      Hide names of image labels.
+
+LOG:
   --result-file-path <path>
                           Path including filename to create a JSON result file.
                           If this option is not passed, it won't be created.
-  --folder-format <short | medium | long>
-                          Output folder name format. (default: medium)
   --log <log>             Log file path.
   --log-level <trace | debug | info | notice | warning | error | critical>
                           Log level. (values: trace, debug, info, notice,
                           warning, error, critical; default: info)
   --quiet                 Disable log.
   --no-progress           Disable progress logging.
+
+MEDIA:
   --media-search-path <path>
                           Media search path. This argument can be supplied more
                           than once to use multiple paths. (default: same
                           folder as fcpxml(d))
   --no-media              Bypass media. No thumbnails will be generated.
+
+OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 ```
@@ -393,7 +405,7 @@ Check out [`MarkersExtractorCLI`](https://github.com/TheAcharya/MarkersExtractor
 
 Original Idea and Workflow Architecture by [Vigneswaran Rajkumar](https://bsky.app/profile/vigneswaranrajkumar.com)
 
-Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
+Additional Work & Maintained by [Steffan Andrews](https://github.com/orchetect) (0.2.0 ...)
 
 Initial Work by [Vladilen Zhdanov](https://github.com/vzhd1701) ([0.1.0 ... 0.1.1](https://github.com/vzhd1701/MarkersExtractor))
 
