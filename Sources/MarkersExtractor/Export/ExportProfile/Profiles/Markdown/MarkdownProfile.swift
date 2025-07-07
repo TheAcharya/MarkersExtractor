@@ -11,7 +11,7 @@ public final class MarkdownProfile: ExportProfile {
     // ExportProfile
     public typealias Payload = MDExportPayload
     public typealias Icon = EmptyExportIcon
-    public typealias PreparedMarker = StandardExportMarker
+    public typealias PreparedMarker = MarkdownExportMarker
     public static let profile: ExportProfileFormat = .markdown
     public static let isMediaCapable: Bool = false
     public var logger: Logger?

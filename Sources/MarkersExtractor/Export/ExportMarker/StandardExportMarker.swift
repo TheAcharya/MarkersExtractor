@@ -41,7 +41,6 @@ public struct StandardExportMarker: ExportMarker {
     
     public let imageFileName: String
     public let imageTimecode: Timecode
-    // public let mediaInfo: ExportMarkerMediaInfo?
     
     public let xmlPath: String
     
@@ -102,7 +101,6 @@ public struct StandardExportMarker: ExportMarker {
         
         icon = Icon(marker.type)
         
-        // self.mediaInfo = mediaInfo
         imageFileName = mediaInfo?
             .imageFileName(for: marker, idMode: idMode, tcStringFormat: tcStringFormat)
             ?? ""

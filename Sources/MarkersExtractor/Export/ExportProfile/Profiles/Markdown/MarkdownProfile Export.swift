@@ -40,18 +40,31 @@ extension MarkdownProfile {
         payload: Payload,
         noMedia: Bool
     ) throws {
-        // Get the project name from the first marker (assumes all markers have the same project name)
-        let projectName = preparedMarkers.first!.projectName
+        let title = payload.title
         
         // Create the header with the project name
-        let header = "# \(projectName)\n\n"
+        let header = "# \(title)\n\n"
         
         // Get rows without header
-        let rows = dictsToRows(preparedMarkers, includeHeader: false, noMedia: noMedia)
+        let rows: [String] = preparedMarkers.map {
+            var output = "- "
+            
+            output += "\($0.position)"
+            
+            output += " - \($0.name)"
+            
+            if let type = $0.type {
+                output += " \(type)"
+            }
+            
+            if !$0.notes.isEmpty {
+                output += " - \($0.notes)"
+            }
+            return output
+        }
         
         // Flatten data with header
         let md = header + rows
-            .map { $0.joined(separator: " ") }
             .joined(separator: "\n")
         
         guard let mdData = md.data(using: .utf8)
@@ -70,52 +83,16 @@ extension MarkdownProfile {
         ]
     }
     
-    private func getTypeEmoji(type: String, isChecked: Bool) -> String {
-        // If the item is checked, always return green circle regardless of type
-        if isChecked {
-            return "🟢"
-        }
-        
-        // Otherwise, choose emoji based on type
-        switch type {
-        case "Standard":
-            return "🟣"
-        case "To Do":
-            return "🔴"
-        case "Chapter":
-            return "🟠"
-        case "Caption":
-            return "🔵"
-        default:
-            return type // Just return the original type if somehow there's something unexpected
-        }
-    }
-    
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         var dict: OrderedDictionary<ExportField, String> = [:]
         
-        let isChecked = marker.checked == "true"
-        
-        // Convert true/false to markdown checkbox format
-        dict[.checked] = isChecked ? "- [x]" : "- [ ]"
-        dict[.position] = marker.position + " -"
-        
-        // Replace the type text with the appropriate emoji
-        dict[.type] = getTypeEmoji(type: marker.type, isChecked: isChecked)
-        
-        // Add a dash separator before notes if they exist
-        if !marker.name.isEmpty && !marker.notes.isEmpty {
-            dict[.name] = marker.name + " -"
-        } else {
-            dict[.name] = marker.name
-        }
-        
+        dict[.name] = marker.name
+        dict[.type] = marker.type
         dict[.notes] = marker.notes
-        
-        // We don't include projectName in the output fields as it will be used only for the header
+        dict[.position] = marker.position
         
         return dict
     }
@@ -126,25 +103,10 @@ extension MarkdownProfile {
     ) -> OrderedDictionary<ExportField, ExportFieldValue> {
         var dict: OrderedDictionary<ExportField, ExportFieldValue> = [:]
         
-        let isChecked = marker.checked == "true"
-        
-        // Convert true/false to markdown checkbox format
-        dict[.checked] = .string(isChecked ? "- [x]" : "- [ ]")
-        dict[.position] = .string(marker.position + " -")
-        
-        // Replace the type text with the appropriate emoji
-        dict[.type] = .string(getTypeEmoji(type: marker.type, isChecked: isChecked))
-        
-        // Add a dash separator before notes if they exist
-        if !marker.name.isEmpty && !marker.notes.isEmpty {
-            dict[.name] = .string(marker.name + " -")
-        } else {
-            dict[.name] = .string(marker.name)
-        }
-        
+        dict[.name] = .string(marker.name)
+        if let markerType = marker.type { dict[.type] = .string(markerType) }
         dict[.notes] = .string(marker.notes)
-        
-        // We don't include projectName in the output fields as it will be used only for the header
+        dict[.position] = .string(marker.position)
         
         return dict
     }

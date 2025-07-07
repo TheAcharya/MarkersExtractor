@@ -25,3 +25,7 @@ extension EmptyExportIcon: Equatable { }
 extension EmptyExportIcon: Hashable { }
 
 extension EmptyExportIcon: Sendable { }
+
+extension EmptyExportIcon {
+    public init() { }
+}
