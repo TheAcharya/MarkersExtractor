@@ -33,12 +33,12 @@ extension CompressorProfile {
         }
         
         // There is a bug in Compressor whereby the last marker is inadvertently omitted during the import process.
-        // As a workaround, the last marker is duplicated and renamed as "Dummy Marker".
+        // As a workaround, the last marker is duplicated and given a placeholder name.
         if let lastMarker = markers.last {
             let nullMarker = PreparedMarker(
                 marker: Marker(
                     type: lastMarker.type,
-                    name: "Dummy Marker",
+                    name: "-",
                     notes: lastMarker.notes,
                     roles: lastMarker.roles,
                     position: lastMarker.position,
