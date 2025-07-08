@@ -24,6 +24,8 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - Tab-separated values (TSV) - Compatible with spreadsheet application
 - Microsoft Excel (XLSX)
 - YouTube Chapters (TXT)
+- Compressor Chapters (TXT)
+- Markdown List (MD)
 - Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
