@@ -15,12 +15,42 @@ import ImageIO
 typealias StringTable = [[String]]
 
 extension ExportProfile {
+    /// Generates an XLSX file with marker data and optional embedded images.
+    /// 
+    /// ## XLKit API Implementation Notes:
+    /// 
+    /// ### Main Actor Isolation
+    /// XLKit 1.0.1+ requires all operations to be performed on the main actor due to concurrency safety.
+    /// All XLKit API calls (Workbook, Sheet, CellFormat, etc.) must be wrapped in `MainActor.run`.
+    /// 
+    /// ### Key XLKit Components Used:
+    /// - `Workbook`: The main container for the Excel file
+    /// - `Sheet`: Individual worksheet within the workbook
+    /// - `CellCoordinate`: Represents cell positions (1-based indexing)
+    /// - `CellFormat`: Defines cell styling (font, size, weight, etc.)
+    /// - `XLSXEngine`: Handles file generation and writing
+    /// 
+    /// ### Cell Addressing
+    /// XLKit uses 1-based indexing for both rows and columns. Cell coordinates are converted
+    /// to Excel-style addresses (A1, B2, etc.) using the `.excelAddress` property.
+    /// 
+    /// ### Image Embedding
+    /// Images are embedded using `sheet.embedImageAutoSized()` which automatically
+    /// resizes images to fit within cell boundaries while maintaining aspect ratio.
+    /// 
+    /// ### Column Width Auto-Adjustment
+    /// Column widths are calculated based on content length and font properties,
+    /// then clamped to reasonable bounds (8-120 units) for better readability.
+    /// 
+    /// ### Security Considerations
+    /// XLKit 1.0.2+ includes file path restrictions by default. The `SecurityManager.enableFilePathRestrictions`
+    /// flag controls this behavior (defaults to false in 1.0.2+).
     func xlsxWriteManifest(
         xlsxPath: URL,
         noMedia: Bool,
         _ preparedMarkers: [PreparedMarker],
         outputFolder: URL? = nil
-    ) throws {
+    ) async throws {
         print("Starting XLSX manifest generation...")
         print("XLSX path: \(xlsxPath.path)")
         print("No media: \(noMedia)")
@@ -34,84 +64,118 @@ extension ExportProfile {
             print("Header row: \(headerRow)")
         }
         
-        // Create a new workbook
-        let workbook = Workbook()
-        
-        // Add a worksheet with default name
-        let sheet = workbook.addSheet(name: "Sheet1")
-        
-        // Set up formats
-        var boldFormat = CellFormat()
-        boldFormat.fontWeight = .bold
-        boldFormat.fontSize = 12
-        
-        // Write header cells with bold formatting
-        guard let headerRowValues = rows.first else { return }
-        for (columnIndex, value) in headerRowValues.enumerated() {
-            let coordinate = CellCoordinate(row: 1, column: columnIndex + 1).excelAddress
-            sheet.setCell(coordinate, string: value, format: boldFormat)
-        }
-        
-        // Write data rows
-        let dataRows = rows.dropFirst()
-        for (rowIndex, rowValues) in dataRows.enumerated() {
-            for (columnIndex, value) in rowValues.enumerated() {
-                let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
-                sheet.setCell(coordinate, string: value)
+        // Prepare image data if needed
+        var imageDataArray: [(rowIndex: Int, imageData: Data, imageFormat: ImageFormat)] = []
+        if !noMedia, let outputFolder = outputFolder {
+            let headerRow = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
+            guard headerRow.contains("Images") else { return }
+            
+            for (rowIndex, marker) in preparedMarkers.enumerated() {
+                let imageFileName = marker.imageFileName
+                guard !imageFileName.isEmpty else { continue }
+                let imagePath = outputFolder.appendingPathComponent(imageFileName)
+                guard FileManager.default.fileExists(atPath: imagePath.path) else { continue }
+                let imageData = try Data(contentsOf: imagePath)
+                let fileExtension = imagePath.pathExtension.lowercased()
+                let imageFormat: ImageFormat
+                switch fileExtension {
+                case "png": imageFormat = .png
+                case "jpg", "jpeg": imageFormat = .jpeg
+                case "gif": imageFormat = .gif
+                default: continue // skip unsupported
+                }
+                imageDataArray.append((rowIndex: rowIndex, imageData: imageData, imageFormat: imageFormat))
             }
         }
         
-        // Add images if media is present and output folder is available
-        if !noMedia, let outputFolder = outputFolder {
-            print("Adding images to sheet...")
-            try addImagesToSheet(sheet: sheet, preparedMarkers: preparedMarkers, outputFolder: outputFolder, workbook: workbook)
-        } else {
-            print("Skipping image embedding - noMedia: \(noMedia), outputFolder: \(outputFolder != nil)")
+        // Prepare header row for image column index calculation
+        let headerRowForImages = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
+        let imagesColumnIndex = headerRowForImages.firstIndex(of: "Images") ?? -1
+        let excelColumnIndex = imagesColumnIndex + 1
+        
+        // MARK: - XLKit Operations (Main Actor Required)
+        // All XLKit operations must be performed on the main actor due to concurrency safety
+        // requirements in XLKit 1.0+. This includes workbook creation, sheet manipulation,
+        // cell formatting, and file generation.
+        try await MainActor.run {
+            // Create a new workbook - this is the root container for the Excel file
+            let workbook = Workbook()
+            
+            // Add a worksheet with default name - sheets are the individual tabs in Excel
+            let sheet = workbook.addSheet(name: "Sheet1")
+            
+            // Set up cell formatting for header row
+            // CellFormat allows customization of font properties, borders, colors, etc.
+            var boldFormat = CellFormat()
+            boldFormat.fontWeight = .bold
+            boldFormat.fontSize = 12
+            
+            // Write header cells with bold formatting
+            // CellCoordinate uses 1-based indexing and converts to Excel-style addresses (A1, B1, etc.)
+            guard let headerRowValues = rows.first else { return }
+            for (columnIndex, value) in headerRowValues.enumerated() {
+                let coordinate = CellCoordinate(row: 1, column: columnIndex + 1).excelAddress
+                sheet.setCell(coordinate, string: value, format: boldFormat)
+            }
+            
+            // Write data rows without special formatting
+            let dataRows = rows.dropFirst()
+            for (rowIndex, rowValues) in dataRows.enumerated() {
+                for (columnIndex, value) in rowValues.enumerated() {
+                    let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
+                    sheet.setCell(coordinate, string: value)
+                }
+            }
+            
+            // Add images if media is present
+            // embedImageAutoSized automatically resizes images to fit within cell boundaries
+            if !imageDataArray.isEmpty && imagesColumnIndex >= 0 {
+                print("Adding images to sheet...")
+                
+                for (rowIndex, imageData, imageFormat) in imageDataArray {
+                    let excelRowIndex = rowIndex + 2 // 1-based, + header
+                    let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
+                    try sheet.embedImageAutoSized(imageData, at: coordinate, of: workbook, format: imageFormat)
+                }
+            } else {
+                print("Skipping image embedding - no images found")
+            }
+            
+            // Auto-adjust column widths based on content
+            // This improves readability by ensuring columns are wide enough for their content
+            print("Auto-adjusting column widths...")
+            Self.autoAdjustColumnWidths(sheet: sheet, rows: rows)
+            
+            // Generate the XLSX file
+            // XLSXEngine handles the actual file writing and compression
+            print("Generating XLSX file...")
+            try XLSXEngine.generateXLSX(workbook: workbook, to: xlsxPath)
         }
         
-        // Auto-adjust column widths based on content
-        print("Auto-adjusting column widths...")
-        autoAdjustColumnWidths(sheet: sheet, rows: rows)
-        
-        // Generate the XLSX file
-        print("Generating XLSX file...")
-        try XLSXEngine.generateXLSX(workbook: workbook, to: xlsxPath)
         print("XLSX file generated successfully at: \(xlsxPath.path)")
     }
     
-    private func addImagesToSheet(
-        sheet: Sheet,
-        preparedMarkers: [PreparedMarker],
-        outputFolder: URL,
-        workbook: Workbook
-    ) throws {
-        let headerRow = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
-        guard let imagesColumnIndex = headerRow.firstIndex(of: "Images") else { return }
-        let excelColumnIndex = imagesColumnIndex + 1
 
-        for (rowIndex, marker) in preparedMarkers.enumerated() {
-            let imageFileName = marker.imageFileName
-            guard !imageFileName.isEmpty else { continue }
-            let imagePath = outputFolder.appendingPathComponent(imageFileName)
-            guard FileManager.default.fileExists(atPath: imagePath.path) else { continue }
-            let imageData = try Data(contentsOf: imagePath)
-            let fileExtension = imagePath.pathExtension.lowercased()
-            let imageFormat: ImageFormat
-            switch fileExtension {
-            case "png": imageFormat = .png
-            case "jpg", "jpeg": imageFormat = .jpeg
-            case "gif": imageFormat = .gif
-            default: continue // skip unsupported
-            }
-            
-            // Use XLKit's embedImageAutoSized with automatic scaling (default 0.5 scale)
-            let excelRowIndex = rowIndex + 2 // 1-based, + header
-            let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
-            sheet.embedImageAutoSized(imageData, at: coordinate, of: workbook, format: imageFormat)
-        }
-    }
     
-    private func autoAdjustColumnWidths(sheet: Sheet, rows: [[String]]) {
+    /// Automatically adjusts column widths based on content length and font properties.
+    /// 
+    /// ## XLKit Column Width Implementation:
+    /// 
+    /// ### Width Units
+    /// XLKit uses a custom width unit system that approximates character widths.
+    /// The calculation considers font weight (bold vs normal) and font size.
+    /// 
+    /// ### Width Calculation Process:
+    /// 1. Calculate text width for header (bold, larger font)
+    /// 2. Calculate text width for all data cells in the column
+    /// 3. Find the maximum width across all cells
+    /// 4. Add padding (3 units) for better readability
+    /// 5. Clamp to reasonable bounds (8-120 units)
+    /// 
+    /// ### Multi-line Text Handling
+    /// For text containing newlines, the longest line is used for width calculation.
+    /// This prevents columns from becoming too narrow for multi-line content.
+    private static func autoAdjustColumnWidths(sheet: Sheet, rows: [[String]]) {
         guard !rows.isEmpty else { return }
         
         let headerRow = rows[0]
@@ -121,11 +185,11 @@ extension ExportProfile {
         for (columnIndex, headerValue) in headerRow.enumerated() {
             var maxWidth = 0.0
             
-            // Check header width
+            // Check header width (bold, larger font)
             let headerWidth = calculateTextWidth(headerValue, isBold: true)
             maxWidth = max(maxWidth, headerWidth)
             
-            // Check data row widths
+            // Check data row widths (normal font)
             for row in dataRows {
                 if columnIndex < row.count {
                     let dataWidth = calculateTextWidth(row[columnIndex], isBold: false)
@@ -133,14 +197,31 @@ extension ExportProfile {
                 }
             }
             
-            // Add some padding and set column width
+            // Add padding and set column width
             let adjustedWidth = maxWidth + 3.0 // Add 3 units of padding for better readability
             let clampedWidth = adjustedWidth.clamped(to: 8.0 ... 120.0) // Min 8, Max 120 for better range
             sheet.setColumnWidth(columnIndex + 1, width: clampedWidth)
         }
     }
     
-    private func calculateTextWidth(_ text: String, isBold: Bool) -> Double {
+    /// Calculates approximate text width based on character count, font weight, and font size.
+    /// 
+    /// ## Text Width Calculation Notes:
+    /// 
+    /// ### Font Properties Impact:
+    /// - Bold text is approximately 20% wider than normal text
+    /// - Header font size (12pt) vs data font size (11pt) affects width
+    /// - Base character width is normalized to 1.0 for normal text
+    /// 
+    /// ### Multi-line Text Handling:
+    /// - Text is split by newlines
+    /// - The longest line determines the width
+    /// - This prevents columns from being too narrow for multi-line content
+    /// 
+    /// ### Limitations:
+    /// This is a simplified approximation. For more accurate calculations,
+    /// consider using Core Text or other font metrics APIs.
+    private static func calculateTextWidth(_ text: String, isBold: Bool) -> Double {
         // Approximate character width calculation
         // This is a simplified approach - in a real implementation you might want to use
         // Core Text or other font metrics for more accurate calculations

@@ -50,7 +50,7 @@ public protocol ExportProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws
+    ) async throws
     
     /// Provides the profile-specific result file content.
     func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary

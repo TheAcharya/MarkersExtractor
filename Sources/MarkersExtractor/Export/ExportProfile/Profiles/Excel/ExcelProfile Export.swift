@@ -31,15 +31,22 @@ extension ExcelProfile {
         }
     }
     
+    /// Writes XLSX manifest file using XLKit via XLSX Export Utils.
+    /// 
+    /// ## XLKit Integration:
+    /// - This method delegates to `xlsxWriteManifest()` in XLSX Export Utils.swift
+    /// - XLSX Export Utils handles all XLKit API calls (Workbook, Sheet, etc.)
+    /// - XLKit operations are performed on the main actor for concurrency safety
+    /// - The output folder is extracted from the XLSX file path for image embedding
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         // Extract output folder from payload path
         let outputFolder = payload.xlsxPath.deletingLastPathComponent()
         
-        try xlsxWriteManifest(
+        try await xlsxWriteManifest(
             xlsxPath: payload.xlsxPath,
             noMedia: noMedia,
             preparedMarkers,
