@@ -127,24 +127,32 @@ extension ExportProfile {
                 }
             }
             
-            // Add images if media is present
-            // embedImageAutoSized automatically resizes images to fit within cell boundaries
+            // Auto-adjust column widths based on content FIRST
+            // This improves readability by ensuring columns are wide enough for their content
+            print("Auto-adjusting column widths...")
+            Self.autoAdjustColumnWidths(sheet: sheet, rows: rows)
+            
+            // Add images if media is present AFTER column width adjustment
+            // embedImageAutoSized will override the image column with perfect sizing
             if !imageDataArray.isEmpty && imagesColumnIndex >= 0 {
                 print("Adding images to sheet...")
                 
                 for (rowIndex, imageData, imageFormat) in imageDataArray {
                     let excelRowIndex = rowIndex + 2 // 1-based, + header
                     let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
-                    try sheet.embedImageAutoSized(imageData, at: coordinate, of: workbook, format: imageFormat)
+                    print("Embedding image at \(coordinate) with format \(imageFormat.rawValue)")
+                    try sheet.embedImageAutoSized(
+                        imageData, 
+                        at: coordinate, 
+                        of: workbook, 
+                        format: imageFormat,
+                        scale: 1.0  // Increase scale factor to 100% (larger visible images)
+                    )
+                    print("✓ Successfully embedded image at \(coordinate)")
                 }
             } else {
                 print("Skipping image embedding - no images found")
             }
-            
-            // Auto-adjust column widths based on content
-            // This improves readability by ensuring columns are wide enough for their content
-            print("Auto-adjusting column widths...")
-            Self.autoAdjustColumnWidths(sheet: sheet, rows: rows)
             
             // Generate the XLSX file
             // XLSXEngine handles the actual file writing and compression
