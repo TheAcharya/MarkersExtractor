@@ -31,15 +31,26 @@ extension ExcelProfile {
         }
     }
     
+    /// Writes XLSX manifest file using XLKit via XLSX Export Utils.
+    /// 
+    /// ## XLKit Integration:
+    /// - This method delegates to `xlsxWriteManifest()` in XLSX Export Utils.swift
+    /// - XLSX Export Utils handles all XLKit API calls (Workbook, Sheet, etc.)
+    /// - XLKit operations are performed on the main actor for concurrency safety
+    /// - The output folder is extracted from the XLSX file path for image embedding
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
-        try xlsxWriteManifest(
+    ) async throws {
+        // Extract output folder from payload path
+        let outputFolder = payload.xlsxPath.deletingLastPathComponent()
+        
+        try await xlsxWriteManifest(
             xlsxPath: payload.xlsxPath,
             noMedia: noMedia,
-            preparedMarkers
+            preparedMarkers,
+            outputFolder: outputFolder
         )
     }
     
@@ -80,6 +91,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
+            dict[.images] = "" // Empty string for data rows, header will be set separately
         }
         
         return dict
@@ -116,6 +128,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
+            dict[.images] = .string("") // Empty string for data rows, header will be set separately
         }
         
         return dict
