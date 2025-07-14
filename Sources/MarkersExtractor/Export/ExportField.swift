@@ -31,7 +31,7 @@ public enum ExportField: String {
     case libraryName
     case iconImage
     case imageFileName
-    case images
+    case image
     case xmlPath
 }
 
@@ -78,7 +78,7 @@ extension ExportField {
         case .libraryName: return "Library Name"
         case .iconImage: return "Icon Image"
         case .imageFileName: return "Image Filename"
-        case .images: return "Images"
+        case .image: return "Image"
         case .xmlPath: return "XML Path"
         }
     }

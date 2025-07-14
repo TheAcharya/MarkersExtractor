@@ -37,7 +37,10 @@ extension ExcelProfile {
     /// - This method delegates to `xlsxWriteManifest()` in XLSX Export Utils.swift
     /// - XLSX Export Utils handles all XLKit API calls (Workbook, Sheet, etc.)
     /// - XLKit operations are performed on the main actor for concurrency safety
+    /// - This function is marked as `@MainActor` to ensure proper actor isolation
     /// - The output folder is extracted from the XLSX file path for image embedding
+    /// - Uses `workbook.save(to:)` for async file generation instead of XLSXEngine
+    @MainActor
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -91,7 +94,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
-            dict[.images] = "" // Empty string for data rows, header will be set separately
+            dict[.image] = "" // Empty string for data rows, header will be set separately
         }
         
         return dict
@@ -128,7 +131,7 @@ extension ExcelProfile {
         
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
-            dict[.images] = .string("") // Empty string for data rows, header will be set separately
+            dict[.image] = .string("") // Empty string for data rows, header will be set separately
         }
         
         return dict

@@ -20,15 +20,15 @@ extension ExportProfile {
     /// ## XLKit API Implementation Notes:
     /// 
     /// ### Main Actor Isolation
-    /// XLKit 1.0.1+ requires all operations to be performed on the main actor due to concurrency safety.
-    /// All XLKit API calls (Workbook, Sheet, CellFormat, etc.) must be wrapped in `MainActor.run`.
+    /// XLKit 1.0+ requires all operations to be performed on the main actor due to concurrency safety.
+    /// This function is marked as `@MainActor` to ensure all XLKit API calls run on the main actor.
     /// 
     /// ### Key XLKit Components Used:
     /// - `Workbook`: The main container for the Excel file
     /// - `Sheet`: Individual worksheet within the workbook
     /// - `CellCoordinate`: Represents cell positions (1-based indexing)
     /// - `CellFormat`: Defines cell styling (font, size, weight, etc.)
-    /// - `XLSXEngine`: Handles file generation and writing
+    /// - `workbook.save(to:)`: Handles file generation and writing (async)
     /// 
     /// ### Cell Addressing
     /// XLKit uses 1-based indexing for both rows and columns. Cell coordinates are converted
@@ -37,14 +37,16 @@ extension ExportProfile {
     /// ### Image Embedding
     /// Images are embedded using `sheet.embedImageAutoSized()` which automatically
     /// resizes images to fit within cell boundaries while maintaining aspect ratio.
+    /// The method is async and must be awaited.
     /// 
     /// ### Column Width Auto-Adjustment
     /// Column widths are calculated based on content length and font properties,
     /// then clamped to reasonable bounds (8-120 units) for better readability.
     /// 
     /// ### Security Considerations
-    /// XLKit 1.0.2+ includes file path restrictions by default. The `SecurityManager.enableFilePathRestrictions`
-    /// flag controls this behavior (defaults to false in 1.0.2+).
+    /// XLKit includes file path restrictions and security validation by default.
+    /// The `SecurityManager` handles file validation and suspicious file detection.
+    @MainActor
     func xlsxWriteManifest(
         xlsxPath: URL,
         noMedia: Bool,
@@ -68,7 +70,7 @@ extension ExportProfile {
         var imageDataArray: [(rowIndex: Int, imageData: Data, imageFormat: ImageFormat)] = []
         if !noMedia, let outputFolder = outputFolder {
             let headerRow = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
-            guard headerRow.contains("Images") else { return }
+            guard headerRow.contains("Image") else { return }
             
             for (rowIndex, marker) in preparedMarkers.enumerated() {
                 let imageFileName = marker.imageFileName
@@ -89,76 +91,76 @@ extension ExportProfile {
         }
         
         // Prepare header row for image column index calculation
-        let headerRowForImages = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
-        let imagesColumnIndex = headerRowForImages.firstIndex(of: "Images") ?? -1
-        let excelColumnIndex = imagesColumnIndex + 1
+        let headerRowForImage = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
+        let imageColumnIndex = headerRowForImage.firstIndex(of: "Image") ?? -1
+        let excelColumnIndex = imageColumnIndex + 1
         
         // MARK: - XLKit Operations (Main Actor Required)
-        // All XLKit operations must be performed on the main actor due to concurrency safety
+        // All XLKit operations are performed on the main actor due to concurrency safety
         // requirements in XLKit 1.0+. This includes workbook creation, sheet manipulation,
         // cell formatting, and file generation.
-        try await MainActor.run {
-            // Create a new workbook - this is the root container for the Excel file
-            let workbook = Workbook()
-            
-            // Add a worksheet with default name - sheets are the individual tabs in Excel
-            let sheet = workbook.addSheet(name: "Sheet1")
-            
-            // Set up cell formatting for header row
-            // CellFormat allows customization of font properties, borders, colors, etc.
-            var boldFormat = CellFormat()
-            boldFormat.fontWeight = .bold
-            boldFormat.fontSize = 12
-            
-            // Write header cells with bold formatting
-            // CellCoordinate uses 1-based indexing and converts to Excel-style addresses (A1, B1, etc.)
-            guard let headerRowValues = rows.first else { return }
-            for (columnIndex, value) in headerRowValues.enumerated() {
-                let coordinate = CellCoordinate(row: 1, column: columnIndex + 1).excelAddress
-                sheet.setCell(coordinate, string: value, format: boldFormat)
-            }
-            
-            // Write data rows without special formatting
-            let dataRows = rows.dropFirst()
-            for (rowIndex, rowValues) in dataRows.enumerated() {
-                for (columnIndex, value) in rowValues.enumerated() {
-                    let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
-                    sheet.setCell(coordinate, string: value)
-                }
-            }
-            
-            // Auto-adjust column widths based on content FIRST
-            // This improves readability by ensuring columns are wide enough for their content
-            print("Auto-adjusting column widths...")
-            Self.autoAdjustColumnWidths(sheet: sheet, rows: rows)
-            
-            // Add images if media is present AFTER column width adjustment
-            // embedImageAutoSized will override the image column with perfect sizing
-            if !imageDataArray.isEmpty && imagesColumnIndex >= 0 {
-                print("Adding images to sheet...")
-                
-                for (rowIndex, imageData, imageFormat) in imageDataArray {
-                    let excelRowIndex = rowIndex + 2 // 1-based, + header
-                    let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
-                    print("Embedding image at \(coordinate) with format \(imageFormat.rawValue)")
-                    try sheet.embedImageAutoSized(
-                        imageData, 
-                        at: coordinate, 
-                        of: workbook, 
-                        format: imageFormat,
-                        scale: 1.0  // Increase scale factor to 100% (larger visible images)
-                    )
-                    print("✓ Successfully embedded image at \(coordinate)")
-                }
-            } else {
-                print("Skipping image embedding - no images found")
-            }
-            
-            // Generate the XLSX file
-            // XLSXEngine handles the actual file writing and compression
-            print("Generating XLSX file...")
-            try XLSXEngine.generateXLSX(workbook: workbook, to: xlsxPath)
+        
+        // Create a new workbook - this is the root container for the Excel file
+        let workbook = Workbook()
+        
+        // Add a worksheet with default name - sheets are the individual tabs in Excel
+        let sheet = workbook.addSheet(name: "Sheet1")
+        
+        // Set up cell formatting for header row
+        // CellFormat allows customization of font properties, borders, colors, etc.
+        var boldFormat = CellFormat()
+        boldFormat.fontWeight = .bold
+        boldFormat.fontSize = 12
+        boldFormat.backgroundColor = "#333333" // Light black (dark gray) background
+        boldFormat.fontColor = "#FFFFFF" // White text
+        
+        // Write header cells with bold formatting
+        // CellCoordinate uses 1-based indexing and converts to Excel-style addresses (A1, B1, etc.)
+        guard let headerRowValues = rows.first else { return }
+        for (columnIndex, value) in headerRowValues.enumerated() {
+            let coordinate = CellCoordinate(row: 1, column: columnIndex + 1).excelAddress
+            sheet.setCell(coordinate, string: value, format: boldFormat)
         }
+        
+        // Write data rows without special formatting
+        let dataRows = rows.dropFirst()
+        for (rowIndex, rowValues) in dataRows.enumerated() {
+            for (columnIndex, value) in rowValues.enumerated() {
+                let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
+                sheet.setCell(coordinate, string: value)
+            }
+        }
+        
+        // Auto-adjust column widths based on content FIRST
+        // This improves readability by ensuring columns are wide enough for their content
+        print("Auto-adjusting column widths...")
+        Self.autoAdjustColumnWidths(sheet: sheet, rows: rows)
+        
+        // Add images if media is present AFTER column width adjustment
+        // embedImageAutoSized will override the image column with perfect sizing
+        if !imageDataArray.isEmpty && imageColumnIndex >= 0 {
+            print("Adding images to sheet...")
+            
+            for (rowIndex, imageData, imageFormat) in imageDataArray {
+                let excelRowIndex = rowIndex + 2 // 1-based, + header
+                let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
+                print("Embedding image at \(coordinate) with format \(imageFormat)")
+                _ = try await sheet.embedImageAutoSized(
+                    imageData, 
+                    at: coordinate, 
+                    of: workbook, 
+                    format: imageFormat,
+                    scale: 1.0  // Increase scale factor to 100% (larger visible images)
+                )
+                print("✓ Successfully embedded image at \(coordinate)")
+            }
+        } else {
+            print("Skipping image embedding - no images found")
+        }
+        
+        // Generate the XLSX file using the async save API
+        print("Generating XLSX file...")
+        try await workbook.save(to: xlsxPath)
         
         print("XLSX file generated successfully at: \(xlsxPath.path)")
     }
