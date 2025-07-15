@@ -113,6 +113,8 @@ extension ExportProfile {
         boldFormat.fontSize = 12
         boldFormat.backgroundColor = "#333333" // Light black (dark gray) background
         boldFormat.fontColor = "#FFFFFF" // White text
+        boldFormat.horizontalAlignment = .center // Center text horizontally
+        boldFormat.verticalAlignment = .center // Center text vertically
         
         // Write header cells with bold formatting
         // CellCoordinate uses 1-based indexing and converts to Excel-style addresses (A1, B1, etc.)
@@ -122,12 +124,17 @@ extension ExportProfile {
             sheet.setCell(coordinate, string: value, format: boldFormat)
         }
         
-        // Write data rows without special formatting
+        // Set up cell formatting for data rows (centered text)
+        var dataFormat = CellFormat()
+        dataFormat.horizontalAlignment = .center // Center text horizontally
+        dataFormat.verticalAlignment = .center // Center text vertically
+        
+        // Write data rows with centered formatting
         let dataRows = rows.dropFirst()
         for (rowIndex, rowValues) in dataRows.enumerated() {
             for (columnIndex, value) in rowValues.enumerated() {
                 let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
-                sheet.setCell(coordinate, string: value)
+                sheet.setCell(coordinate, string: value, format: dataFormat)
             }
         }
         
