@@ -77,6 +77,18 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+        case .subrip:
+            return try await export(
+                for: SubRipProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         case .midi:
             return try await export(
                 for: MIDIFileExportProfile.self,

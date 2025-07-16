@@ -31,6 +31,9 @@ public struct ExportResult {
     /// Markdown manifest file path, if applicable to the profile. `nil` if not applicable.
     public var mdManifestPath: URL?
     
+    /// SubRip manifest file path, if applicable to the profile. `nil` if not applicable.
+    public var srtManifestPath: URL?
+    
     /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
     public var jsonManifestPath: URL?
     
@@ -51,6 +54,7 @@ public struct ExportResult {
         tsvManifestPath: URL? = nil,
         txtManifestPath: URL? = nil,
         mdManifestPath: URL? = nil,
+        srtManifestPath: URL? = nil,
         jsonManifestPath: URL? = nil,
         midiFilePath: URL? = nil,
         xlsxManifestPath: URL? = nil
@@ -63,6 +67,7 @@ public struct ExportResult {
         self.tsvManifestPath = tsvManifestPath
         self.txtManifestPath = txtManifestPath
         self.mdManifestPath = txtManifestPath
+        self.srtManifestPath = srtManifestPath
         self.jsonManifestPath = jsonManifestPath
         self.midiFilePath = midiFilePath
         self.xlsxManifestPath = xlsxManifestPath
@@ -102,6 +107,9 @@ extension ExportResult {
         if let value = dict[.mdManifestPath], case let .url(url) = value {
             mdManifestPath = url
         }
+        if let value = dict[.srtManifestPath], case let .url(url) = value {
+            srtManifestPath = url
+        }
         if let value = dict[.jsonManifestPath], case let .url(url) = value {
             jsonManifestPath = url
         }
@@ -131,6 +139,7 @@ extension ExportResult {
         dict[.tsvManifestPath] = tsvManifestPath?.path
         dict[.txtManifestPath] = txtManifestPath?.path
         dict[.mdManifestPath] = mdManifestPath?.path
+        dict[.srtManifestPath] = srtManifestPath?.path
         dict[.jsonManifestPath] = jsonManifestPath?.path
         dict[.midiFilePath] = midiFilePath?.path
         dict[.xlsxManifestPath] = xlsxManifestPath?.path
