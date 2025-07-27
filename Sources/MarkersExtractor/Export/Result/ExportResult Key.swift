@@ -30,6 +30,9 @@ extension ExportResult {
         /// Markdown manifest file path, if applicable to the profile. `nil` if not applicable.
         case mdManifestPath
         
+        /// SubRip manifest file path, if applicable to the profile. `nil` if not applicable.
+        case srtManifestPath
+        
         /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
         case jsonManifestPath
         

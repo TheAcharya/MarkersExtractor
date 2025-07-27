@@ -102,6 +102,18 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+        case .srt:
+            return try await export(
+                for: SubRipProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         case .tsv:
             return try await export(
                 for: TSVProfile.self,

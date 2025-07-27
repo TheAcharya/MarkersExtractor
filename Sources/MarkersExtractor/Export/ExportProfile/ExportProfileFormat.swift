@@ -15,6 +15,7 @@ public enum ExportProfileFormat: String {
     case markdown
     case midi
     case notion
+    case srt
     case tsv
     case xlsx
     case youtube
@@ -42,6 +43,7 @@ extension ExportProfileFormat {
         case .csv: "CSV"
         case .json: "JSON"
         case .markdown: "Markdown"
+        case .srt: "SubRip (SRT)"
         case .midi: "MIDI File"
         case .notion: "Notion"
         case .tsv: "TSV"
@@ -57,6 +59,7 @@ extension ExportProfileFormat {
         case .csv: CSVProfile.self
         case .json: JSONProfile.self
         case .markdown: MarkdownProfile.self
+        case .srt: SubRipProfile.self
         case .midi: MIDIFileExportProfile.self
         case .notion: NotionExportProfile.self
         case .tsv: TSVProfile.self
