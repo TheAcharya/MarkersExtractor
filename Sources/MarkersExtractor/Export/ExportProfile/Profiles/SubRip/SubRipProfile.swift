@@ -16,9 +16,6 @@ public final class SubRipProfile: ExportProfile {
     public static let isMediaCapable: Bool = false
     public var logger: Logger?
     
-    // Format-specific settings
-    public var subtitleDurationSeconds: Double = 1.0
-    
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress
     
