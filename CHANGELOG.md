@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## [0.3.17](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.17) (2025-07-??)
+
+### New Features
+
+- Added SubRip export profile to export SRT subtitles (#128)
+
 ## [0.3.16](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.16) (2025-07-07)
 
 ### New Features
