@@ -126,7 +126,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 GENERAL:
-  --export-format <airtable | compressor | csv | json | markdown | midi | notion | tsv | xlsx | youtube>
+  --export-format <airtable | compressor | csv | json | markdown | midi | notion | srt | tsv | xlsx | youtube>
                           Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
   --folder-format <short | medium | long>
