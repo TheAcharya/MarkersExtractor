@@ -77,7 +77,7 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
-        case .subrip:
+        case .srt:
             return try await export(
                 for: SubRipProfile.self,
                 media: media,

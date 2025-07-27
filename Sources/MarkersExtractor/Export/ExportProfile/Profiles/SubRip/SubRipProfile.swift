@@ -12,7 +12,7 @@ public final class SubRipProfile: ExportProfile {
     public typealias Payload = SRTExportPayload
     public typealias Icon = EmptyExportIcon
     public typealias PreparedMarker = SubRipExportMarker
-    public static let profile: ExportProfileFormat = .subrip
+    public static let profile: ExportProfileFormat = .srt
     public static let isMediaCapable: Bool = false
     public var logger: Logger?
     
