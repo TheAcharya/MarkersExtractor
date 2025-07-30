@@ -65,6 +65,18 @@ extension MarkersExtractor {
                 ),
                 parentProgress: parentProgress
             )
+        case .markdown:
+            return try await export(
+                for: MarkdownProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
         case .midi:
             return try await export(
                 for: MIDIFileExportProfile.self,
@@ -81,6 +93,18 @@ extension MarkersExtractor {
         case .notion:
             return try await export(
                 for: NotionExportProfile.self,
+                media: media,
+                markers: markers,
+                outputURL: outputURL,
+                payload: .init(
+                    timelineName: timelineName,
+                    outputURL: outputURL
+                ),
+                parentProgress: parentProgress
+            )
+        case .srt:
+            return try await export(
+                for: SubRipProfile.self,
                 media: media,
                 markers: markers,
                 outputURL: outputURL,

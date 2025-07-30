@@ -61,6 +61,9 @@ extension Marker.ParentInfo {
             // convert timecode to real time (wall time)
             return Time(seconds: timecode.realTimeValue)
                 .stringValue(format: stringFormat)
+        case .srt:
+            return Time(seconds: timecode.realTimeValue)
+                .srtEncodedString()
         }
     }
     

@@ -132,6 +132,8 @@ extension Marker {
         case .realTime(let stringFormat):
             // convert timecode to real time (wall time)
             return Time(seconds: rectifiedPosition.realTimeValue).stringValue(format: stringFormat)
+        case .srt:
+            return Time(seconds: rectifiedPosition.realTimeValue).srtEncodedString()
         }
     }
     

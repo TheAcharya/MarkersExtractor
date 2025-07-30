@@ -24,6 +24,8 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - Tab-separated values (TSV) - Compatible with spreadsheet application
 - Microsoft Excel (XLSX)
 - YouTube Chapters (TXT)
+- Compressor Chapters (TXT)
+- Markdown List (MD)
 - Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
@@ -97,7 +99,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.15 # replace this with the git tag of the version you need
+VERSION=0.3.16 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -124,7 +126,7 @@ ARGUMENTS:
   <output-dir>            Output directory.
 
 GENERAL:
-  --export-format <airtable | csv | json | midi | notion | tsv | xlsx | youtube>
+  --export-format <airtable | compressor | csv | json | markdown | midi | notion | srt | tsv | xlsx | youtube>
                           Metadata export format. (default: csv)
   --enable-subframes      Enable output of timecode subframes.
   --folder-format <short | medium | long>
@@ -346,9 +348,11 @@ The format is a dictionary using the following key names:
 | `csvManifestPath`| The path to the CSV manifest file, if one was created by the profile. |
 | `tsvManifestPath` | The path to the TSV manifest file, if one was created by the profile. |
 | `txtManifestPath` | The path to the Plain Text manifest file, if one was created by the profile. |
+| `mdManifestPath` | The path to the Markdown manifest file, if one was created by the profile. |
 | `jsonManifestPath`| The path to the JSON manifest file, if one was created by the profile. |
 | `midiFilePath`| The path to the MIDI file, if one was created by the profile. |
-| `version` | The MarkersExtractor version used to perform extraction. | 
+| `xlsxManifestPath` | The path to the XLSX file, if one was created by the profile. |
+| `version` | The MarkersExtractor version used to perform extraction. |
 
 It is recommended to read this file with a JSON parser to obtain the values for keys. If using a shell script, it may be possible to grep the information.
 
@@ -370,7 +374,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.15")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.3.16")
     ],
     targets: [
         .target(
