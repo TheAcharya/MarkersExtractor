@@ -26,6 +26,7 @@ Marker metadata extraction and conversion tool and library for Final Cut Pro.
 - YouTube Chapters (TXT)
 - Compressor Chapters (TXT)
 - Markdown List (MD)
+- SubRip Subtitle (SRT)
 - Standard MIDI File - Compatible with most audio DAWs
 
 ## Table of contents
@@ -99,7 +100,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.16 # replace this with the git tag of the version you need
+VERSION=0.3.17 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
