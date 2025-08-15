@@ -1,6 +1,8 @@
 # workflow runs on successful completion of the build workflow, or when manually run
 
 name: unit-tests
+permissions:
+  contents: read
 
 on:
   workflow_run:
