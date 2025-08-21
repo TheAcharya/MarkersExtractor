@@ -22,4 +22,4 @@ jobs:
       with:
         xcode-version: latest-stable
     - name: Unit Tests
-      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcbeautify && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "MarkersExtractor-Package" -destination "platform=macOS" | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
