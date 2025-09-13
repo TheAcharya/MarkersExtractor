@@ -14,7 +14,7 @@ public final class SubRipProfile: ExportProfile {
     public typealias PreparedMarker = SubRipExportMarker
     public static let profile: ExportProfileFormat = .srt
     public static let isMediaCapable: Bool = false
-    public var logger: Logger?
+    public let logger: Logger?
     
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress

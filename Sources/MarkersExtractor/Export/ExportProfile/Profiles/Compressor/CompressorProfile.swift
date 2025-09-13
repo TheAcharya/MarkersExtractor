@@ -14,7 +14,7 @@ public final class CompressorProfile: ExportProfile {
     public typealias PreparedMarker = StandardExportMarker
     public static let profile: ExportProfileFormat = .compressor
     public static let isMediaCapable: Bool = false
-    public var logger: Logger?
+    public let logger: Logger?
     
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress
