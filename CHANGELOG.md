@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.3.18](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.18) (2025-09-12)
+
+### Maintenance Update
+
+- `ExportProfile`: Protocol is now implicitly `Sendable` to satisfy Swift 6.2 compiler  ￼ / Xcode 26.0
+-         Fixed unit tests build on Xcode 26.0
+
 ## [0.3.17](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.17) (2025-07-31)
 
 ### New Features
