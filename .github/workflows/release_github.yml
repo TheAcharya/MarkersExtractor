@@ -1,4 +1,6 @@
 name: release_github
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
@@ -185,6 +187,10 @@ jobs:
     if: github.event_name == 'push' || github.event.inputs.release == 'yes'
     needs: [build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
       - name: Get tag version
