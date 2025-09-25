@@ -39,7 +39,7 @@ extension MarkdownProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         let title = payload.title
         
         // Create the header with the project name

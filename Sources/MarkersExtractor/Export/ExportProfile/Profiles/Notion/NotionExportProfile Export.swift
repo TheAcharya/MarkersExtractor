@@ -35,7 +35,7 @@ extension NotionExportProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         try jsonWriteManifest(
             jsonPath: payload.jsonPath,
             noMedia: noMedia,

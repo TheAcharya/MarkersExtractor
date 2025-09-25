@@ -9,7 +9,7 @@ import Logging
 import OrderedCollections
 import TimecodeKitCore
 
-public protocol ExportProfile {
+public protocol ExportProfile: Sendable {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
@@ -74,7 +74,7 @@ public protocol ExportProfile {
     /// (ie: able to generate thumbnail image files, etc.)
     static var isMediaCapable: Bool { get }
     
-    var logger: Logger? { get set }
+    var logger: Logger? { get }
     
     init(logger: Logger?)
 }

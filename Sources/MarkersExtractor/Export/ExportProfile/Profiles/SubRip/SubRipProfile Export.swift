@@ -34,7 +34,7 @@ extension SubRipProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         let subtitles = preparedMarkers.map {
             SRTFile.Subtitle(
                 timeRange: $0.inTime ... $0.outTime,

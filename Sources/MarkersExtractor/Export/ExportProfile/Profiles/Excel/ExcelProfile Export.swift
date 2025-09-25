@@ -40,7 +40,6 @@ extension ExcelProfile {
     /// - This function is marked as `@MainActor` to ensure proper actor isolation
     /// - The output folder is extracted from the XLSX file path for image embedding
     /// - Uses `workbook.save(to:)` for async file generation instead of XLSXEngine
-    @MainActor
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
