@@ -9,7 +9,7 @@ import Logging
 import OrderedCollections
 import TimecodeKitCore
 
-public protocol ExportProfile: Sendable {
+public protocol ExportProfile {
     associatedtype Payload: ExportPayload
     associatedtype PreparedMarker: ExportMarker
     associatedtype Icon: ExportIcon
@@ -50,7 +50,7 @@ public protocol ExportProfile: Sendable {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws
+    ) async throws
     
     /// Provides the profile-specific result file content.
     func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary
@@ -74,7 +74,7 @@ public protocol ExportProfile: Sendable {
     /// (ie: able to generate thumbnail image files, etc.)
     static var isMediaCapable: Bool { get }
     
-    var logger: Logger? { get }
+    var logger: Logger? { get set }
     
     init(logger: Logger?)
 }

@@ -11,14 +11,18 @@ import TimecodeKitCore
 @testable import MarkersExtractor
 
 @Suite struct BasicMarkersEmptyIDTests {
-    /// Ensure that empty marker ID strings cause an error and abort the conversion process.
-    @Test(arguments: MarkerIDMode.allCases)
-    func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
-        var settings = try MarkersExtractor.Settings(
+    var settings: MarkersExtractor.Settings
+    
+    init() throws {
+        settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        
+    }
+    
+    /// Ensure that empty marker ID strings cause an error and abort the conversion process.
+    @Test(arguments: MarkerIDMode.allCases)
+    mutating func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
         settings.idNamingMode = idMode
         
         let extractor = MarkersExtractor(settings: settings)
@@ -32,7 +36,7 @@ import TimecodeKitCore
             do {
                 _ = try await extractor.extractMarkers()
             } catch {
-                #fail("\(error.localizedDescription)")
+                #fail
             }
         case .name:
             // expect an error here - 3rd marker has an empty Name
