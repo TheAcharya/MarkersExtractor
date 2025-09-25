@@ -14,7 +14,7 @@ public final class YouTubeProfile: ExportProfile {
     public typealias PreparedMarker = StandardExportMarker
     public static let profile: ExportProfileFormat = .youtube
     public static let isMediaCapable: Bool = false
-    public var logger: Logger?
+    public let logger: Logger?
     
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress
