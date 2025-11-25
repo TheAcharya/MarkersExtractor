@@ -30,6 +30,7 @@ jobs:
   macOS:
     name: macOS
     runs-on: macos-latest
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@main
     - uses: maxim-lobanov/setup-xcode@v1
