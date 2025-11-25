@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TextFileKit
+import TextFileTools
 import xlsxwriter
 
 extension ExportProfile {

@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TextFileKit
+import TextFileTools
 import TimecodeKitCore
 
 extension TSVProfile {

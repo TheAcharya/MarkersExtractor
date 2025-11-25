@@ -24,7 +24,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.6.4"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.2.1"),
         .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
-        .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.2.2"),
+        .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.4"),
         .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.5.4"),
         .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.9"),
@@ -37,7 +37,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "xlsxwriter", package: "xlsxwriter"),
-                .product(name: "TextFileKit", package: "TextFileKit"),
+                .product(name: "TextFileTools", package: "swift-textfile-tools"),
                 .product(name: "TimecodeKitCore", package: "TimecodeKit"),
                 .product(name: "DAWFileKit", package: "DAWFileKit"),
                 "OTCore"

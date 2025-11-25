@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TextFileKit
+import TextFileTools
 
 extension ExportProfile {
     func csvWriteManifest(
