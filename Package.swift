@@ -38,6 +38,7 @@ let package = Package(
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "xlsxwriter", package: "xlsxwriter"),
                 .product(name: "TextFileTools", package: "swift-textfile-tools"),
+                .product(name: "TimecodeKitAV", package: "TimecodeKit"),
                 .product(name: "TimecodeKitCore", package: "TimecodeKit"),
                 .product(name: "DAWFileTools", package: "swift-daw-file-tools"),
                 .product(name: "SwiftExtensions", package: "swift-extensions")
