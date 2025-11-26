@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
         .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.4"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.5.4"),
+        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.6.0"),
         .package(url: "https://github.com/orchetect/swift-extensions.git", from: "2.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.4")
     ],
