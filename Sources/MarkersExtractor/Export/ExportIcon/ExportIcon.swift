@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 
 public protocol ExportIcon: Equatable, Hashable where Self: Sendable {

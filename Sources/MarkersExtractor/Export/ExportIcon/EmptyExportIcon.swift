@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 
 /// `ExportIcon` prototype that can be used when a profile does not use marker icons.

@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 import TimecodeKitCore
 
@@ -22,6 +22,6 @@ extension FCPXMLMarkerExtractor.TimelineContext: Equatable { }
 
 extension FCPXMLMarkerExtractor.TimelineContext: Hashable { }
 
-// Using @unchecked to allow use of non-Sendable DAWFileKit types,
+// Using @unchecked to allow use of non-Sendable DAWFileTools types,
 // which should be safe since we only ever read and never write to them
 extension FCPXMLMarkerExtractor.TimelineContext: @unchecked Sendable { }

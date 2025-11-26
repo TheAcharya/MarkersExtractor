@@ -1,10 +1,10 @@
 //
-//  DAWFileKit Extensions.swift
+//  DAWFileTools Extensions.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 
 extension FinalCutPro.FCPXML.ElementType {

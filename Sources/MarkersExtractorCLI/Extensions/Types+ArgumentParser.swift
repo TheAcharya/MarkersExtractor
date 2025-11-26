@@ -6,7 +6,7 @@
 
 import ArgumentParser
 import MarkersExtractor
-import DAWFileKit
+import DAWFileTools
 
 // MARK: - Markers Extractor: Export
 
@@ -22,9 +22,9 @@ extension MarkerLabelProperties.AlignHorizontal: ExpressibleByArgument, CustomEx
 extension MarkerLabelProperties.AlignVertical: ExpressibleByArgument, CustomExpressibleByArgument { }
 extension MarkersSource: ExpressibleByArgument, CustomExpressibleByArgument { }
 
-// MARK: - DAWFileKit Types
+// MARK: - DAWFileTools Types
 
 // Note: Use of `@retroactive` is safe here since `RoleType` will never be
-// conformed to ExpressibleByArgument in DAWFileKit.
+// conformed to ExpressibleByArgument in DAWFileTools.
 
 extension FinalCutPro.FCPXML.RoleType: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }

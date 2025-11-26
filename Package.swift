@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/TheAcharya/xlsxwriter.git", from: "1.0.3"),
         .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
         .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.4"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.6.0"),
+        .package(url: "https://github.com/orchetect/swift-daw-file-tools", from: "0.7.0"),
         .package(url: "https://github.com/orchetect/swift-extensions.git", from: "2.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.4")
     ],
@@ -39,7 +39,7 @@ let package = Package(
                 .product(name: "xlsxwriter", package: "xlsxwriter"),
                 .product(name: "TextFileTools", package: "swift-textfile-tools"),
                 .product(name: "TimecodeKitCore", package: "TimecodeKit"),
-                .product(name: "DAWFileKit", package: "DAWFileKit"),
+                .product(name: "DAWFileTools", package: "swift-daw-file-tools"),
                 .product(name: "SwiftExtensions", package: "swift-extensions")
             ],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]

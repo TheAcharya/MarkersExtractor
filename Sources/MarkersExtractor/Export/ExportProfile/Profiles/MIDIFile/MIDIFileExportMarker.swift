@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 import TimecodeKitCore
 
@@ -36,7 +36,7 @@ public struct MIDIFileExportMarker: ExportMarker {
         imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToTimelineStart: false) // not used
     }
     
-    /// Convert to a DAWFileKit `DAWMarker`.
+    /// Convert to a DAWFileTools `DAWMarker`.
     func dawMarker() -> DAWMarker {
         DAWMarker(
             storage: .init(
