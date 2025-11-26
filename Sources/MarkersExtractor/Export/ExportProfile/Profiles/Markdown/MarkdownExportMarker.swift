@@ -7,7 +7,7 @@
 import Foundation
 import OrderedCollections
 import TimecodeKitCore
-import OTCore
+import SwiftExtensions
 
 /// A marker with its contents prepared for the Markdown export profile.
 public struct MarkdownExportMarker: ExportMarker {

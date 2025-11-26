@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import OTCore
+import SwiftExtensions
 import TimecodeKitCore
 
 extension CompressorProfile {

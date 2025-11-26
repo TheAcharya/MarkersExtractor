@@ -6,7 +6,7 @@
 
 import DAWFileKit
 import Foundation
-import OTCore
+import SwiftExtensions
 import TimecodeKitCore
 
 public struct SubRipExportMarker: ExportMarker {

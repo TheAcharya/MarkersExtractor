@@ -242,7 +242,7 @@ extension URL {
 
 extension StringProtocol {
     /// Returns an array of RegEx matches
-    /// (Borrowed from OTCore 1.4.10, under MIT license)
+    /// (Borrowed from SwiftExtensions 1.4.10, under MIT license)
     package func regexMatches(
         pattern: String,
         options: NSRegularExpression.Options = [],
@@ -284,7 +284,7 @@ extension StringProtocol {
     }
     
     /// Returns a string from a tokenized string of RegEx matches
-    /// (Borrowed from OTCore 1.4.10, under MIT license)
+    /// (Borrowed from SwiftExtensions 1.4.10, under MIT license)
     package func regexMatches(
         pattern: String,
         replacementTemplate: String,
@@ -327,7 +327,7 @@ extension StringProtocol {
     
     /// Returns capture groups from regex matches.
     /// If any capture group is not matched it will be `nil`.
-    /// (Borrowed from OTCore 1.4.10, under MIT license)
+    /// (Borrowed from SwiftExtensions 1.4.10, under MIT license)
     package func regexMatches(
         captureGroupsFromPattern: String,
         options: NSRegularExpression.Options = [],

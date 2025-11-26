@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import OTCore
+import SwiftExtensions
 import Testing
 import TestingExtensions
 import TimecodeKitCore

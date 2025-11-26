@@ -9,7 +9,7 @@ import DAWFileKit
 import Foundation
 import Logging
 import OrderedCollections
-import OTCore
+import SwiftExtensions
 import TimecodeKitCore
 
 extension SubRipProfile {

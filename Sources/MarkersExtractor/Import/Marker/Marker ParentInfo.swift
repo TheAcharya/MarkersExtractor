@@ -7,7 +7,7 @@
 import CoreMedia
 import DAWFileKit
 import TimecodeKitCore
-import OTCore
+import SwiftExtensions
 
 extension Marker {
     struct ParentInfo {
