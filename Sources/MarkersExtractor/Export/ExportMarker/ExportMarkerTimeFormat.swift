@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 import SwiftExtensions
 
 public enum ExportMarkerTimeFormat {

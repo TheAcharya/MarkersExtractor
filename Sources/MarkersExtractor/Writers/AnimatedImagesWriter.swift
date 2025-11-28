@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 /// Generate animated images on disk.
 final actor AnimatedImagesWriter: ImageWriterProtocol {

@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public protocol ExportMarker: Equatable, Hashable where Self: Sendable {
     associatedtype Icon: ExportIcon

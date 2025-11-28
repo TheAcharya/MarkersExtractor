@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 import SwiftExtensions
 
 /// A marker with its contents prepared for the Markdown export profile.

@@ -7,7 +7,7 @@
 import DAWFileTools
 import Foundation
 import SwiftExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public struct SubRipExportMarker: ExportMarker {
     public typealias Icon = EmptyExportIcon

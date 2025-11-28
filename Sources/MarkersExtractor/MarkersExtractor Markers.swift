@@ -6,7 +6,7 @@
 
 import Foundation
 import DAWFileTools
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 // MARK: - Extract Markers
 

@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 struct ImageDescriptor {
     let absoluteTimecode: Timecode

@@ -9,7 +9,7 @@ import AVFoundation
 import DAWFileTools
 import Foundation
 import Logging
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension MarkersExtractor {
     /// Run primary batch extract process.

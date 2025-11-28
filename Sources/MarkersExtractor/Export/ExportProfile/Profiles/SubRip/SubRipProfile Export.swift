@@ -10,7 +10,7 @@ import Foundation
 import Logging
 import OrderedCollections
 import SwiftExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension SubRipProfile {
     public func prepareMarkers(

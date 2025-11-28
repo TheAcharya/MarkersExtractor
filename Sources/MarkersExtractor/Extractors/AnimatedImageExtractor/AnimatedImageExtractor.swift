@@ -8,8 +8,8 @@
 import Foundation
 import ImageIO
 import Logging
-import TimecodeKitAV
-import TimecodeKitCore
+import SwiftTimecodeAV
+import SwiftTimecodeCore
 
 /// Extract a sequence of frames from a video asset and produce an animated image (such as animated
 /// GIF).

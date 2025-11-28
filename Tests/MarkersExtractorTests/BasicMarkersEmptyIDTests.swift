@@ -7,7 +7,7 @@
 import Foundation
 import Testing
 import TestingExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 @testable import MarkersExtractor
 
 @Suite struct BasicMarkersEmptyIDTests {

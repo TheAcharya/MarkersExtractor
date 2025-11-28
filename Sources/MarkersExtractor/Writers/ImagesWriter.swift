@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 /// Generate still images on disk.
 class ImagesWriter: ImageWriterProtocol {

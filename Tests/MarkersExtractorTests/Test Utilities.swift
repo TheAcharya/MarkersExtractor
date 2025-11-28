@@ -5,7 +5,7 @@
 //
 
 @testable import MarkersExtractor
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 /// Convenience timecode constructor.
 /// Final Cut Pro always uses 80 subframes base.

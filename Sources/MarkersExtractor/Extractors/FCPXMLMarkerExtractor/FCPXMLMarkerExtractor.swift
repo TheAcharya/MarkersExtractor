@@ -8,7 +8,7 @@ import CoreMedia
 import DAWFileTools
 import Foundation
 import Logging
-import TimecodeKitCore
+import SwiftTimecodeCore
 import SwiftExtensions
 
 class FCPXMLMarkerExtractor {

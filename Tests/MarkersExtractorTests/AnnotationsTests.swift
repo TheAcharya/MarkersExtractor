@@ -5,7 +5,7 @@
 //
 
 import SwiftExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 @testable import MarkersExtractor

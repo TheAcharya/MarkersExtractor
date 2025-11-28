@@ -6,7 +6,7 @@
 
 import DAWFileTools
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public struct MIDIFileExportMarker: ExportMarker {
     public typealias Icon = EmptyExportIcon

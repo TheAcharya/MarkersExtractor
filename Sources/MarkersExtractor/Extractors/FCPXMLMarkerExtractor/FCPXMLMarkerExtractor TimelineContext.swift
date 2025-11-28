@@ -6,7 +6,7 @@
 
 import DAWFileTools
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension FCPXMLMarkerExtractor {
     struct TimelineContext {

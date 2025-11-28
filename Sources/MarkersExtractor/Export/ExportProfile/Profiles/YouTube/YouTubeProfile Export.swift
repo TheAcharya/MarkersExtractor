@@ -9,7 +9,7 @@ import Foundation
 import Logging
 import OrderedCollections
 import SwiftExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension YouTubeProfile {
     public func prepareMarkers(

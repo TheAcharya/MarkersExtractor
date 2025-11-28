@@ -6,7 +6,7 @@
 
 import AppKit
 @preconcurrency import AVFoundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 actor AVAssetImageGeneratorWrapper {
     private let imageGenerator: AVAssetImageGenerator

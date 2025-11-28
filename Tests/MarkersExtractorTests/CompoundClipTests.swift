@@ -7,7 +7,7 @@
 import SwiftExtensions
 import Testing
 import TestingExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 @testable import MarkersExtractor
 
 @Suite struct CompoundClipTests {

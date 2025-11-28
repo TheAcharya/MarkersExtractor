@@ -6,7 +6,7 @@
 
 import Foundation
 import CoreImage
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension AnimatedImageExtractor {
     struct ConversionSettings: Sendable {
