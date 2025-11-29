@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
 
 /// Final Cut Pro XML file/bundle abstract file reference and content reader.

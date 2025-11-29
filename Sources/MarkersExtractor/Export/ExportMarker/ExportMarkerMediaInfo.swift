@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public struct ExportMarkerMediaInfo {
     public var imageFormat: MarkerImageFormat

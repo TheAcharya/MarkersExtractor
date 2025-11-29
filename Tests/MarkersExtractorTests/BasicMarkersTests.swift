@@ -4,10 +4,10 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Testing
 import TestingExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 @testable import MarkersExtractor
 
 @Suite struct BasicMarkersTests {

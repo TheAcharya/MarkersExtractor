@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
-import OTCore
+import SwiftExtensions
 
 /// Returns all the roles used in a FCPXML document that are relevant to the main timeline.
 ///

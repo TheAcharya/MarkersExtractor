@@ -6,7 +6,7 @@
 
 import AVFoundation
 import Foundation
-import OTCore
+import SwiftExtensions
 
 // MARK: - Output Path
 

@@ -4,11 +4,11 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
-import OTCore
+import DAWFileTools
+import SwiftExtensions
 import Testing
 import TestingExtensions
-import TimecodeKitCore
+import SwiftTimecodeCore
 @testable import MarkersExtractor
 
 @Suite struct AudioOnlyTests {

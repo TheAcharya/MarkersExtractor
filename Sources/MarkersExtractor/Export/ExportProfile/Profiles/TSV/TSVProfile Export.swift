@@ -8,8 +8,8 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TextFileKit
-import TimecodeKitCore
+import TextFileTools
+import SwiftTimecodeCore
 
 extension TSVProfile {
     public func prepareMarkers(

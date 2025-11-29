@@ -8,8 +8,8 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import OTCore
-import TimecodeKitCore
+import SwiftExtensions
+import SwiftTimecodeCore
 
 extension CompressorProfile {
     public func prepareMarkers(

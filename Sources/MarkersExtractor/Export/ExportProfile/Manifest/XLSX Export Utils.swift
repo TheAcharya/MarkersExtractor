@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TextFileKit
+import TextFileTools
 import XLKit
 import CoreGraphics
 import ImageIO

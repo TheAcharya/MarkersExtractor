@@ -6,7 +6,7 @@
 
 import AppKit
 import Foundation
-import DAWFileKit
+import DAWFileTools
 
 extension MarkersExtractor {
     public struct Settings {

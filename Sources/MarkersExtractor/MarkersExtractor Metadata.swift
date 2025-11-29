@@ -4,9 +4,9 @@
 //  Licensed under MIT License
 //
 
-import DAWFileKit
+import DAWFileTools
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension MarkersExtractor {
     var timecodeStringFormat: Timecode.StringFormat {

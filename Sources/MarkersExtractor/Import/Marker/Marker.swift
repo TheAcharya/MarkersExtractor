@@ -5,9 +5,9 @@
 //
 
 import CoreMedia
-import DAWFileKit
-import TimecodeKitCore
-import OTCore
+import DAWFileTools
+import SwiftTimecodeCore
+import SwiftExtensions
 
 /// Raw FCP Marker data extracted from FCPXML.
 ///

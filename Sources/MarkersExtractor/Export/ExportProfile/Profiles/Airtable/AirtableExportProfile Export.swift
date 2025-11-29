@@ -8,7 +8,7 @@ import AVFoundation
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 extension AirtableExportProfile {
     public func prepareMarkers(

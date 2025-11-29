@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import OTCore
-import TimecodeKitCore
+import SwiftExtensions
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 @testable import MarkersExtractor

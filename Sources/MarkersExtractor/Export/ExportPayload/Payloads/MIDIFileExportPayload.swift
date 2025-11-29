@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public struct MIDIFileExportPayload: ExportPayload {
     let midiFilePath: URL

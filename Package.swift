@@ -24,10 +24,10 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.6.4"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.2.1"),
         .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.0.10"),
-        .package(url: "https://github.com/orchetect/TextFileKit.git", from: "0.2.2"),
-        .package(url: "https://github.com/orchetect/TimecodeKit.git", from: "2.3.4"),
-        .package(url: "https://github.com/orchetect/DAWFileKit.git", from: "0.5.4"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.9"),
+        .package(url: "https://github.com/orchetect/swift-daw-file-tools", from: "0.7.1"),
+        .package(url: "https://github.com/orchetect/swift-extensions.git", from: "2.0.0"),
+        .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
+        .package(url: "https://github.com/orchetect/swift-timecode.git", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.4")
     ],
     targets: [
@@ -37,10 +37,11 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "XLKit", package: "XLKit"),
-                .product(name: "TextFileKit", package: "TextFileKit"),
-                .product(name: "TimecodeKitCore", package: "TimecodeKit"),
-                .product(name: "DAWFileKit", package: "DAWFileKit"),
-                "OTCore"
+                .product(name: "TextFileTools", package: "swift-textfile-tools"),
+                .product(name: "SwiftTimecodeAV", package: "swift-timecode"),
+                .product(name: "SwiftTimecodeCore", package: "swift-timecode"),
+                .product(name: "DAWFileTools", package: "swift-daw-file-tools"),
+                .product(name: "SwiftExtensions", package: "swift-extensions")
             ],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),

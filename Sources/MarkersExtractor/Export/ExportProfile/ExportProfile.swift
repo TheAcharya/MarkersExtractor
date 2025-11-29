@@ -7,7 +7,7 @@
 import Foundation
 import Logging
 import OrderedCollections
-import TimecodeKitCore
+import SwiftTimecodeCore
 
 public protocol ExportProfile: Sendable {
     associatedtype Payload: ExportPayload

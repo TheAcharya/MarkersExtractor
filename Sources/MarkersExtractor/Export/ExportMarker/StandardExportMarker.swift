@@ -6,8 +6,8 @@
 
 import Foundation
 import OrderedCollections
-import TimecodeKitCore
-import OTCore
+import SwiftTimecodeCore
+import SwiftExtensions
 
 /// A marker with its contents prepared as flat String values in a standard format suitable for
 /// various different export profiles.

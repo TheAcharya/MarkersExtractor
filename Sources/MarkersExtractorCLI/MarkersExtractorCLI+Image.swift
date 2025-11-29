@@ -8,7 +8,7 @@ import ArgumentParser
 import Foundation
 import Logging
 import MarkersExtractor
-import DAWFileKit
+import DAWFileTools
 
 extension MarkersExtractorCLI {
     struct ImageOptions: ParsableArguments {
