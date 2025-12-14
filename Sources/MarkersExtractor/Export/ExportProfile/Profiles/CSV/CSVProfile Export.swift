@@ -35,7 +35,7 @@ extension CSVProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         try csvWriteManifest(
             csvPath: payload.csvPath,
             noMedia: noMedia,

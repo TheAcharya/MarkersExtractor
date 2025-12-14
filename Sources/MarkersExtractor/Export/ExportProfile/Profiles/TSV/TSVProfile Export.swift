@@ -36,7 +36,7 @@ extension TSVProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         try tsvWriteManifest(
             tsvPath: payload.tsvPath,
             noMedia: noMedia,

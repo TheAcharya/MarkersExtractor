@@ -70,7 +70,7 @@ extension YouTubeProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: false, noMedia: noMedia)
         
         // flatten data

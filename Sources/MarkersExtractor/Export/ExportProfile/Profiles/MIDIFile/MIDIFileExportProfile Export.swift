@@ -33,7 +33,7 @@ extension MIDIFileExportProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         try writeManifest(preparedMarkers, payload: payload, noMedia: noMedia)
     }
     

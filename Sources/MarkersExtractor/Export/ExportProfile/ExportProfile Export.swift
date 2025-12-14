@@ -78,7 +78,7 @@ extension ExportProfile {
         
         // metadata manifest file(s)
         
-        try writeManifests(preparedMarkers, payload: payload, noMedia: media == nil)
+        try await writeManifests(preparedMarkers, payload: payload, noMedia: media == nil)
         
         // result file
         let exportResult = try generateResult(date: Date(), payload: payload, outputURL: outputURL)
