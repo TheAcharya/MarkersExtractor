@@ -100,7 +100,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.3.18 # replace this with the git tag of the version you need
+VERSION=0.3.19 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
