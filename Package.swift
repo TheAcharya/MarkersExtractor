@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 // (be sure to update the .swift-version file when this Swift version changes)
 
 import PackageDescription
@@ -20,15 +20,19 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.6.2"),
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.6.4"),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.3.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
+        .package(url: "https://github.com/apple/swift-log", from: "1.8.0"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.3.0"),
         .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.0.10"),
-        .package(url: "https://github.com/orchetect/swift-daw-file-tools", from: "0.7.1"),
-        .package(url: "https://github.com/orchetect/swift-extensions.git", from: "2.0.0"),
+        .package(
+            url: "https://github.com/orchetect/swift-daw-file-tools",
+            from: "0.8.0",
+            traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
+        ),
+        .package(url: "https://github.com/orchetect/swift-extensions", from: "2.0.0"),
         .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
-        .package(url: "https://github.com/orchetect/swift-timecode.git", from: "3.0.0"),
-        .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.4")
+        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.0.0"),
+        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.2.4")
     ],
     targets: [
         .target(
