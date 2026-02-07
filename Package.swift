@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
         .package(url: "https://github.com/apple/swift-log", from: "1.8.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.3.0"),
-        .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.0.10"),
+        .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.0.11"),
         .package(
             url: "https://github.com/orchetect/swift-daw-file-tools",
             from: "0.8.0",
