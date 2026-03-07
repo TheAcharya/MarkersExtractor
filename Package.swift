@@ -20,16 +20,16 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
-        .package(url: "https://github.com/apple/swift-log", from: "1.8.0"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.3.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.7.0"),
+        .package(url: "https://github.com/apple/swift-log", from: "1.10.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.4.0"),
         .package(url: "https://github.com/TheAcharya/xlsxwriter", from: "1.0.3"),
         .package(
             url: "https://github.com/orchetect/swift-daw-file-tools",
             from: "0.8.0",
             traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
         ),
-        .package(url: "https://github.com/orchetect/swift-extensions", from: "2.0.0"),
+        .package(url: "https://github.com/orchetect/swift-extensions", from: "2.1.0"),
         .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
         .package(url: "https://github.com/orchetect/swift-timecode", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.2.4")
