@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.3.20](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.20) (2026-03-07)
+
+### Maintenance Update
+
+- Updated core dependencies
+- Supports FCPXML 1.14 (Final Cut Pro 12.0)
+
 ## [0.3.19](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.19) (2025-12-01)
 
 ### Maintenance Update
