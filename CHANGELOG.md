@@ -1,5 +1,12 @@
 # MarkersExtractor Change Log
 
+## [0.4.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.0) (2026-03-08)
+
+### New Features
+
+- Switched Excel library to [XLKit](https://github.com/TheAcharya/XLKit)
+- Excel export profile now has the ability to automatically embed images (#125)
+
 ## [0.3.20](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.3.20) (2026-03-07)
 
 ### Maintenance Update
