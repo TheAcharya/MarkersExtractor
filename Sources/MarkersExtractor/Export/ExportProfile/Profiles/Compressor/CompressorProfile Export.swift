@@ -39,7 +39,7 @@ extension CompressorProfile {
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
-    ) throws {
+    ) async throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: false, noMedia: noMedia)
         
         var txt = rows
