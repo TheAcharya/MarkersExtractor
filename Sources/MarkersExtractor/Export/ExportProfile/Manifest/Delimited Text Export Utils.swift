@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TextFileTools
+import TextFile
 
 extension ExportProfile {
     func dictsToRows(

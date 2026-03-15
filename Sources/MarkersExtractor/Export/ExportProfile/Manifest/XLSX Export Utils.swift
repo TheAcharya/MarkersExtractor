@@ -7,7 +7,7 @@
 import CoreGraphics
 import Foundation
 import ImageIO
-import TextFileTools
+import TextFile
 import XLKit
 
 // MARK: - Type Aliases

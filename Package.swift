@@ -30,7 +30,7 @@ let package = Package(
             traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
         ),
         .package(url: "https://github.com/orchetect/swift-extensions", from: "2.1.1"),
-        .package(url: "https://github.com/orchetect/swift-textfile-tools", from: "0.3.0"),
+        .package(url: "https://github.com/orchetect/swift-textfile", from: "0.4.0"),
         .package(url: "https://github.com/orchetect/swift-timecode", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.0")
     ],
@@ -41,7 +41,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "XLKit", package: "XLKit"),
-                .product(name: "TextFileTools", package: "swift-textfile-tools"),
+                .product(name: "TextFile", package: "swift-textfile"),
                 .product(name: "SwiftTimecodeAV", package: "swift-timecode"),
                 .product(name: "SwiftTimecodeCore", package: "swift-timecode"),
                 .product(name: "DAWFileTools", package: "swift-daw-file-tools"),

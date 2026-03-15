@@ -6,7 +6,7 @@
 
 import Foundation
 import OrderedCollections
-import TextFileTools
+import TextFile
 
 extension ExportProfile {
     func tsvWriteManifest(
@@ -16,7 +16,7 @@ extension ExportProfile {
     ) throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: true, noMedia: noMedia)
         
-        guard let tsvData = TextFile.TSV(table: rows).rawText.data(using: .utf8)
+        guard let tsvData = TSV(table: rows).rawText.data(using: .utf8)
         else {
             throw MarkersExtractorError.extraction(.fileWrite(
                 "Could not encode TSV file."
