@@ -134,15 +134,13 @@ extension ImageLabeler {
             nil
         )
 
-        var posY: Double
-
-        switch properties.alignVertical {
+        var posY: Double = switch properties.alignVertical {
         case .top:
-            posY = textRect.maxY - frameSize.height
+            textRect.maxY - frameSize.height
         case .center:
-            posY = textRect.midY - frameSize.height / 2
+            textRect.midY - frameSize.height / 2
         case .bottom:
-            posY = textRect.minY
+            textRect.minY
         }
 
         let framePath = CGPath(

@@ -17,9 +17,9 @@ public enum MarkersExtractorError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case let .validation(validationError):
-            return validationError.errorDescription
+            validationError.errorDescription
         case let .extraction(extractionError):
-            return extractionError.errorDescription
+            extractionError.errorDescription
         }
     }
 }
@@ -93,21 +93,21 @@ extension MarkersExtractorError {
         public var errorDescription: String? {
             switch self {
             case let .fcpxmlParse(message):
-                return message
+                message
             case let .noMediaFound(message):
-                return message
+                message
             case let .fileRead(message):
-                return message
+                message
             case let .fileWrite(message):
-                return message
+                message
             case let .filePermission(message):
-                return message
+                message
             case let .outputFolderAlreadyExists(message):
-                return message
+                message
             case let .image(imageGenerationError):
-                return imageGenerationError.errorDescription
+                imageGenerationError.errorDescription
             case let .internalInconsistency(message):
-                return message
+                message
             }
         }
         
@@ -121,11 +121,11 @@ extension MarkersExtractorError {
             public var errorDescription: String? {
                 switch self {
                 case let .stillImage(error):
-                    return error.errorDescription
+                    error.errorDescription
                 case let .animatedImage(error):
-                    return error.errorDescription
+                    error.errorDescription
                 case let .generic(message):
-                    return message
+                    message
                 }
             }
         }

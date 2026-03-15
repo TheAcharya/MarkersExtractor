@@ -97,10 +97,11 @@ extension AnimatedImageExtractor {
         
         let result: BatchResult
         
-        // only gif is supported for now, but more formats could be added in future
-        switch conversion.imageFormat {
+            // only gif is supported for now, but more formats could be added in future
+            = switch conversion.imageFormat
+        {
         case .gif:
-            result = try await generateGIF()
+            try await generateGIF()
         }
         
         progress.completedUnitCount = 1
@@ -143,10 +144,10 @@ extension AnimatedImageExtractor {
         // the creation of the GIF (CGImageDestinationAddImage) must happen serially
         
         let images: [Fraction: CGImage] = try await generator.images(
-            forTimesIn: descriptors, 
+            forTimesIn: descriptors,
             updating: nil
         ) { [weak self, batchResult] descriptor, image, result in
-            guard let self = self else {
+            guard let self else {
                 await batchResult.addError(
                     for: descriptor,
                     .internalInconsistency("No reference to image extractor.")
@@ -155,10 +156,10 @@ extension AnimatedImageExtractor {
             }
             
             do {
-                let (processedImage, isFinished) = try await self.processFrame(
+                let (processedImage, isFinished) = try await processFrame(
                     image: image,
                     result: result,
-                    at: self.startTime
+                    at: startTime
                 )
                 if isFinished { await batchResult.setFinished() }
                 

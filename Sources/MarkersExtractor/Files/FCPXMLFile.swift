@@ -47,18 +47,20 @@ extension FCPXMLFile: Equatable { }
 extension FCPXMLFile: Hashable { }
 
 extension FCPXMLFile: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension FCPXMLFile: CustomStringConvertible {
     public var description: String {
         switch source {
         case let .fileOnDisk(path):
-            return "\(path.xmlPath.path.quoted)"
-        case .xmlDocument(_):
-            return "FCP XML Document"
+            "\(path.xmlPath.path.quoted)"
+        case .xmlDocument:
+            "FCP XML Document"
         case .rawFileContents:
-            return "FCP XML Data"
+            "FCP XML Data"
         }
     }
 }
@@ -78,11 +80,11 @@ extension FCPXMLFile {
     var baseURL: URL? {
         switch source {
         case let .fileOnDisk(path):
-            return path.xmlPath
-        case .xmlDocument(_):
-            return nil
+            path.xmlPath
+        case .xmlDocument:
+            nil
         case .rawFileContents:
-            return nil
+            nil
         }
     }
     
@@ -91,11 +93,11 @@ extension FCPXMLFile {
     var parentDir: URL? {
         switch source {
         case let .fileOnDisk(path):
-            return path.parentPath
-        case .xmlDocument(_):
-            return nil
+            path.parentPath
+        case .xmlDocument:
+            nil
         case .rawFileContents:
-            return nil
+            nil
         }
     }
     
@@ -103,18 +105,18 @@ extension FCPXMLFile {
     mutating func xmlDocument() throws -> XMLDocument {
         switch source {
         case let .xmlDocument(xmlDoc):
-            return xmlDoc
+            xmlDoc
         default:
-            return try XMLDocument(data: data())
+            try XMLDocument(data: data())
         }
     }
     
     mutating func dawFile() throws -> FinalCutPro.FCPXML {
         switch source {
         case let .xmlDocument(xmlDoc):
-            return FinalCutPro.FCPXML(fileContent: xmlDoc)
+            FinalCutPro.FCPXML(fileContent: xmlDoc)
         default:
-            return try FinalCutPro.FCPXML(fileContent: data())
+            try FinalCutPro.FCPXML(fileContent: data())
         }
     }
     

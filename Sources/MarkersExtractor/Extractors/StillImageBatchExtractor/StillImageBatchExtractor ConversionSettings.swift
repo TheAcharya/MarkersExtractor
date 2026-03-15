@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import CoreImage
+import Foundation
 
 extension StillImageBatchExtractor {
     struct ConversionSettings: Sendable {

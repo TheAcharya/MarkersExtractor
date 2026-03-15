@@ -26,13 +26,13 @@ extension ExportResult.Value {
     public var stringValueForJSON: String {
         switch self {
         case let .date(date):
-            return date.formatted(.iso8601)
+            date.formatted(.iso8601)
         case let .string(string):
-            return string
+            string
         case let .url(url):
-            return url.path
+            url.path
         case let .profile(profile):
-            return profile.rawValue
+            profile.rawValue
         }
     }
 }

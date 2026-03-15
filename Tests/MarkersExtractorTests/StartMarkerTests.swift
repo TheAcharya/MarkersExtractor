@@ -6,14 +6,15 @@
 
 import DAWFileTools
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct StartMarkerTests {
     /// Test if a marker at the exact start of a timeline is extracted correctly.
-    @Test func startMarker_extractMarkers() async throws {
+    @Test
+    func startMarker_extractMarkers() async throws {
         let outputDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -42,6 +43,8 @@ import SwiftTimecodeCore
         #expect(marker1.position == tc("01:00:01:00", at: fr))
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

@@ -18,7 +18,9 @@ extension MarkerImageFormat.Still: Hashable { }
 extension MarkerImageFormat.Still: CaseIterable { }
 
 extension MarkerImageFormat.Still: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 // MARK: - Properties
@@ -28,9 +30,9 @@ extension MarkerImageFormat.Still {
     public var name: String {
         switch self {
         case .png:
-            return "PNG"
+            "PNG"
         case .jpg:
-            return "JPEG"
+            "JPEG"
         }
     }
 }

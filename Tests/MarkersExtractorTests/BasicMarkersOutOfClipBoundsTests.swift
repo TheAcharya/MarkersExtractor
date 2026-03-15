@@ -6,15 +6,16 @@
 
 import DAWFileTools
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct BasicMarkersOutOfClipBoundsTests {
     /// Ensure that markers that are out of bounds of clips are not included in extraction.
     /// Also tests to make sure marker parent clip information is correct.
-    @Test func outOfClipBounds() async throws {
+    @Test
+    func outOfClipBounds() async throws {
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -32,9 +33,9 @@ import SwiftTimecodeCore
             clipName: "Marker Test",
             // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:00:00", at: fr),
-            clipOutTime: tc("00:00:20:20", at: fr), 
+            clipOutTime: tc("00:00:20:20", at: fr),
             clipKeywords: [],
-            libraryName: "MyLibrary", 
+            libraryName: "MyLibrary",
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
             timelineName: "Out of Bounds Markers",
@@ -48,7 +49,7 @@ import SwiftTimecodeCore
             clipInTime: tc("00:00:20:20", at: fr),
             clipOutTime: tc("00:00:41:15", at: fr),
             clipKeywords: [],
-            libraryName: "MyLibrary", 
+            libraryName: "MyLibrary",
             eventName: "Test Event",
             projectName: "Out of Bounds Markers",
             timelineName: "Out of Bounds Markers",
@@ -78,6 +79,8 @@ import SwiftTimecodeCore
         #expect(marker1.parentInfo == clip2ParentInfo)
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

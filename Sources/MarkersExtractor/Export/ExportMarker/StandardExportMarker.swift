@@ -6,8 +6,8 @@
 
 import Foundation
 import OrderedCollections
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 /// A marker with its contents prepared as flat String values in a standard format suitable for
 /// various different export profiles.
@@ -71,7 +71,10 @@ public struct StandardExportMarker: ExportMarker {
         
         take = marker.metadata.take
         
-        position = marker.positionTimeString(format: timeFormat, offsetToTimelineStart: offsetToTimelineStart)
+        position = marker.positionTimeString(
+            format: timeFormat,
+            offsetToTimelineStart: offsetToTimelineStart
+        )
         
         clipType = marker.parentInfo.clipType
         
@@ -89,7 +92,8 @@ public struct StandardExportMarker: ExportMarker {
         
         videoRole = marker.roles.videoFormatted()
         
-        let (audioRoleFlat, audioRoleArray) = marker.roles.audioFormatted(multipleRoleSeparator: ",")
+        let (audioRoleFlat, audioRoleArray) = marker.roles
+            .audioFormatted(multipleRoleSeparator: ",")
         self.audioRoleFlat = audioRoleFlat
         self.audioRoleArray = audioRoleArray
         
@@ -106,7 +110,7 @@ public struct StandardExportMarker: ExportMarker {
             ?? ""
         
         imageTimecode = marker.imageTimecode(
-            useChapterMarkerPosterOffset: useChapterMarkerPosterOffset, 
+            useChapterMarkerPosterOffset: useChapterMarkerPosterOffset,
             offsetToTimelineStart: offsetToTimelineStart
         )
         

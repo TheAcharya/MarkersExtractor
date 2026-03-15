@@ -41,42 +41,42 @@ extension EmbeddedResource {
     var fileNameComponents: (name: String, ext: String) {
         switch self {
         case .icon_notion_marker_png:
-            return ("icon-marker", "png")
+            ("icon-marker", "png")
         case .icon_notion_marker_chapter_png:
-            return ("icon-marker-chapter", "png")
+            ("icon-marker-chapter", "png")
         case .icon_notion_marker_toDo_incomplete_png:
-            return ("icon-marker-todo-incomplete", "png")
+            ("icon-marker-todo-incomplete", "png")
         case .icon_notion_marker_toDo_complete_png:
-            return ("icon-marker-todo-complete", "png")
+            ("icon-marker-todo-complete", "png")
         case .icon_notion_caption_png:
-            return ("icon-caption", "png")
+            ("icon-caption", "png")
         case .marker_video_placeholder_mov:
-            return ("marker-video-placeholder", "mov")
+            ("marker-video-placeholder", "mov")
         case .empty_png:
-            return ("empty", "png")
+            ("empty", "png")
         case .empty_mov:
-            return ("empty", "mov")
+            ("empty", "mov")
         }
     }
     
     var data: Data? {
         switch self {
         case .icon_notion_marker_png:
-            return icon_notion_marker_data
+            icon_notion_marker_data
         case .icon_notion_marker_chapter_png:
-            return icon_notion_marker_chapter_data
+            icon_notion_marker_chapter_data
         case .icon_notion_marker_toDo_incomplete_png:
-            return icon_notion_marker_toDo_incomplete_data
+            icon_notion_marker_toDo_incomplete_data
         case .icon_notion_marker_toDo_complete_png:
-            return icon_notion_marker_toDo_complete_data
+            icon_notion_marker_toDo_complete_data
         case .icon_notion_caption_png:
-            return icon_notion_caption_data
+            icon_notion_caption_data
         case .marker_video_placeholder_mov:
-            return marker_video_placeholder_data
+            marker_video_placeholder_data
         case .empty_png:
-            return Data()
+            Data()
         case .empty_mov:
-            return Data()
+            Data()
         }
     }
     
@@ -750,7 +750,8 @@ private let icon_notion_marker_chapter_string = [
 ]
     .joined()
 
-private let icon_notion_marker_toDo_complete_data = Data(base64Encoded: icon_notion_marker_toDo_complete_string)
+private let icon_notion_marker_toDo_complete_data =
+    Data(base64Encoded: icon_notion_marker_toDo_complete_string)
 private let icon_notion_marker_toDo_complete_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdz3HeRp7H4dZEwBC0EZiKwOIB5zGRgMUzDhYjGCsC",
@@ -1102,7 +1103,8 @@ private let icon_notion_marker_toDo_complete_string = [
 ]
     .joined()
 
-private let icon_notion_marker_toDo_incomplete_data = Data(base64Encoded: icon_notion_marker_toDo_incomplete_string)
+private let icon_notion_marker_toDo_incomplete_data =
+    Data(base64Encoded: icon_notion_marker_toDo_incomplete_string)
 private let icon_notion_marker_toDo_incomplete_string = [
     "iVBORw0KGgoAAAANSUhEUgAABOIAAATiCAYAAAAXhkxGAAAACXBIWXMAAC4jAAAu",
     "IwF4pT92AAAgAElEQVR4nOzdP3LeRp7H4dacgEfQJkhNBYgtpkjGPIHJE1g8wVgn",

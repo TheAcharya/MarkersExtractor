@@ -1,5 +1,5 @@
 //
-//  Logging.swift
+//  LogFactory.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -8,19 +8,23 @@ import Foundation
 import Logging
 
 @globalActor final actor LogFactory {
-    public static let shared = LogFactory()
+    static let shared = LogFactory()
     
-    fileprivate var consoleLogHandler: LogHandler?
+    private var consoleLogHandler: LogHandler?
     
-    fileprivate var fileLogHandler: LogHandler?
+    private var fileLogHandler: LogHandler?
     
-    public init() { }
+    init() { }
 }
 
 // MARK: - Methods
 
 extension LogFactory {
-    public func fileAndConsoleLogFactory(label: String, logLevel: Logger.Level?, logFile: URL?) -> LogHandler {
+    func fileAndConsoleLogFactory(
+        label: String,
+        logLevel: Logger.Level?,
+        logFile: URL?
+    ) -> LogHandler {
         guard let logLevel else {
             return SwiftLogNoOpLogHandler()
         }
@@ -38,7 +42,7 @@ extension LogFactory {
         return MultiplexLogHandler(logHandlers)
     }
     
-    public func consoleLogFactory(label: String, logLevel: Logger.Level) -> LogHandler {
+    func consoleLogFactory(label: String, logLevel: Logger.Level) -> LogHandler {
         if let consoleLogHandler { return consoleLogHandler }
         
         var handler = ConsoleLogHandler(label: label)
@@ -49,7 +53,7 @@ extension LogFactory {
         return handler
     }
     
-    public func fileLogFactory(label: String, logLevel: Logger.Level, logFile: URL?) -> LogHandler? {
+    func fileLogFactory(label: String, logLevel: Logger.Level, logFile: URL?) -> LogHandler? {
         guard let logFile else { return nil }
         
         if let fileLogHandler { return fileLogHandler }
@@ -59,7 +63,10 @@ extension LogFactory {
             // otherwise this will throw an error and the file won't be created on disk.
             
             let logFileParentPath = logFile.deletingLastPathComponent()
-            try FileManager.default.createDirectory(at: logFileParentPath, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(
+                at: logFileParentPath,
+                withIntermediateDirectories: true
+            )
             
             var handler = try FileLogHandler(label: label, localFile: logFile)
             handler.logLevel = logLevel
@@ -70,7 +77,7 @@ extension LogFactory {
         } catch {
             print(
                 "Cannot write to log file \(logFile.lastPathComponent.quoted):"
-                + " \(error.localizedDescription)"
+                    + " \(error.localizedDescription)"
             )
             return nil
         }

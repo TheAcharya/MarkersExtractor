@@ -12,38 +12,31 @@ extension FinalCutPro.FCPXML.ElementType {
         switch self {
         // annotation
             
-        case .caption: return "Caption"
-        case .keyword: return "Keyword"
-        case .marker, .chapterMarker: return "Marker"
-            
+        case .caption: "Caption"
+        case .keyword: "Keyword"
+        case .marker, .chapterMarker: "Marker"
         // story
-            
-        case .sequence: return "Sequence"
-        case .spine: return "Spine"
-            
+        case .sequence: "Sequence"
+        case .spine: "Spine"
         // clips
-            
-        case .assetClip: return "Asset"
-        case .audio: return "Audio"
-        case .audition: return "Audition"
-        case .clip: return "Clip"
-        case .gap: return "Gap"
-        case .liveDrawing: return "Live Drawing"
-        case .mcClip: return "Multicam"
-        case .refClip: return "Compound"
-        case .syncClip: return "Sync"
-        case .title: return "Title"
-        case .transition: return "Transition"
-        case .video: return "Video"
-            
+        case .assetClip: "Asset"
+        case .audio: "Audio"
+        case .audition: "Audition"
+        case .clip: "Clip"
+        case .gap: "Gap"
+        case .liveDrawing: "Live Drawing"
+        case .mcClip: "Multicam"
+        case .refClip: "Compound"
+        case .syncClip: "Sync"
+        case .title: "Title"
+        case .transition: "Transition"
+        case .video: "Video"
         // structure
-            
-        case .library: return "Library"
-        case .event: return "Event"
-        case .project: return "Project"
-            
+        case .library: "Library"
+        case .event: "Event"
+        case .project: "Project"
         default:
-            return rawValue.titleCased
+            rawValue.titleCased
         }
     }
 }
@@ -51,9 +44,9 @@ extension FinalCutPro.FCPXML.ElementType {
 extension FinalCutPro.FCPXML.Marker.MarkerKind {
     var name: String {
         switch self {
-        case .standard: return "Standard"
-        case .chapter: return "Chapter"
-        case .toDo: return "To Do"
+        case .standard: "Standard"
+        case .chapter: "Chapter"
+        case .toDo: "To Do"
         }
     }
 }
@@ -61,9 +54,9 @@ extension FinalCutPro.FCPXML.Marker.MarkerKind {
 extension FinalCutPro.FCPXML.Marker.Configuration {
     var name: String {
         switch self {
-        case .standard: return "Standard"
-        case .chapter: return "Chapter"
-        case .toDo: return "To Do"
+        case .standard: "Standard"
+        case .chapter: "Chapter"
+        case .toDo: "To Do"
         }
     }
 }

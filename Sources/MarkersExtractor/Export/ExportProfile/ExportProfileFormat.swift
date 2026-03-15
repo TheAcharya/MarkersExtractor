@@ -28,7 +28,9 @@ extension ExportProfileFormat: Hashable { }
 extension ExportProfileFormat: CaseIterable { }
 
 extension ExportProfileFormat: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension ExportProfileFormat: Sendable { }

@@ -31,7 +31,9 @@ extension FCPXMLFile.FilePath: Equatable { }
 extension FCPXMLFile.FilePath: Hashable { }
 
 extension FCPXMLFile.FilePath: Identifiable {
-    public var id: URL { basePath }
+    public var id: URL {
+        basePath
+    }
 }
 
 extension FCPXMLFile.FilePath: Sendable { }
@@ -50,9 +52,9 @@ extension FCPXMLFile.FilePath {
     public var basePath: URL {
         switch self {
         case let .fcpxml(xmlURL):
-            return xmlURL
+            xmlURL
         case let .fcpxmld(bundleURL):
-            return bundleURL
+            bundleURL
         }
     }
     
@@ -60,9 +62,9 @@ extension FCPXMLFile.FilePath {
     public var xmlPath: URL {
         switch self {
         case let .fcpxml(xmlURL):
-            return xmlURL
+            xmlURL
         case let .fcpxmld(bundleURL):
-            return bundleURL.appendingPathComponent("Info.fcpxml")
+            bundleURL.appendingPathComponent("Info.fcpxml")
         }
     }
 }

@@ -4,11 +4,11 @@
 //  Licensed under MIT License
 //
 
+import CoreGraphics
 import Foundation
+import ImageIO
 import TextFileTools
 import XLKit
-import CoreGraphics
-import ImageIO
 
 // MARK: - Type Aliases
 
@@ -16,33 +16,34 @@ typealias StringTable = [[String]]
 
 extension ExportProfile {
     /// Generates an XLSX file with marker data and optional embedded images.
-    /// 
+    ///
     /// ## XLKit API Implementation Notes:
-    /// 
+    ///
     /// ### Main Actor Isolation
-    /// XLKit 1.0+ requires all operations to be performed on the main actor due to concurrency safety.
+    /// XLKit 1.0+ requires all operations to be performed on the main actor due to concurrency
+    /// safety.
     /// This function is marked as `@MainActor` to ensure all XLKit API calls run on the main actor.
-    /// 
+    ///
     /// ### Key XLKit Components Used:
     /// - `Workbook`: The main container for the Excel file
     /// - `Sheet`: Individual worksheet within the workbook
     /// - `CellCoordinate`: Represents cell positions (1-based indexing)
     /// - `CellFormat`: Defines cell styling (font, size, weight, etc.)
     /// - `workbook.save(to:)`: Handles file generation and writing (async)
-    /// 
+    ///
     /// ### Cell Addressing
     /// XLKit uses 1-based indexing for both rows and columns. Cell coordinates are converted
     /// to Excel-style addresses (A1, B2, etc.) using the `.excelAddress` property.
-    /// 
+    ///
     /// ### Image Embedding
     /// Images are embedded using `sheet.embedImageAutoSized()` which automatically
     /// resizes images to fit within cell boundaries while maintaining aspect ratio.
     /// The method is async and must be awaited.
-    /// 
+    ///
     /// ### Column Width Auto-Adjustment
     /// Column widths are calculated based on content length and font properties,
     /// then clamped to reasonable bounds (8-120 units) for better readability.
-    /// 
+    ///
     /// ### Security Considerations
     /// XLKit includes file path restrictions and security validation by default.
     /// The `SecurityManager` handles file validation and suspicious file detection.
@@ -68,8 +69,9 @@ extension ExportProfile {
         
         // Prepare image data if needed
         var imageDataArray: [(rowIndex: Int, imageData: Data, imageFormat: ImageFormat)] = []
-        if !noMedia, let outputFolder = outputFolder {
-            let headerRow = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
+        if !noMedia, let outputFolder {
+            let headerRow = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false)
+                .first ?? []
             guard headerRow.contains("Image") else { return }
             
             for (rowIndex, marker) in preparedMarkers.enumerated() {
@@ -86,12 +88,17 @@ extension ExportProfile {
                 case "gif": imageFormat = .gif
                 default: continue // skip unsupported
                 }
-                imageDataArray.append((rowIndex: rowIndex, imageData: imageData, imageFormat: imageFormat))
+                imageDataArray.append((
+                    rowIndex: rowIndex,
+                    imageData: imageData,
+                    imageFormat: imageFormat
+                ))
             }
         }
         
         // Prepare header row for image column index calculation
-        let headerRowForImage = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false).first ?? []
+        let headerRowForImage = dictsToRows(preparedMarkers, includeHeader: true, noMedia: false)
+            .first ?? []
         let imageColumnIndex = headerRowForImage.firstIndex(of: "Image") ?? -1
         let excelColumnIndex = imageColumnIndex + 1
         
@@ -133,7 +140,8 @@ extension ExportProfile {
         let dataRows = rows.dropFirst()
         for (rowIndex, rowValues) in dataRows.enumerated() {
             for (columnIndex, value) in rowValues.enumerated() {
-                let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1).excelAddress
+                let coordinate = CellCoordinate(row: rowIndex + 2, column: columnIndex + 1)
+                    .excelAddress
                 sheet.setCell(coordinate, string: value, format: dataFormat)
             }
         }
@@ -145,17 +153,18 @@ extension ExportProfile {
         
         // Add images if media is present AFTER column width adjustment
         // embedImageAutoSized will override the image column with perfect sizing
-        if !imageDataArray.isEmpty && imageColumnIndex >= 0 {
+        if !imageDataArray.isEmpty, imageColumnIndex >= 0 {
             print("Adding images to sheet...")
             
             for (rowIndex, imageData, imageFormat) in imageDataArray {
                 let excelRowIndex = rowIndex + 2 // 1-based, + header
-                let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex).excelAddress
+                let coordinate = CellCoordinate(row: excelRowIndex, column: excelColumnIndex)
+                    .excelAddress
                 print("Embedding image at \(coordinate) with format \(imageFormat)")
                 _ = try await sheet.embedImageAutoSized(
-                    imageData, 
-                    at: coordinate, 
-                    of: workbook, 
+                    imageData,
+                    at: coordinate,
+                    of: workbook,
                     format: imageFormat,
                     scale: 1.0  // Increase scale factor to 100% (larger visible images)
                 )
@@ -172,23 +181,21 @@ extension ExportProfile {
         print("XLSX file generated successfully at: \(xlsxPath.path)")
     }
     
-
-    
     /// Automatically adjusts column widths based on content length and font properties.
-    /// 
+    ///
     /// ## XLKit Column Width Implementation:
-    /// 
+    ///
     /// ### Width Units
     /// XLKit uses a custom width unit system that approximates character widths.
     /// The calculation considers font weight (bold vs normal) and font size.
-    /// 
+    ///
     /// ### Width Calculation Process:
     /// 1. Calculate text width for header (bold, larger font)
     /// 2. Calculate text width for all data cells in the column
     /// 3. Find the maximum width across all cells
     /// 4. Add padding (3 units) for better readability
     /// 5. Clamp to reasonable bounds (8-120 units)
-    /// 
+    ///
     /// ### Multi-line Text Handling
     /// For text containing newlines, the longest line is used for width calculation.
     /// This prevents columns from becoming too narrow for multi-line content.
@@ -216,25 +223,26 @@ extension ExportProfile {
             
             // Add padding and set column width
             let adjustedWidth = maxWidth + 3.0 // Add 3 units of padding for better readability
-            let clampedWidth = adjustedWidth.clamped(to: 8.0 ... 120.0) // Min 8, Max 120 for better range
+            let clampedWidth = adjustedWidth
+                .clamped(to: 8.0 ... 120.0) // Min 8, Max 120 for better range
             sheet.setColumnWidth(columnIndex + 1, width: clampedWidth)
         }
     }
     
     /// Calculates approximate text width based on character count, font weight, and font size.
-    /// 
+    ///
     /// ## Text Width Calculation Notes:
-    /// 
+    ///
     /// ### Font Properties Impact:
     /// - Bold text is approximately 20% wider than normal text
     /// - Header font size (12pt) vs data font size (11pt) affects width
     /// - Base character width is normalized to 1.0 for normal text
-    /// 
+    ///
     /// ### Multi-line Text Handling:
     /// - Text is split by newlines
     /// - The longest line determines the width
     /// - This prevents columns from being too narrow for multi-line content
-    /// 
+    ///
     /// ### Limitations:
     /// This is a simplified approximation. For more accurate calculations,
     /// consider using Core Text or other font metrics APIs.
@@ -256,14 +264,12 @@ extension ExportProfile {
         
         return finalWidth
     }
-    
-
 }
 
 // MARK: - Utils
 
 extension StringTable {
-    fileprivate var columnMaxCharCounts: [(columnIndex: Int, charCount: Int)] {
+    private var columnMaxCharCounts: [(columnIndex: Int, charCount: Int)] {
         columnCharCounts
             .map { ($0.key, $0.value.upperBound) }
             .sorted { lhs, rhs in lhs.columnIndex < rhs.columnIndex }

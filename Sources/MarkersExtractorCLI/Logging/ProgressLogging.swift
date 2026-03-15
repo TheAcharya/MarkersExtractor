@@ -44,8 +44,8 @@ extension ProgressLogging {
     
     private func progressChanged() {
         let output = String(format: "%.0f", progress.fractionCompleted * 100) + "%"
-        guard self.lastOutput != output else { return } // suppress redundant output
-        self.logger.info("\(output)")
-        self.lastOutput = output
+        guard lastOutput != output else { return } // suppress redundant output
+        logger.info("\(output)")
+        lastOutput = output
     }
 }

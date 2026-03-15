@@ -94,8 +94,8 @@ extension AnimatedImagesWriter {
             imageFilter: { [weak self] inputImage in
                 if let self, let label = descriptor.label {
                     var labeler = ImageLabeler(
-                        labelProperties: self.imageLabelProperties,
-                        logger: self.logger
+                        labelProperties: imageLabelProperties,
+                        logger: logger
                     )
                     return labeler.labelImage(image: inputImage, text: label)
                 } else {

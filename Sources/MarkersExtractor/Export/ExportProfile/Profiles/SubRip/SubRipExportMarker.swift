@@ -23,7 +23,6 @@ public struct SubRipExportMarker: ExportMarker {
     public let imageFileName: String
     public let imageTimecode: Timecode
     
-    
     public init(
         marker: Marker,
         idMode: MarkerIDMode,
@@ -40,6 +39,9 @@ public struct SubRipExportMarker: ExportMarker {
         outTime = inTime + Time(seconds: duration)
         
         imageFileName = UUID().uuidString
-        imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToTimelineStart: false)
+        imageTimecode = marker.imageTimecode(
+            useChapterMarkerPosterOffset: false,
+            offsetToTimelineStart: false
+        )
     }
 }

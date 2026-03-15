@@ -5,8 +5,8 @@
 //
 
 import AppKit
-import Foundation
 import DAWFileTools
+import Foundation
 
 extension MarkersExtractor {
     public struct Settings {
@@ -161,7 +161,7 @@ extension MarkersExtractor.Settings {
             )
         }
         
-        if let imageLabelFontStrokeWidth = imageLabelFontStrokeWidth,
+        if let imageLabelFontStrokeWidth,
            imageLabelFontStrokeWidth < 0
         {
             throw MarkersExtractorError.validation(
@@ -175,19 +175,19 @@ extension MarkersExtractor.Settings {
             )
         }
         
-        if let imageHeight = imageHeight, imageHeight <= 0 {
+        if let imageHeight, imageHeight <= 0 {
             throw MarkersExtractorError.validation(
                 .invalidImageHeight
             )
         }
         
-        if let imageWidth = imageWidth, imageWidth <= 0 {
+        if let imageWidth, imageWidth <= 0 {
             throw MarkersExtractorError.validation(
                 .invalidImageWidth
             )
         }
         
-        if let imageSizePercent = imageSizePercent,
+        if let imageSizePercent,
            !Validation.imageSizePercent.contains(imageSizePercent)
         {
             throw MarkersExtractorError.validation(
@@ -229,6 +229,7 @@ extension MarkersExtractor.Settings {
         public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
             [fcpxml.defaultMediaSearchPath].compactMap { $0 }
         }
+
         public static let exportFormat: ExportProfileFormat = .csv
         public static let enableSubframes = false
         public static let markersSource: MarkersSource = .markers

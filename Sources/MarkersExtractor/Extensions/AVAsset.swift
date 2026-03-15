@@ -20,33 +20,51 @@ extension AVAsset {
     }
     
     /// Returns a boolean of whether there are any video tracks.
-    var hasVideo: Bool { !tracks(withMediaType: .video).isEmpty }
+    var hasVideo: Bool {
+        !tracks(withMediaType: .video).isEmpty
+    }
     
     /// Returns a boolean of whether there are any audio tracks.
-    var hasAudio: Bool { !tracks(withMediaType: .audio).isEmpty }
+    var hasAudio: Bool {
+        !tracks(withMediaType: .audio).isEmpty
+    }
     
     /// Returns the first video track if any.
-    var firstVideoTrack: AVAssetTrack? { tracks(withMediaType: .video).first }
+    var firstVideoTrack: AVAssetTrack? {
+        tracks(withMediaType: .video).first
+    }
     
     /// Returns the first audio track if any.
-    var firstAudioTrack: AVAssetTrack? { tracks(withMediaType: .audio).first }
+    var firstAudioTrack: AVAssetTrack? {
+        tracks(withMediaType: .audio).first
+    }
     
     /// Returns the dimensions of the first video track if any.
-    var dimensions: CGSize? { firstVideoTrack?.dimensions }
+    var dimensions: CGSize? {
+        firstVideoTrack?.dimensions
+    }
     
     /// Returns the frame rate of the first video track if any.
-    var frameRate: Double? { firstVideoTrack?.frameRate }
+    var frameRate: Double? {
+        firstVideoTrack?.frameRate
+    }
     
     /// Returns the aspect ratio of the first video track if any.
-    var aspectRatio: Double? { firstVideoTrack?.aspectRatio }
+    var aspectRatio: Double? {
+        firstVideoTrack?.aspectRatio
+    }
     
     /// Returns the video codec of the first video track if any.
-    var videoCodec: AVFormat? { firstVideoTrack?.codec }
+    var videoCodec: AVFormat? {
+        firstVideoTrack?.codec
+    }
     
     /// Returns the audio codec of the first audio track if any.
     ///
     /// Example: `aac`
-    var audioCodec: String? { firstAudioTrack?.codecIdentifier }
+    var audioCodec: String? {
+        firstAudioTrack?.codecIdentifier
+    }
     
     /// The file size of the asset in bytes.
     ///
@@ -59,7 +77,9 @@ extension AVAsset {
         return urlAsset.url.fileSize
     }
     
-    var fileSizeFormatted: String { fileSize.bytesFormattedAsFileSize }
+    var fileSizeFormatted: String {
+        fileSize.bytesFormattedAsFileSize
+    }
 }
 
 extension AVAsset {

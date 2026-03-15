@@ -33,7 +33,10 @@ public struct MIDIFileExportMarker: ExportMarker {
         frameRate = marker.frameRate()
         subFramesBase = marker.subFramesBase()
         imageFileName = UUID().uuidString // never used, just dummy
-        imageTimecode = marker.imageTimecode(useChapterMarkerPosterOffset: false, offsetToTimelineStart: false) // not used
+        imageTimecode = marker.imageTimecode(
+            useChapterMarkerPosterOffset: false,
+            offsetToTimelineStart: false
+        ) // not used
     }
     
     /// Convert to a DAWFileTools `DAWMarker`.

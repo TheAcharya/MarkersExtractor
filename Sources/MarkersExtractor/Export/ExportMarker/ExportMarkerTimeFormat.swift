@@ -5,8 +5,8 @@
 //
 
 import Foundation
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 public enum ExportMarkerTimeFormat {
     /// Timecode.
@@ -24,7 +24,9 @@ extension ExportMarkerTimeFormat: Equatable { }
 extension ExportMarkerTimeFormat: Hashable { }
 
 extension ExportMarkerTimeFormat: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension ExportMarkerTimeFormat: Sendable { }

@@ -4,8 +4,8 @@
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileTools
+import Foundation
 import SwiftTimecodeCore
 
 // MARK: - Extract Markers
@@ -33,9 +33,9 @@ extension MarkersExtractor {
             extractor = try FCPXMLMarkerExtractor(
                 fcpxml: &settings.fcpxml,
                 idNamingMode: settings.idNamingMode,
-                enableSubframes: settings.enableSubframes, 
+                enableSubframes: settings.enableSubframes,
                 markersSource: settings.markersSource,
-                excludeRoles: settings.excludeRoles, 
+                excludeRoles: settings.excludeRoles,
                 includeDisabled: settings.includeDisabled,
                 logger: logger
             )
@@ -67,8 +67,8 @@ extension MarkersExtractor {
             // duplicate marker IDs isn't be an error condition, we should append filename uniquing
             // string to the ID instead.
             // throw MarkersExtractorError.runtimeError("Duplicate marker IDs found: \(duplicates)")
-            duplicates.forEach {
-                logger.info("Duplicate marker ID found which will be uniqued: \($0.quoted)")
+            for duplicate in duplicates {
+                logger.info("Duplicate marker ID found which will be uniqued: \(duplicate.quoted)")
             }
         }
         

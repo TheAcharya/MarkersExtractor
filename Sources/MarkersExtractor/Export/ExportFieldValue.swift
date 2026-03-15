@@ -19,7 +19,9 @@ extension ExportFieldValue: Hashable { }
 extension ExportFieldValue: Sendable { }
 
 extension ExportFieldValue: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 // MARK: - Static Constructors
@@ -63,11 +65,11 @@ extension ExportFieldValue {
 extension ExportFieldValue: Codable {
     public func encode(to encoder: Encoder) throws {
         switch self {
-        case .string(let string):
+        case let .string(string):
             try string.encode(to: encoder)
-        case .array(let array):
+        case let .array(array):
             try array.encode(to: encoder)
-        case .dictionary(let dictionary):
+        case let .dictionary(dictionary):
             try dictionary.encode(to: encoder)
         }
     }

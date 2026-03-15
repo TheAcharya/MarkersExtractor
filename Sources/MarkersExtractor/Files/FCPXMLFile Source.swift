@@ -20,7 +20,9 @@ extension FCPXMLFile.Source: Equatable { }
 extension FCPXMLFile.Source: Hashable { }
 
 extension FCPXMLFile.Source: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 // Using @unchecked to allow use of non-Sendable XMLDocument,

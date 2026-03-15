@@ -63,7 +63,7 @@ let package = Package(
             dependencies: [
                 "MarkersExtractor",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ], 
+            ],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         )
     ]

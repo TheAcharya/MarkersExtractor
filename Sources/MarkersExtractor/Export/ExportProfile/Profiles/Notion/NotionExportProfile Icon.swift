@@ -54,11 +54,11 @@ extension NotionExportProfile.Icon {
 extension NotionExportProfile.Icon {
     public var resource: EmbeddedResource {
         switch self {
-        case .markerChapter: return .icon_notion_marker_chapter_png
-        case .markerToDoComplete: return .icon_notion_marker_toDo_complete_png
-        case .markerToDoIncomplete: return .icon_notion_marker_toDo_incomplete_png
-        case .markerStandard: return .icon_notion_marker_png
-        case .caption: return .icon_notion_caption_png
+        case .markerChapter: .icon_notion_marker_chapter_png
+        case .markerToDoComplete: .icon_notion_marker_toDo_complete_png
+        case .markerToDoIncomplete: .icon_notion_marker_toDo_incomplete_png
+        case .markerStandard: .icon_notion_marker_png
+        case .caption: .icon_notion_caption_png
         }
     }
     

@@ -6,14 +6,15 @@
 
 import DAWFileTools
 import Foundation
+@testable import MarkersExtractor
 import SwiftExtensions
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct AudioOnlyTests {
-    @Test func audioOnly() async throws {
+    @Test
+    func audioOnly() async throws {
         let outputDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -51,7 +52,8 @@ import SwiftTimecodeCore
     }
     
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
-    @Test func audioOnly_WithMedia_PNG() async throws {
+    @Test
+    func audioOnly_WithMedia_PNG() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -92,7 +94,8 @@ import SwiftTimecodeCore
     }
     
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
-    @Test func audioOnly_WithMedia_GIF() async throws {
+    @Test
+    func audioOnly_WithMedia_GIF() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -132,6 +135,8 @@ import SwiftTimecodeCore
         #expect(exportFilenames.contains("marker-placeholder.gif"))
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

@@ -6,8 +6,8 @@
 
 import CoreMedia
 import DAWFileTools
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 /// Raw FCP Marker data extracted from FCPXML.
 ///
@@ -54,7 +54,9 @@ extension Marker: Comparable {
 }
 
 extension Marker: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension Marker: Sendable { }
@@ -63,29 +65,27 @@ extension Marker: Sendable { }
 
 extension Marker {
     func id(_ idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
-        let baseID: String = {
-            switch idMode {
-            case .timelineNameAndTimecode:
-                return "\(parentInfo.timelineName)_\(positionTimeString(format: .timecode(stringFormat: tcStringFormat)))"
-            case .name:
-                return name
-            case .notes:
-                return notes
-            }
-        }()
+        let baseID: String = switch idMode {
+        case .timelineNameAndTimecode:
+            "\(parentInfo.timelineName)_\(positionTimeString(format: .timecode(stringFormat: tcStringFormat)))"
+        case .name:
+            name
+        case .notes:
+            notes
+        }
         return baseID + (idSuffix ?? "")
     }
     
     func id(pathSafe idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         switch idMode {
         case .timelineNameAndTimecode:
-            return id(idMode, tcStringFormat: tcStringFormat)
+            id(idMode, tcStringFormat: tcStringFormat)
                 .replacingOccurrences(of: ";", with: "-") // used in drop-frame timecode
                 .replacingOccurrences(of: ":", with: "-")
                 .replacingOccurrences(of: ".", with: "_") // when subframes are enabled
                 .sanitizingPathComponent(for: nil, replacement: "-")
         case .name, .notes:
-            return id(idMode, tcStringFormat: tcStringFormat)
+            id(idMode, tcStringFormat: tcStringFormat)
                 .replacingOccurrences(of: ":", with: "-")
                 .sanitizingPathComponent(for: nil, replacement: "-")
         }
@@ -110,16 +110,16 @@ extension Marker {
     func isChecked() -> Bool {
         switch type {
         case let .marker(.toDo(completed)):
-            return completed
+            completed
         default:
-            return false
+            false
         }
     }
     
     /// - Parameters:
     ///   - format: Time display format.
-    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the timeline will be
-    ///     considered as starting from zero.
+    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the
+    ///     timeline will be considered as starting from zero.
     func positionTimeString(
         format: ExportMarkerTimeFormat,
         offsetToTimelineStart: Bool = false
@@ -127,9 +127,9 @@ extension Marker {
         let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
         
         switch format {
-        case .timecode(let stringFormat):
+        case let .timecode(stringFormat):
             return rectifiedPosition.stringValue(format: stringFormat)
-        case .realTime(let stringFormat):
+        case let .realTime(stringFormat):
             // convert timecode to real time (wall time)
             return Time(seconds: rectifiedPosition.realTimeValue).stringValue(format: stringFormat)
         case .srt:
@@ -149,8 +149,8 @@ extension Marker {
     ///
     /// - Parameters:
     ///   - useChapterMarkerPosterOffset: For chapter markers, use the poster offset.
-    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the timeline will be
-    ///     considered as starting from zero.
+    ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the
+    ///     timeline will be considered as starting from zero.
     func imageTimecode(
         useChapterMarkerPosterOffset: Bool,
         offsetToTimelineStart: Bool = false
@@ -158,7 +158,7 @@ extension Marker {
         let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
         
         switch type {
-        case .marker(.chapter(let posterOffset)):
+        case let .marker(.chapter(posterOffset)):
             if useChapterMarkerPosterOffset {
                 return (try? position.adding(.rational(posterOffset))) ?? rectifiedPosition
             } else {

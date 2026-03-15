@@ -42,7 +42,6 @@ extension MarkersExtractor {
     
     /// - Throws: ``MarkersExtractorError``
     private func findMedia(name: String, paths: [URL]) throws -> URL {
-        
         let files: [URL] = try paths.reduce(into: []) { base, path in
             let matches = try matchFiles(at: path, name: name, exts: Self.mediaFormatFileExtensions)
             base.append(contentsOf: matches)

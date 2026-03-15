@@ -19,15 +19,17 @@ extension MarkersSource: Hashable { }
 extension MarkersSource: CaseIterable { }
 
 extension MarkersSource: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkersSource: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .markers: return "Markers"
-        case .markersAndCaptions: return "Markers and Captions"
-        case .captions: return "Captions"
+        case .markers: "Markers"
+        case .markersAndCaptions: "Markers and Captions"
+        case .captions: "Captions"
         }
     }
 }
@@ -39,15 +41,15 @@ extension MarkersSource: Sendable { }
 extension MarkersSource {
     public var includesMarkers: Bool {
         switch self {
-        case .markers, .markersAndCaptions: return true
-        case .captions: return false
+        case .markers, .markersAndCaptions: true
+        case .captions: false
         }
     }
     
     public var includesCaptions: Bool {
         switch self {
-        case .markers: return false
-        case .captions, .markersAndCaptions: return true
+        case .markers: false
+        case .captions, .markersAndCaptions: true
         }
     }
 }

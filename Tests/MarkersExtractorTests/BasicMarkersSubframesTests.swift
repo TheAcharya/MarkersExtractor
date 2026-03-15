@@ -5,14 +5,15 @@
 //
 
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct BasicMarkersSubframesTests {
     /// Test that fraction time values that have subframes correctly convert to Timecode.
-    @Test func basicMarkers_extractMarkers_TimecodeSubframes() async throws {
+    @Test
+    func basicMarkers_extractMarkers_TimecodeSubframes() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -29,11 +30,13 @@ import SwiftTimecodeCore
         
         let lastMarker = try #require(markers.last)
         #expect(
-            lastMarker.positionTimeString(format: .timecode(stringFormat: [.showSubFrames])) ==
-            "00:00:28:19.25"
+            lastMarker.positionTimeString(format: .timecode(stringFormat: [.showSubFrames]))
+                == "00:00:28:19.25"
         )
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

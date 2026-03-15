@@ -1,11 +1,11 @@
 //
-//  AnimatedImageExtractor BatchResult.swift
+//  AnimatedImageExtractor ConversionSettings.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
 
-import Foundation
 import CoreImage
+import Foundation
 import SwiftTimecodeCore
 
 extension AnimatedImageExtractor {

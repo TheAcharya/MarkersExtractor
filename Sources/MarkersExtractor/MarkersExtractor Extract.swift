@@ -42,7 +42,11 @@ extension MarkersExtractor {
         guard !markers.isEmpty else {
             logger.info("No markers found.")
             // TODO: should we output result file still? nothing gets written to disk if there are no markers so probably not.
-            return ExportResult(date: Date(), profile: settings.exportFormat, exportFolder: settings.outputDir)
+            return ExportResult(
+                date: Date(),
+                profile: settings.exportFormat,
+                exportFolder: settings.outputDir
+            )
         }
         
         progress.completedUnitCount += 5

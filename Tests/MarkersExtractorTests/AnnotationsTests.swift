@@ -5,16 +5,17 @@
 //
 
 import Foundation
+@testable import MarkersExtractor
 import SwiftExtensions
 import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-@testable import MarkersExtractor
 
 @Suite struct AnnotationsTests {
     // TODO: add test for filtering disabled captions once that's implemented
     /// Test importing captions
-    @Test func annotations_CaptionsOnly() async throws {
+    @Test
+    func annotations_CaptionsOnly() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -53,7 +54,8 @@ import TestingExtensions
     }
     
     /// Test importing captions
-    @Test func annotations_MarkersAndCaptions() async throws {
+    @Test
+    func annotations_MarkersAndCaptions() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -100,6 +102,8 @@ import TestingExtensions
         #expect(marker2.position == tc("01:00:27:10", at: fr))
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

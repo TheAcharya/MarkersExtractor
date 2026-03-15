@@ -23,7 +23,9 @@ extension MarkerRole: Equatable { }
 extension MarkerRole: Hashable { }
 
 extension MarkerRole: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerRole: CustomStringConvertible {
@@ -40,22 +42,22 @@ extension MarkerRole {
     public var roleType: FinalCutPro.FCPXML.RoleType {
         switch self {
         case .video:
-            return .video
+            .video
         case .audio:
-            return .audio
+            .audio
         case .caption:
-            return .caption
+            .caption
         }
     }
     
     public var stringValue: String {
         switch self {
         case let .video(string):
-            return string
+            string
         case let .audio(string):
-            return string
+            string
         case let .caption(string):
-            return string
+            string
         }
     }
     
@@ -83,7 +85,7 @@ extension MarkerRole {
 
 // MARK: - Collection Methods
 
-extension Array where Element == MarkerRole {
+extension [MarkerRole] {
     func flattenedString(separator: String) -> String {
         map(\.stringValue)
             .joined(separator: separator)

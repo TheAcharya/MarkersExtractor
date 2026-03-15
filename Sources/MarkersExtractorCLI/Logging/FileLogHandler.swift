@@ -53,8 +53,8 @@ extension FileLogHandler {
         line: UInt
     ) {
         let prettyMetadata = metadata?.isEmpty ?? true
-        ? prettyMetadata
-        : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+            ? prettyMetadata
+            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
         
         var stream = stream
         stream.write(
@@ -64,8 +64,8 @@ extension FileLogHandler {
     
     private func prettify(_ metadata: Logger.Metadata) -> String? {
         !metadata.isEmpty
-        ? metadata.map { "\($0)=\($1)" }.joined(separator: " ")
-        : nil
+            ? metadata.map { "\($0)=\($1)" }.joined(separator: " ")
+            : nil
     }
     
     // TODO: Gross. Probably a safer/simpler way to do this.

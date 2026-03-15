@@ -16,7 +16,9 @@ extension CGSize {
         self.init(width: square, height: square)
     }
     
-    var longestSide: Double { max(width, height) }
+    var longestSide: Double {
+        max(width, height)
+    }
     
     /// Formatted string. Example: "640×480"
     var formatted: String {
@@ -27,7 +29,9 @@ extension CGSize {
         .init(width: lhs.width * rhs, height: lhs.height * rhs)
     }
     
-    var cgRect: CGRect { .init(origin: .zero, size: self) }
+    var cgRect: CGRect {
+        .init(origin: .zero, size: self)
+    }
 }
 
 extension NSColor {
@@ -77,10 +81,9 @@ extension NSImage {
         let properties: [NSBitmapImageRep.PropertyKey: Any] = [
             .compressionFactor: compressionFactor as NSNumber
         ]
-        guard
-            let imageData = tiffRepresentation,
-            let imageRep = NSBitmapImageRep(data: imageData),
-            let fileData = imageRep.representation(using: type, properties: properties)
+        guard let imageData = tiffRepresentation,
+              let imageRep = NSBitmapImageRep(data: imageData),
+              let fileData = imageRep.representation(using: type, properties: properties)
         else {
             return
         }
@@ -135,13 +138,13 @@ extension CGImage {
         var title: String {
             switch self {
             case .argb:
-                return "ARGB"
+                "ARGB"
             case .rgba:
-                return "RGBA"
+                "RGBA"
             case .bgra:
-                return "BGRA"
+                "BGRA"
             case .abgr:
-                return "ABGR"
+                "ABGR"
             }
         }
     }
@@ -198,7 +201,7 @@ extension CGBitmapInfo {
 extension CGColorSpace {
     /// Presentable title of the color space.
     var title: String {
-        guard let name = name else {
+        guard let name else {
             return "Unknown"
         }
         

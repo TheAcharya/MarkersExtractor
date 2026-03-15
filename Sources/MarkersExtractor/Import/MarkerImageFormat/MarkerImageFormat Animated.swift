@@ -17,7 +17,9 @@ extension MarkerImageFormat.Animated: Hashable { }
 extension MarkerImageFormat.Animated: CaseIterable { }
 
 extension MarkerImageFormat.Animated: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerImageFormat.Animated: Sendable { }
@@ -29,7 +31,7 @@ extension MarkerImageFormat.Animated {
     public var name: String {
         switch self {
         case .gif:
-            return "Animated GIF"
+            "Animated GIF"
         }
     }
 }

@@ -18,7 +18,7 @@ extension MarkersExtractor {
     ) async throws -> ExportResult {
         switch settings.exportFormat {
         case .airtable:
-            return try await export(
+            try await export(
                 for: AirtableExportProfile.self,
                 media: media,
                 markers: markers,
@@ -30,7 +30,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .compressor:
-            return try await export(
+            try await export(
                 for: CompressorProfile.self,
                 media: media,
                 markers: markers,
@@ -42,7 +42,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .csv:
-            return try await export(
+            try await export(
                 for: CSVProfile.self,
                 media: media,
                 markers: markers,
@@ -54,7 +54,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .json:
-            return try await export(
+            try await export(
                 for: JSONProfile.self,
                 media: media,
                 markers: markers,
@@ -66,7 +66,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .markdown:
-            return try await export(
+            try await export(
                 for: MarkdownProfile.self,
                 media: media,
                 markers: markers,
@@ -78,7 +78,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .midi:
-            return try await export(
+            try await export(
                 for: MIDIFileExportProfile.self,
                 media: media,
                 markers: markers,
@@ -91,7 +91,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .notion:
-            return try await export(
+            try await export(
                 for: NotionExportProfile.self,
                 media: media,
                 markers: markers,
@@ -103,7 +103,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .srt:
-            return try await export(
+            try await export(
                 for: SubRipProfile.self,
                 media: media,
                 markers: markers,
@@ -115,7 +115,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .tsv:
-            return try await export(
+            try await export(
                 for: TSVProfile.self,
                 media: media,
                 markers: markers,
@@ -127,7 +127,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .xlsx:
-            return try await export(
+            try await export(
                 for: ExcelProfile.self,
                 media: media,
                 markers: markers,
@@ -139,7 +139,7 @@ extension MarkersExtractor {
                 parentProgress: parentProgress
             )
         case .youtube:
-            return try await export(
+            try await export(
                 for: YouTubeProfile.self,
                 media: media,
                 markers: markers,
@@ -165,7 +165,7 @@ extension MarkersExtractor {
             markers: markers,
             idMode: settings.idNamingMode,
             media: media,
-            tcStringFormat: timecodeStringFormat, 
+            tcStringFormat: timecodeStringFormat,
             useChapterMarkerPosterOffset: settings.useChapterMarkerThumbnails,
             outputURL: outputURL,
             payload: payload,

@@ -6,8 +6,8 @@
 
 import CoreMedia
 import DAWFileTools
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 extension Marker {
     struct ParentInfo {
@@ -55,14 +55,14 @@ extension Marker.ParentInfo {
         format: ExportMarkerTimeFormat
     ) -> String {
         switch format {
-        case .timecode(let stringFormat):
-            return timecode.stringValue(format: stringFormat)
-        case .realTime(let stringFormat):
+        case let .timecode(stringFormat):
+            timecode.stringValue(format: stringFormat)
+        case let .realTime(stringFormat):
             // convert timecode to real time (wall time)
-            return Time(seconds: timecode.realTimeValue)
+            Time(seconds: timecode.realTimeValue)
                 .stringValue(format: stringFormat)
         case .srt:
-            return Time(seconds: timecode.realTimeValue)
+            Time(seconds: timecode.realTimeValue)
                 .srtEncodedString()
         }
     }

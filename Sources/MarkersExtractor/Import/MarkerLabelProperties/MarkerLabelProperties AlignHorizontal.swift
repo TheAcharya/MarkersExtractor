@@ -19,7 +19,9 @@ extension MarkerLabelProperties.AlignHorizontal: Hashable { }
 extension MarkerLabelProperties.AlignHorizontal: CaseIterable { }
 
 extension MarkerLabelProperties.AlignHorizontal: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerLabelProperties.AlignHorizontal: Sendable { }

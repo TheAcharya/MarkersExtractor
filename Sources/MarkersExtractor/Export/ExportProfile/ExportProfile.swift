@@ -88,7 +88,9 @@ extension ExportProfile {
     }
     
     /// Arbitrary overall progress total for export profile.
-    static var defaultProgressTotalUnitCount: Int64 { 100 }
+    static var defaultProgressTotalUnitCount: Int64 {
+        100
+    }
 }
 
 // MARK: - Default Implementation

@@ -5,15 +5,15 @@
 //
 
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct BasicMarkersEmptyIDTests {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
     @Test(arguments: MarkerIDMode.allCases)
-    func testBasicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
+    func basicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -53,6 +53,8 @@ import SwiftTimecodeCore
         }
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

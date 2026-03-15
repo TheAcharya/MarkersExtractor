@@ -62,7 +62,9 @@ extension Strideable where Stride: SignedInteger {
 
 extension ClosedRange where Bound: AdditiveArithmetic {
     /// Get the length between the lower and upper bound.
-    var length: Bound { upperBound - lowerBound }
+    var length: Bound {
+        upperBound - lowerBound
+    }
 }
 
 extension Sequence {
@@ -167,14 +169,16 @@ extension URL {
         }
         set {
             deletePathExtension()
-            if let newValue = newValue {
+            if let newValue {
                 appendPathExtension(newValue)
             }
         }
     }
     
     /// File size in bytes.
-    package var fileSize: Int { resourceValue(forKey: .fileSizeKey) ?? 0 }
+    package var fileSize: Int {
+        resourceValue(forKey: .fileSizeKey) ?? 0
+    }
     
     // MARK: Helpers
     
@@ -231,11 +235,17 @@ extension URL {
     //    self = url
     // }
     
-    package var exists: Bool { FileManager.default.fileExists(atPath: path) }
+    package var exists: Bool {
+        FileManager.default.fileExists(atPath: path)
+    }
     
-    package var isReadable: Bool { boolResourceValue(forKey: .isReadableKey) }
+    package var isReadable: Bool {
+        boolResourceValue(forKey: .isReadableKey)
+    }
     
-    package var isWritable: Bool { boolResourceValue(forKey: .isWritableKey) }
+    package var isWritable: Bool {
+        boolResourceValue(forKey: .isWritableKey)
+    }
 }
 
 // MARK: - RegEx

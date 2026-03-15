@@ -32,7 +32,7 @@ extension ExcelProfile {
     }
     
     /// Writes XLSX manifest file using XLKit via XLSX Export Utils.
-    /// 
+    ///
     /// ## XLKit Integration:
     /// - This method delegates to `xlsxWriteManifest()` in XLSX Export Utils.swift
     /// - XLSX Export Utils handles all XLKit API calls (Workbook, Sheet, etc.)

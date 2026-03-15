@@ -29,15 +29,17 @@ extension MarkerImageFormat: RawRepresentable {
     public var rawValue: String {
         switch self {
         case let .still(format):
-            return format.rawValue
+            format.rawValue
         case let .animated(format):
-            return format.rawValue
+            format.rawValue
         }
     }
 }
 
 extension MarkerImageFormat: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerImageFormat: CustomStringConvertible {
@@ -61,9 +63,9 @@ extension MarkerImageFormat {
     public var name: String {
         switch self {
         case let .still(format):
-            return format.name
+            format.name
         case let .animated(format):
-            return format.name
+            format.name
         }
     }
 }

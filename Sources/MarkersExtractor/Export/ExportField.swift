@@ -44,7 +44,9 @@ extension ExportField: CaseIterable { }
 extension ExportField: RawRepresentable { }
 
 extension ExportField: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension ExportField: Sendable { }
@@ -55,31 +57,31 @@ extension ExportField {
     /// Human-readable name. Useful for column name in exported tabular data.
     public var name: String {
         switch self {
-        case .id: return "Marker ID"
-        case .name: return "Marker Name"
-        case .type: return "Marker Type"
-        case .checked: return "Checked"
-        case .status: return "Status"
-        case .notes: return "Notes"
-        case .reel: return "Reel"
-        case .scene: return "Scene"
-        case .take: return "Take"
-        case .position: return "Marker Position"
-        case .clipType: return "Clip Type"
-        case .clipName: return "Clip Name"
-        case .clipIn: return "Clip In"
-        case .clipOut: return "Clip Out"
-        case .clipDuration: return "Clip Duration"
-        case .clipKeywords: return "Clip Keywords"
-        case .videoRole: return "Video Role & Subrole"
-        case .audioRole: return "Audio Role & Subrole"
-        case .eventName: return "Event Name"
-        case .projectName: return "Project Name"
-        case .libraryName: return "Library Name"
-        case .iconImage: return "Icon Image"
-        case .imageFileName: return "Image Filename"
-        case .image: return "Image"
-        case .xmlPath: return "XML Path"
+        case .id: "Marker ID"
+        case .name: "Marker Name"
+        case .type: "Marker Type"
+        case .checked: "Checked"
+        case .status: "Status"
+        case .notes: "Notes"
+        case .reel: "Reel"
+        case .scene: "Scene"
+        case .take: "Take"
+        case .position: "Marker Position"
+        case .clipType: "Clip Type"
+        case .clipName: "Clip Name"
+        case .clipIn: "Clip In"
+        case .clipOut: "Clip Out"
+        case .clipDuration: "Clip Duration"
+        case .clipKeywords: "Clip Keywords"
+        case .videoRole: "Video Role & Subrole"
+        case .audioRole: "Audio Role & Subrole"
+        case .eventName: "Event Name"
+        case .projectName: "Project Name"
+        case .libraryName: "Library Name"
+        case .iconImage: "Icon Image"
+        case .imageFileName: "Image Filename"
+        case .image: "Image"
+        case .xmlPath: "XML Path"
         }
     }
 }

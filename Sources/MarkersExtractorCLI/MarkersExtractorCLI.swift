@@ -5,10 +5,10 @@
 //
 
 import ArgumentParser
+import DAWFileTools
 import Foundation
 import Logging
 import MarkersExtractor
-import DAWFileTools
 
 // MARK: - Main Command
 
@@ -91,8 +91,8 @@ extension MarkersExtractorCLI {
         do {
             let fcpxml = try FCPXMLFile(at: fcpxmlPath)
             let mediaSearchPaths = mediaOptions.mediaSearchPaths.isEmpty
-            ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
-            : mediaOptions.mediaSearchPaths
+                ? MarkersExtractor.Settings.Defaults.mediaSearchPaths(from: fcpxml)
+                : mediaOptions.mediaSearchPaths
             
             settings = try MarkersExtractor.Settings(
                 fcpxml: fcpxml,
@@ -132,7 +132,11 @@ extension MarkersExtractorCLI {
         }
         
         let extractorLoggerLabel = "MarkersExtractor"
-        let extractorLoggerHandler = await LogFactory.shared.fileAndConsoleLogFactory(label: extractorLoggerLabel, logLevel: logOptions.logLevel, logFile: logOptions.log)
+        let extractorLoggerHandler = await LogFactory.shared.fileAndConsoleLogFactory(
+            label: extractorLoggerLabel,
+            logLevel: logOptions.logLevel,
+            logFile: logOptions.log
+        )
         let extractorLogger = Logger(label: extractorLoggerLabel) { label in
             extractorLoggerHandler
         }
@@ -141,11 +145,17 @@ extension MarkersExtractorCLI {
         
         if !logOptions.noProgressLogging {
             let progressLoggerLabel = "Progress"
-            let progressLoggerHandler = await LogFactory.shared.consoleLogFactory(label: progressLoggerLabel, logLevel: logOptions.logLevel)
+            let progressLoggerHandler = await LogFactory.shared.consoleLogFactory(
+                label: progressLoggerLabel,
+                logLevel: logOptions.logLevel
+            )
             let progressLogger = Logger(label: progressLoggerLabel) { label in
                 progressLoggerHandler
             }
-            _progressLogging = await ProgressLogging(to: progressLogger, progress: extractor.progress)
+            _progressLogging = await ProgressLogging(
+                to: progressLogger,
+                progress: extractor.progress
+            )
         }
         
         // can ignore return data from extract(), as it merely contains result file content

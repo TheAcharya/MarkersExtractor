@@ -18,17 +18,17 @@ public enum StillImageBatchExtractorError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case let .internalInconsistency(verboseError):
-            return "Internal error occurred: \(verboseError)"
+            "Internal error occurred: \(verboseError)"
         case .unreadableFile:
-            return "The selected file is no longer readable."
+            "The selected file is no longer readable."
         case .unsupportedType:
-            return "Image type is not supported."
+            "Image type is not supported."
         case let .generateFrameFailed(error):
-            return "Failed to generate frame: \(error.localizedDescription)"
+            "Failed to generate frame: \(error.localizedDescription)"
         case let .addFrameFailed(error):
-            return "Failed to add frame, with underlying error: \(error.localizedDescription)"
+            "Failed to add frame, with underlying error: \(error.localizedDescription)"
         case let .writeFailed(error):
-            return "Failed to write, with underlying error: \(error.localizedDescription)"
+            "Failed to write, with underlying error: \(error.localizedDescription)"
         }
     }
 }

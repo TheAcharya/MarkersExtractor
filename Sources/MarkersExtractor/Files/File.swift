@@ -10,7 +10,7 @@ import Foundation
 /// In either case, the file content is cached in memory to improve performance and reduce
 /// unnecessary disk activity.
 struct File {
-    public private(set) var contents: Contents
+    private(set) var contents: Contents
 }
 
 extension File: Equatable { }
@@ -47,9 +47,9 @@ extension File {
     var isFetched: Bool {
         switch contents {
         case let .fileOnDisk(_, cache):
-            return cache != nil
+            cache != nil
         case .rawFileContents:
-            return true
+            true
         }
     }
     
@@ -58,9 +58,9 @@ extension File {
     var url: URL? {
         switch contents {
         case let .fileOnDisk(url, _):
-            return url
+            url
         case .rawFileContents:
-            return nil
+            nil
         }
     }
     

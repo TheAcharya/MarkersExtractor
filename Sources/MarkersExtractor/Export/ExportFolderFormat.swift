@@ -19,7 +19,9 @@ extension ExportFolderFormat: Hashable { }
 extension ExportFolderFormat: CaseIterable { }
 
 extension ExportFolderFormat: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension ExportFolderFormat: Sendable { }
@@ -30,11 +32,11 @@ extension ExportFolderFormat {
     func folderName(timelineName: String, profile: ExportProfileFormat) -> String {
         switch self {
         case .short:
-            return "\(timelineName)"
+            "\(timelineName)"
         case .medium:
-            return "\(timelineName) \(nowTimestamp(twentyFourHour: true))"
+            "\(timelineName) \(nowTimestamp(twentyFourHour: true))"
         case .long:
-            return "\(timelineName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
+            "\(timelineName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
         }
     }
     

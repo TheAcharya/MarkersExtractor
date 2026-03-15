@@ -5,8 +5,8 @@
 //
 
 import ArgumentParser
-import MarkersExtractor
 import DAWFileTools
+import MarkersExtractor
 
 // MARK: - Markers Extractor: Export
 

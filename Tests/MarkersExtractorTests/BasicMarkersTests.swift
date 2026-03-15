@@ -6,17 +6,18 @@
 
 import DAWFileTools
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct BasicMarkersTests {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
     ///
     /// Note that two markers share the same marker ID. This test also checks the default behavior
     /// of non-unique IDs.
-    @Test func basicMarkers_extractMarkers() async throws {
+    @Test
+    func basicMarkers_extractMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -50,10 +51,7 @@ import SwiftTimecodeCore
         #expect(marker0.type == .marker(.standard))
         #expect(marker0.name == "Marker 1")
         #expect(marker0.notes == "some notes here")
-        #expect(
-            marker0.roles ==
-            .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
-        )
+        #expect(marker0.roles == .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false))
         #expect(marker0.position == tc("00:00:29:14", at: fr))
         #expect(marker0.parentInfo == parentInfo)
         #expect(marker0.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[1]")
@@ -62,10 +60,7 @@ import SwiftTimecodeCore
         #expect(marker1.type == .marker(.toDo(completed: false)))
         #expect(marker1.name == "Marker 1")
         #expect(marker1.notes == "more notes here")
-        #expect(
-            marker1.roles ==
-            .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
-        )
+        #expect(marker1.roles == .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false))
         #expect(marker1.position == tc("00:00:29:15", at: fr))
         #expect(marker1.parentInfo == parentInfo)
         #expect(marker1.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[2]")
@@ -74,10 +69,7 @@ import SwiftTimecodeCore
         #expect(marker2.type == .marker(.toDo(completed: true)))
         #expect(marker2.name == "Marker 2")
         #expect(marker2.notes == "notes yay")
-        #expect(
-            marker2.roles ==
-            .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
-        )
+        #expect(marker2.roles == .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false))
         #expect(marker2.position == tc("00:00:29:15", at: fr))
         #expect(marker2.parentInfo == parentInfo)
         #expect(marker2.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[3]")
@@ -86,17 +78,17 @@ import SwiftTimecodeCore
         #expect(marker3.type == .marker(.chapter(posterOffset: Fraction(11, 30))))
         #expect(marker3.name == "Marker 3")
         #expect(marker3.notes == "more notes here")
-        #expect(
-            marker3.roles ==
-            .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false)
-        )
+        #expect(marker3.roles == .init(video: "Titles", isVideoDefault: true, audio: nil, isAudioDefault: false))
         #expect(marker3.position == tc("00:00:29:17", at: fr))
         #expect(marker3.parentInfo == parentInfo)
-        #expect(marker3.xmlPath == "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/chapter-marker[1]")
+        #expect(marker3
+            .xmlPath ==
+            "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/chapter-marker[1]")
     }
     
     /// Ensure that duplicate marker ID uniquing works correctly for all marker ID naming modes.
-    @Test func basicMarkers_extractMarkers_uniquing() async throws {
+    @Test
+    func basicMarkers_extractMarkers_uniquing() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -118,93 +110,94 @@ import SwiftTimecodeCore
                     await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Test Project_00:00:29:14"
+                    )
+                        == "Test Project_00:00:29:14"
                 )
                 #expect(
                     await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Test Project_00:00:29:15-1"
+                    )
+                        == "Test Project_00:00:29:15-1"
                 )
                 #expect(
                     await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Test Project_00:00:29:15-2"
+                    )
+                        == "Test Project_00:00:29:15-2"
                 )
                 #expect(
                     await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Test Project_00:00:29:17"
+                    )
+                        == "Test Project_00:00:29:17"
                 )
             case .name:
                 #expect(
                     await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Marker 1-1"
+                    )
+                        == "Marker 1-1"
                 )
                 #expect(
                     await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Marker 1-2"
+                    )
+                        == "Marker 1-2"
                 )
                 #expect(
                     await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Marker 2"
+                    )
+                        == "Marker 2"
                 )
                 #expect(
                     await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "Marker 3"
+                    )
+                        == "Marker 3"
                 )
             case .notes:
                 #expect(
                     await markers[safe: 0]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "some notes here"
+                    )
+                        == "some notes here"
                 )
                 #expect(
                     await markers[safe: 1]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "more notes here-1"
+                    )
+                        == "more notes here-1"
                 )
                 #expect(
                     await markers[safe: 2]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "notes yay"
+                    )
+                        == "notes yay"
                 )
                 #expect(
                     await markers[safe: 3]?.id(
                         settings.idNamingMode,
                         tcStringFormat: extractor.timecodeStringFormat
-                    ) ==
-                    "more notes here-2"
+                    )
+                        == "more notes here-2"
                 )
             }
         }
     }
     
-    @Test func basicMarkers_xPath() async throws {
+    @Test
+    func basicMarkers_xPath() async throws {
         let xml = try XMLDocument(data: fcpxmlTestData)
         
         let marker0XPath = "/fcpxml[1]/library[1]/event[1]/project[1]/sequence[1]/spine[1]/title[1]/marker[1]"
@@ -261,6 +254,8 @@ import SwiftTimecodeCore
         }
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

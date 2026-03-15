@@ -41,7 +41,7 @@ extension ExportProfile {
         let preparedMarkers = prepareMarkers(
             markers: markers,
             idMode: idMode,
-            tcStringFormat: tcStringFormat, 
+            tcStringFormat: tcStringFormat,
             useChapterMarkerPosterOffset: useChapterMarkerPosterOffset,
             payload: payload,
             mediaInfo: mediaInfo
@@ -137,10 +137,9 @@ extension ExportProfile {
             isSingleFrame: isSingleFrame
         )
         
-        let writer: ImageWriterProtocol
-        switch media.imageSettings.format {
+        let writer: ImageWriterProtocol = switch media.imageSettings.format {
         case let .still(stillImageFormat):
-            writer = ImagesWriter(
+            ImagesWriter(
                 descriptors: imageDescriptors,
                 sourceMediaFile: videoURL,
                 outputFolder: outputFolder,
@@ -150,7 +149,7 @@ extension ExportProfile {
                 imageLabelProperties: media.imageSettings.labelProperties
             )
         case let .animated(animatedImageFormat):
-            writer = AnimatedImagesWriter(
+            AnimatedImagesWriter(
                 descriptors: imageDescriptors,
                 sourceMediaFile: videoURL,
                 outputFolder: outputFolder,
@@ -296,7 +295,7 @@ extension ExportProfile {
                 headers
                     .map {
                         (includeHeaders ? "\($0.name): " : "")
-                        + "\(markerDict[$0] ?? "")"
+                            + "\(markerDict[$0] ?? "")"
                     }
                     .joined(separator: "\n")
             }
@@ -341,7 +340,11 @@ extension ExportProfile {
         }
     }
     
-    private func generateResult(date: Date, payload: Payload, outputURL: URL) throws -> ExportResult {
+    private func generateResult(
+        date: Date,
+        payload: Payload,
+        outputURL: URL
+    ) throws -> ExportResult {
         // add baseline data that applies to all profiles
         var exportResult = ExportResult(
             date: date,

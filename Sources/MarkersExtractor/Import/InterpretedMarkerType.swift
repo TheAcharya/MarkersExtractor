@@ -19,7 +19,9 @@ extension InterpretedMarkerType: Equatable { }
 extension InterpretedMarkerType: Hashable { }
 
 extension InterpretedMarkerType: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension InterpretedMarkerType: Sendable { }
@@ -29,19 +31,19 @@ extension InterpretedMarkerType: Sendable { }
 extension InterpretedMarkerType {
     public var name: String {
         switch self {
-        case .marker(let configuration):
-            return configuration.name
+        case let .marker(configuration):
+            configuration.name
         case .caption:
-            return "Caption"
+            "Caption"
         }
     }
     
     public var fullName: String {
         switch self {
-        case .marker(let configuration):
-            return "\(configuration.name) Marker"
+        case let .marker(configuration):
+            "\(configuration.name) Marker"
         case .caption:
-            return "Caption"
+            "Caption"
         }
     }
 }

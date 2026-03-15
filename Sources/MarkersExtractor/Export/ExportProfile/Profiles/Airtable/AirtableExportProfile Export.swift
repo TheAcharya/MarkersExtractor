@@ -23,9 +23,9 @@ extension AirtableExportProfile {
             PreparedMarker(
                 marker: $0,
                 idMode: idMode,
-                mediaInfo: mediaInfo, 
+                mediaInfo: mediaInfo,
                 tcStringFormat: tcStringFormat,
-                timeFormat: .timecode(stringFormat: tcStringFormat), 
+                timeFormat: .timecode(stringFormat: tcStringFormat),
                 useChapterMarkerPosterOffset: useChapterMarkerPosterOffset
             )
         }

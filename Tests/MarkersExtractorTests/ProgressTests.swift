@@ -5,20 +5,21 @@
 //
 
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct ProgressTests {
-    @Test func fcpxmlMarkerExtractor() async throws {
+    @Test
+    func fcpxmlMarkerExtractor() async throws {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)
         let extractor = try FCPXMLMarkerExtractor(
             fcpxml: &file,
             idNamingMode: .timelineNameAndTimecode,
-            enableSubframes: false, 
-            markersSource: .markers, 
-            excludeRoles: [], 
+            enableSubframes: false,
+            markersSource: .markers,
+            excludeRoles: [],
             includeDisabled: true,
             logger: nil
         )
@@ -31,7 +32,8 @@ import SwiftTimecodeCore
         #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
     
-    @Test func animatedImageExtractor() async throws {
+    @Test
+    func animatedImageExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
@@ -84,7 +86,7 @@ import SwiftTimecodeCore
         )
         
         #expect(await extractor.progress.fractionCompleted == 0.0)
-        let _ = try await extractor.convert()
+        _ = try await extractor.convert()
         
         // NOTE: this may randomly fail because NSProgress is garbage
         await #expect({
@@ -94,7 +96,8 @@ import SwiftTimecodeCore
         }())
     }
     
-    @Test func stillImageBatchExtractor() async throws {
+    @Test
+    func stillImageBatchExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
         let videoPlaceholder = try TemporaryMediaFile(withData: videoData)
         let range = tc("00:00:00:00", at: .fps24) ... tc("00:00:00:10", at: .fps24)
@@ -141,12 +144,14 @@ import SwiftTimecodeCore
         )
         
         #expect(extractor.progress.fractionCompleted == 0.0)
-        let _ = try await extractor.convert()
+        _ = try await extractor.convert()
         
         // NOTE: this may randomly fail because NSProgress is garbage
         #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestString = """
 <?xml version="1.0" encoding="UTF-8"?>

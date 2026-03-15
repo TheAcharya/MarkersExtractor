@@ -57,7 +57,7 @@ extension StillImageBatchExtractor {
                 let fileName = descriptor.filename
                 let label = descriptor.label
             
-                let frameResult = await self.processAndWriteFrameToDisk(
+                let frameResult = await processAndWriteFrameToDisk(
                     image: image,
                     result: result,
                     fileName: fileName,

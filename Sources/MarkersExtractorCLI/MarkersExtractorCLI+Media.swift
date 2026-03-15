@@ -5,10 +5,10 @@
 //
 
 import ArgumentParser
+import DAWFileTools
 import Foundation
 import Logging
 import MarkersExtractor
-import DAWFileTools
 
 extension MarkersExtractorCLI {
     struct MediaOptions: ParsableArguments {

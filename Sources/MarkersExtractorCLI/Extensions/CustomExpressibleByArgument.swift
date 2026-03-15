@@ -10,12 +10,14 @@ import ArgumentParser
 protocol CustomExpressibleByArgument where Self: ExpressibleByArgument { }
 
 extension CustomExpressibleByArgument {
-    public static var allValueStrings: [String] { [] }
+    public static var allValueStrings: [String] {
+        []
+    }
 }
 
-func caseIterableValueString<R: RawRepresentable>(
+func caseIterableValueString<R: RawRepresentable & CaseIterable>(
     for type: R.Type
-) -> String where R.RawValue == String, R: CaseIterable {
+) -> String where R.RawValue == String {
     R.allCases
         .map { $0.rawValue }
         .joined(separator: " | ")

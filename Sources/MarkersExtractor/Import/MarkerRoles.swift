@@ -1,11 +1,11 @@
 //
-//  MarkerRole.swift
+//  MarkerRoles.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
 
-import Foundation
 import DAWFileTools
+import Foundation
 
 /// Marker Roles for an element.
 ///
@@ -39,7 +39,9 @@ extension MarkerRoles: Equatable { }
 extension MarkerRoles: Hashable { }
 
 extension MarkerRoles: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerRoles: Sendable { }
@@ -86,19 +88,19 @@ extension MarkerRoles {
         collapseSubroles: Bool = false
     ) {
         var videoRole: FinalCutPro.FCPXML.VideoRole? = nil
-        if let rawVideoRole = rawVideoRole {
+        if let rawVideoRole {
             videoRole = FinalCutPro.FCPXML.VideoRole(rawValue: rawVideoRole)
         }
         
         var audioRoles: [FinalCutPro.FCPXML.AudioRole]? = nil
-        if let rawAudioRoles = rawAudioRoles {
+        if let rawAudioRoles {
             audioRoles = rawAudioRoles.compactMap {
                 FinalCutPro.FCPXML.AudioRole(rawValue: $0)
             }
         }
         
         var captionRole: FinalCutPro.FCPXML.CaptionRole? = nil
-        if let rawCaptionRole = rawCaptionRole {
+        if let rawCaptionRole {
             captionRole = FinalCutPro.FCPXML.CaptionRole(rawValue: rawCaptionRole)
         }
         
@@ -155,7 +157,7 @@ extension MarkerRoles {
     
     /// Video role formatted for user display.
     public func videoFormatted() -> String {
-        if let video = video, !video.rawValue.isEmpty {
+        if let video, !video.rawValue.isEmpty {
             return video.rawValue
         }
         return Self.notAssignedRoleString
@@ -184,7 +186,7 @@ extension MarkerRoles {
     
     /// Caption role formatted for user display.
     public func captionFormatted() -> String {
-        if let caption = caption, !caption.rawValue.isEmpty {
+        if let caption, !caption.rawValue.isEmpty {
             // never use raw `captionFormat` string for user display, only use main role
             return caption.role
         }

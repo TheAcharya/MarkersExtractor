@@ -38,6 +38,7 @@ enum AVFormat: String {
     // https://en.wikipedia.org/wiki/Avid_DNxHD
     case avidDNxHD
 }
+
 extension AVFormat: Equatable { }
 
 extension AVFormat: Hashable { }
@@ -65,49 +66,49 @@ extension AVFormat {
     var fourCC: String {
         switch self {
         case .hevc:
-            return "hvc1"
+            "hvc1"
         case .h264:
-            return "avc1"
+            "avc1"
         case .av1:
-            return "av01"
+            "av01"
         case .vp9:
-            return "vp09"
+            "vp09"
         case .appleProResRAWHQ:
-            return "aprh"
+            "aprh"
         case .appleProResRAW:
-            return "aprn"
+            "aprn"
         case .appleProRes4444XQ:
-            return "ap4x"
+            "ap4x"
         case .appleProRes4444:
-            return "ap4h"
+            "ap4h"
         case .appleProRes422HQ:
-            return "apcn"
+            "apcn"
         case .appleProRes422:
-            return "apch"
+            "apch"
         case .appleProRes422LT:
-            return "apcs"
+            "apcs"
         case .appleProRes422Proxy:
-            return "apco"
+            "apco"
         case .appleAnimation:
-            return "rle "
+            "rle "
         case .hap1:
-            return "Hap1"
+            "Hap1"
         case .hap5:
-            return "Hap5"
+            "Hap5"
         case .hapY:
-            return "HapY"
+            "HapY"
         case .hapM:
-            return "HapM"
+            "HapM"
         case .hapA:
-            return "HapA"
+            "HapA"
         case .hap7:
-            return "Hap7"
+            "Hap7"
         case .cineFormHD:
-            return "CFHD"
+            "CFHD"
         case .quickTimeGraphics:
-            return "smc"
+            "smc"
         case .avidDNxHD:
-            return "AVdh"
+            "AVdh"
         }
     }
 }
@@ -143,50 +144,50 @@ extension AVFormat: CustomStringConvertible {
     var description: String {
         switch self {
         case .hevc:
-            return "HEVC"
+            "HEVC"
         case .h264:
-            return "H264"
+            "H264"
         case .av1:
-            return "AV1"
+            "AV1"
         case .vp9:
-            return "VP9"
+            "VP9"
         case .appleProResRAWHQ:
-            return "Apple ProRes RAW HQ"
+            "Apple ProRes RAW HQ"
         case .appleProResRAW:
-            return "Apple ProRes RAW"
+            "Apple ProRes RAW"
         case .appleProRes4444XQ:
-            return "Apple ProRes 4444 XQ"
+            "Apple ProRes 4444 XQ"
         case .appleProRes4444:
-            return "Apple ProRes 4444"
+            "Apple ProRes 4444"
         case .appleProRes422HQ:
-            return "Apple ProRes 422 HQ"
+            "Apple ProRes 422 HQ"
         case .appleProRes422:
-            return "Apple ProRes 422"
+            "Apple ProRes 422"
         case .appleProRes422LT:
-            return "Apple ProRes 422 LT"
+            "Apple ProRes 422 LT"
         case .appleProRes422Proxy:
-            return "Apple ProRes 422 Proxy"
+            "Apple ProRes 422 Proxy"
         case .appleAnimation:
-            return "Apple Animation"
+            "Apple Animation"
         case .hap1:
-            return "Vidvox Hap"
+            "Vidvox Hap"
         case .hap5:
-            return "Vidvox Hap Alpha"
+            "Vidvox Hap Alpha"
         case .hapY:
-            return "Vidvox Hap Q"
+            "Vidvox Hap Q"
         case .hapM:
-            return "Vidvox Hap Q Alpha"
+            "Vidvox Hap Q Alpha"
         case .hapA:
-            return "Vidvox Hap Alpha-Only"
+            "Vidvox Hap Alpha-Only"
         case .hap7:
             // No official name for this.
-            return "Vidvox Hap"
+            "Vidvox Hap"
         case .cineFormHD:
-            return "CineForm HD"
+            "CineForm HD"
         case .quickTimeGraphics:
-            return "QuickTime Graphics"
+            "QuickTime Graphics"
         case .avidDNxHD:
-            return "Avid DNxHD"
+            "Avid DNxHD"
         }
     }
 }

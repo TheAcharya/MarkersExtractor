@@ -5,16 +5,17 @@
 //
 
 import Foundation
-import Testing
-import TestingExtensions
+@testable import MarkersExtractor
 import SwiftExtensions
 import SwiftTimecodeCore
-@testable import MarkersExtractor
+import Testing
+import TestingExtensions
 
 @Suite struct CompoundClipTests {
     /// Ensure that markers directly attached to compound clips (`ref-clip`s) on the main timeline
     /// are preserved, while all markers within compound clips are discarded.
-    @Test func compoundClips() async throws {
+    @Test
+    func compoundClips() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
@@ -37,6 +38,8 @@ import SwiftTimecodeCore
         #expect(marker0.position == tc("01:00:04:00", at: fr))
     }
 }
+
+// swiftformat:disable indent
 
 private let fcpxmlTestData = fcpxmlTestString.data(using: .utf8)!
 private let fcpxmlTestString = """

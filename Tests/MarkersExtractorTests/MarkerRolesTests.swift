@@ -4,12 +4,13 @@
 //  Licensed under MIT License
 //
 
+@testable import MarkersExtractor
 import Testing
 import TestingExtensions
-@testable import MarkersExtractor
 
 @Suite struct MarkerRolesTests {
-    @Test func verbatim() async {
+    @Test
+    func verbatim() async {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
@@ -26,7 +27,8 @@ import TestingExtensions
         #expect(markerRoles.captionFormatted() == "My Caption Role")
     }
     
-    @Test func collapsedSubRole() async {
+    @Test
+    func collapsedSubRole() async {
         let markerRoles = MarkerRoles(
             video: "My Video Role.My Video Role-1",
             isVideoDefault: false,
@@ -43,7 +45,8 @@ import TestingExtensions
         #expect(markerRoles.captionFormatted() == "My Caption Role")
     }
     
-    @Test func isDefault() async {
+    @Test
+    func isDefault() async {
         #expect(MarkerRoles(video: "Video", isVideoDefault: true).isVideoDefault)
         #expect(!MarkerRoles(video: "Video", isVideoDefault: false).isVideoDefault)
         
@@ -58,7 +61,8 @@ import TestingExtensions
         #expect(!MarkerRoles(video: "Video", isVideoDefault: false).isCaptionDefault)
     }
     
-    @Test func isEmpty() async {
+    @Test
+    func isEmpty() async {
         #expect(MarkerRoles(video: nil).isVideoEmpty)
         #expect(MarkerRoles(video: "").isVideoEmpty)
         #expect(!MarkerRoles(video: "Video").isVideoEmpty)
@@ -68,7 +72,8 @@ import TestingExtensions
         #expect(!MarkerRoles(audio: ["Dialogue"]).isAudioEmpty)
     }
     
-    @Test func isDefined() async {
+    @Test
+    func isDefined() async {
         #expect(!MarkerRoles(video: nil).isVideoDefined)
         #expect(!MarkerRoles(video: "").isVideoDefined)
         #expect(MarkerRoles(video: "Video").isVideoDefined)
@@ -80,16 +85,17 @@ import TestingExtensions
         #expect(!MarkerRoles(audio: ["Dialogue"], isAudioDefault: true).isAudioDefined)
     }
     
-    @Test func multipleAudio() async {
+    @Test
+    func multipleAudio() async {
         #expect(
             MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"])
-                .audioFormatted(multipleRoleSeparator: ",").flat ==
-            "Dialogue.MixL,Dialogue.MixR"
+                .audioFormatted(multipleRoleSeparator: ",").flat
+                == "Dialogue.MixL,Dialogue.MixR"
         )
         #expect(
             MarkerRoles(audio: ["Dialogue.MixL", "Dialogue.MixR"])
-                .audioFormatted(multipleRoleSeparator: ",").array ==
-            ["Dialogue.MixL", "Dialogue.MixR"]
+                .audioFormatted(multipleRoleSeparator: ",").array
+                == ["Dialogue.MixL", "Dialogue.MixR"]
         )
     }
 }

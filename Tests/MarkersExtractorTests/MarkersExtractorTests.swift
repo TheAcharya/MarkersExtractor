@@ -6,13 +6,14 @@
 
 import DAWFileTools
 import Foundation
+@testable import MarkersExtractor
+import SwiftTimecodeCore
 import Testing
 import TestingExtensions
-import SwiftTimecodeCore
-@testable import MarkersExtractor
 
 @Suite struct MarkersExtractorTests {
-    @Test func findDuplicateIDs_inMarkers() async throws {
+    @Test
+    func findDuplicateIDs_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
@@ -39,7 +40,7 @@ import SwiftTimecodeCore
                     projectName: "MyProject",
                     timelineName: "MyProject",
                     timelineStartTime: tc("01:00:00:00", at: .fps24)
-                ), 
+                ),
                 metadata: .init(
                     reel: "Some reel",
                     scene: "Some scene",
@@ -65,17 +66,18 @@ import SwiftTimecodeCore
         )
         
         #expect(
-            await extractor.findDuplicateIDs(in: [marker1, marker1]) ==
-            [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
+            await extractor.findDuplicateIDs(in: [marker1, marker1])
+                == [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
         
         #expect(
-            await extractor.findDuplicateIDs(in: [marker2, marker1, marker2]) ==
-            [marker2.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
+            await extractor.findDuplicateIDs(in: [marker2, marker1, marker2])
+                == [marker2.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
     }
     
-    @Test func isAllUniqueIDNonEmpty_inMarkers() async throws {
+    @Test
+    func isAllUniqueIDNonEmpty_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: ""),
             outputDir: FileManager.default.temporaryDirectory
@@ -90,7 +92,7 @@ import SwiftTimecodeCore
                 name: name,
                 notes: "",
                 roles: .init(video: "Video", audio: nil),
-                position: tc(position, at: .fps24), 
+                position: tc(position, at: .fps24),
                 parentInfo: .init(
                     clipType: FinalCutPro.FCPXML.ElementType.video.name,
                     clipName: "Some Clip",

@@ -8,8 +8,8 @@ import CoreMedia
 import DAWFileTools
 import Foundation
 import Logging
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 class FCPXMLMarkerExtractor {
     private let logger: Logger
@@ -118,8 +118,8 @@ extension FCPXMLMarkerExtractor {
         // we prefer the project name if a project exists.
         // this should also not be an empty string.
         let timelineName = projectName
-        ?? timeline.timelineName
-        ?? defaultTimelineName
+            ?? timeline.timelineName
+            ?? defaultTimelineName
         
         // extract from origin element
         let timelineStartTimecode = startTimecode(for: timeline)
@@ -245,7 +245,7 @@ extension FCPXMLMarkerExtractor {
         guard let position = extractedMarker.value(forContext: .absoluteStartAsTimecode()),
               let parentInfo = parentInfo(
                   from: extractedMarker,
-                  parentLibrary: parentLibrary, 
+                  parentLibrary: parentLibrary,
                   timelineName: timelineName,
                   timelineStartTime: timelineStartTime
               )
@@ -264,7 +264,7 @@ extension FCPXMLMarkerExtractor {
             notes: extractedMarker.note ?? "",
             roles: roles,
             position: position,
-            parentInfo: parentInfo, 
+            parentInfo: parentInfo,
             metadata: markerMetadata,
             xmlPath: xmlPath
         )
@@ -283,7 +283,7 @@ extension FCPXMLMarkerExtractor {
         guard let position = extractedCaption.timecode(),
               let parentInfo = parentInfo(
                   from: extractedCaption,
-                  parentLibrary: parentLibrary, 
+                  parentLibrary: parentLibrary,
                   timelineName: timelineName,
                   timelineStartTime: timelineStartTime
               )
@@ -302,7 +302,7 @@ extension FCPXMLMarkerExtractor {
             notes: extractedCaption.element.fcpNote ?? "",
             roles: roles,
             position: position,
-            parentInfo: parentInfo, 
+            parentInfo: parentInfo,
             metadata: markerMetadata,
             xmlPath: xmlPath
         )
@@ -374,7 +374,7 @@ extension FCPXMLMarkerExtractor {
         
         // marker doesn't contain role(s) so look to ancestors
         let roles = element.value(forContext: .inheritedRoles)
-        roles.forEach { interpolatedRole in
+        for interpolatedRole in roles {
             var isRoleDefault = false
             
             func handle(role: FinalCutPro.FCPXML.AnyRole) {
@@ -422,6 +422,8 @@ extension FCPXMLMarkerExtractor {
 
 extension FCPXMLMarkerExtractor {
     static func processExtractedRole<Role: FCPXMLRole>(role: Role) -> Role {
+        // swiftformat:disable indent
+        
         role
             // collapse subroles that are redundant
             .collapsingSubRole()
@@ -431,5 +433,7 @@ extension FCPXMLMarkerExtractor {
             // so we will explicitly title-case these if encountered, so as to match
             // FCP's title-cased display of these roles (ie: "Dialogue")
             .titleCasedDefaultRole(derivedOnly: true)
+        
+        // swiftformat:enable indent
     }
 }

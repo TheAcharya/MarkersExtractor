@@ -56,7 +56,7 @@ extension AVAssetImageGeneratorWrapper {
                     
                     let requestedTime = descriptor.offsetFromVideoStart.cmTimeValue
                     
-                    let result = try await self.imageCompat(at: requestedTime)
+                    let result = try await imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     var image = result.image ?? CGImage.empty!
                     
@@ -131,7 +131,7 @@ extension AVAssetImageGeneratorWrapper {
                 taskGroup.addTask { [weak self, totalCount, completedCount, completionHandler] in
                     guard let self else { return nil }
                     
-                    let result = try await self.imageCompat(at: requestedTime)
+                    let result = try await imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     var image = result.image ?? CGImage.empty!
                     
@@ -190,7 +190,8 @@ extension AVAssetImageGeneratorWrapper {
         
         var isNoFrame = false
         
-        let (requestedTime, image, actualTime, result, error) = await imageGenerator.generateCGImages(forTimes: [time])
+        let (requestedTime, image, actualTime, result, error) = await imageGenerator
+            .generateCGImages(forTimes: [time])
         
         switch result {
         case .succeeded:
@@ -233,6 +234,7 @@ extension AVAssetImageGeneratorWrapper {
             default:
                 break
             }
+
         case .cancelled:
             throw CancellationError()
             
@@ -268,8 +270,8 @@ extension AVAssetImageGenerator {
         image: CGImage?,
         actualTime: CMTime,
         result: AVAssetImageGenerator.Result,
-        error: (any Error)?)
-    {
+        error: (any Error)?
+    ) {
         await withCheckedContinuation { continuation in
             generateCGImagesAsynchronously(forTimes: requestedTimes) { requestedTime, image, actualTime, result, error in
                 continuation.resume(returning: (requestedTime, image, actualTime, result, error))
@@ -287,8 +289,8 @@ extension AVAssetImageGenerator {
         image: CGImage?,
         actualTime: CMTime,
         result: AVAssetImageGenerator.Result,
-        error: (any Error)?)
-    {
+        error: (any Error)?
+    ) {
         let requestedTimes = requestedTimes.map(NSValue.init(time:))
         return await generateCGImages(forTimes: requestedTimes)
     }

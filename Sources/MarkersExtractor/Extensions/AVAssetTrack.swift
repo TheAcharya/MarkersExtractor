@@ -27,11 +27,13 @@ extension AVAssetTrack {
     }
     
     /// Returns the frame rate of the track if it's a video.
-    var frameRate: Double? { Double(nominalFrameRate) }
+    var frameRate: Double? {
+        Double(nominalFrameRate)
+    }
     
     /// Returns the aspect ratio of the track if it's a video.
     var aspectRatio: Double? {
-        guard let dimensions = dimensions else {
+        guard let dimensions else {
             return nil
         }
         
@@ -64,7 +66,9 @@ extension AVAssetTrack {
     
     /// Use this for presenting the codec to the user. This is either the codec name, if known, or
     /// the codec identifier. You can just default to `"Unknown"` if this is `nil`.
-    var codecTitle: String? { codec?.description ?? codecIdentifier }
+    var codecTitle: String? {
+        codec?.description ?? codecIdentifier
+    }
     
     /// Returns a debug string with the media format.
     ///

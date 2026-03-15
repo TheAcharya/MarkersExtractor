@@ -6,8 +6,8 @@
 
 import Foundation
 import OrderedCollections
-import SwiftTimecodeCore
 import SwiftExtensions
+import SwiftTimecodeCore
 
 /// A marker with its contents prepared for the Markdown export profile.
 public struct MarkdownExportMarker: ExportMarker {
@@ -38,7 +38,10 @@ public struct MarkdownExportMarker: ExportMarker {
         
         type = Self.typeString(for: marker.type)
         
-        position = marker.positionTimeString(format: timeFormat, offsetToTimelineStart: offsetToTimelineStart)
+        position = marker.positionTimeString(
+            format: timeFormat,
+            offsetToTimelineStart: offsetToTimelineStart
+        )
         
         notes = marker.notes
         
@@ -49,7 +52,7 @@ public struct MarkdownExportMarker: ExportMarker {
             ?? ""
         
         imageTimecode = marker.imageTimecode(
-            useChapterMarkerPosterOffset: useChapterMarkerPosterOffset, 
+            useChapterMarkerPosterOffset: useChapterMarkerPosterOffset,
             offsetToTimelineStart: offsetToTimelineStart
         )
     }

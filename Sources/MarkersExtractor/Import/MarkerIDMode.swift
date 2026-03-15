@@ -20,7 +20,9 @@ extension MarkerIDMode: Hashable { }
 extension MarkerIDMode: CaseIterable { }
 
 extension MarkerIDMode: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension MarkerIDMode: Sendable { }
