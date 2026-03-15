@@ -5,6 +5,7 @@
 //
 
 import DAWFileTools
+import Foundation
 import SwiftExtensions
 import Testing
 import TestingExtensions

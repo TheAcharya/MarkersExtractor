@@ -5,6 +5,7 @@
 //
 
 import DAWFileTools
+import Foundation
 import Testing
 import TestingExtensions
 import SwiftTimecodeCore

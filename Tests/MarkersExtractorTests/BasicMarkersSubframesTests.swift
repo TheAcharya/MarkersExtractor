@@ -4,6 +4,7 @@
 //  Licensed under MIT License
 //
 
+import Foundation
 import Testing
 import TestingExtensions
 import SwiftTimecodeCore

@@ -4,9 +4,10 @@
 //  Licensed under MIT License
 //
 
-import SwiftExtensions
+import Foundation
 import Testing
 import TestingExtensions
+import SwiftExtensions
 import SwiftTimecodeCore
 @testable import MarkersExtractor
 
