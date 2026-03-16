@@ -111,12 +111,12 @@ extension FCPXMLFile {
         }
     }
     
-    mutating func dawFile() throws -> FinalCutPro.FCPXML {
+    mutating func dawFile() throws -> FCPXML {
         switch source {
         case let .xmlDocument(xmlDoc):
-            FinalCutPro.FCPXML(fileContent: xmlDoc)
+            FCPXML(fileContent: xmlDoc)
         default:
-            try FinalCutPro.FCPXML(fileContent: data())
+            try FCPXML(fileContent: data())
         }
     }
     

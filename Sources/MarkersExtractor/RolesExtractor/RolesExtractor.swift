@@ -33,7 +33,7 @@ extension RolesExtractor {
     /// Results will be sorted by type (video, audio, caption), then by name.
     ///
     /// - Returns: A flat array of roles.
-    public func extract() async throws -> [FinalCutPro.FCPXML.AnyRole] {
+    public func extract() async throws -> [FCPXML.AnyRole] {
         let dawFile = try fcpxml.dawFile()
         guard let timeline = dawFile.allTimelines().first else { return [] }
         

@@ -30,7 +30,7 @@ import TestingExtensions
                 roles: .init(video: "Video", audio: nil),
                 position: tc(position, at: .fps24),
                 parentInfo: .init(
-                    clipType: FinalCutPro.FCPXML.ElementType.video.name,
+                    clipType: FCPXML.ElementType.video.name,
                     clipName: "Some Clip",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),
@@ -94,7 +94,7 @@ import TestingExtensions
                 roles: .init(video: "Video", audio: nil),
                 position: tc(position, at: .fps24),
                 parentInfo: .init(
-                    clipType: FinalCutPro.FCPXML.ElementType.video.name,
+                    clipType: FCPXML.ElementType.video.name,
                     clipName: "Some Clip",
                     clipInTime: tc("00:00:00:00", at: .fps24),
                     clipOutTime: tc("01:00:00:00", at: .fps24),

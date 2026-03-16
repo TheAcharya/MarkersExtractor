@@ -10,7 +10,7 @@ import DAWFileTools
 
 /// Encapsulates marker types and non-marker types that are convertible to markers.
 public enum InterpretedMarkerType {
-    case marker(_ configuration: FinalCutPro.FCPXML.Marker.Configuration)
+    case marker(_ configuration: FCPXML.Marker.Configuration)
     case caption
 }
 

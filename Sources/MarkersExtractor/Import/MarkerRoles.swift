@@ -14,7 +14,7 @@ import Foundation
 /// in FCPXML.
 public struct MarkerRoles {
     /// Video Role.
-    public var video: FinalCutPro.FCPXML.VideoRole?
+    public var video: FCPXML.VideoRole?
     
     /// Returns `true` if the ``video`` role is a default role.
     public var isVideoDefault: Bool
@@ -22,13 +22,13 @@ public struct MarkerRoles {
     /// Audio Role(s).
     /// There can be more than one audio role for a clip.
     /// For example, Sync Clips may have multiple audio sources.
-    public var audio: [FinalCutPro.FCPXML.AudioRole]?
+    public var audio: [FCPXML.AudioRole]?
     
     /// Returns `true` if the ``audio`` role is a default role.
     public var isAudioDefault: Bool
     
     /// Caption role.
-    public var caption: FinalCutPro.FCPXML.CaptionRole?
+    public var caption: FCPXML.CaptionRole?
     
     /// Returns `true` if the ``caption`` role is a default role.
     public var isCaptionDefault: Bool
@@ -50,11 +50,11 @@ extension MarkerRoles: Sendable { }
 
 extension MarkerRoles {
     public init(
-        video: FinalCutPro.FCPXML.VideoRole? = nil,
+        video: FCPXML.VideoRole? = nil,
         isVideoDefault: Bool = false,
-        audio: [FinalCutPro.FCPXML.AudioRole]? = nil,
+        audio: [FCPXML.AudioRole]? = nil,
         isAudioDefault: Bool = false,
-        caption: FinalCutPro.FCPXML.CaptionRole? = nil,
+        caption: FCPXML.CaptionRole? = nil,
         isCaptionDefault: Bool = false,
         collapseSubroles: Bool = false
     ) {
@@ -87,21 +87,21 @@ extension MarkerRoles {
         isCaptionDefault: Bool = false,
         collapseSubroles: Bool = false
     ) {
-        var videoRole: FinalCutPro.FCPXML.VideoRole? = nil
+        var videoRole: FCPXML.VideoRole? = nil
         if let rawVideoRole {
-            videoRole = FinalCutPro.FCPXML.VideoRole(rawValue: rawVideoRole)
+            videoRole = FCPXML.VideoRole(rawValue: rawVideoRole)
         }
         
-        var audioRoles: [FinalCutPro.FCPXML.AudioRole]? = nil
+        var audioRoles: [FCPXML.AudioRole]? = nil
         if let rawAudioRoles {
             audioRoles = rawAudioRoles.compactMap {
-                FinalCutPro.FCPXML.AudioRole(rawValue: $0)
+                FCPXML.AudioRole(rawValue: $0)
             }
         }
         
-        var captionRole: FinalCutPro.FCPXML.CaptionRole? = nil
+        var captionRole: FCPXML.CaptionRole? = nil
         if let rawCaptionRole {
-            captionRole = FinalCutPro.FCPXML.CaptionRole(rawValue: rawCaptionRole)
+            captionRole = FCPXML.CaptionRole(rawValue: rawCaptionRole)
         }
         
         self.init(

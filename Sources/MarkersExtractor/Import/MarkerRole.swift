@@ -39,7 +39,7 @@ extension MarkerRole: Sendable { }
 // MARK: - Properties
 
 extension MarkerRole {
-    public var roleType: FinalCutPro.FCPXML.RoleType {
+    public var roleType: FCPXML.RoleType {
         switch self {
         case .video:
             .video

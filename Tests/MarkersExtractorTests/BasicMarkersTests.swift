@@ -35,7 +35,7 @@ import TestingExtensions
         let fr: TimecodeFrameRate = .fps29_97
         
         let parentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ElementType.title.name,
+            clipType: FCPXML.ElementType.title.name,
             clipName: "Basic Title",
             clipInTime: tc("00:00:00:00", at: fr),
             clipOutTime: tc("00:01:03:29", at: fr),

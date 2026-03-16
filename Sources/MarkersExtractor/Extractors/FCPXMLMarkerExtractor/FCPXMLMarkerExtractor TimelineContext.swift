@@ -10,9 +10,9 @@ import SwiftTimecodeCore
 
 extension FCPXMLMarkerExtractor {
     struct TimelineContext {
-        let library: FinalCutPro.FCPXML.Library?
+        let library: FCPXML.Library?
         let projectName: String?
-        let timeline: FinalCutPro.FCPXML.AnyTimeline
+        let timeline: FCPXML.AnyTimeline
         let timelineName: String
         let timelineStartTimecode: Timecode
     }

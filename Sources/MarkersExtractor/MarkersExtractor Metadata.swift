@@ -15,8 +15,8 @@ extension MarkersExtractor {
 }
 
 extension MarkersExtractor {
-    static func extractionScope(includeDisabled: Bool) -> FinalCutPro.FCPXML.ExtractionScope {
-        var scope: FinalCutPro.FCPXML.ExtractionScope = .mainTimeline
+    static func extractionScope(includeDisabled: Bool) -> FCPXML.ExtractionScope {
+        var scope: FCPXML.ExtractionScope = .mainTimeline
         scope.includeDisabled = includeDisabled
         
         return scope

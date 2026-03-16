@@ -95,7 +95,7 @@ extension FCPXMLMarkerExtractor {
     func extractTimelineContext(
         defaultTimelineName: String
     ) -> TimelineContext? {
-        let parsedFCPXML = FinalCutPro.FCPXML(fileContent: fcpxmlDoc)
+        let parsedFCPXML = FCPXML(fileContent: fcpxmlDoc)
         
         let library = parsedFCPXML.root.library
         
@@ -134,17 +134,17 @@ extension FCPXMLMarkerExtractor {
     }
     
     /// Fetch the FCPXML timeline's frame rate, with fallbacks in case errors occur.
-    func startTimecode(for timeline: FinalCutPro.FCPXML.AnyTimeline) -> Timecode {
+    func startTimecode(for timeline: FCPXML.AnyTimeline) -> Timecode {
         if let tc = timeline.timelineStartAsTimecode() {
             logger.info(
                 "Timeline start timecode: \(tc.stringValue()) @ \(tc.frameRate.stringValueVerbose)."
             )
             return tc
         } else if let frameRate = timeline.localTimecodeFrameRate() {
-            let tc = FinalCutPro.formTimecode(at: frameRate)
+            let tc = FCPXML.formTimecode(at: frameRate)
             return tc
         } else {
-            let tc = FinalCutPro.formTimecode(at: .fps30)
+            let tc = FCPXML.formTimecode(at: .fps30)
             logger.warning(
                 "Could not determine timeline start timecode. Defaulting to \(tc.stringValue()) @ \(tc.frameRate.stringValueVerbose)."
             )
@@ -193,8 +193,8 @@ extension FCPXMLMarkerExtractor {
 
 extension FCPXMLMarkerExtractor {
     private func markers(
-        in timeline: FinalCutPro.FCPXML.AnyTimeline,
-        library: FinalCutPro.FCPXML.Library?,
+        in timeline: FCPXML.AnyTimeline,
+        library: FCPXML.Library?,
         timelineName: String,
         timelineStartTimecode: Timecode
     ) async -> [Marker] {
@@ -214,8 +214,8 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func captions(
-        in timeline: FinalCutPro.FCPXML.AnyTimeline,
-        library: FinalCutPro.FCPXML.Library?,
+        in timeline: FCPXML.AnyTimeline,
+        library: FCPXML.Library?,
         timelineName: String,
         timelineStartTimecode: Timecode
     ) async -> [Marker] {
@@ -235,8 +235,8 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func convertMarker(
-        _ extractedMarker: FinalCutPro.FCPXML.ExtractedMarker,
-        parentLibrary: FinalCutPro.FCPXML.Library?,
+        _ extractedMarker: FCPXML.ExtractedMarker,
+        parentLibrary: FCPXML.Library?,
         timelineName: String,
         timelineStartTime: Timecode
     ) -> Marker? {
@@ -271,8 +271,8 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func convertCaption(
-        _ extractedCaption: FinalCutPro.FCPXML.ExtractedCaption,
-        parentLibrary: FinalCutPro.FCPXML.Library?,
+        _ extractedCaption: FCPXML.ExtractedCaption,
+        parentLibrary: FCPXML.Library?,
         timelineName: String,
         timelineStartTime: Timecode
     ) -> Marker? {
@@ -310,7 +310,7 @@ extension FCPXMLMarkerExtractor {
     
     private func parentInfo(
         from element: any FCPXMLExtractedModelElement,
-        parentLibrary: FinalCutPro.FCPXML.Library?,
+        parentLibrary: FCPXML.Library?,
         timelineName: String,
         timelineStartTime: Timecode
     ) -> Marker.ParentInfo? {
@@ -334,7 +334,7 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func metadata(
-        for extractedMarker: FinalCutPro.FCPXML.ExtractedMarker
+        for extractedMarker: FCPXML.ExtractedMarker
     ) -> Marker.Metadata {
         let rawMetadata = extractedMarker.value(forContext: .metadata)
         
@@ -342,7 +342,7 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func metadata(
-        for extractedCaption: FinalCutPro.FCPXML.ExtractedCaption
+        for extractedCaption: FCPXML.ExtractedCaption
     ) -> Marker.Metadata {
         let rawMetadata = extractedCaption.value(forContext: .metadata)
         
@@ -350,10 +350,10 @@ extension FCPXMLMarkerExtractor {
     }
     
     private func convertMetadata(
-        rawMetadata: [FinalCutPro.FCPXML.Metadata.Metadatum]
+        rawMetadata: [FCPXML.Metadata.Metadatum]
     ) -> Marker.Metadata {
         // map metadata key/value pairs to a dictionary for easy access
-        let metadataDict: [FinalCutPro.FCPXML.Metadata.Key: String] = rawMetadata
+        let metadataDict: [FCPXML.Metadata.Key: String] = rawMetadata
             .compactMapDictionary { element in
                 guard let key = element.key else { return nil }
                 let value = element.value ?? element.valueArray?.joined(separator: ",") ?? ""
@@ -377,7 +377,7 @@ extension FCPXMLMarkerExtractor {
         for interpolatedRole in roles {
             var isRoleDefault = false
             
-            func handle(role: FinalCutPro.FCPXML.AnyRole) {
+            func handle(role: FCPXML.AnyRole) {
                 switch role {
                 case let .audio(audioRole):
                     markerRoles.isAudioDefault = isRoleDefault

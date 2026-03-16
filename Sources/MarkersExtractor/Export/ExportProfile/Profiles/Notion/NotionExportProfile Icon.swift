@@ -28,7 +28,7 @@ extension NotionExportProfile.Icon: Sendable { }
 // MARK: - Init
 
 extension NotionExportProfile.Icon {
-    public init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration) {
+    public init(_ configuration: FCPXML.Marker.Configuration) {
         switch configuration {
         case .standard:
             self = .markerStandard

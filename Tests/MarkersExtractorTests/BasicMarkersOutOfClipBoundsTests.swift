@@ -29,7 +29,7 @@ import TestingExtensions
         let fr: TimecodeFrameRate = .fps25
         
         let clip1ParentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ElementType.assetClip.name,
+            clipType: FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
             // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:00:00", at: fr),
@@ -43,7 +43,7 @@ import TestingExtensions
         )
         
         let clip2ParentInfo = Marker.ParentInfo(
-            clipType: FinalCutPro.FCPXML.ElementType.assetClip.name,
+            clipType: FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
             // clipFilename: "Marker Test.m4v",
             clipInTime: tc("00:00:20:20", at: fr),

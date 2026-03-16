@@ -38,7 +38,7 @@ import TestingExtensions
         #expect(marker0.name == "Marker 1")
         #expect(marker0.position == tc("00:00:02:00", at: fr))
         
-        #expect(marker0.roles.audio == [FinalCutPro.FCPXML.AudioRole(role: "Dialogue")])
+        #expect(marker0.roles.audio == [FCPXML.AudioRole(role: "Dialogue")])
         #expect(marker0.roles.isAudioDefault == false) // TODO: Dialogue isn't a builtin/default role??
         #expect(marker0.roles.isAudioEmpty == false)
         #expect(marker0.roles.isAudioDefined == true) // exists in the XML

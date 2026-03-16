@@ -27,4 +27,4 @@ extension MarkersSource: ExpressibleByArgument, CustomExpressibleByArgument { }
 // Note: Use of `@retroactive` is safe here since `RoleType` will never be
 // conformed to ExpressibleByArgument in DAWFileTools.
 
-extension FinalCutPro.FCPXML.RoleType: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }
+extension FCPXML.RoleType: @retroactive ExpressibleByArgument, CustomExpressibleByArgument { }

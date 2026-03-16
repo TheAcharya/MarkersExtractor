@@ -7,7 +7,7 @@
 import DAWFileTools
 import Foundation
 
-extension FinalCutPro.FCPXML.ElementType {
+extension FCPXML.ElementType {
     var name: String {
         switch self {
         // annotation
@@ -41,7 +41,7 @@ extension FinalCutPro.FCPXML.ElementType {
     }
 }
 
-extension FinalCutPro.FCPXML.Marker.MarkerKind {
+extension FCPXML.Marker.MarkerKind {
     var name: String {
         switch self {
         case .standard: "Standard"
@@ -51,7 +51,7 @@ extension FinalCutPro.FCPXML.Marker.MarkerKind {
     }
 }
 
-extension FinalCutPro.FCPXML.Marker.Configuration {
+extension FCPXML.Marker.Configuration {
     var name: String {
         switch self {
         case .standard: "Standard"
@@ -61,13 +61,13 @@ extension FinalCutPro.FCPXML.Marker.Configuration {
     }
 }
 
-extension FinalCutPro.FCPXML.ExtractedCaption {
+extension FCPXML.ExtractedCaption {
     var isOutOfBounds: Bool {
         value(forContext: .effectiveOcclusion) == .fullyOccluded
     }
 }
 
-extension FinalCutPro.FCPXML.ExtractedMarker {
+extension FCPXML.ExtractedMarker {
     var isOutOfBounds: Bool {
         value(forContext: .effectiveOcclusion) == .fullyOccluded
     }

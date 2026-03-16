@@ -26,7 +26,7 @@ extension NotionExportProfile.Status: Sendable { }
 // MARK: - Init
 
 extension NotionExportProfile.Status {
-    init(_ configuration: FinalCutPro.FCPXML.Marker.Configuration) {
+    init(_ configuration: FCPXML.Marker.Configuration) {
         switch configuration {
         case .standard:
             self = .notStarted
