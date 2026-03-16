@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "9358CD52-789F-426C-B5F0-484562B8022A",
+      "name" : "Default",
+      "options" : {
+        "threadSanitizerEnabled" : true
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "markers-extractor",
+      "name" : "markers-extractor"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "MarkersExtractorTests",
+        "name" : "MarkersExtractorTests"
+      }
+    }
+  ],
+  "version" : 1
+}
