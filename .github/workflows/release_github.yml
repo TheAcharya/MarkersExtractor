@@ -12,7 +12,7 @@ on:
       
 jobs:
   build:
-    runs-on: macos-15 # required for Xcode 16.x
+    runs-on: macos-26 # required for Xcode 16.x
     timeout-minutes: 30
     
     steps:
@@ -55,7 +55,7 @@ jobs:
         echo "PARENT=$PARENT" >> $GITHUB_ENV
         echo "CONFIG=$CONFIGURATION" >> $GITHUB_ENV
 
-        xcodebuild build -workspace "$WORKSPACE_PATH" -scheme "$SCHEME" -configuration "$CONFIGURATION" -destination "$DESTINATION" -derivedDataPath "$BUILD_FOLDER" clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -allowProvisioningUpdates | xcbeautify
+        xcodebuild build -workspace "$WORKSPACE_PATH" -scheme "$SCHEME" -configuration "$CONFIGURATION" -destination "$DESTINATION" -derivedDataPath "$BUILD_FOLDER" clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ENABLE_THREAD_SANITIZER=NO -allowProvisioningUpdates | xcbeautify
         
     - name: Prepare VM Directories
       run: |
