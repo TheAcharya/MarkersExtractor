@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## [0.4.3](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.3) (2026-03-30)
+
+### Maintenance Update
+
+- Improved compatibility of generated CSV and TSV files when data contains special characters
+
 ## [0.4.2](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.2) (2026-03-29)
 
 ### Maintenance Update
