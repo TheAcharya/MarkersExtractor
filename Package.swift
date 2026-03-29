@@ -30,7 +30,7 @@ let package = Package(
             traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
         ),
         .package(url: "https://github.com/orchetect/swift-extensions", from: "2.1.5"),
-        .package(url: "https://github.com/orchetect/swift-textfile", from: "0.5.0"),
+        .package(url: "https://github.com/orchetect/swift-textfile", from: "0.5.1"),
         .package(url: "https://github.com/orchetect/swift-timecode", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.0")
     ],
