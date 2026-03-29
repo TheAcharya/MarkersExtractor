@@ -16,13 +16,21 @@ extension ExportProfile {
     ) throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: true, noMedia: noMedia)
         
-        guard let csvData = CSV(table: rows).rawText.data(using: .utf8)
-        else {
+        let data: Data
+        do throws(TextFileEncodeError) {
+            data = try CSV(table: rows).data(encoding: .utf8, includeBOM: true)
+        } catch {
             throw MarkersExtractorError.extraction(.fileWrite(
-                "Could not encode CSV file."
+                "Could not encode CSV file: \(error.localizedDescription)"
             ))
         }
         
-        try csvData.write(to: csvPath)
+        do {
+            try data.write(to: csvPath)
+        } catch {
+            throw MarkersExtractorError.extraction(.fileWrite(
+                "Could not write CSV file to disk: \(error.localizedDescription)"
+            ))
+        }
     }
 }
