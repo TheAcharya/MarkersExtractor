@@ -44,20 +44,24 @@ extension FileLogHandler {
     }
     
     public func log(event: LogEvent) {
-        let prettyMetadata = (event.metadata?.isEmpty ?? true)
-            ? prettyMetadata
-            : prettify(self.metadata.merging(event.metadata!, uniquingKeysWith: { _, new in new }))
+        let formattedMetadata = if let eventMetadata = event.metadata, !eventMetadata.isEmpty {
+            prettify(metadata.merging(eventMetadata, uniquingKeysWith: { _, new in new }))
+        } else {
+            prettyMetadata
+        }
         
         var stream = stream
         stream.write(
-            "\(timestamp()) \(event.level):\(prettyMetadata.map { " \($0)" } ?? "") \(event.message)\n"
+            "\(timestamp()) \(event.level):\(formattedMetadata.map { " \($0)" } ?? "") \(event.message)\n"
         )
     }
     
     private func prettify(_ metadata: Logger.Metadata) -> String? {
-        !metadata.isEmpty
-            ? metadata.map { "\($0)=\($1)" }.joined(separator: " ")
-            : nil
+        if metadata.isEmpty {
+            nil
+        } else {
+            metadata.map { "\($0)=\($1)" }.joined(separator: " ")
+        }
     }
     
     // TODO: Gross. Probably a safer/simpler way to do this.
