@@ -29,20 +29,12 @@ extension ConsoleLogHandler {
         }
     }
     
-    public func log(
-        level: Logger.Level,
-        message: Logger.Message,
-        metadata: Logger.Metadata?,
-        source: String,
-        file: String,
-        function: String,
-        line: UInt
-    ) {
+    public func log(event: LogEvent) {
         DispatchQueue.main.async {
-            if level == .info {
-                print("\(message)")
+            if event.level == .info {
+                print("\(event.message)")
             } else {
-                print("\(level.rawValue.uppercased()): \(message)")
+                print("\(event.level.rawValue.uppercased()): \(event.message)")
             }
         }
     }

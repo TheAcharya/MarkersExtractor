@@ -43,22 +43,14 @@ extension FileLogHandler {
         }
     }
     
-    public func log(
-        level: Logger.Level,
-        message: Logger.Message,
-        metadata: Logger.Metadata?,
-        source: String,
-        file: String,
-        function: String,
-        line: UInt
-    ) {
-        let prettyMetadata = metadata?.isEmpty ?? true
+    public func log(event: LogEvent) {
+        let prettyMetadata = (event.metadata?.isEmpty ?? true)
             ? prettyMetadata
-            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+            : prettify(self.metadata.merging(event.metadata!, uniquingKeysWith: { _, new in new }))
         
         var stream = stream
         stream.write(
-            "\(timestamp()) \(level):\(prettyMetadata.map { " \($0)" } ?? "") \(message)\n"
+            "\(timestamp()) \(event.level):\(prettyMetadata.map { " \($0)" } ?? "") \(event.message)\n"
         )
     }
     
