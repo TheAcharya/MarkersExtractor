@@ -8,7 +8,7 @@ import Foundation
 
 public struct SRTExportPayload: ExportPayload {
     let srtPath: URL
-        
+
     init(timelineName: String, outputURL: URL) {
         let srtName = "\(timelineName).srt"
         srtPath = outputURL.appendingPathComponent(srtName)

@@ -8,11 +8,11 @@ import Foundation
 
 struct FileHandlerOutputStream: TextOutputStream {
     let queue = DispatchQueue(label: "FileHandlerOutputStream", qos: .default)
-    
+
     let encoding: String.Encoding
-    
+
     private let fileHandle: FileHandle
-    
+
     init(localFile url: URL, encoding: String.Encoding = .utf8) throws {
         if !FileManager.default.fileExists(atPath: url.path) {
             guard FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
@@ -20,7 +20,7 @@ struct FileHandlerOutputStream: TextOutputStream {
                 throw StreamError.couldNotCreateFile
             }
         }
-        
+
         fileHandle = try FileHandle(forWritingTo: url)
         try fileHandle.seekToEnd()
         self.encoding = encoding
@@ -37,7 +37,7 @@ extension FileHandlerOutputStream {
                 try fileHandle.write(contentsOf: data)
             } catch {
                 #if DEBUG
-                print(error)
+                    print(error)
                 #endif
             }
         }

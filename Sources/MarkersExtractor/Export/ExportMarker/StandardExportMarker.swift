@@ -13,7 +13,7 @@ import SwiftTimecodeCore
 /// various different export profiles.
 public struct StandardExportMarker: ExportMarker {
     public typealias Icon = NotionExportProfile.Icon
-    
+
     public let id: String
     public let name: String
     public let type: String
@@ -38,12 +38,12 @@ public struct StandardExportMarker: ExportMarker {
     public let projectName: String
     public let libraryName: String
     public let icon: Icon
-    
+
     public let imageFileName: String
     public let imageTimecode: Timecode
-    
+
     public let xmlPath: String
-    
+
     public init(
         marker: Marker,
         idMode: MarkerIDMode,
@@ -54,66 +54,66 @@ public struct StandardExportMarker: ExportMarker {
         useChapterMarkerPosterOffset: Bool
     ) {
         id = marker.id(idMode, tcStringFormat: tcStringFormat)
-        
+
         name = marker.name
-        
+
         type = marker.type.name
-        
+
         checked = String(marker.isChecked())
-        
+
         status = NotionExportProfile.Status(marker.type).rawValue
-        
+
         notes = marker.notes
-        
+
         reel = marker.metadata.reel
-        
+
         scene = marker.metadata.scene
-        
+
         take = marker.metadata.take
-        
+
         position = marker.positionTimeString(
             format: timeFormat,
             offsetToTimelineStart: offsetToTimelineStart
         )
-        
+
         clipType = marker.parentInfo.clipType
-        
+
         clipName = marker.parentInfo.clipName
-        
+
         clipIn = marker.parentInfo.clipInTimeString(format: timeFormat)
-        
+
         clipOut = marker.parentInfo.clipOutTimeString(format: timeFormat)
-        
+
         clipDuration = marker.parentInfo.clipDurationTimeString(format: timeFormat)
-        
+
         let (clipKeywordsFlat, clipKeywordsArray) = marker.parentInfo.clipKeywordsFormatted()
         self.clipKeywordsFlat = clipKeywordsFlat
         self.clipKeywordsArray = clipKeywordsArray
-        
+
         videoRole = marker.roles.videoFormatted()
-        
+
         let (audioRoleFlat, audioRoleArray) = marker.roles
             .audioFormatted(multipleRoleSeparator: ",")
         self.audioRoleFlat = audioRoleFlat
         self.audioRoleArray = audioRoleArray
-        
+
         eventName = marker.parentInfo.eventName ?? ""
-        
+
         projectName = marker.parentInfo.projectName ?? ""
-        
+
         libraryName = marker.parentInfo.libraryName ?? ""
-        
+
         icon = Icon(marker.type)
-        
+
         imageFileName = mediaInfo?
             .imageFileName(for: marker, idMode: idMode, tcStringFormat: tcStringFormat)
             ?? ""
-        
+
         imageTimecode = marker.imageTimecode(
             useChapterMarkerPosterOffset: useChapterMarkerPosterOffset,
             offsetToTimelineStart: offsetToTimelineStart
         )
-        
+
         xmlPath = marker.xmlPath
     }
 }

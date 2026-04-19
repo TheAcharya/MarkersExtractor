@@ -18,26 +18,26 @@ import TestingExtensions
         let outputDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
-        
+
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: outputDir
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // verify marker contents
-        
+
         let markers = try await extractor.extractMarkers().markers
-        
+
         #expect(markers.count == 2)
-        
+
         let fr: TimecodeFrameRate = .fps24
-        
+
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.name == "Marker 1")
         #expect(marker0.position == tc("01:00:00:00", at: fr))
-        
+
         let marker1 = try #require(markers[safe: 1])
         #expect(marker1.name == "Marker 2")
         #expect(marker1.position == tc("01:00:01:00", at: fr))

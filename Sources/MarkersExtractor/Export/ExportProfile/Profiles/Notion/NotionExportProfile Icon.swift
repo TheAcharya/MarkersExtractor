@@ -38,7 +38,7 @@ extension NotionExportProfile.Icon {
             self = .markerChapter
         }
     }
-    
+
     public init(_ type: InterpretedMarkerType) {
         switch type {
         case let .marker(markerMetaData):
@@ -61,11 +61,11 @@ extension NotionExportProfile.Icon {
         case .caption: .icon_notion_caption_png
         }
     }
-    
+
     public var fileName: String {
         resource.fileName
     }
-    
+
     public var data: Data {
         resource.data ?? Data()
     }

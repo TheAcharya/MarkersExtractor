@@ -11,7 +11,7 @@ extension FCPXML.ElementType {
     var name: String {
         switch self {
         // annotation
-            
+
         case .caption: "Caption"
         case .keyword: "Keyword"
         case .marker, .chapterMarker: "Marker"

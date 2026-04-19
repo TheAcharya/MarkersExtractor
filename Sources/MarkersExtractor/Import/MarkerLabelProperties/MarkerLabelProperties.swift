@@ -52,7 +52,7 @@ extension MarkerLabelProperties {
             MarkersExtractor.Settings.Defaults
                 .imageLabelFontOpacity
         ) / 100
-        
+
         let fontColor = NSColor(
             hexString: MarkersExtractor.Settings.Defaults.imageLabelFontColor,
             alpha: imageLabelFontOpacityDouble
@@ -61,7 +61,7 @@ extension MarkerLabelProperties {
             hexString: MarkersExtractor.Settings.Defaults.imageLabelFontStrokeColor,
             alpha: imageLabelFontOpacityDouble
         )
-        
+
         return MarkerLabelProperties(
             fontName: MarkersExtractor.Settings.Defaults.imageLabelFont,
             fontMaxSize: MarkersExtractor.Settings.Defaults.imageLabelFontMaxSize,

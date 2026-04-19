@@ -12,40 +12,40 @@ import Foundation
 public struct ExportResult {
     /// Date the extraction was performed (ISO8601 formatted).
     public var date: Date
-    
+
     /// Export profile used.
     public var profile: ExportProfileFormat
-    
+
     /// Output folder path used for the export.
     public var exportFolder: URL
-    
+
     /// CSV manifest file path, if applicable to the profile. `nil` if not applicable.
     public var csvManifestPath: URL?
-    
+
     /// TSV manifest file path, if applicable to the profile. `nil` if not applicable.
     public var tsvManifestPath: URL?
-    
+
     /// Plain Text manifest file path, if applicable to the profile. `nil` if not applicable.
     public var txtManifestPath: URL?
-    
+
     /// Markdown manifest file path, if applicable to the profile. `nil` if not applicable.
     public var mdManifestPath: URL?
-    
+
     /// SubRip manifest file path, if applicable to the profile. `nil` if not applicable.
     public var srtManifestPath: URL?
-    
+
     /// JSON manifest file path, if applicable to the profile. `nil` if not applicable.
     public var jsonManifestPath: URL?
-    
+
     /// MIDI file path, if applicable to the profile. `nil` if not applicable.
     public var midiFilePath: URL?
-    
+
     /// Excel (XLSX) file path, if applicable to the profile. `nil` if not applicable.
     public var xlsxManifestPath: URL?
-    
+
     /// MarkersExtractor version used to perform extraction.
     public var version: String
-    
+
     public init(
         date: Date,
         profile: ExportProfileFormat,
@@ -131,7 +131,7 @@ extension ExportResult {
     /// Returns the contents serialized to a dictionary.
     func exportResultContentDict() -> [String: String] {
         var dict: [Key: String] = [:]
-        
+
         dict[.date] = Value.date(date).stringValueForJSON
         dict[.profile] = profile.rawValue
         dict[.exportFolder] = exportFolder.path
@@ -144,10 +144,10 @@ extension ExportResult {
         dict[.midiFilePath] = midiFilePath?.path
         dict[.xlsxManifestPath] = xlsxManifestPath?.path
         dict[.version] = version
-        
+
         return dict.mapKeys(\.rawValue)
     }
-    
+
     /// Returns the contents as a JSON-encoded data.
     func jsonData() throws -> Data {
         try dictToJSON(exportResultContentDict())

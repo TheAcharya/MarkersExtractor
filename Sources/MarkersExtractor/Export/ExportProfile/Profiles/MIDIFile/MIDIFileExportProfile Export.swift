@@ -28,7 +28,7 @@ extension MIDIFileExportProfile {
             )
         }
     }
-    
+
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -36,14 +36,14 @@ extension MIDIFileExportProfile {
     ) async throws {
         try writeManifest(preparedMarkers, payload: payload, noMedia: noMedia)
     }
-    
+
     func writeManifest(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
         noMedia: Bool
     ) throws {
         let dawMarkers = preparedMarkers.map { $0.dawMarker() }
-        
+
         var buildMessages: [String] = []
         let midiFile = try MIDIFile(
             converting: dawMarkers,
@@ -52,35 +52,35 @@ extension MIDIFileExportProfile {
             includeComments: false,
             buildMessages: &buildMessages
         )
-        
+
         for buildMessage in buildMessages {
             logger?.info("MIDI File diagnostic: \(buildMessage)")
         }
-        
+
         let data = try midiFile.rawData()
         try data.write(to: payload.midiFilePath)
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [.midiFilePath: .url(payload.midiFilePath)]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         // can ignore `structure` since MIDI File is proprietary
         // and does not have multiple format variants
-        
+
         var dict: OrderedDictionary<ExportField, String> = [:]
-        
+
         dict[.position] = marker.position
         dict[.name] = marker.name
-        
+
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
         }
-        
+
         return dict
     }
 }

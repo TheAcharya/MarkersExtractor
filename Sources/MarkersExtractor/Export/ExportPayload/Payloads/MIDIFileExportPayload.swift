@@ -10,7 +10,7 @@ import SwiftTimecodeCore
 public struct MIDIFileExportPayload: ExportPayload {
     let midiFilePath: URL
     let timelineStartTimecode: Timecode
-    
+
     init(
         timelineName: String,
         outputURL: URL,
@@ -18,7 +18,7 @@ public struct MIDIFileExportPayload: ExportPayload {
     ) {
         let midiFileName = "\(timelineName).mid"
         midiFilePath = outputURL.appendingPathComponent(midiFileName)
-        
+
         self.timelineStartTimecode = timelineStartTimecode
     }
 }

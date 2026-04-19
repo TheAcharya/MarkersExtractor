@@ -12,19 +12,19 @@ import Logging
 /// Derived from https://github.com/crspybits/swift-log-file
 public struct FileLogHandler: LogHandler {
     private let stream: FileHandlerOutputStream
-    
+
     private var label: String
-    
+
     public var logLevel: Logger.Level = .info
-    
+
     public var metadata = Logger.Metadata() {
         didSet {
             prettyMetadata = prettify(metadata)
         }
     }
-    
+
     private var prettyMetadata: String?
-    
+
     public init(label: String, localFile url: URL) throws {
         self.label = label
         stream = try FileHandlerOutputStream(localFile: url)
@@ -42,20 +42,20 @@ extension FileLogHandler {
             metadata[metadataKey] = newValue
         }
     }
-    
+
     public func log(event: LogEvent) {
         let formattedMetadata = if let eventMetadata = event.metadata, !eventMetadata.isEmpty {
             prettify(metadata.merging(eventMetadata, uniquingKeysWith: { _, new in new }))
         } else {
             prettyMetadata
         }
-        
+
         var stream = stream
         stream.write(
             "\(timestamp()) \(event.level):\(formattedMetadata.map { " \($0)" } ?? "") \(event.message)\n"
         )
     }
-    
+
     private func prettify(_ metadata: Logger.Metadata) -> String? {
         if metadata.isEmpty {
             nil
@@ -63,7 +63,7 @@ extension FileLogHandler {
             metadata.map { "\($0)=\($1)" }.joined(separator: " ")
         }
     }
-    
+
     // TODO: Gross. Probably a safer/simpler way to do this.
     private func timestamp() -> String {
         var buffer = [Int8](repeating: 0, count: 255)

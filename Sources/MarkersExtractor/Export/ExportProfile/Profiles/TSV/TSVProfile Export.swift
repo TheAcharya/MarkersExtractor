@@ -31,7 +31,7 @@ extension TSVProfile {
             )
         }
     }
-    
+
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -43,19 +43,19 @@ extension TSVProfile {
             preparedMarkers
         )
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
             .tsvManifestPath: .url(payload.tsvPath)
         ]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         var dict: OrderedDictionary<ExportField, String> = [:]
-        
+
         dict[.id] = marker.id
         dict[.name] = marker.name
         dict[.type] = marker.type
@@ -78,20 +78,20 @@ extension TSVProfile {
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
         }
-        
+
         return dict
     }
-    
+
     public func nestedManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, ExportFieldValue> {
         var dict: OrderedDictionary<ExportField, ExportFieldValue> = [:]
-        
+
         dict[.id] = .string(marker.id)
         dict[.name] = .string(marker.name)
         dict[.type] = .string(marker.type)
@@ -114,11 +114,11 @@ extension TSVProfile {
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
         }
-        
+
         return dict
     }
 }

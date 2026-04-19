@@ -18,52 +18,52 @@ import TestingExtensions
         let outputDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
-        
+
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: outputDir
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // verify marker contents
-        
+
         let markers = try await extractor.extractMarkers().markers
-        
+
         #expect(markers.count == 1)
-        
+
         let fr: TimecodeFrameRate = .fps24
-        
+
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.name == "Marker 1")
         #expect(marker0.position == tc("00:00:02:00", at: fr))
-        
+
         #expect(marker0.roles.audio == [FCPXML.AudioRole(role: "Dialogue")])
         #expect(marker0.roles.isAudioDefault == false) // TODO: Dialogue isn't a builtin/default role??
         #expect(marker0.roles.isAudioEmpty == false)
         #expect(marker0.roles.isAudioDefined == true) // exists in the XML
-        
+
         #expect(marker0.roles.video == nil)
         #expect(marker0.roles.isVideoDefault == false)
         #expect(marker0.roles.isVideoEmpty == true)
         #expect(marker0.roles.isVideoDefined == false) // was default, not defined
-        
+
         #expect(marker0.roles.caption == nil)
     }
-    
+
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
     @Test
     func audioOnly_WithMedia_PNG() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
-        
+
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
-        
+
         let dummyMediaData = try #require(EmbeddedResource.empty_mov.data)
         let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
         try dummyMediaData.write(to: dummyMediaURL)
-        
+
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: tempDir,
@@ -71,41 +71,41 @@ import TestingExtensions
             exportFormat: .notion,
             imageFormat: .still(.png)
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // extract
         let result = try await extractor.extract()
         let exportDir = result.exportFolder
-        
+
         // open folder (for manual debugging)
         // NSWorkspace.shared.open(exportDir)
-        
+
         let dirContents = try FileManager.default.contentsOfDirectory(
             at: exportDir,
             includingPropertiesForKeys: [.nameKey]
         )
-        
+
         let exportFilenames = dirContents.map(\.lastPathComponent)
         exportFilenames.forEach { print(" - " + $0) }
-        
+
         // ensure that a placeholder thumbnail was used for the audio-only clip
         #expect(exportFilenames.contains("marker-placeholder.png"))
     }
-    
+
     /// Ensure that a placeholder thumbnail image is used for an audio-only clip.
     @Test
     func audioOnly_WithMedia_GIF() async throws {
         let tempDir = FileManager.default
             .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
-        
+
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
-        
+
         let dummyMediaData = try #require(EmbeddedResource.empty_mov.data)
         let dummyMediaURL = tempDir.appendingPathComponent("AudioOnly.mov")
         try dummyMediaData.write(to: dummyMediaURL)
-        
+
         let settings = try MarkersExtractor.Settings(
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: tempDir,
@@ -113,24 +113,24 @@ import TestingExtensions
             exportFormat: .notion,
             imageFormat: .animated(.gif)
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // extract
         let result = try await extractor.extract()
         let exportDir = result.exportFolder
-        
+
         // open folder (for manual debugging)
         // NSWorkspace.shared.open(exportDir)
-        
+
         let dirContents = try FileManager.default.contentsOfDirectory(
             at: exportDir,
             includingPropertiesForKeys: [.nameKey]
         )
-        
+
         let exportFilenames = dirContents.map(\.lastPathComponent)
         exportFilenames.forEach { print(" - " + $0) }
-        
+
         // ensure that a placeholder thumbnail was used for the audio-only clip
         #expect(exportFilenames.contains("marker-placeholder.gif"))
     }

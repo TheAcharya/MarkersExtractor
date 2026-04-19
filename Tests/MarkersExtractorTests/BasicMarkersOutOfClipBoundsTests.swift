@@ -20,14 +20,14 @@ import TestingExtensions
             fcpxml: FCPXMLFile(fileContents: fcpxmlTestData),
             outputDir: FileManager.default.temporaryDirectory
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
         let markers = try await extractor.extractMarkers().markers
-        
+
         // check clips
-        
+
         let fr: TimecodeFrameRate = .fps25
-        
+
         let clip1ParentInfo = Marker.ParentInfo(
             clipType: FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
@@ -41,7 +41,7 @@ import TestingExtensions
             timelineName: "Out of Bounds Markers",
             timelineStartTime: tc("00:00:00:00", at: fr)
         )
-        
+
         let clip2ParentInfo = Marker.ParentInfo(
             clipType: FCPXML.ElementType.assetClip.name,
             clipName: "Marker Test",
@@ -55,24 +55,24 @@ import TestingExtensions
             timelineName: "Out of Bounds Markers",
             timelineStartTime: tc("00:00:00:00", at: fr)
         )
-        
+
         // check markers
-        
+
         #expect(markers.count == 2)
-        
+
         // if the clip is the first clip on the timeline (it starts at 00:00:00:00) and
         // it had been resized from its left edge to result in an out-of-boundary marker prior to
         // the new clip start, the hidden marker's location
-        
+
         // clip 1
-        
+
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.name == "Marker 2")
         #expect(marker0.position == tc("00:00:07:23", at: fr))
         #expect(marker0.parentInfo == clip1ParentInfo)
-        
+
         // clip 2
-        
+
         let marker1 = try #require(markers[safe: 1])
         #expect(marker1.name == "Marker 5")
         #expect(marker1.position == tc("00:00:28:18", at: fr))

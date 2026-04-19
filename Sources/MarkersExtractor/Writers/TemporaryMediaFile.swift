@@ -9,7 +9,7 @@ import Foundation
 
 class TemporaryMediaFile {
     let url: URL
-    
+
     init(withData: Data) throws {
         let directory = FileManager.default.temporaryDirectory
         let fileName = "\(NSUUID().uuidString).mov"
@@ -23,7 +23,7 @@ class TemporaryMediaFile {
             )
         }
     }
-    
+
     deinit {
         deleteFile()
     }
@@ -33,7 +33,7 @@ extension TemporaryMediaFile {
     var avAsset: AVAsset? {
         AVAsset(url: url)
     }
-    
+
     private func deleteFile() {
         try? FileManager.default.removeItem(at: url)
     }

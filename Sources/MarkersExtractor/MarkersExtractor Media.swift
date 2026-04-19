@@ -15,9 +15,9 @@ extension MarkersExtractor {
         timelineName: String
     ) throws -> ExportMedia {
         let videoPath = try findMedia(name: timelineName, paths: settings.mediaSearchPaths)
-        let imageLabels = OrderedSet(settings.imageLabels).map { $0 }
+        let imageLabels = OrderedSet(settings.imageLabels).map(\.self)
         let labelProperties = MarkerLabelProperties(using: settings)
-        
+
         let imageSettings = ExportImageSettings(
             gifFPS: settings.gifFPS,
             gifSpan: settings.gifSpan,
@@ -29,7 +29,7 @@ extension MarkersExtractor {
             labelProperties: labelProperties,
             imageLabelHideNames: settings.imageLabelHideNames
         )
-        
+
         return ExportMedia(videoURL: videoPath, imageSettings: imageSettings)
     }
 }
@@ -39,31 +39,31 @@ extension MarkersExtractor {
 extension MarkersExtractor {
     /// Supported media format file extensions.
     static let mediaFormatFileExtensions = ["mov", "mp4", "m4v", "mxf", "avi", "mts", "m2ts", "3gp"]
-    
+
     /// - Throws: ``MarkersExtractorError``
     private func findMedia(name: String, paths: [URL]) throws -> URL {
         let files: [URL] = try paths.reduce(into: []) { base, path in
             let matches = try matchFiles(at: path, name: name, exts: Self.mediaFormatFileExtensions)
             base.append(contentsOf: matches)
         }
-        
+
         if files.isEmpty {
             throw MarkersExtractorError.extraction(
                 .noMediaFound("No media found for \(name.quoted).")
             )
         }
-        
+
         let selection = files[0]
-        
+
         if files.count > 1 {
             logger.info(
                 "Found more than one media candidate for \(name.quoted). Using first match: \(selection.path.quoted)."
             )
         }
-        
+
         return selection
     }
-    
+
     /// - Throws: ``MarkersExtractorError``
     private func matchFiles(at path: URL, name: String, exts: [String]) throws -> [URL] {
         do {

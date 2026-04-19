@@ -36,7 +36,7 @@ extension NotionExportProfile.Status {
             self = completed ? .done : .inProgress
         }
     }
-    
+
     init(_ type: InterpretedMarkerType) {
         switch type {
         case let .marker(markerConfiguration):

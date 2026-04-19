@@ -8,7 +8,7 @@ extension AnimatedImageExtractor {
     actor BatchResult {
         var errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []
         var isBatchFinished = false
-        
+
         init(errors: [(descriptor: ImageDescriptor, error: AnimatedImageExtractorError)] = []) {
             self.errors = errors
         }
@@ -21,7 +21,7 @@ extension AnimatedImageExtractor.BatchResult {
     func addError(for descriptor: ImageDescriptor, _ error: AnimatedImageExtractorError) {
         errors.append((descriptor: descriptor, error: error))
     }
-    
+
     func setFinished() {
         isBatchFinished = true
     }

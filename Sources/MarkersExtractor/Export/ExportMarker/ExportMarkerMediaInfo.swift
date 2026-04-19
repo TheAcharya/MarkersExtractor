@@ -11,7 +11,7 @@ import SwiftTimecodeCore
 public struct ExportMarkerMediaInfo {
     public var imageFormat: MarkerImageFormat
     public var isSingleFrame: Bool
-    
+
     public init(imageFormat: MarkerImageFormat, isSingleFrame: Bool) {
         self.imageFormat = imageFormat
         self.isSingleFrame = isSingleFrame

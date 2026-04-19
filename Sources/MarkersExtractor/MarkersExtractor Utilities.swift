@@ -19,7 +19,7 @@ extension MarkersExtractor {
         let proposedOutputURL = settings.outputDir.appendingPathComponent(folderName)
         let outputURL = FileManager.default.uniqueFileURL(proposedPath: proposedOutputURL)
         try FileManager.default.mkdirWithParent(outputURL.path, reuseExisting: false)
-        
+
         return outputURL
     }
 }
@@ -33,18 +33,18 @@ extension MarkersExtractor {
         } else if let imageSizePercent = settings.imageSizePercent {
             return calcVideosSizePercent(at: videoPath, for: imageSizePercent)
         }
-        
+
         return nil
     }
-    
+
     func calcVideosSizePercent(at path: URL, for percent: Int) -> CGSize? {
         let asset = AVAsset(url: path)
         let ratio = Double(percent) / 100
-        
+
         guard let origDimensions = asset.firstVideoTrack?.dimensions else {
             return nil
         }
-        
+
         return origDimensions * ratio
     }
 }

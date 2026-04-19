@@ -10,7 +10,7 @@ import SwiftTimecodeCore
 
 public protocol ExportMarker: Equatable, Hashable where Self: Sendable {
     associatedtype Icon: ExportIcon
-    
+
     var imageFileName: String { get }
     var imageTimecode: Timecode { get }
     var icon: Icon { get }

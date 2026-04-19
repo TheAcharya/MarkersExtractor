@@ -15,7 +15,7 @@ extension MarkerImageFormat: Hashable { }
 
 extension MarkerImageFormat: RawRepresentable {
     public typealias RawValue = String
-    
+
     public init?(rawValue: String) {
         if let match = Still(rawValue: rawValue) {
             self = .still(match)
@@ -25,7 +25,7 @@ extension MarkerImageFormat: RawRepresentable {
             return nil
         }
     }
-    
+
     public var rawValue: String {
         switch self {
         case let .still(format):

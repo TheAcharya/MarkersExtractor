@@ -30,7 +30,7 @@ extension CSVProfile {
             )
         }
     }
-    
+
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -42,19 +42,19 @@ extension CSVProfile {
             preparedMarkers
         )
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
             .csvManifestPath: .url(payload.csvPath)
         ]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         var dict: OrderedDictionary<ExportField, String> = [:]
-        
+
         dict[.id] = marker.id
         dict[.name] = marker.name
         dict[.type] = marker.type
@@ -77,20 +77,20 @@ extension CSVProfile {
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
         }
-        
+
         return dict
     }
-    
+
     public func nestedManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, ExportFieldValue> {
         var dict: OrderedDictionary<ExportField, ExportFieldValue> = [:]
-        
+
         dict[.id] = .string(marker.id)
         dict[.name] = .string(marker.name)
         dict[.type] = .string(marker.type)
@@ -113,11 +113,11 @@ extension CSVProfile {
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
         }
-        
+
         return dict
     }
 }

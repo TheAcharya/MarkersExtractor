@@ -19,10 +19,10 @@ extension MarkersExtractorCLI {
             )
         )
         var exportFormat: ExportProfileFormat = MarkersExtractor.Settings.Defaults.exportFormat
-        
+
         @Flag(help: ArgumentHelp("Enable output of timecode subframes."))
         var enableSubframes: Bool = MarkersExtractor.Settings.Defaults.enableSubframes
-        
+
         @Option(
             name: [.customLong("folder-format")],
             help: ArgumentHelp(
@@ -31,7 +31,7 @@ extension MarkersExtractorCLI {
             )
         )
         var exportFolderFormat: ExportFolderFormat = MarkersExtractor.Settings.Defaults.exportFolderFormat
-        
+
         @Option(
             help: ArgumentHelp(
                 "Marker naming mode. This affects Marker IDs and image filenames.",

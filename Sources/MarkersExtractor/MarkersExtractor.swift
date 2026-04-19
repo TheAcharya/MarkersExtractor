@@ -11,7 +11,7 @@ public actor MarkersExtractor {
     public var settings: Settings
     public let logger: Logger
     public let progress: Progress
-    
+
     public init(settings: Settings, logger: Logger? = nil) {
         self.settings = settings
         self.logger = logger ?? Logger(label: "\(MarkersExtractor.self)")

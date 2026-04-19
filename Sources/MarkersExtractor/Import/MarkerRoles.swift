@@ -15,21 +15,21 @@ import Foundation
 public struct MarkerRoles {
     /// Video Role.
     public var video: FCPXML.VideoRole?
-    
+
     /// Returns `true` if the ``video`` role is a default role.
     public var isVideoDefault: Bool
-    
+
     /// Audio Role(s).
     /// There can be more than one audio role for a clip.
     /// For example, Sync Clips may have multiple audio sources.
     public var audio: [FCPXML.AudioRole]?
-    
+
     /// Returns `true` if the ``audio`` role is a default role.
     public var isAudioDefault: Bool
-    
+
     /// Caption role.
     public var caption: FCPXML.CaptionRole?
-    
+
     /// Returns `true` if the ``caption`` role is a default role.
     public var isCaptionDefault: Bool
 }
@@ -64,19 +64,19 @@ extension MarkerRoles {
             self.video = video
         }
         self.isVideoDefault = isVideoDefault
-        
+
         if collapseSubroles {
             self.audio = audio?.map { $0.collapsingSubRole() }
         } else {
             self.audio = audio
         }
         self.isAudioDefault = isAudioDefault
-        
+
         // caption sub-roles can't be collapsed because they only have a main role
         self.caption = caption
         self.isCaptionDefault = isCaptionDefault
     }
-    
+
     @_disfavoredOverload
     public init(
         video rawVideoRole: String? = nil,
@@ -91,19 +91,19 @@ extension MarkerRoles {
         if let rawVideoRole {
             videoRole = FCPXML.VideoRole(rawValue: rawVideoRole)
         }
-        
+
         var audioRoles: [FCPXML.AudioRole]? = nil
         if let rawAudioRoles {
             audioRoles = rawAudioRoles.compactMap {
                 FCPXML.AudioRole(rawValue: $0)
             }
         }
-        
+
         var captionRole: FCPXML.CaptionRole? = nil
         if let rawCaptionRole {
             captionRole = FCPXML.CaptionRole(rawValue: rawCaptionRole)
         }
-        
+
         self.init(
             video: videoRole,
             isVideoDefault: isVideoDefault,
@@ -123,27 +123,27 @@ extension MarkerRoles {
     public var isVideoEmpty: Bool {
         video == nil || video?.rawValue.isEmpty == true
     }
-    
+
     /// Has a defined (non-default) video role.
     public var isVideoDefined: Bool {
         !isVideoEmpty && !isVideoDefault
     }
-    
+
     /// Has a non-empty audio role.
     public var isAudioEmpty: Bool {
-        audio == nil || (audio?.allSatisfy { $0.rawValue.isEmpty } == true)
+        audio == nil || (audio?.allSatisfy(\.rawValue.isEmpty) == true)
     }
-    
+
     /// Has a defined (non-default) audio role.
     public var isAudioDefined: Bool {
         !isAudioEmpty && !isAudioDefault
     }
-    
+
     /// Has a non-empty caption role.
     public var isCaptionEmpty: Bool {
         caption == nil || caption?.rawValue.isEmpty == true
     }
-    
+
     /// Has a defined (non-default) caption role.
     public var isCaptionDefined: Bool {
         !isCaptionEmpty && !isCaptionDefault
@@ -154,7 +154,7 @@ extension MarkerRoles {
 
 extension MarkerRoles {
     static let notAssignedRoleString = "Not Assigned"
-    
+
     /// Video role formatted for user display.
     public func videoFormatted() -> String {
         if let video, !video.rawValue.isEmpty {
@@ -162,7 +162,7 @@ extension MarkerRoles {
         }
         return Self.notAssignedRoleString
     }
-    
+
     /// Audio role formatted for user display.
     ///
     /// Returns a flat joined string as well as an array of the same roles.
@@ -173,17 +173,17 @@ extension MarkerRoles {
         var audioRoles: [String] = audio?
             .filter { !$0.rawValue.trimmed.isEmpty }
             .map(\.rawValue) ?? []
-        
+
         if audioRoles.isEmpty {
             audioRoles = [Self.notAssignedRoleString]
         }
-        
+
         let flat = audioRoles
             .joined(separator: multipleRoleSeparator)
-        
+
         return (flat: flat, array: audioRoles)
     }
-    
+
     /// Caption role formatted for user display.
     public func captionFormatted() -> String {
         if let caption, !caption.rawValue.isEmpty {
@@ -202,20 +202,20 @@ extension MarkerRoles {
             $0.rawValue.trimmed.isEmpty
         })
         if audio?.isEmpty == true { audio = nil }
-        
+
         if video?.rawValue.trimmed.isEmpty == true {
             video = nil
         }
-        
+
         if caption?.rawValue.trimmed.isEmpty == true {
             caption = nil
         }
     }
-    
+
     /// Process markers, performing post-extraction formatting.
     public mutating func process() {
         removeEmptyStrings()
-        
+
         if var audioRoles = audio {
             for index in audioRoles.indices {
                 audioRoles[index] = FCPXMLMarkerExtractor
@@ -223,12 +223,12 @@ extension MarkerRoles {
             }
             audio = audioRoles
         }
-        
+
         if let videoRole = video {
             video = FCPXMLMarkerExtractor
                 .processExtractedRole(role: videoRole)
         }
-        
+
         if let captionRole = caption {
             caption = FCPXMLMarkerExtractor
                 .processExtractedRole(role: captionRole)
@@ -247,7 +247,7 @@ extension MarkerRoles {
         audio = audio?.map { $0.collapsingSubRole() }
         // caption roles can't be collapsed
     }
-    
+
     /// Strip off subrole if subrole is redundantly generated by FCP.
     /// ie: A role of "Role.Role-1" would return "Role".
     /// Only applies to audio and video roles. Has no effect on caption roles.
@@ -265,14 +265,14 @@ extension MarkerRoles {
         if audio?.contains(where: { $0.rawValue == roleName }) == true {
             return true
         }
-        
+
         if video?.rawValue == roleName { return true }
-        
+
         if caption?.rawValue == roleName { return true }
-        
+
         return false
     }
-    
+
     public func contains(roleWithAnyNameIn roleNames: some Sequence<String>) -> Bool {
         for roleName in roleNames {
             if contains(roleNamed: roleName) { return true }

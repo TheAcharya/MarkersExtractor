@@ -152,7 +152,7 @@ extension MarkersExtractor {
             )
         }
     }
-    
+
     private func export<P: ExportProfile>(
         for format: P.Type,
         media: ExportMedia?,

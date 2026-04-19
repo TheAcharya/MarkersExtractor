@@ -11,11 +11,11 @@ import Logging
 
 struct ImageLabeler {
     let properties: MarkerLabelProperties
-    
+
     private let logger: Logger
-    
+
     private var fontSizeCache: [[String]: CGFloat] = [:]
-    
+
     init(labelProperties: MarkerLabelProperties, logger: Logger? = nil) {
         self.logger = logger ?? Logger(label: "\(ImageLabeler.self)")
         properties = labelProperties
@@ -30,22 +30,22 @@ extension ImageLabeler {
             logger.warning("Failed to initialize new image context. Bypassing original image.")
             return image
         }
-        
+
         let textRect = initTextRect(for: image)
-        
+
         // Draw original image on background
         context.draw(
             image,
             in: CGRect(x: 0, y: 0, width: image.width, height: image.height)
         )
-        
+
         drawText(text: text, context: context, textRect: textRect)
-        
+
         guard let newImage = context.makeImage() else {
             logger.warning("Failed to create labeled image. Bypassing original image.")
             return image
         }
-        
+
         return newImage
     }
 }
@@ -182,7 +182,7 @@ extension ImageLabeler {
         context: CGContext
     ) {
         let noStrokeStringAttributes = stringAttributes.merging([.strokeWidth: 0]) {
-            (_, new) in
+            _, new in
             new
         }
 

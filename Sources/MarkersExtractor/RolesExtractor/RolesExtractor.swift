@@ -16,7 +16,7 @@ import SwiftExtensions
 /// Results will be sorted by type (video, audio, caption), then by name.
 public actor RolesExtractor {
     public private(set) var fcpxml: FCPXMLFile
-    
+
     public init(fcpxml: FCPXMLFile) {
         self.fcpxml = fcpxml
     }
@@ -36,17 +36,17 @@ extension RolesExtractor {
     public func extract() async throws -> [FCPXML.AnyRole] {
         let dawFile = try fcpxml.dawFile()
         guard let timeline = dawFile.allTimelines().first else { return [] }
-        
+
         let timelineRoles = await timeline.extract(
             preset: .roles(roleTypes: .allCases),
             scope: .mainTimeline
         )
-        
+
         let sorted = timelineRoles
             .map {
                 FCPXMLMarkerExtractor.processExtractedRole(role: $0)
             }
-        
+
         return sorted
     }
 }

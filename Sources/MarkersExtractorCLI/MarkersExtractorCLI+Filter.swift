@@ -19,7 +19,7 @@ extension MarkersExtractorCLI {
             )
         )
         var markersSource: MarkersSource = MarkersExtractor.Settings.Defaults.markersSource
-        
+
         @Option(
             name: [.customLong("exclude-role")],
             help: ArgumentHelp(
@@ -28,7 +28,7 @@ extension MarkersExtractorCLI {
             )
         )
         var excludeRoles: [String] = []
-        
+
         @Flag(
             name: [.customLong("include-disabled")],
             help: ArgumentHelp(

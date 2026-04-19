@@ -8,7 +8,7 @@ extension StillImageBatchExtractor {
     actor BatchResult: Sendable {
         var errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []
         var isBatchFinished = false
-        
+
         init(errors: [(descriptor: ImageDescriptor, error: StillImageBatchExtractorError)] = []) {
             self.errors = errors
         }
@@ -24,7 +24,7 @@ extension StillImageBatchExtractor.BatchResult {
     ) {
         errors.append((descriptor: descriptor, error: error))
     }
-    
+
     func setFinished() {
         isBatchFinished = true
     }

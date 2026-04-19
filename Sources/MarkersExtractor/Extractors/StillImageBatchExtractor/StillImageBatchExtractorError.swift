@@ -14,7 +14,7 @@ public enum StillImageBatchExtractorError: LocalizedError {
     case generateFrameFailed(Swift.Error)
     case addFrameFailed(Swift.Error)
     case writeFailed(Swift.Error)
-    
+
     public var errorDescription: String? {
         switch self {
         case let .internalInconsistency(verboseError):

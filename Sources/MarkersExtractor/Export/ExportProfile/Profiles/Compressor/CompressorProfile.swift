@@ -15,10 +15,10 @@ public final class CompressorProfile: ExportProfile {
     public static let profile: ExportProfileFormat = .compressor
     public static let isMediaCapable: Bool = false
     public let logger: Logger?
-    
+
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress
-    
+
     public required init(logger: Logger? = nil) {
         self.logger = logger
         progress = Self.defaultProgress

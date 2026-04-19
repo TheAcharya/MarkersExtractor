@@ -10,13 +10,13 @@ import Foundation
 /// `ExportIcon` prototype that can be used when a profile does not use marker icons.
 public struct EmptyExportIcon: ExportIcon {
     public var resource: EmbeddedResource = .empty_png // ignore
-    
+
     public var fileName: String = ""
-    
+
     public let data: Data = .init()
-    
+
     public init(_ configuration: FCPXML.Marker.Configuration) { }
-    
+
     public init(_ type: InterpretedMarkerType) { }
 }
 

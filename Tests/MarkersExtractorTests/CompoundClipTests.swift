@@ -21,17 +21,17 @@ import TestingExtensions
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .timelineNameAndTimecode
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // verify marker contents
-        
+
         let markers = try await extractor.extractMarkers().markers
-        
+
         #expect(markers.count == 1)
-        
+
         let fr: TimecodeFrameRate = .fps25
-        
+
         // just test basic marker info to identify the marker
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.name == "Marker On Compound Clip in Main Timeline")

@@ -14,10 +14,10 @@ public final class NotionExportProfile: ExportProfile {
     public static let profile: ExportProfileFormat = .notion
     public static let isMediaCapable: Bool = true
     public let logger: Logger?
-    
+
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     public let progress: Progress
-    
+
     public required init(logger: Logger? = nil) {
         self.logger = logger
         progress = Self.defaultProgress

@@ -37,7 +37,7 @@ extension InterpretedMarkerType {
             "Caption"
         }
     }
-    
+
     public var fullName: String {
         switch self {
         case let .marker(configuration):

@@ -8,7 +8,7 @@ import Foundation
 
 public struct TextExportPayload: ExportPayload {
     let txtPath: URL
-        
+
     init(timelineName: String, outputURL: URL) {
         let txtName = "\(timelineName).txt"
         txtPath = outputURL.appendingPathComponent(txtName)

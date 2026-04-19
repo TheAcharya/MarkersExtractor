@@ -16,11 +16,11 @@ extension Marker {
         var clipInTime: Timecode
         var clipOutTime: Timecode
         var clipKeywords: [String]
-        
+
         var libraryName: String?
         var eventName: String?
         var projectName: String?
-        
+
         // will be same as project name when project is present, otherwise timeline clip name
         var timelineName: String
         // project start, or clip start if no project
@@ -40,16 +40,16 @@ extension Marker.ParentInfo {
     func clipInTimeString(format: ExportMarkerTimeFormat) -> String {
         Self.timeString(from: clipInTime, format: format)
     }
-    
+
     func clipOutTimeString(format: ExportMarkerTimeFormat) -> String {
         Self.timeString(from: clipOutTime, format: format)
     }
-    
+
     func clipDurationTimeString(format: ExportMarkerTimeFormat) -> String {
         let dur = clipOutTime - clipInTime
         return Self.timeString(from: dur, format: format)
     }
-    
+
     static func timeString(
         from timecode: Timecode,
         format: ExportMarkerTimeFormat
@@ -66,11 +66,11 @@ extension Marker.ParentInfo {
                 .srtEncodedString()
         }
     }
-    
+
     func clipKeywordsFlat() -> String {
         clipKeywords.joined(separator: ",")
     }
-    
+
     func clipKeywordsFormatted() -> (flat: String, array: [String]) {
         (flat: clipKeywordsFlat(), array: clipKeywords)
     }

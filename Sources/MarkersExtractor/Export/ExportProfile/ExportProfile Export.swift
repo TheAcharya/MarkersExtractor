@@ -24,20 +24,20 @@ extension ExportProfile {
         parentProgress: ParentProgress? = nil
     ) async throws -> ExportResult {
         var logger = logger ?? Logger(label: "\(Self.self)")
-        
+
         // export profile ProgressReporting
         progress.completedUnitCount = 0
         progress.totalUnitCount = Self.defaultProgressTotalUnitCount
-        
+
         // attach local progress to parent
         parentProgress?.addChild(progress)
-        
+
         // gather media info
-        
+
         let (isVideoPresent, isSingleFrame, mediaInfo) = gatherMediaInfo(media: media)
-        
+
         // prepare markers
-        
+
         let preparedMarkers = prepareMarkers(
             markers: markers,
             idMode: idMode,
@@ -46,17 +46,17 @@ extension ExportProfile {
             payload: payload,
             mediaInfo: mediaInfo
         )
-        
+
         // icons
-        
+
         logger.info("Exporting marker icons...")
-        
+
         try writeIcons(from: markers, to: outputURL)
-        
+
         progress.completedUnitCount += 5
-        
+
         // thumbnail images
-        
+
         let thumbnailsProgressUnitCount: Int64 = 90
         if Self.isMediaCapable, let media {
             try await exportThumbnails(
@@ -75,22 +75,22 @@ extension ExportProfile {
         } else {
             progress.completedUnitCount += thumbnailsProgressUnitCount
         }
-        
+
         // metadata manifest file(s)
-        
+
         try await writeManifests(preparedMarkers, payload: payload, noMedia: media == nil)
-        
+
         // result file
         let exportResult = try generateResult(date: Date(), payload: payload, outputURL: outputURL)
-        
+
         if let resultFilePath {
             logger.info("Creating result file \(resultFilePath.path.quoted).")
             let data = try exportResult.jsonData()
             try writeResultFile(to: resultFilePath, data: data)
         }
-        
+
         progress.completedUnitCount += 5
-        
+
         return exportResult
     }
 }
@@ -111,10 +111,10 @@ extension ExportProfile {
     ) async throws {
         var videoURL: URL = media.videoURL
         let videoPlaceholder: TemporaryMediaFile
-        
+
         if !isVideoPresent {
             logger.info("Media file has no video track, using video placeholder for markers.")
-            
+
             if let markerVideoPlaceholderData = EmbeddedResource.marker_video_placeholder_mov.data {
                 videoPlaceholder = try TemporaryMediaFile(withData: markerVideoPlaceholderData)
                 videoURL = videoPlaceholder.url
@@ -122,11 +122,11 @@ extension ExportProfile {
                 logger.warning("Could not locate or read video placeholder file.")
             }
         }
-        
+
         logger.info(
             "Generating \(media.imageSettings.format.name) images for markers..."
         )
-        
+
         let imageDescriptors = try makeImageDescriptors(
             markers: markers,
             preparedMarkers: preparedMarkers,
@@ -136,7 +136,7 @@ extension ExportProfile {
             isVideoPresent: isVideoPresent,
             isSingleFrame: isSingleFrame
         )
-        
+
         let writer: ImageWriterProtocol = switch media.imageSettings.format {
         case let .still(stillImageFormat):
             ImagesWriter(
@@ -160,13 +160,13 @@ extension ExportProfile {
                 imageLabelProperties: media.imageSettings.labelProperties
             )
         }
-        
+
         // attach local progress to parent
         parentProgress?.addChild(writer.progress)
-        
+
         try await writer.write()
     }
-    
+
     /// - Returns: An array of marker image descriptors.
     private func makeImageDescriptors(
         markers: [Marker],
@@ -185,9 +185,9 @@ extension ExportProfile {
                 )
             )
         }
-        
-        let imageFileNames = preparedMarkers.map { $0.imageFileName }
-        
+
+        let imageFileNames = preparedMarkers.map(\.imageFileName)
+
         // if no video - grabbing first frame from video placeholder using zero timecode
         let offsets: [Timecode] = zip(markers, preparedMarkers)
             .map { marker, preparedMarker in
@@ -204,14 +204,14 @@ extension ExportProfile {
                     )
                 }
             }
-        
+
         let labels = makeImageLabelText(
             preparedMarkers: preparedMarkers,
             imageLabelFields: imageLabelFields,
             imageLabelCopyright: imageLabelCopyright,
             includeHeaders: imageLabelIncludeHeaders
         )
-        
+
         guard [
             markers.count,
             preparedMarkers.count,
@@ -219,7 +219,7 @@ extension ExportProfile {
             offsets.count,
             labels.count
         ]
-            .allElementsAreEqual
+        .allElementsAreEqual
         else {
             throw MarkersExtractorError.extraction(
                 .internalInconsistency(
@@ -227,7 +227,7 @@ extension ExportProfile {
                 )
             )
         }
-        
+
         // stitch everything together
         var descriptors = (0 ..< markers.count)
             .map { index in
@@ -238,15 +238,15 @@ extension ExportProfile {
                     label: labels[position: index]
                 )
             }
-        
+
         // if no video and no labels - only one frame needed for all markers
         if isSingleFrame, let firstDescriptor = descriptors.first {
             descriptors = [firstDescriptor]
         }
-        
+
         return descriptors
     }
-    
+
     /// - Returns: String array, each element corresponding to a marker.
     private func makeImageLabelText(
         preparedMarkers: [PreparedMarker],
@@ -259,7 +259,7 @@ extension ExportProfile {
             includeHeaders: includeHeaders,
             preparedMarkers: preparedMarkers
         )
-        
+
         // add copyright
         if let imageLabelCopyright {
             if imageLabels.isEmpty {
@@ -268,10 +268,10 @@ extension ExportProfile {
                 imageLabels = imageLabels.map { "\($0)\n\(imageLabelCopyright)" }
             }
         }
-        
+
         return imageLabels
     }
-    
+
     /// - Returns: String array, each element corresponding to a marker.
     private func makeLabels(
         headers: [ExportField],
@@ -281,15 +281,15 @@ extension ExportProfile {
         let markersFields: [OrderedDictionary<ExportField, String>] = preparedMarkers
             .map {
                 var fields = tableManifestFields(for: $0, noMedia: false)
-                
+
                 // truncate Clip Keywords field, which can sometimes be extremely long
                 if let kw = fields[.clipKeywords] {
                     fields[.clipKeywords] = String(kw.prefix(100))
                 }
-                
+
                 return fields
             }
-        
+
         let markersLabels: [String] = markersFields
             .map { markerDict in
                 headers
@@ -299,7 +299,7 @@ extension ExportProfile {
                     }
                     .joined(separator: "\n")
             }
-        
+
         return markersLabels
     }
 }
@@ -313,7 +313,7 @@ extension ExportProfile {
         guard let media else {
             return (isVideoPresent: false, isSingleFrame: true, mediaInfo: nil)
         }
-        
+
         let isVideoPresent = isVideoPresent(in: media.videoURL)
         let isSingleFrame = !isVideoPresent
             && media.imageSettings.labelFields.isEmpty
@@ -322,13 +322,13 @@ extension ExportProfile {
             imageFormat: media.imageSettings.format,
             isSingleFrame: isSingleFrame
         )
-        
+
         return (isVideoPresent: isVideoPresent, isSingleFrame: isSingleFrame, mediaInfo: mediaInfo)
     }
-    
+
     private func writeIcons(from markers: [Marker], to outputDir: URL) throws {
         let icons = Set(markers.map { Icon($0.type) })
-        
+
         for icon in icons {
             if icon is EmptyExportIcon { continue }
             let targetURL = outputDir.appendingPathComponent(icon.fileName)
@@ -339,7 +339,7 @@ extension ExportProfile {
             }
         }
     }
-    
+
     private func generateResult(
         date: Date,
         payload: Payload,
@@ -351,14 +351,14 @@ extension ExportProfile {
             profile: Self.profile,
             exportFolder: outputURL
         )
-        
+
         // add profile-specific data
         let profileResult = try resultFileContent(payload: payload)
         exportResult.update(with: profileResult)
-        
+
         return exportResult
     }
-    
+
     private func writeResultFile(
         to outputURL: URL,
         data: Data
@@ -371,7 +371,7 @@ extension ExportProfile {
             ))
         }
     }
-    
+
     private func isVideoPresent(in videoPath: URL) -> Bool {
         let asset = AVAsset(url: videoPath)
         return asset.firstVideoTrack != nil

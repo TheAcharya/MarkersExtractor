@@ -15,20 +15,20 @@ extension CGSize {
     init(square: Double) {
         self.init(width: square, height: square)
     }
-    
+
     var longestSide: Double {
         max(width, height)
     }
-    
+
     /// Formatted string. Example: "640×480"
     var formatted: String {
         "\(Double(width).formatted)×\(Double(height).formatted)"
     }
-    
+
     static func * (lhs: Self, rhs: Double) -> Self {
         .init(width: lhs.width * rhs, height: lhs.height * rhs)
     }
-    
+
     var cgRect: CGRect {
         .init(origin: .zero, size: self)
     }
@@ -41,14 +41,14 @@ extension NSColor {
         let r: UInt64
         let g: UInt64
         let b: UInt64
-        
+
         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         Scanner(string: hex).scanHexInt64(&int)
-        
+
         switch hex.count {
-        case 3:  // RGB (12-bit)
+        case 3: // RGB (12-bit)
             (r, g, b) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:  // RGB (24-bit)
+        case 6: // RGB (24-bit)
             (r, g, b) = (int >> 16, int >> 8 & 0xFF, int & 0xFF)
         default:
             (r, g, b) = (0, 0, 0)
@@ -94,7 +94,7 @@ extension NSImage {
 extension CGImage {
     static let empty = NSImage(size: CGSize(square: 1), flipped: false) { _ in true }
         .cgImage(forProposedRect: nil, context: nil, hints: nil)
-    
+
     var nsImage: NSImage {
         NSImage(cgImage: self)
     }
@@ -125,16 +125,16 @@ extension CGImage {
     enum PixelFormat: Equatable, Hashable, CaseIterable, Sendable {
         /// Big-endian, alpha first.
         case argb
-        
+
         /// Big-endian, alpha last.
         case rgba
-        
+
         /// Little-endian, alpha first.
         case bgra
-        
+
         /// Little-endian, alpha last.
         case abgr
-        
+
         var title: String {
             switch self {
             case .argb:
@@ -163,34 +163,34 @@ extension CGBitmapInfo {
             insert(.init(rawValue: newValue.rawValue))
         }
     }
-    
+
     /// The pixel format of the image.
     ///
     /// Returns `nil` if the pixel format is not supported, for example, non-alpha.
     var pixelFormat: CGImage.PixelFormat? {
         // While the host byte order is little-endian, by default, `CGImage` is stored in big-endian
         // format on Intel Macs and little-endian on Apple silicon Macs.
-        
+
         let alphaInfo = alphaInfo
         let isLittleEndian = contains(.byteOrder32Little)
-        
+
         guard alphaInfo != .none else {
             // TODO: Support non-alpha formats.
             // return isLittleEndian ? .bgr : .rgb
             return nil
         }
-        
+
         let isAlphaFirst = alphaInfo == .premultipliedFirst
             || alphaInfo == .first
             || alphaInfo == .noneSkipFirst
-        
+
         if isLittleEndian {
             return isAlphaFirst ? .bgra : .abgr
         } else {
             return isAlphaFirst ? .argb : .rgba
         }
     }
-    
+
     /// Whether the alpha channel is pre-multipled.
     var isPremultipliedAlpha: Bool {
         let alphaInfo = alphaInfo
@@ -204,7 +204,7 @@ extension CGColorSpace {
         guard let name else {
             return "Unknown"
         }
-        
+
         return (name as String).replacingOccurrences(
             of: #"^kCGColorSpace"#,
             with: "",

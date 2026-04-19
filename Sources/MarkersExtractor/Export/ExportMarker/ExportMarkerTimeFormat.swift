@@ -11,10 +11,10 @@ import SwiftTimecodeCore
 public enum ExportMarkerTimeFormat {
     /// Timecode.
     case timecode(stringFormat: Timecode.StringFormat)
-    
+
     /// Real (wall) time.
     case realTime(stringFormat: Time.Format)
-    
+
     /// SRT (SubRip) encoded.
     case srt
 }

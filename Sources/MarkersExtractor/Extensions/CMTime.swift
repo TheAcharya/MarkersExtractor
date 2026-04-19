@@ -17,7 +17,7 @@ extension CMTimeRange {
         else {
             return nil
         }
-        
+
         return start.seconds ... end.seconds
     }
 }

@@ -32,15 +32,15 @@ extension Comparable {
     package func clamped(from lowerBound: Self, to upperBound: Self) -> Self {
         min(max(self, lowerBound), upperBound)
     }
-    
+
     package func clamped(to range: ClosedRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound)
     }
-    
+
     package func clamped(to range: PartialRangeThrough<Self>) -> Self {
         min(self, range.upperBound)
     }
-    
+
     package func clamped(to range: PartialRangeFrom<Self>) -> Self {
         max(self, range.lowerBound)
     }
@@ -50,11 +50,11 @@ extension Strideable where Stride: SignedInteger {
     package func clamped(to range: CountableRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound.advanced(by: -1))
     }
-    
+
     package func clamped(to range: CountableClosedRange<Self>) -> Self {
         clamped(from: range.lowerBound, to: range.upperBound)
     }
-    
+
     package func clamped(to range: PartialRangeUpTo<Self>) -> Self {
         min(self, range.upperBound.advanced(by: -1))
     }
@@ -76,11 +76,11 @@ extension Sequence {
     /// ```
     package func sum<T: AdditiveArithmetic>(_ numerator: (Element) throws -> T) rethrows -> T {
         var result = T.zero
-        
+
         for element in self {
             result += try numerator(element)
         }
-        
+
         return result
     }
 }
@@ -104,7 +104,7 @@ extension FileManager {
         )
         return fileExists && fileIsDirectory.boolValue
     }
-    
+
     package func mkdirWithParent(_ path: String, reuseExisting: Bool = false) throws {
         if FileManager.default.fileExists(atPath: path) {
             if reuseExisting, fileIsDirectory(path) {
@@ -115,7 +115,7 @@ extension FileManager {
                 ))
             }
         }
-        
+
         do {
             try FileManager.default.createDirectory(
                 atPath: path,
@@ -130,28 +130,28 @@ extension FileManager {
             )
         }
     }
-    
+
     /// Returns input if the proposed path does not exist.
     /// Uniques the file or folder name if it already exists by incrementing a trailing integer.
     /// ie: "File.png", "File (1).png", "File (2).png", etc.
     package func uniqueFileURL(proposedPath url: URL) -> URL {
         var url = url
         var counter = 1
-        
+
         let parentFolder = url.deletingLastPathComponent()
         let filenameWithoutExtension = url.deletingPathExtension().lastPathComponent
         let fileExtension = url.fileExtension
-        
+
         while fileExists(atPath: url.path) {
             counter += 1
-            
+
             let newFileName = "\(filenameWithoutExtension) (\(counter))"
             url = parentFolder.appendingPathComponent(newFileName)
             if let fileExtension {
                 url.appendPathExtension("\(fileExtension)")
             }
         }
-        
+
         return url
     }
 }
@@ -174,27 +174,27 @@ extension URL {
             }
         }
     }
-    
+
     /// File size in bytes.
     package var fileSize: Int {
         resourceValue(forKey: .fileSizeKey) ?? 0
     }
-    
+
     // MARK: Helpers
-    
+
     private func resourceValue<T>(forKey key: URLResourceKey) -> T? {
         guard let values = try? resourceValues(forKeys: [key]) else {
             return nil
         }
-        
+
         return values.allValues[key] as? T
     }
-    
+
     private func boolResourceValue(forKey key: URLResourceKey, defaultValue: Bool = false) -> Bool {
         guard let values = try? resourceValues(forKeys: [key]) else {
             return defaultValue
         }
-        
+
         return values.allValues[key] as? Bool ?? defaultValue
     }
 }
@@ -234,15 +234,15 @@ extension URL {
     //    ) else { return nil }
     //    self = url
     // }
-    
+
     package var exists: Bool {
         FileManager.default.fileExists(atPath: path)
     }
-    
+
     package var isReadable: Bool {
         boolResourceValue(forKey: .isReadableKey)
     }
-    
+
     package var isWritable: Bool {
         boolResourceValue(forKey: .isWritableKey)
     }
@@ -263,7 +263,7 @@ extension StringProtocol {
                 pattern: pattern,
                 options: options
             )
-            
+
             func runRegEx(in source: String) -> [NSTextCheckingResult] {
                 regex.matches(
                     in: source,
@@ -271,28 +271,28 @@ extension StringProtocol {
                     range: NSMakeRange(0, nsString.length)
                 )
             }
-            
+
             let nsString: NSString
             let results: [NSTextCheckingResult]
-            
+
             switch self {
             case let _self as String:
                 nsString = _self as NSString
                 results = runRegEx(in: _self)
-                
+
             default:
                 let stringSelf = String(self)
                 nsString = stringSelf as NSString
                 results = runRegEx(in: stringSelf)
             }
-            
+
             return results.map { nsString.substring(with: $0.range) }
-            
+
         } catch {
             return []
         }
     }
-    
+
     /// Returns a string from a tokenized string of RegEx matches
     /// (Borrowed from SwiftExtensions 1.4.10, under MIT license)
     package func regexMatches(
@@ -307,7 +307,7 @@ extension StringProtocol {
                 pattern: pattern,
                 options: options
             )
-            
+
             func runRegEx(in source: String) -> String {
                 regex.stringByReplacingMatches(
                     in: source,
@@ -316,25 +316,25 @@ extension StringProtocol {
                     withTemplate: replacementTemplate
                 )
             }
-            
+
             let result: String
-            
+
             switch self {
             case let _self as String:
                 result = runRegEx(in: _self)
-                
+
             default:
                 let stringSelf = String(self)
                 result = runRegEx(in: stringSelf)
             }
-            
+
             return result
-            
+
         } catch {
             return nil
         }
     }
-    
+
     /// Returns capture groups from regex matches.
     /// If any capture group is not matched it will be `nil`.
     /// (Borrowed from SwiftExtensions 1.4.10, under MIT license)
@@ -348,24 +348,24 @@ extension StringProtocol {
                 pattern: captureGroupsFromPattern,
                 options: options
             )
-            
+
             let result: [String?]
-            
+
             func runRegEx(in source: String) -> [String?] {
                 let results = regex.matches(
                     in: source,
                     options: matchesOptions,
                     range: NSMakeRange(0, source.count)
                 )
-                
+
                 let nsString = source as NSString
-                
+
                 var matches: [String?] = []
-                
+
                 for result in results {
                     for i in 0 ..< result.numberOfRanges {
                         let range = result.range(at: i)
-                        
+
                         if range.location == NSNotFound {
                             matches.append(nil)
                         } else {
@@ -373,21 +373,21 @@ extension StringProtocol {
                         }
                     }
                 }
-                
+
                 return matches
             }
-            
+
             switch self {
             case let _self as String:
                 result = runRegEx(in: _self)
-                
+
             default:
                 let stringSelf = String(self)
                 result = runRegEx(in: stringSelf)
             }
-            
+
             return result
-            
+
         } catch {
             return []
         }

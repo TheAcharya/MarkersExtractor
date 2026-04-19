@@ -29,7 +29,7 @@ extension SubRipProfile {
             )
         }
     }
-    
+
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -43,16 +43,16 @@ extension SubRipProfile {
             )
         }
         let srtFile = SRTFile(subtitles: subtitles)
-        
+
         let srtData = try srtFile.rawData()
-        
+
         try srtData.write(to: payload.srtPath)
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [.srtManifestPath: .url(payload.srtPath)]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool

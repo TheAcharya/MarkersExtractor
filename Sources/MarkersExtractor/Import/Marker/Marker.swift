@@ -16,29 +16,29 @@ import SwiftTimecodeCore
 public struct Marker {
     /// Marker type.
     var type: InterpretedMarkerType
-    
+
     /// Marker name.
     var name: String
-    
+
     /// Notes attached to the marker, if any.
     var notes: String
-    
+
     /// Marker roles.
     var roles: MarkerRoles
-    
+
     /// Absolute marker timecode position/location.
     var position: Timecode
-    
+
     // TODO: This shouldn't really be stored here; factor it out to reference its parent with computed properties.
     /// Cached parent information.
     var parentInfo: ParentInfo
-    
+
     /// Cached metadata.
     var metadata: Metadata
-    
+
     /// Used only when uniquing marker IDs to avoid duplicate IDs.
     var idSuffix: String?
-    
+
     /// XML XPath for back-reference allowing editing of the FCPXML directly.
     var xmlPath: String
 }
@@ -75,7 +75,7 @@ extension Marker {
         }
         return baseID + (idSuffix ?? "")
     }
-    
+
     func id(pathSafe idMode: MarkerIDMode, tcStringFormat: Timecode.StringFormat) -> String {
         switch idMode {
         case .timelineNameAndTimecode:
@@ -90,23 +90,23 @@ extension Marker {
                 .sanitizingPathComponent(for: nil, replacement: "-")
         }
     }
-    
+
     func frameRate() -> TimecodeFrameRate {
         position.frameRate
     }
-    
+
     func subFramesBase() -> Timecode.SubFramesBase {
         position.subFramesBase
     }
-    
+
     func upperLimit() -> Timecode.UpperLimit {
         position.upperLimit
     }
-    
+
     func positionOffsetFromTimelineStart() -> Timecode {
         position - parentInfo.timelineStartTime
     }
-    
+
     func isChecked() -> Bool {
         switch type {
         case let .marker(.toDo(completed)):
@@ -115,7 +115,7 @@ extension Marker {
             false
         }
     }
-    
+
     /// - Parameters:
     ///   - format: Time display format.
     ///   - offsetToTimelineStart: If true, time will be offset by timeline start time such that the
@@ -125,7 +125,7 @@ extension Marker {
         offsetToTimelineStart: Bool = false
     ) -> String {
         let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
-        
+
         switch format {
         case let .timecode(stringFormat):
             return rectifiedPosition.stringValue(format: stringFormat)
@@ -136,13 +136,13 @@ extension Marker {
             return Time(seconds: rectifiedPosition.realTimeValue).srtEncodedString()
         }
     }
-    
+
     func positionTimecode(offsetToTimelineStart: Bool = false) -> Timecode {
         offsetToTimelineStart
             ? position - parentInfo.timelineStartTime
             : position
     }
-    
+
     /// The timecode to use for thumbnail image extraction.
     /// This is usually the same as marker position, except for certain cases such as a chapter
     /// marker which may incorporate its poster offset.
@@ -156,7 +156,7 @@ extension Marker {
         offsetToTimelineStart: Bool = false
     ) -> Timecode {
         let rectifiedPosition = positionTimecode(offsetToTimelineStart: offsetToTimelineStart)
-        
+
         switch type {
         case let .marker(.chapter(posterOffset)):
             if useChapterMarkerPosterOffset {

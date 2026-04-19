@@ -21,10 +21,10 @@ final actor AnimatedImagesWriter: ImageWriterProtocol {
     let imageFormat: MarkerImageFormat.Animated
     let imageLabelProperties: MarkerLabelProperties
     let logger: Logger
-    
+
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress = Progress()
-    
+
     init(
         descriptors: [ImageDescriptor],
         sourceMediaFile: URL,
@@ -55,7 +55,7 @@ extension AnimatedImagesWriter {
     func write() async throws {
         progress.completedUnitCount = 0
         progress.totalUnitCount = Int64(descriptors.count)
-        
+
         try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [self] in
@@ -63,10 +63,10 @@ extension AnimatedImagesWriter {
                     progress.completedUnitCount += 1
                 }
             }
-            
+
             try await taskGroup.waitForAll()
         }
-        
+
         // TODO: NSProgress is wonky, sometimes it's not fully 1.0 so asserting here isn't helpful
         // assert(progress.fractionCompleted == 1.0)
     }
@@ -77,14 +77,14 @@ extension AnimatedImagesWriter {
 extension AnimatedImagesWriter {
     private func write(descriptor: ImageDescriptor) async throws {
         let outputFile = outputFolder.appendingPathComponent(descriptor.filename)
-        
+
         var delta = descriptor.offsetFromVideoStart
         delta.set(.realTime(seconds: gifSpan / 2), by: .clamping)
-        
+
         let timeIn = try descriptor.offsetFromVideoStart.subtracting(delta, by: .clamping)
         let timeOut = try descriptor.offsetFromVideoStart.adding(delta, by: .clamping)
         let timeRange = timeIn ... timeOut
-        
+
         let conversion = AnimatedImageExtractor.ConversionSettings(
             timecodeRange: timeRange,
             sourceMediaFile: sourceMediaFile,
@@ -104,11 +104,11 @@ extension AnimatedImagesWriter {
             },
             imageFormat: imageFormat
         )
-        
+
         do {
             let extractor = try await AnimatedImageExtractor(conversion, logger: logger)
             let result = try await extractor.convert()
-            
+
             // post errors to console if operation partially completed
             for error in await result.errors {
                 let tc = descriptor.absoluteTimecode.stringValue()

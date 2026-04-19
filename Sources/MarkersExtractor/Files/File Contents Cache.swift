@@ -11,7 +11,7 @@ extension File.Contents {
     enum Cache {
         /// Pre-fetched file contents as `Data`.
         case data(Data)
-        
+
         /// Pre-fetched file contents as `String`.
         case string(String)
     }

@@ -18,9 +18,9 @@ extension ExportProfile {
         let data = try dictsToJSON(dicts)
         try data.write(to: jsonPath)
     }
-    
+
     // MARK: Helpers
-    
+
     private func jsonDicts(
         _ preparedMarkers: [PreparedMarker],
         noMedia: Bool

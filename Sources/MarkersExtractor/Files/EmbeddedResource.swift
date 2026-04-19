@@ -14,10 +14,10 @@ public enum EmbeddedResource {
     case icon_notion_marker_toDo_incomplete_png
     case icon_notion_marker_toDo_complete_png
     case icon_notion_caption_png
-    
+
     // Videos
     case marker_video_placeholder_mov
-    
+
     // NoOp (Empty) PNG - used internally
     case empty_png
     case empty_mov
@@ -37,7 +37,7 @@ extension EmbeddedResource {
     var fileName: String {
         fileNameComponents.name + "." + fileNameComponents.ext
     }
-    
+
     var fileNameComponents: (name: String, ext: String) {
         switch self {
         case .icon_notion_marker_png:
@@ -58,7 +58,7 @@ extension EmbeddedResource {
             ("empty", "mov")
         }
     }
-    
+
     var data: Data? {
         switch self {
         case .icon_notion_marker_png:
@@ -79,7 +79,7 @@ extension EmbeddedResource {
             Data()
         }
     }
-    
+
     /// Check that all module resources are locatable.
     static func validateAll() -> Bool {
         allCases.allSatisfy {
@@ -445,7 +445,7 @@ private let icon_notion_marker_data_string = [
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT",
     "ERH/H9l2eACZ05NDAAAAAElFTkSuQmCC"
 ]
-    .joined()
+.joined()
 
 private let icon_notion_marker_chapter_data = Data(base64Encoded: icon_notion_marker_chapter_string)
 private let icon_notion_marker_chapter_string = [
@@ -748,7 +748,7 @@ private let icon_notion_marker_chapter_string = [
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMBcRMT/Af9hdZ57TE3FAAAA",
     "AElFTkSuQmCC"
 ]
-    .joined()
+.joined()
 
 private let icon_notion_marker_toDo_complete_data =
     Data(base64Encoded: icon_notion_marker_toDo_complete_string)
@@ -1101,7 +1101,7 @@ private let icon_notion_marker_toDo_complete_string = [
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAiIuL/AzXKKhc2DRsXAAAA",
     "AElFTkSuQmCC"
 ]
-    .joined()
+.joined()
 
 private let icon_notion_marker_toDo_incomplete_data =
     Data(base64Encoded: icon_notion_marker_toDo_incomplete_string)
@@ -1453,7 +1453,7 @@ private let icon_notion_marker_toDo_incomplete_string = [
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA",
     "RETE/wf3s6UvljAX/QAAAABJRU5ErkJggg=="
 ]
-    .joined()
+.joined()
 
 private let marker_video_placeholder_data = Data(base64Encoded: marker_video_placeholder_string)
 private let marker_video_placeholder_string = [
@@ -2291,7 +2291,7 @@ private let marker_video_placeholder_string = [
     "M/0lGtL+UusNm6Lzhjpf6cmFdDsPTHlg9tEygecZ9CCoa2dV0r9UXZ/MojsDT3Bb",
     "Ceo1+S/ifLnKR0O0PQMX0o7AAACEUUe5e7th"
 ]
-    .joined()
+.joined()
 
 private let icon_notion_caption_data = Data(base64Encoded: icon_notion_caption_string)
 private let icon_notion_caption_string = [
@@ -2680,4 +2680,4 @@ private let icon_notion_caption_string = [
     "EAcAAAAAASEOAAAAAAJCHAAAAAAEhDgAAAAAmLYxxj8AC5QSwhSSh0UAAAAASUVO",
     "RK5CYII="
 ]
-    .joined()
+.joined()

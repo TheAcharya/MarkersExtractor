@@ -19,9 +19,9 @@ import TestingExtensions
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .timelineNameAndTimecode
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(
                 type: .marker(.standard),
@@ -49,33 +49,33 @@ import TestingExtensions
                 xmlPath: "" // not used here
             )
         }
-        
+
         let marker1 = makeMarker("marker1", position: .init(f: 1))
         let marker2 = makeMarker("marker2", position: .init(f: 2))
-        
+
         #expect(
             await extractor.findDuplicateIDs(in: []) == []
         )
-        
+
         #expect(
             await extractor.findDuplicateIDs(in: [marker1]) == []
         )
-        
+
         #expect(
             await extractor.findDuplicateIDs(in: [marker1, marker2]) == []
         )
-        
+
         #expect(
             await extractor.findDuplicateIDs(in: [marker1, marker1])
                 == [marker1.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
-        
+
         #expect(
             await extractor.findDuplicateIDs(in: [marker2, marker1, marker2])
                 == [marker2.id(settings.idNamingMode, tcStringFormat: extractor.timecodeStringFormat)]
         )
     }
-    
+
     @Test
     func isAllUniqueIDNonEmpty_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(
@@ -83,9 +83,9 @@ import TestingExtensions
             outputDir: FileManager.default.temporaryDirectory
         )
         settings.idNamingMode = .name
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         func makeMarker(_ name: String, position: Timecode.Components) -> Marker {
             Marker(
                 type: .marker(.standard),
@@ -113,22 +113,22 @@ import TestingExtensions
                 xmlPath: "" // not used here
             )
         }
-        
+
         let marker1 = makeMarker("marker1", position: .init(f: 1))
         let marker2 = makeMarker("", position: .init(f: 2))
-        
+
         #expect(
             await extractor.isAllUniqueIDNonEmpty(in: [])
         )
-        
+
         #expect(
             await extractor.isAllUniqueIDNonEmpty(in: [marker1])
         )
-        
+
         #expect(
             await !extractor.isAllUniqueIDNonEmpty(in: [marker1, marker2])
         )
-        
+
         #expect(
             await !extractor.isAllUniqueIDNonEmpty(in: [marker2])
         )

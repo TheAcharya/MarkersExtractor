@@ -25,12 +25,12 @@ extension File {
     init(_ url: URL) {
         contents = .fileOnDisk(url: url, cache: nil)
     }
-    
+
     init(fileContents: Contents.Cache) {
         contents = .rawFileContents(fileContents)
     }
 }
-    
+
 // MARK: - Static Constructors
 
 extension File {
@@ -52,7 +52,7 @@ extension File {
             true
         }
     }
-    
+
     /// Returns file path URL if instance was constructed from an URL.
     /// Always returns `nil` if instances was constructed from raw file contents.
     var url: URL? {
@@ -63,7 +63,7 @@ extension File {
             nil
         }
     }
-    
+
     /// Reads the data off disk and returns a new instance containing the cached data.
     /// If the current instance already contains cached data, the cache is returned.
     ///
@@ -88,13 +88,13 @@ extension File {
             return
         }
     }
-    
+
     /// Reads the file's contents off disk and returns it as a new `Data` instance.
     /// After the first access, the file's data is cached so subsequent calls are more performant.
     mutating func data() throws -> Data {
         // update cache if needed
         try fetch()
-        
+
         // retrieve cache
         let unwrappedCache: Contents.Cache
         switch contents {
@@ -105,16 +105,16 @@ extension File {
                 ))
             }
             unwrappedCache = cache
-            
+
         case let .rawFileContents(cache):
             unwrappedCache = cache
         }
-        
+
         // convert to Data if needed
         switch unwrappedCache {
         case let .data(data):
             return data
-            
+
         case let .string(string):
             guard let data = string.data(using: .utf8) else {
                 throw MarkersExtractorError.validation(

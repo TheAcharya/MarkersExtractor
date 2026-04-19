@@ -18,19 +18,19 @@ extension ExportProfile {
             tableManifestFields(for: $0, noMedia: noMedia)
         }
         guard !dicts.isEmpty else { return [] }
-        
+
         // header
         var result: StringTable = []
-        
+
         if includeHeader {
-            result.append(Array(dicts[0].keys.map { $0.name }))
+            result.append(Array(dicts[0].keys.map(\.name)))
         }
-        
+
         // marker rows
         result += dicts.map { row in
             Array(row.values)
         }
-        
+
         return result
     }
 }

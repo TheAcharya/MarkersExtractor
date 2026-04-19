@@ -18,7 +18,7 @@ extension MarkersExtractor {
     static func extractionScope(includeDisabled: Bool) -> FCPXML.ExtractionScope {
         var scope: FCPXML.ExtractionScope = .mainTimeline
         scope.includeDisabled = includeDisabled
-        
+
         return scope
     }
 }

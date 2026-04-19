@@ -20,10 +20,10 @@ extension MarkersExtractorCLI {
             transform: URL.init(fileURLWithPath:)
         )
         var resultFilePath: URL? = MarkersExtractor.Settings.Defaults.resultFilePath
-        
+
         @Option(help: "Log file path.", transform: URL.init(fileURLWithPath:))
         var log: URL?
-        
+
         @Option(
             help: ArgumentHelp(
                 "Log level.",
@@ -31,10 +31,10 @@ extension MarkersExtractorCLI {
             )
         )
         var logLevel: Logger.Level = .info
-        
+
         @Flag(name: [.customLong("quiet")], help: "Disable log.")
         var logQuiet = false
-        
+
         @Flag(name: [.customLong("no-progress")], help: "Disable progress logging.")
         var noProgressLogging = false
     }

@@ -9,12 +9,12 @@ import Foundation
 public struct ParentProgress {
     let progress: Progress
     let pendingUnitCount: Int64
-    
+
     init(progress: Progress, unitCount: Int64) {
         self.progress = progress
         pendingUnitCount = unitCount
     }
-    
+
     @_disfavoredOverload
     init(progress: Progress, unitCount: Int) {
         self.progress = progress

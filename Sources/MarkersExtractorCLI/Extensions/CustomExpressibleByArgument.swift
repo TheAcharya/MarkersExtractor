@@ -19,6 +19,6 @@ func caseIterableValueString<R: RawRepresentable & CaseIterable>(
     for type: R.Type
 ) -> String where R.RawValue == String {
     R.allCases
-        .map { $0.rawValue }
+        .map(\.rawValue)
         .joined(separator: " | ")
 }

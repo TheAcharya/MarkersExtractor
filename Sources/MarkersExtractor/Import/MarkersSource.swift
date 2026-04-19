@@ -45,7 +45,7 @@ extension MarkersSource {
         case .captions: false
         }
     }
-    
+
     public var includesCaptions: Bool {
         switch self {
         case .markers: false

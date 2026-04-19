@@ -20,7 +20,7 @@ extension MarkersExtractorCLI {
             )
         )
         var imageLabels: [ExportField] = []
-        
+
         @Option(
             name: [.customLong("label-copyright")],
             help: ArgumentHelp(
@@ -29,13 +29,13 @@ extension MarkersExtractorCLI {
             )
         )
         var imageLabelCopyright: String?
-        
+
         @Option(
             name: [.customLong("label-font")],
             help: ArgumentHelp("Font for image labels.", valueName: "name")
         )
         var imageLabelFont: String = MarkersExtractor.Settings.Defaults.imageLabelFont
-        
+
         @Option(
             name: [.customLong("label-font-size")],
             help: ArgumentHelp(
@@ -44,7 +44,7 @@ extension MarkersExtractorCLI {
             )
         )
         var imageLabelFontMaxSize: Int = MarkersExtractor.Settings.Defaults.imageLabelFontMaxSize
-        
+
         @Option(
             name: [.customLong("label-opacity")],
             help: ArgumentHelp(
@@ -53,26 +53,26 @@ extension MarkersExtractorCLI {
             )
         )
         var imageLabelFontOpacity: Int = MarkersExtractor.Settings.Defaults.imageLabelFontOpacity
-        
+
         @Option(
             name: [.customLong("label-font-color")],
             help: ArgumentHelp("Label font color", valueName: "#RRGGBB / #RGB")
         )
         var imageLabelFontColor: String = MarkersExtractor.Settings.Defaults.imageLabelFontColor
-        
+
         @Option(
             name: [.customLong("label-stroke-color")],
             help: ArgumentHelp("Label stroke color", valueName: "#RRGGBB / #RGB")
         )
         var imageLabelFontStrokeColor: String = MarkersExtractor.Settings.Defaults
             .imageLabelFontStrokeColor
-        
+
         @Option(
             name: [.customLong("label-stroke-width")],
             help: ArgumentHelp("Label stroke width, 0 to disable. (default: auto)", valueName: "w")
         )
         var imageLabelFontStrokeWidth: Int?
-        
+
         @Option(
             name: [.customLong("label-align-horizontal")],
             help: ArgumentHelp(
@@ -82,7 +82,7 @@ extension MarkersExtractorCLI {
         )
         var imageLabelAlignHorizontal: MarkerLabelProperties.AlignHorizontal = MarkersExtractor.Settings
             .Defaults.imageLabelAlignHorizontal
-        
+
         @Option(
             name: [.customLong("label-align-vertical")],
             help: ArgumentHelp(
@@ -92,7 +92,7 @@ extension MarkersExtractorCLI {
         )
         var imageLabelAlignVertical: MarkerLabelProperties.AlignVertical = MarkersExtractor.Settings
             .Defaults.imageLabelAlignVertical
-        
+
         @Flag(
             name: [.customLong("label-hide-names")],
             help: ArgumentHelp("Hide names of image labels.")

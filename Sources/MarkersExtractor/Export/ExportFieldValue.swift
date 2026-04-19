@@ -30,11 +30,11 @@ extension ExportFieldValue {
     public static func array(_ array: [String]) -> Self {
         .array(array.map { .string($0) })
     }
-    
+
     public static func array(_ array: [[String]]) -> Self {
         .array(array.map { .array($0) })
     }
-    
+
     public static func array(_ array: [[String: String]]) -> Self {
         .array(array.map { .dictionary($0) })
     }
@@ -46,13 +46,13 @@ extension ExportFieldValue {
             .mapValues { .string($0) }
         return .dictionary(mapped)
     }
-    
+
     public static func dictionary(_ dictionary: [String: [String]]) -> Self {
         let mapped: [String: ExportFieldValue] = dictionary
             .mapValues { .array($0) }
         return .dictionary(mapped)
     }
-    
+
     public static func dictionary(_ dictionary: [String: [String: String]]) -> Self {
         let mapped: [String: ExportFieldValue] = dictionary
             .mapValues { .dictionary($0) }
@@ -73,30 +73,30 @@ extension ExportFieldValue: Codable {
             try dictionary.encode(to: encoder)
         }
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         var lastError: Error?
-        
+
         do {
             let string = try container.decode(String.self)
             self = .string(string)
             return
         } catch { lastError = error }
-        
+
         do {
             let array = try container.decode([ExportFieldValue].self)
             self = .array(array)
             return
         } catch { lastError = error }
-        
+
         do {
             let dictionary = try container.decode([String: ExportFieldValue].self)
             self = .dictionary(dictionary)
             return
         } catch { lastError = error }
-        
+
         throw lastError ?? DecodingError.dataCorrupted(
             DecodingError.Context(
                 codingPath: [],

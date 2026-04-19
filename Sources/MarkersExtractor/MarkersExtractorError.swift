@@ -10,10 +10,10 @@ import Foundation
 public enum MarkersExtractorError: LocalizedError {
     /// Validation error.
     case validation(_ validationError: ValidationError)
-    
+
     /// Extraction error.
     case extraction(_ extractionError: ExtractionError)
-    
+
     public var errorDescription: String? {
         switch self {
         case let .validation(validationError):
@@ -39,7 +39,7 @@ extension MarkersExtractorError {
         case invalidImageSizePercent
         case invalidImageQuality
         case invalidOutputFPS
-        
+
         public var errorDescription: String? {
             switch self {
             case let .unsupportedFileFormat(path):
@@ -77,7 +77,7 @@ extension MarkersExtractorError {
             }
         }
     }
-    
+
     /// Extraction errors.
     /// Do not construct directly -- wrap in a ``MarkersExtractorError`` case instead.
     public enum ExtractionError: LocalizedError {
@@ -89,7 +89,7 @@ extension MarkersExtractorError {
         case outputFolderAlreadyExists(_ message: String)
         case image(_ imageGenerationError: ImageGenerationError)
         case internalInconsistency(_ message: String)
-        
+
         public var errorDescription: String? {
             switch self {
             case let .fcpxmlParse(message):
@@ -110,14 +110,14 @@ extension MarkersExtractorError {
                 message
             }
         }
-        
+
         /// Wrapper for image extraction errors.
         /// Do not construct directly -- wrap in a ``MarkersExtractorError`` case instead.
         public enum ImageGenerationError: LocalizedError {
             case stillImage(_ error: StillImageBatchExtractorError)
             case animatedImage(_ error: AnimatedImageExtractorError)
             case generic(_ message: String)
-            
+
             public var errorDescription: String? {
                 switch self {
                 case let .stillImage(error):

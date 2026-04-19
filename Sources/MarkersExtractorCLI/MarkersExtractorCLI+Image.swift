@@ -19,7 +19,7 @@ extension MarkersExtractorCLI {
             )
         )
         var imageFormat: MarkerImageFormat = MarkersExtractor.Settings.Defaults.imageFormat
-        
+
         @Option(
             help: ArgumentHelp(
                 "Image quality percent for JPG.",
@@ -27,13 +27,13 @@ extension MarkersExtractorCLI {
             )
         )
         var imageQuality: Int = MarkersExtractor.Settings.Defaults.imageQuality
-        
+
         @Option(help: ArgumentHelp("Limit image width keeping aspect ratio.", valueName: "w"))
         var imageWidth: Int?
-        
+
         @Option(help: ArgumentHelp("Limit image height keeping aspect ratio.", valueName: "h"))
         var imageHeight: Int?
-        
+
         @Option(
             help: ArgumentHelp(
                 "Limit image size to % keeping aspect ratio. (default for GIF: \(MarkersExtractor.Settings.Defaults.imageSizePercentGIF))",
@@ -41,7 +41,7 @@ extension MarkersExtractorCLI {
             )
         )
         var imageSizePercent: Int?
-        
+
         @Option(
             help: ArgumentHelp(
                 "GIF frame rate.",
@@ -49,10 +49,10 @@ extension MarkersExtractorCLI {
             )
         )
         var gifFPS: Double = MarkersExtractor.Settings.Defaults.gifFPS
-        
+
         @Option(help: ArgumentHelp("GIF capture span around marker.", valueName: "sec"))
         var gifSpan: TimeInterval = MarkersExtractor.Settings.Defaults.gifSpan
-        
+
         @Flag(
             help: ArgumentHelp(
                 "For chapter markers, use their thumbnail pin position for thumbnail image generation."

@@ -23,17 +23,17 @@ import TestingExtensions
         settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .captions
         settings.includeDisabled = true
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // verify marker contents
-        
+
         let markers = try await extractor.extractMarkers().markers
-        
+
         #expect(markers.count == 2)
-        
+
         let fr: TimecodeFrameRate = .fps25
-        
+
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.type == .caption)
         #expect(marker0.name == "caption1")
@@ -42,7 +42,7 @@ import TestingExtensions
         #expect(marker0.roles.video?.rawValue == nil)
         #expect(marker0.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
         #expect(marker0.position == tc("01:00:03:00", at: fr))
-        
+
         let marker1 = try #require(markers[safe: 1])
         #expect(marker1.type == .caption)
         #expect(marker1.name == "caption2")
@@ -52,7 +52,7 @@ import TestingExtensions
         #expect(marker1.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
         #expect(marker1.position == tc("01:00:09:10", at: fr))
     }
-    
+
     /// Test importing captions
     @Test
     func annotations_MarkersAndCaptions() async throws {
@@ -63,17 +63,17 @@ import TestingExtensions
         settings.idNamingMode = .timelineNameAndTimecode
         settings.markersSource = .markersAndCaptions
         settings.includeDisabled = true
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         // verify marker contents
-        
+
         let markers = try await extractor.extractMarkers().markers
-        
+
         #expect(markers.count == 3)
-        
+
         let fr: TimecodeFrameRate = .fps25
-        
+
         let marker0 = try #require(markers[safe: 0])
         #expect(marker0.type == .caption)
         #expect(marker0.name == "caption1")
@@ -82,7 +82,7 @@ import TestingExtensions
         #expect(marker0.roles.video?.rawValue == nil)
         #expect(marker0.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
         #expect(marker0.position == tc("01:00:03:00", at: fr))
-        
+
         let marker1 = try #require(markers[safe: 1])
         #expect(marker1.type == .caption)
         #expect(marker1.name == "caption2")
@@ -91,7 +91,7 @@ import TestingExtensions
         #expect(marker1.roles.video?.rawValue == nil)
         #expect(marker1.roles.caption?.rawValue == "iTT?captionFormat=ITT.en")
         #expect(marker1.position == tc("01:00:09:10", at: fr))
-        
+
         let marker2 = try #require(markers[safe: 2])
         #expect(marker2.type == .marker(.standard))
         #expect(marker2.name == "marker1")

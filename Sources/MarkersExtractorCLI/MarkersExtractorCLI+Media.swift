@@ -21,7 +21,7 @@ extension MarkersExtractorCLI {
             transform: URL.init(fileURLWithPath:)
         )
         var mediaSearchPaths: [URL] = []
-        
+
         @Flag(
             name: [.customLong("no-media")],
             help: "Bypass media. No thumbnails will be generated."

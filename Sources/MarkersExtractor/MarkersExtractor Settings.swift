@@ -41,7 +41,7 @@ extension MarkersExtractor {
         public var imageLabelHideNames: Bool
         public var resultFilePath: URL?
         public var exportFolderFormat: ExportFolderFormat
-        
+
         public init(
             fcpxml: FCPXMLFile,
             outputDir: URL,
@@ -78,7 +78,7 @@ extension MarkersExtractor {
             // mandatory parameters
             self.fcpxml = fcpxml
             self.outputDir = outputDir
-            
+
             // defaulted parameters
             self.noMedia = noMedia
             self.mediaSearchPaths = mediaSearchPaths ?? Defaults.mediaSearchPaths(from: fcpxml)
@@ -109,7 +109,7 @@ extension MarkersExtractor {
             self.imageLabelHideNames = imageLabelHideNames
             self.resultFilePath = resultFilePath
             self.exportFolderFormat = exportFolderFormat
-            
+
             // validation
             try validate()
         }
@@ -127,7 +127,7 @@ extension MarkersExtractor.Settings {
         public static let outputFPS = 0.1 ... 60.0
         public static let imageLabelFontOpacity = 0 ... 100
     }
-    
+
     /// Validate settings parameters.
     /// Throws an error if validation fails.
     ///
@@ -139,7 +139,7 @@ extension MarkersExtractor.Settings {
                     .unsupportedFileFormat(atPath: fcpxmlPath.path)
                 )
             }
-            
+
             if fcpxmlPath.fileExtension == "fcpxmld" {
                 guard FileManager.default.fileIsDirectory(fcpxmlPath.path) else {
                     throw MarkersExtractorError.validation(
@@ -147,20 +147,20 @@ extension MarkersExtractor.Settings {
                     )
                 }
             }
-            
+
             guard fcpxmlPath.exists else {
                 throw MarkersExtractorError.validation(
                     .fileNotExists(atPath: fcpxmlPath.path)
                 )
             }
         }
-        
+
         guard NSFont(name: imageLabelFont, size: 1) != nil else {
             throw MarkersExtractorError.validation(
                 .fontNotUsable(imageLabelFont)
             )
         }
-        
+
         if let imageLabelFontStrokeWidth,
            imageLabelFontStrokeWidth < 0
         {
@@ -168,25 +168,25 @@ extension MarkersExtractor.Settings {
                 .invalidImageLabelStrokeWidth
             )
         }
-        
+
         guard Validation.imageLabelFontOpacity.contains(imageLabelFontOpacity) else {
             throw MarkersExtractorError.validation(
                 .invalidImageLabelFontOpacity
             )
         }
-        
+
         if let imageHeight, imageHeight <= 0 {
             throw MarkersExtractorError.validation(
                 .invalidImageHeight
             )
         }
-        
+
         if let imageWidth, imageWidth <= 0 {
             throw MarkersExtractorError.validation(
                 .invalidImageWidth
             )
         }
-        
+
         if let imageSizePercent,
            !Validation.imageSizePercent.contains(imageSizePercent)
         {
@@ -194,13 +194,13 @@ extension MarkersExtractor.Settings {
                 .invalidImageSizePercent
             )
         }
-        
+
         guard Validation.imageQuality.contains(imageQuality) else {
             throw MarkersExtractorError.validation(
                 .invalidImageQuality
             )
         }
-        
+
         guard Validation.outputFPS.contains(gifFPS) else {
             throw MarkersExtractorError.validation(
                 .invalidOutputFPS
@@ -215,7 +215,7 @@ extension MarkersExtractor.Settings {
     public var imageQualityDouble: Double {
         Double(imageQuality) / 100
     }
-    
+
     public var imageLabelFontOpacityDouble: Double {
         Double(imageLabelFontOpacity) / 100
     }
@@ -227,7 +227,7 @@ extension MarkersExtractor.Settings {
     public enum Defaults {
         public static let noMedia: Bool = false
         public static func mediaSearchPaths(from fcpxml: FCPXMLFile) -> [URL] {
-            [fcpxml.defaultMediaSearchPath].compactMap { $0 }
+            [fcpxml.defaultMediaSearchPath].compactMap(\.self)
         }
 
         public static let exportFormat: ExportProfileFormat = .csv

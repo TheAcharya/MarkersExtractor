@@ -21,12 +21,12 @@ class ImagesWriter: ImageWriterProtocol {
     let imageDimensions: CGSize?
     let imageLabelProperties: MarkerLabelProperties
     let logger: Logger
-    
+
     let extractor: StillImageBatchExtractor
-    
+
     // ProgressReporting (omitted protocol conformance as it would force NSObject inheritance)
     let progress: Progress
-    
+
     init(
         descriptors: [ImageDescriptor],
         sourceMediaFile: URL,
@@ -45,7 +45,7 @@ class ImagesWriter: ImageWriterProtocol {
         self.imageDimensions = imageDimensions
         self.imageLabelProperties = imageLabelProperties
         self.logger = logger ?? Logger(label: "\(Self.self)")
-        
+
         let conversion = StillImageBatchExtractor.ConversionSettings(
             descriptors: descriptors,
             sourceMediaFile: sourceMediaFile,
@@ -65,7 +65,7 @@ class ImagesWriter: ImageWriterProtocol {
                 }
             }
         )
-        
+
         extractor = StillImageBatchExtractor(conversion, logger: logger)
         progress = extractor.progress
     }

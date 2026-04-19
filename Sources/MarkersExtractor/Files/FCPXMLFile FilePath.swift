@@ -11,7 +11,7 @@ extension FCPXMLFile {
     public enum FilePath {
         case fcpxml(xmlURL: URL)
         case fcpxmld(bundleURL: URL)
-        
+
         public init(inputURL: URL) throws {
             if inputURL.pathExtension.caseInsensitiveCompare("fcpxml") == .orderedSame {
                 self = .fcpxml(xmlURL: inputURL)
@@ -45,7 +45,7 @@ extension FCPXMLFile.FilePath {
     public var parentPath: URL {
         basePath.deletingLastPathComponent()
     }
-    
+
     /// Returns the base path.
     /// For an `fcpxml` file, the file's path is returned.
     /// For an `dcpxmld` bundle, the bundle's path is returned.
@@ -57,7 +57,7 @@ extension FCPXMLFile.FilePath {
             bundleURL
         }
     }
-    
+
     /// Resolves the location of the actual XML file.
     public var xmlPath: URL {
         switch self {

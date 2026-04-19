@@ -13,10 +13,10 @@ extension StillImageBatchExtractor {
         let sourceMediaFile: URL
         let outputFolder: URL
         let frameFormat: MarkerImageFormat.Still
-        
+
         /// JPG quality: percentage as a unit interval between `0.0 ... 1.0`
         let jpgQuality: Double?
-        
+
         let dimensions: CGSize?
         let imageFilter: (@Sendable (_ image: CGImage, _ label: String?) async -> CGImage)?
     }

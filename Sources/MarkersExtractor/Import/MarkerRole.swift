@@ -49,7 +49,7 @@ extension MarkerRole {
             .caption
         }
     }
-    
+
     public var stringValue: String {
         switch self {
         case let .video(string):
@@ -60,21 +60,21 @@ extension MarkerRole {
             string
         }
     }
-    
+
     public var isVideo: Bool {
         guard case .video = self else {
             return false
         }
         return true
     }
-    
+
     public var isAudio: Bool {
         guard case .audio = self else {
             return false
         }
         return true
     }
-    
+
     public var isCaption: Bool {
         guard case .caption = self else {
             return false

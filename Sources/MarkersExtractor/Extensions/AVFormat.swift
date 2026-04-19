@@ -20,7 +20,7 @@ enum AVFormat: String {
     case appleProRes422LT
     case appleProRes422Proxy
     case appleAnimation
-    
+
     // https://hap.video/using-hap.html
     // https://github.com/Vidvox/hap/blob/master/documentation/HapVideoDRAFT.md#names-and-identifiers
     case hap1
@@ -29,12 +29,12 @@ enum AVFormat: String {
     case hapM
     case hapA
     case hap7
-    
+
     case cineFormHD
-    
+
     // https://en.wikipedia.org/wiki/QuickTime_Graphics
     case quickTimeGraphics
-    
+
     // https://en.wikipedia.org/wiki/Avid_DNxHD
     case avidDNxHD
 }
@@ -52,17 +52,17 @@ extension AVFormat: Sendable { }
 extension AVFormat {
     init?(fourCC: String) {
         let sanitizedFourCC = fourCC.trimmingCharacters(in: .whitespaces)
-        
+
         guard let match = Self.allCases.first(where: { $0.fourCC == sanitizedFourCC })
         else { return nil }
-        
+
         self = match
     }
-    
+
     init?(fourCC: FourCharCode) {
         self.init(fourCC: fourCC.fourCharCodeToString())
     }
-    
+
     var fourCC: String {
         switch self {
         case .hevc:
@@ -128,7 +128,7 @@ extension AVFormat {
             .appleProRes422Proxy
         ].contains(self)
     }
-    
+
     /// > Important:
     /// >
     /// > This check only covers known (by us) compatible formats. It might be missing some.

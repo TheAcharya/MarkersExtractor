@@ -10,11 +10,11 @@ import SwiftTimecodeCore
 
 actor AVAssetImageGeneratorWrapper {
     private let imageGenerator: AVAssetImageGenerator
-    
+
     init(asset: AVAsset) {
         imageGenerator = AVAssetImageGenerator(asset: asset)
     }
-    
+
     init(_ imageGenerator: AVAssetImageGenerator) {
         self.imageGenerator = imageGenerator
     }
@@ -29,7 +29,7 @@ extension AVAssetImageGeneratorWrapper {
         let isFinished: Bool
         let isFinishedIgnoreImage: Bool
     }
-    
+
     @discardableResult
     func images(
         forTimesIn descriptors: [ImageDescriptor],
@@ -46,28 +46,28 @@ extension AVAssetImageGeneratorWrapper {
         let completedCount = Counter(count: 0) { count in
             progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
-        
+
         let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
             of: (fraction: Fraction, image: CGImage)?.self
         ) { [weak self, totalCount, completedCount, completionHandler] taskGroup in
             for descriptor in descriptors {
                 taskGroup.addTask { [weak self, totalCount, completedCount, completionHandler] in
                     guard let self else { return nil }
-                    
+
                     let requestedTime = descriptor.offsetFromVideoStart.cmTimeValue
-                    
+
                     let result = try await imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     var image = result.image ?? CGImage.empty!
-                    
+
                     if hasImage {
                         await completedCount.increment()
                     } else {
                         await totalCount.decrement()
                     }
-                    
+
                     let isFinished = await completedCount.count == totalCount.count
-                    
+
                     let completionResult = await CompletionHandlerResult(
                         requestedTime: requestedTime,
                         actualTime: result.actualTime,
@@ -81,7 +81,7 @@ extension AVAssetImageGeneratorWrapper {
                         &image,
                         .success(completionResult)
                     )
-                    
+
                     if hasImage {
                         // we have to use Fraction as dictionary key since CMTime is not hashable on
                         // older macOS versions
@@ -94,19 +94,19 @@ extension AVAssetImageGeneratorWrapper {
                     }
                 }
             }
-            
+
             var images: [Fraction: CGImage] = [:]
             for try await result in taskGroup {
                 guard let result else { continue }
                 images[result.fraction] = result.image
             }
-            
+
             return images
         }
-        
+
         return images
     }
-    
+
     @discardableResult
     func images(
         forTimes times: [CMTime],
@@ -123,26 +123,26 @@ extension AVAssetImageGeneratorWrapper {
         let completedCount = Counter(count: 0) { count in
             progress?.completedUnitCount = Int64(exactly: count) ?? 0
         }
-        
+
         let images: [Fraction: CGImage] = try await withThrowingTaskGroup(
             of: (fraction: Fraction, image: CGImage)?.self
         ) { [weak self, totalCount, completedCount, completionHandler] taskGroup in
             for requestedTime in times {
                 taskGroup.addTask { [weak self, totalCount, completedCount, completionHandler] in
                     guard let self else { return nil }
-                    
+
                     let result = try await imageCompat(at: requestedTime)
                     let hasImage = result.image != nil
                     var image = result.image ?? CGImage.empty!
-                    
+
                     if hasImage {
                         await completedCount.increment()
                     } else {
                         await totalCount.decrement()
                     }
-                    
+
                     let isFinished = await completedCount.count == totalCount.count
-                    
+
                     let completionResult = await CompletionHandlerResult(
                         requestedTime: requestedTime,
                         actualTime: result.actualTime,
@@ -156,7 +156,7 @@ extension AVAssetImageGeneratorWrapper {
                         &image,
                         .success(completionResult)
                     )
-                    
+
                     if hasImage {
                         // we have to use Fraction as dictionary key since CMTime is not hashable on
                         // older macOS versions
@@ -169,41 +169,41 @@ extension AVAssetImageGeneratorWrapper {
                     }
                 }
             }
-            
+
             var images: [Fraction: CGImage] = [:]
             for try await result in taskGroup {
                 guard let result else { continue }
                 images[result.fraction] = result.image
             }
-            
+
             return images
         }
-        
+
         return images
     }
-                                  
+
     /// Backward-compatible implementation of Apple's `image(at time: CMTime)`.
     func imageCompat(at time: CMTime) async throws -> (image: CGImage?, actualTime: CMTime) {
         // if #available(macOS 13.0, *) {
         //     return try await image(at: time)
         // }
-        
+
         var isNoFrame = false
-        
+
         let (requestedTime, image, actualTime, result, error) = await imageGenerator
             .generateCGImages(forTimes: [time])
-        
+
         switch result {
         case .succeeded:
             break
-            
+
         case .failed:
             guard let error else {
                 throw MarkersExtractorError.extraction(.image(.generic(
                     "Image generator failed but no additional error information is available."
                 )))
             }
-            
+
             // Handle blank frames
             switch error {
             case let avError as AVError:
@@ -211,9 +211,9 @@ extension AVAssetImageGeneratorWrapper {
                 case .noImageAtTime:
                     // We ignore blank frames.
                     #if DEBUG
-                    print(
-                        "No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
-                    )
+                        print(
+                            "No image at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                        )
                     #endif
                     isNoFrame = true
                 case .decodeFailed:
@@ -222,28 +222,28 @@ extension AVAssetImageGeneratorWrapper {
                     // error for some frames in screen recordings.
                     // As a workaround, we ignore these as the GIF seems fine still.
                     #if DEBUG
-                    print(
-                        "Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
-                    )
+                        print(
+                            "Decode failed at requested time \(Fraction(requestedTime)), actual time \(Fraction(actualTime))"
+                        )
                     #endif
                     isNoFrame = true
                 default:
                     break
                 }
-                
+
             default:
                 break
             }
 
         case .cancelled:
             throw CancellationError()
-            
+
         @unknown default:
             throw MarkersExtractorError.extraction(.image(.generic(
                 "Unhandled image result case."
             )))
         }
-        
+
         if isNoFrame {
             return (image: nil, actualTime: actualTime)
         } else {
@@ -278,7 +278,7 @@ extension AVAssetImageGenerator {
             }
         }
     }
-    
+
     // TODO: It's possible that in future Apple adds their own async method, at which time this wrapper can be removed.
     /// Swift Concurrency wrapper for `generateCGImagesAsynchronously` method.
     @_disfavoredOverload

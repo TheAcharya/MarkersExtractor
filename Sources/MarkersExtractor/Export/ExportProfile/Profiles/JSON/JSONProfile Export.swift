@@ -30,7 +30,7 @@ extension JSONProfile {
             )
         }
     }
-    
+
     public func writeManifests(
         _ preparedMarkers: [PreparedMarker],
         payload: Payload,
@@ -42,19 +42,19 @@ extension JSONProfile {
             preparedMarkers
         )
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
             .jsonManifestPath: .url(payload.jsonPath)
         ]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         var dict: OrderedDictionary<ExportField, String> = [:]
-        
+
         dict[.id] = marker.id
         dict[.name] = marker.name
         dict[.type] = marker.type
@@ -77,22 +77,22 @@ extension JSONProfile {
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
         }
-        
+
         dict[.xmlPath] = marker.xmlPath
-        
+
         return dict
     }
-    
+
     public func nestedManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, ExportFieldValue> {
         var dict: OrderedDictionary<ExportField, ExportFieldValue> = [:]
-        
+
         dict[.id] = .string(marker.id)
         dict[.name] = .string(marker.name)
         dict[.type] = .string(marker.type)
@@ -115,13 +115,13 @@ extension JSONProfile {
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
         }
-        
+
         dict[.xmlPath] = .string(marker.xmlPath)
-        
+
         return dict
     }
 }

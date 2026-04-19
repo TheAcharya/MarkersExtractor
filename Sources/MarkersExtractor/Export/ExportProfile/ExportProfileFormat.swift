@@ -53,7 +53,7 @@ extension ExportProfileFormat {
         case .youtube: "YouTube Chapters"
         }
     }
-    
+
     public var concreteType: any ExportProfile.Type {
         switch self {
         case .airtable: AirtableExportProfile.self

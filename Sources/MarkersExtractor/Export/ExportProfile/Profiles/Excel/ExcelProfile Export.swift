@@ -30,7 +30,7 @@ extension ExcelProfile {
             )
         }
     }
-    
+
     /// Writes XLSX manifest file using XLKit via XLSX Export Utils.
     ///
     /// ## XLKit Integration:
@@ -47,7 +47,7 @@ extension ExcelProfile {
     ) async throws {
         // Extract output folder from payload path
         let outputFolder = payload.xlsxPath.deletingLastPathComponent()
-        
+
         try await xlsxWriteManifest(
             xlsxPath: payload.xlsxPath,
             noMedia: noMedia,
@@ -55,19 +55,19 @@ extension ExcelProfile {
             outputFolder: outputFolder
         )
     }
-    
+
     public func resultFileContent(payload: Payload) throws -> ExportResult.ResultDictionary {
         [
             .xlsxManifestPath: .url(payload.xlsxPath)
         ]
     }
-    
+
     public func tableManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, String> {
         var dict: OrderedDictionary<ExportField, String> = [:]
-        
+
         dict[.id] = marker.id
         dict[.name] = marker.name
         dict[.type] = marker.type
@@ -90,21 +90,21 @@ extension ExcelProfile {
         dict[.projectName] = marker.projectName
         dict[.libraryName] = marker.libraryName
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = marker.imageFileName
             dict[.image] = "" // Empty string for data rows, header will be set separately
         }
-        
+
         return dict
     }
-    
+
     public func nestedManifestFields(
         for marker: PreparedMarker,
         noMedia: Bool
     ) -> OrderedDictionary<ExportField, ExportFieldValue> {
         var dict: OrderedDictionary<ExportField, ExportFieldValue> = [:]
-        
+
         dict[.id] = .string(marker.id)
         dict[.name] = .string(marker.name)
         dict[.type] = .string(marker.type)
@@ -127,12 +127,12 @@ extension ExcelProfile {
         dict[.projectName] = .string(marker.projectName)
         dict[.libraryName] = .string(marker.libraryName)
         // no iconImage
-        
+
         if !noMedia {
             dict[.imageFileName] = .string(marker.imageFileName)
             dict[.image] = .string("") // Empty string for data rows, header will be set separately
         }
-        
+
         return dict
     }
 }

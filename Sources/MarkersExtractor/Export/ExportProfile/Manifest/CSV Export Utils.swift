@@ -15,7 +15,7 @@ extension ExportProfile {
         _ preparedMarkers: [PreparedMarker]
     ) throws {
         let rows = dictsToRows(preparedMarkers, includeHeader: true, noMedia: noMedia)
-        
+
         let data: Data
         do throws(TextFileEncodeError) {
             data = try CSV(table: rows).data(encoding: .utf8, includeBOM: true)
@@ -24,7 +24,7 @@ extension ExportProfile {
                 "Could not encode CSV file: \(error.localizedDescription)"
             ))
         }
-        
+
         do {
             try data.write(to: csvPath)
         } catch {

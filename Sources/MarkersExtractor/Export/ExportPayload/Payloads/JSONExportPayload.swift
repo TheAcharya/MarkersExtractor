@@ -8,7 +8,7 @@ import Foundation
 
 public struct JSONExportPayload: ExportPayload {
     let jsonPath: URL
-        
+
     init(timelineName: String, outputURL: URL) {
         let jsonName = "\(timelineName).json"
         jsonPath = outputURL.appendingPathComponent(jsonName)

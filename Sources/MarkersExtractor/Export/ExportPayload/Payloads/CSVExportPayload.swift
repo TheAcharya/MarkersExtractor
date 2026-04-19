@@ -8,7 +8,7 @@ import Foundation
 
 public struct CSVExportPayload: ExportPayload {
     let csvPath: URL
-        
+
     init(timelineName: String, outputURL: URL) {
         let csvName = "\(timelineName).csv"
         csvPath = outputURL.appendingPathComponent(csvName)

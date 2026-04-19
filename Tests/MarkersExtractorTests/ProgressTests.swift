@@ -23,15 +23,15 @@ import TestingExtensions
             includeDisabled: true,
             logger: nil
         )
-        
+
         #expect(extractor.progress.fractionCompleted == 0.0)
         let context = try #require(extractor.extractTimelineContext(defaultTimelineName: "Timeline"))
         _ = await extractor.extractMarkers(context: context)
-        
+
         // NOTE: this may randomly fail because NSProgress is garbage
         #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }
-    
+
     @Test
     func animatedImageExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
@@ -47,9 +47,9 @@ import TestingExtensions
         }
         let outputFolder = FileManager.default.temporaryDirectory
         let outputFile = outputFolder.appendingPathComponent(UUID().uuidString + ".gif")
-        
+
         // MARK: - AnimatedImagesWriter
-        
+
         let writer = AnimatedImagesWriter(
             descriptors: descriptors,
             sourceMediaFile: videoPlaceholder.url,
@@ -60,19 +60,19 @@ import TestingExtensions
             imageFormat: .gif,
             imageLabelProperties: .default()
         )
-        
+
         #expect(await writer.progress.fractionCompleted == 0.0)
         try await writer.write()
-        
+
         // NOTE: this may randomly fail because NSProgress is garbage
         await #expect({
             let a = await writer.progress.fractionCompleted == 1.0
             let b = await writer.progress.isFinished
             return a || b
         }())
-        
+
         // MARK: - AnimatedImageExtractor
-        
+
         let extractor = try await AnimatedImageExtractor(
             AnimatedImageExtractor.ConversionSettings(
                 timecodeRange: range,
@@ -84,10 +84,10 @@ import TestingExtensions
                 imageFormat: .gif
             )
         )
-        
+
         #expect(await extractor.progress.fractionCompleted == 0.0)
         _ = try await extractor.convert()
-        
+
         // NOTE: this may randomly fail because NSProgress is garbage
         await #expect({
             let a = await extractor.progress.fractionCompleted == 1.0
@@ -95,7 +95,7 @@ import TestingExtensions
             return a || b
         }())
     }
-    
+
     @Test
     func stillImageBatchExtractor() async throws {
         let videoData = try TestResource.videoTrack_29_97_Start_00_00_00_00.data()
@@ -110,9 +110,9 @@ import TestingExtensions
             )
         }
         let outputFolder = FileManager.default.temporaryDirectory
-        
+
         // ImagesWriter
-        
+
         let writer = ImagesWriter(
             descriptors: descriptors,
             sourceMediaFile: videoPlaceholder.url,
@@ -122,15 +122,15 @@ import TestingExtensions
             imageDimensions: nil,
             imageLabelProperties: .default()
         )
-        
+
         #expect(writer.progress.fractionCompleted == 0.0)
         try await writer.write()
-        
+
         // NOTE: this may randomly fail because NSProgress is garbage
         #expect(writer.progress.fractionCompleted == 1.0 || writer.progress.isFinished)
-        
+
         // MARK: - StillImageBatchExtractor
-        
+
         let extractor = StillImageBatchExtractor(
             StillImageBatchExtractor.ConversionSettings(
                 descriptors: descriptors,
@@ -142,10 +142,10 @@ import TestingExtensions
                 imageFilter: nil
             )
         )
-        
+
         #expect(extractor.progress.fractionCompleted == 0.0)
         _ = try await extractor.convert()
-        
+
         // NOTE: this may randomly fail because NSProgress is garbage
         #expect(extractor.progress.fractionCompleted == 1.0 || extractor.progress.isFinished)
     }

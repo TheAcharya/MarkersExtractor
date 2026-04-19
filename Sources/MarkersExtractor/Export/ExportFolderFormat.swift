@@ -39,7 +39,7 @@ extension ExportFolderFormat {
             "\(timelineName) \(nowTimestamp(twentyFourHour: true)) [\(profile.name)]"
         }
     }
-    
+
     private func nowTimestamp(twentyFourHour: Bool) -> String {
         let now = Date()
         let formatter = DateFormatter()
