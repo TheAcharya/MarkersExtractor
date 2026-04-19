@@ -7,7 +7,8 @@
 import Foundation
 import Logging
 
-@globalActor final actor LogFactory {
+@globalActor
+final actor LogFactory {
     static let shared = LogFactory()
 
     private var consoleLogHandler: LogHandler?

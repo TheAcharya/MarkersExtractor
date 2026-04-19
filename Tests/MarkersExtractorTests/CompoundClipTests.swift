@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct CompoundClipTests {
+@Suite
+struct CompoundClipTests {
     /// Ensure that markers directly attached to compound clips (`ref-clip`s) on the main timeline
     /// are preserved, while all markers within compound clips are discarded.
     @Test

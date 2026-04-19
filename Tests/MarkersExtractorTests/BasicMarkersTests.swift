@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct BasicMarkersTests {
+@Suite
+struct BasicMarkersTests {
     /// Basic test to check `MarkersExtractor.extractMarkers()` parses data correctly.
     ///
     /// Note that two markers share the same marker ID. This test also checks the default behavior

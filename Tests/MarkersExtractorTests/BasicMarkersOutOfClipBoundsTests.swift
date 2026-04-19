@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct BasicMarkersOutOfClipBoundsTests {
+@Suite
+struct BasicMarkersOutOfClipBoundsTests {
     /// Ensure that markers that are out of bounds of clips are not included in extraction.
     /// Also tests to make sure marker parent clip information is correct.
     @Test

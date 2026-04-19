@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct StartMarkerTests {
+@Suite
+struct StartMarkerTests {
     /// Test if a marker at the exact start of a timeline is extracted correctly.
     @Test
     func startMarker_extractMarkers() async throws {

@@ -8,7 +8,8 @@
 import Testing
 import TestingExtensions
 
-@Suite struct MarkerRolesTests {
+@Suite
+struct MarkerRolesTests {
     @Test
     func verbatim() {
         let markerRoles = MarkerRoles(

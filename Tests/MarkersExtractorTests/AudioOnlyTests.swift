@@ -12,7 +12,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct AudioOnlyTests {
+@Suite
+struct AudioOnlyTests {
     @Test
     func audioOnly() async throws {
         let outputDir = FileManager.default

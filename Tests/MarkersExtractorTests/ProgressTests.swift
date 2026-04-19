@@ -10,7 +10,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct ProgressTests {
+@Suite
+struct ProgressTests {
     @Test
     func fcpxmlMarkerExtractor() async throws {
         var file = FCPXMLFile(fileContents: fcpxmlTestString)

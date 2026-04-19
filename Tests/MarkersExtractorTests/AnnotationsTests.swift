@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct AnnotationsTests {
+@Suite
+struct AnnotationsTests {
     // TODO: add test for filtering disabled captions once that's implemented
     /// Test importing captions
     @Test

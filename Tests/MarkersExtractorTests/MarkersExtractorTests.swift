@@ -11,7 +11,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct MarkersExtractorTests {
+@Suite
+struct MarkersExtractorTests {
     @Test
     func findDuplicateIDs_inMarkers() async throws {
         var settings = try MarkersExtractor.Settings(

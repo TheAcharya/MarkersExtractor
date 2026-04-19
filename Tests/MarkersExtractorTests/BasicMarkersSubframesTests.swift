@@ -10,7 +10,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct BasicMarkersSubframesTests {
+@Suite
+struct BasicMarkersSubframesTests {
     /// Test that fraction time values that have subframes correctly convert to Timecode.
     @Test
     func basicMarkers_extractMarkers_TimecodeSubframes() async throws {

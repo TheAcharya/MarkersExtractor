@@ -10,7 +10,8 @@ import SwiftTimecodeCore
 import Testing
 import TestingExtensions
 
-@Suite struct BasicMarkersEmptyIDTests {
+@Suite
+struct BasicMarkersEmptyIDTests {
     /// Ensure that empty marker ID strings cause an error and abort the conversion process.
     @Test(arguments: MarkerIDMode.allCases)
     func basicMarkers_extractMarkers_nonEmptyMarkerIDs(idMode: MarkerIDMode) async throws {
