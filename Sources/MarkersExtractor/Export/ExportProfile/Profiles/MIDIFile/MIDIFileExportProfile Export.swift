@@ -8,7 +8,7 @@ import AVFoundation
 import DAWFileTools
 import Foundation
 import Logging
-import MIDIKitSMF
+import SwiftMIDIFile
 import OrderedCollections
 
 extension MIDIFileExportProfile {
@@ -45,7 +45,7 @@ extension MIDIFileExportProfile {
         let dawMarkers = preparedMarkers.map { $0.dawMarker() }
 
         var buildMessages: [String] = []
-        let midiFile = try MIDIFile(
+        let midiFile = try MusicalMIDI1File(
             converting: dawMarkers,
             tempo: 120.0,
             startTimecode: payload.timelineStartTimecode,
