@@ -15,8 +15,8 @@ Code formatting is not strictly enforced but is a courtesy we would like contrib
 [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) is used to format `*.swift` files.
 
 ```bash
-cd <path to repo root>
-swiftformat .
+cd <path-to-repo-root>
+swiftformat . --swift-version 6.2
 ```
 
 ## Unit Testing
