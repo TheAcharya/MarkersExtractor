@@ -54,6 +54,11 @@ struct MarkersExtractorCLI: AsyncParsableCommand {
     @OptionGroup(title: "MEDIA")
     var mediaOptions: MediaOptions
 
+    // MARK: - MIDI File Options
+
+    @OptionGroup(title: "MIDI FILE")
+    var midiFileOptions: MIDIFileOptions
+
     // MARK: - Required Arguments
 
     @Argument(help: "Input FCPXML file / FCPXMLD bundle.", transform: URL.init(fileURLWithPath:))
@@ -112,6 +117,7 @@ extension MarkersExtractorCLI {
                 imageSizePercent: imageOptions.imageSizePercent,
                 gifFPS: imageOptions.gifFPS,
                 gifSpan: imageOptions.gifSpan,
+                isMIDIFileUTF8EncodingAllowed: midiFileOptions.isMIDIFileUTF8EncodingAllowed,
                 idNamingMode: generalOptions.idNamingMode,
                 imageLabels: labelOptions.imageLabels,
                 imageLabelCopyright: labelOptions.imageLabelCopyright,
