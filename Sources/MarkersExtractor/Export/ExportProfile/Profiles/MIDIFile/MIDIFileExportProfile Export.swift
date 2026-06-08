@@ -50,6 +50,7 @@ extension MIDIFileExportProfile {
             tempo: 120.0,
             startTimecode: payload.timelineStartTimecode,
             includeComments: false,
+            trackName: "Markers",
             buildMessages: &buildMessages
         )
 
