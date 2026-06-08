@@ -44,6 +44,8 @@ extension MIDIFileExportProfile {
     ) throws {
         let dawMarkers = preparedMarkers.map { $0.dawMarker() }
 
+        let encoding: MIDIFileEvent.Text.Encoding = payload.isUTF8TextEncodingAllowed ? .allowUTF8 : .strictASCII
+        
         var buildMessages: [String] = []
         let midiFile = try MusicalMIDI1File(
             converting: dawMarkers,
@@ -51,6 +53,7 @@ extension MIDIFileExportProfile {
             startTimecode: payload.timelineStartTimecode,
             includeComments: false,
             trackName: "Markers",
+            encoding: encoding,
             buildMessages: &buildMessages
         )
 
