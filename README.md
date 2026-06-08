@@ -100,7 +100,7 @@ sudo rm /usr/local/bin/markers-extractor
 ### Compiled From Source
 
 ```shell
-VERSION=0.4.5 # replace this with the git tag of the version you need
+VERSION=0.4.6 # replace this with the git tag of the version you need
 git clone https://github.com/TheAcharya/MarkersExtractor.git
 cd MarkersExtractor
 git checkout "tags/$VERSION"
@@ -166,7 +166,7 @@ IMAGE:
                           for thumbnail image generation.
 
 LABEL:
-  --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName | xmlPath>
+  --label <id | name | type | checked | status | notes | reel | scene | take | position | clipType | clipName | clipIn | clipOut | clipDuration | clipKeywords | videoRole | audioRole | eventName | projectName | libraryName | iconImage | imageFileName | image | xmlPath>
                           Label to overlay on thumb images. This argument can
                           be supplied more than once to apply multiple labels.
   --label-copyright <text>
@@ -205,6 +205,11 @@ MEDIA:
                           than once to use multiple paths. (default: same
                           folder as fcpxml(d))
   --no-media              Bypass media. No thumbnails will be generated.
+
+MIDI FILE:
+  --allow-utf8-midi       Allows UTF-8 text encoding when exporting a MIDI
+                          file. Note that not all music software supports
+                          reading UTF-8 text events from MIDI files.
 
 OPTIONS:
   --version               Show the version.
@@ -375,7 +380,7 @@ To use this package in a Swift Package Manager (SPM) package, add it as a depend
 let package = Package(
     name: "MyPackage",
     dependencies: [
-        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.4.5")
+        .package(url: "https://github.com/TheAcharya/MarkersExtractor.git", from: "0.4.6")
     ],
     targets: [
         .target(

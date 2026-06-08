@@ -86,7 +86,8 @@ extension MarkersExtractor {
                 payload: .init(
                     timelineName: timelineName,
                     outputURL: outputURL,
-                    timelineStartTimecode: timelineStartTimecode
+                    timelineStartTimecode: timelineStartTimecode,
+                    isUTF8TextEncodingAllowed: settings.isMIDIFileUTF8EncodingAllowed
                 ),
                 parentProgress: parentProgress
             )

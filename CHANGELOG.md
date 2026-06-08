@@ -1,5 +1,11 @@
 # MarkersExtractor Change Log
 
+## [0.4.6](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.6) (2026-06-08)
+
+### New Features
+
+- Added `--allow-utf8-midi` CLI flag allowing UTF-8 text encoding support for MIDI File Export Profile (#130)
+
 ## [0.4.5](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.5) (2026-06-03)
 
 ### Maintenance Update
