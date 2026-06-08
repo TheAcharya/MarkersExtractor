@@ -11,7 +11,7 @@ public struct MIDIFileExportPayload: ExportPayload {
     let midiFilePath: URL
     let timelineStartTimecode: Timecode
     let isUTF8TextEncodingAllowed: Bool
-    
+
     init(
         timelineName: String,
         outputURL: URL,

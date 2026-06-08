@@ -8,8 +8,8 @@ import AVFoundation
 import DAWFileTools
 import Foundation
 import Logging
-import SwiftMIDIFile
 import OrderedCollections
+import SwiftMIDIFile
 
 extension MIDIFileExportProfile {
     public func prepareMarkers(
@@ -45,7 +45,7 @@ extension MIDIFileExportProfile {
         let dawMarkers = preparedMarkers.map { $0.dawMarker() }
 
         let encoding: MIDIFileEvent.Text.Encoding = payload.isUTF8TextEncodingAllowed ? .allowUTF8 : .strictASCII
-        
+
         var buildMessages: [String] = []
         let midiFile = try MusicalMIDI1File(
             converting: dawMarkers,

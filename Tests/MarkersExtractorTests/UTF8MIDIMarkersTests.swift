@@ -1,5 +1,5 @@
 //
-//  BasicMarkerUTF8MIDIMarkersTestssTests.swift
+//  UTF8MIDIMarkersTests.swift
 //  MarkersExtractor • https://github.com/TheAcharya/MarkersExtractor
 //  Licensed under MIT License
 //
@@ -23,45 +23,45 @@ struct UTF8MIDIMarkersTests {
             exportFormat: .midi,
             isMIDIFileUTF8EncodingAllowed: true
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         let result = try await extractor.extract()
-        
+
         let filePath = try #require(result.midiFilePath)
-        
+
         let midiFile = try await MusicalMIDI1File(url: filePath)
-        
+
         // verify marker text strings
-        
+
         #expect(midiFile.tracks.count == 1)
         let track = try #require(midiFile.tracks.first)
-        
+
         let textEvents: [MIDIFileEvent.Text] = track.events
             .map(\.event)
             .compactMap {
                 guard case let .text(text) = $0 else { return nil }
                 return text
             }
-        
+
         try #require(textEvents.count == 1 + 4) // track name + 4 marker events
-        
+
         #expect(textEvents[0].text == "Markers")
         #expect(textEvents[0].textType == .trackOrSequenceName)
-        
+
         #expect(textEvents[1].text == "Marker 1 is ASCII")
         #expect(textEvents[1].textType == .marker)
-        
+
         #expect(textEvents[2].text == "Marker 2 © is Extended ASCII")
         #expect(textEvents[2].textType == .marker)
-        
+
         #expect(textEvents[3].text == "Marker 3 😀 is UTF-8")
         #expect(textEvents[3].textType == .marker)
-        
+
         #expect(textEvents[4].text == "请请让我知道")
         #expect(textEvents[4].textType == .marker)
     }
-    
+
     /// Test NOT allowing UTF-8 text encoding (enforcing printable ASCII) when exporting MIDI files.
     @Test
     func exportMIDIFile_doNotAllowUTF8() async throws {
@@ -71,41 +71,41 @@ struct UTF8MIDIMarkersTests {
             exportFormat: .midi,
             isMIDIFileUTF8EncodingAllowed: false
         )
-        
+
         let extractor = MarkersExtractor(settings: settings)
-        
+
         let result = try await extractor.extract()
-        
+
         let filePath = try #require(result.midiFilePath)
-        
+
         let midiFile = try await MusicalMIDI1File(url: filePath)
-        
+
         // verify marker text strings
-        
+
         #expect(midiFile.tracks.count == 1)
         let track = try #require(midiFile.tracks.first)
-        
+
         let textEvents: [MIDIFileEvent.Text] = track.events
             .map(\.event)
             .compactMap {
                 guard case let .text(text) = $0 else { return nil }
                 return text
             }
-        
+
         try #require(textEvents.count == 1 + 4) // track name + 4 marker events
-        
+
         #expect(textEvents[0].text == "Markers")
         #expect(textEvents[0].textType == .trackOrSequenceName)
-        
+
         #expect(textEvents[1].text == "Marker 1 is ASCII")
         #expect(textEvents[1].textType == .marker)
-        
+
         #expect(textEvents[2].text == "Marker 2 (C) is Extended ASCII") // substitutes non-ASCII char
         #expect(textEvents[2].textType == .marker)
-        
+
         #expect(textEvents[3].text == "Marker 3 ? is UTF-8") // can't substitute non-ASCII char, uses `?` placeholder
         #expect(textEvents[3].textType == .marker)
-        
+
         #expect(textEvents[4].text == "??????") // can't substitute non-ASCII chars, uses `?` placeholders
         #expect(textEvents[4].textType == .marker)
     }
