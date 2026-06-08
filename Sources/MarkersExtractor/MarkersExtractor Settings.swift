@@ -27,6 +27,7 @@ extension MarkersExtractor {
         public var imageSizePercent: Int?
         public var gifFPS: Double
         public var gifSpan: TimeInterval
+        public var isMIDIFileUTF8EncodingAllowed: Bool
         public var idNamingMode: MarkerIDMode
         public var imageLabels: [ExportField]
         public var imageLabelCopyright: String?
@@ -60,6 +61,7 @@ extension MarkersExtractor {
             imageSizePercent: Int? = Defaults.imageSizePercent,
             gifFPS: Double = Defaults.gifFPS,
             gifSpan: TimeInterval = Defaults.gifSpan,
+            isMIDIFileUTF8EncodingAllowed: Bool = Defaults.isMIDIFileUTF8EncodingAllowed,
             idNamingMode: MarkerIDMode = Defaults.idNamingMode,
             imageLabels: [ExportField] = Defaults.imageLabels,
             imageLabelCopyright: String? = Defaults.imageLabelCopyright,
@@ -94,6 +96,7 @@ extension MarkersExtractor {
             self.imageHeight = imageHeight
             self.imageSizePercent = imageSizePercent
             self.gifFPS = gifFPS
+            self.isMIDIFileUTF8EncodingAllowed = isMIDIFileUTF8EncodingAllowed
             self.gifSpan = gifSpan
             self.idNamingMode = idNamingMode
             self.imageLabels = imageLabels
@@ -244,6 +247,7 @@ extension MarkersExtractor.Settings {
         public static let imageSizePercentGIF = 50
         public static let gifFPS: Double = 10.0
         public static let gifSpan: TimeInterval = 2
+        public static let isMIDIFileUTF8EncodingAllowed: Bool = false
         public static let idNamingMode: MarkerIDMode = .timelineNameAndTimecode
         public static let imageLabels: [ExportField] = []
         public static let imageLabelCopyright: String? = nil
