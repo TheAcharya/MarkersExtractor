@@ -5,6 +5,7 @@
 //
 
 import AVFoundation
+import DAWFileTools
 import Foundation
 import Logging
 import OrderedCollections

@@ -25,10 +25,10 @@ let package = Package(
         .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.1.6"),
         .package(
             url: "https://github.com/orchetect/swift-daw-file-tools",
-            from: "0.9.2",
+            from: "0.9.3",
             traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
         ),
-        .package(url: "https://github.com/orchetect/swift-extensions", from: "2.1.8"),
+        .package(url: "https://github.com/orchetect/swift-extensions", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-textfile", from: "0.5.2"),
         .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.2"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.0")
