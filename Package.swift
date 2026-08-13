@@ -20,9 +20,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.8.2"),
-        .package(url: "https://github.com/apple/swift-log", from: "1.13.1"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.5.1"),
-        .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.1.6"),
+        .package(url: "https://github.com/apple/swift-log", from: "1.15.0"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.6.0"),
+        .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.1.7"),
         .package(
             url: "https://github.com/orchetect/swift-daw-file-tools",
             from: "0.9.3",
@@ -30,8 +30,8 @@ let package = Package(
         ),
         .package(url: "https://github.com/orchetect/swift-extensions", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-textfile", from: "0.5.2"),
-        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.2"),
-        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.0")
+        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.3"),
+        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.1")
     ],
     targets: [
         .target(
