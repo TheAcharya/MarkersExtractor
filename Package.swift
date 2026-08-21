@@ -30,7 +30,7 @@ let package = Package(
         ),
         .package(url: "https://github.com/orchetect/swift-extensions", from: "3.0.0"),
         .package(url: "https://github.com/orchetect/swift-textfile", from: "0.5.2"),
-        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.3"),
+        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.4"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.1")
     ],
     targets: [
