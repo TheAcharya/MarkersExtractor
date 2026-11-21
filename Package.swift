@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/TheAcharya/XLKit.git", from: "1.1.8"),
         .package(
             url: "https://github.com/orchetect/swift-daw-file-tools",
-            from: "0.9.3",
+            from: "0.9.4",
             traits: [.trait(name: "FCP"), .trait(name: "MIDIFile"), .trait(name: "SRT")]
         ),
         .package(url: "https://github.com/orchetect/swift-extensions", from: "3.0.0"),
