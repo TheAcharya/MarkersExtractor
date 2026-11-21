@@ -1,5 +1,16 @@
 # MarkersExtractor Change Log
 
+## [0.5.0](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.8) (2026-11-21)
+
+### New Features
+
+- Added support for FCPXML 1.15 (introduced in Final Cut Pro 13.0)
+
+### Maintenance Update
+
+- Updated core dependencies
+- Build with Xcode 27.2
+
 ## [0.4.8](https://github.com/TheAcharya/MarkersExtractor/releases/tag/0.4.8) (2026-08-21)
 
 ### Maintenance Update
